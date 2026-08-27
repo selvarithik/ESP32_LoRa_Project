@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Sensor Management{% endblock %}
+
+{% block page_title %}Sensor Management{% endblock %}
+
+{% block page_subtitle %}
+Monitor and configure sensor parameters
+{% endblock %}
+
+{% block content %}
+
+<div class="page-toolbar">
+
+    <div class="toolbar-left">
+
+        <select id="sensor-node"
+                class="input select-input">
+            <option value="">Select Node</option>
+        </select>
+
+        <input id="sensor-search"
+               class="input search-input"
+               placeholder="Search parameters...">
+
+    </div>
+
+</div>
+
+
+<div class="filter-chips">
+
+    <button class="filter-chip active"
+            data-filter="all">
+        All
+    </button>
+
+    <button class="filter-chip"
+            data-filter="enabled">
+        Enabled
+    </button>
+
+    <button class="filter-chip"
+            data-filter="alarm">
+        Alarm
+    </button>
+
+    <button class="filter-chip"
+            data-filter="graph">
+        Graph
+    </button>
+
+</div>
+
+
+<section class="panel">
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                    <th>Unit</th>
+                    <th>Quality</th>
+                    <th>Status</th>
+                    <th>Last Update</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="sensor-table">
+
+                <tr>
+                    <td colspan="7"
+                        class="loading">
+                        Select a node.
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- SENSOR VIEW DRAWER -->
+
+<div class="drawer-overlay"
+     id="sensor-overlay"></div>
+
+<aside class="drawer"
+       id="sensor-drawer">
+
+    <div class="drawer-header">
+
+        <div>
+            <h2 id="sensor-title">
+                Sensor
+            </h2>
+
+            <p>
+                Parameter details
+            </p>
+        </div>
+
+        <button class="drawer-close"
+                id="sensor-close">
+            ×
+        </button>
+
+    </div>
+
+
+    <div class="drawer-body"
+         id="sensor-details">
+
+        Loading...
+
+    </div>
+
+</aside>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/sensors.js') }}?v=14"></script>
+{% endblock %}

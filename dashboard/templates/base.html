@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}SELVARITHIK'S LORA GATEWAY{% endblock %}</title>
+
+     <link rel="stylesheet" 
+      href="{{ url_for('static', filename='css/style.css') }}?v=10">
+
+      {% block extra_css %}{% endblock %} 
+
+      <script src="{{ url_for('static', filename='js/app.js') }}?v=13"></script>
+
+     {% block extra_js %}{% endblock %}
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                <svg viewBox="0 0 48 48">
+                    <rect x="18" y="20" width="12" height="20" rx="2"/>
+                    <circle cx="24" cy="25" r="2.5" class="logo-fill"/>
+
+                    <path d="M13 20C9 16 9 12 13 8"/>
+                    <path d="M35 20C39 16 39 12 35 8"/>
+
+                    <path d="M8 25C2 19 2 11 8 5" class="logo-fade"/>
+                    <path d="M40 25C46 19 46 11 40 5" class="logo-fade"/>
+
+                    <circle cx="8" cy="30" r="2" class="logo-fill"/>
+                    <circle cx="40" cy="30" r="2" class="logo-fill"/>
+                </svg>
+            </div>
+
+            <div>
+                <div class="brand-name">SELVARITHIK'S</div>
+                <div class="brand-subtitle">LORA GATEWAY</div>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-group">
+                <div class="nav-title">MAIN</div>
+
+                <a href="/"
+                   class="nav-item"
+                   data-path="/">
+                    <span class="nav-svg">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                        </svg>
+                    </span>
+                    Dashboard
+                </a>
+
+                <a href="/system-overview"
+                   class="nav-item"
+                   data-path="/system-overview">
+                    <span class="nav-svg">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="14" rx="2"/>
+                            <path d="M7 21h10"/>
+                            <path d="M7 14l3-3 3 2 4-5"/>
+                        </svg>
+                    </span>
+                    System Overview
+                </a>
+            </div>
+
+
+            <div class="nav-group">
+                <div class="nav-title">DEVICES</div>
+
+                <a href="/nodes"
+                   class="nav-item"
+                   data-path="/nodes">
+                    <span class="nav-svg">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="7" y="7" width="10" height="10" rx="2"/>
+                            <path d="M4 9h3M4 15h3M17 9h3M17 15h3"/>
+                            <path d="M9 4v3M15 4v3M9 17v3M15 17v3"/>
+                        </svg>
+                    </span>
+                    Node Management
+                </a>
+
+                <a href="/sensors"
+                   class="nav-item"
+                   data-path="/sensors">
+                    <span class="nav-svg">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="7"/>
+                            <path d="M12 8v4l3 2"/>
+                            <path d="M5 5L3 3M19 5l2-2"/>
+                        </svg>
+                    </span>
+                    Sensor Management
+                </a>
+            </div>
+
+
+            <div class="nav-group">
+                <div class="nav-title">CONFIGURATION</div>
+
+                <a href="/communication"
+                   class="nav-item"
+                   data-path="/communication">
+                    <span class="nav-svg">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="2.5"/>
+                            <path d="M5 9a8 8 0 0 0 0 6"/>
+                            <path d="M19 9a8 8 0 0 1 0 6"/>
+                            <path d="M2 6a12 12 0 0 0 0 12"/>
+                            <path d="M22 6a12 12 0 0 1 0 12"/>
+                        </svg>
+                    </span>
+                    Communication
+                </a>
+<a href="/chat"
+   class="nav-item">
+
+    <span class="nav-icon">
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2">
+
+            <path d="M20 11.5a7.5 7.5 0 0 1-8 7.5
+                     7.8 7.8 0 0 1-3.5-.8
+                     L4 20l1.5-3.5
+                     A7.5 7.5 0 1 1 20 11.5z"/>
+
+            <path d="M8 11h.01"/>
+            <path d="M12 11h.01"/>
+            <path d="M16 11h.01"/>
+
+        </svg>
+    </span>
+
+    <span>
+        Private Chat
+    </span>
+
+</a>
+                <a href="/system"
+                   class="nav-item"
+                   data-path="/system">
+                    <span class="nav-svg">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="4"/>
+                            <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+                            <path d="M4.9 4.9l2.1 2.1M17 17l2.1 2.1"/>
+                            <path d="M19.1 4.9L17 7M7 17l-2.1 2.1"/>
+                        </svg>
+                    </span>
+                    System
+                </a>
+            </div>
+
+
+            <div class="nav-group">
+                <div class="nav-title">DIAGNOSTICS</div>
+
+                <a href="/logs"
+                   class="nav-item"
+                   data-path="/logs">
+                    <span class="nav-svg">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="5" y="3" width="14" height="18" rx="2"/>
+                            <path d="M8 8h8M8 12h8M8 16h5"/>
+                        </svg>
+                    </span>
+                    Logs
+                </a>
+            </div>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <div class="gateway-state">
+                <span></span>
+                Gateway Control Center
+            </div>
+
+            <small>
+                SELVARITHIK • INDUSTRIAL IoT
+            </small>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main-area">
+
+        <header class="top-header">
+
+            <div>
+                <h1 id="page-title">
+                    {% block page_title %}{% endblock %}
+                </h1>
+
+                <p id="page-subtitle">
+                    {% block page_subtitle %}{% endblock %}
+                </p>
+            </div>
+
+
+            <div class="header-tools">
+
+                <div class="clock">
+                    <div id="date">—</div>
+                    <strong id="time">—</strong>
+                </div>
+
+                <div class="system-pill">
+                    <span></span>
+                    SYSTEM ONLINE
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <section class="page-content">
+            {% block content %}{% endblock %}
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+
+<!-- MODAL -->
+<div id="modal-root"></div>
+
+</body>
+</html>

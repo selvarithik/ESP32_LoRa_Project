@@ -1,0 +1,615 @@
+/* ============================================================
+   COMMUNICATION CENTER
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f5f7fa;
+    color: #1f2937;
+}
+
+
+.communication-page {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.communication-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+
+.communication-header h1 {
+    margin: 0 0 6px;
+
+    font-size: 28px;
+}
+
+
+.communication-header p {
+    margin: 0;
+
+    color: #6b7280;
+}
+
+
+.header-status {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.status-badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 7px 12px;
+
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+.status-badge.online {
+    background: #dcfce7;
+    color: #166534;
+}
+
+
+.status-badge.offline {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+/* ============================================================
+   SECTION
+   ============================================================ */
+
+.section {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+.section-title {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.section-title h2 {
+    margin: 0 0 5px;
+
+    font-size: 19px;
+}
+
+
+.section-title p {
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   OVERVIEW
+   ============================================================ */
+
+.overview-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+
+.info-card {
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    padding: 16px;
+
+    background: #fafafa;
+}
+
+
+.card-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 12px;
+
+    color: #6b7280;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+}
+
+
+.card-value {
+    display: block;
+
+    font-size: 20px;
+
+    color: #111827;
+}
+
+
+/* ============================================================
+   STATISTICS
+   ============================================================ */
+
+.statistics-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+
+.stat-card {
+    padding: 15px;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    background: #fafafa;
+}
+
+
+.stat-card span {
+    display: block;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+    margin-bottom: 8px;
+}
+
+
+.stat-card strong {
+    font-size: 22px;
+}
+
+
+/* ============================================================
+   MESH
+   ============================================================ */
+
+.mesh-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+
+.mesh-card {
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    padding: 16px;
+
+    background: #ffffff;
+}
+
+
+.mesh-card.master {
+    border-color: #93c5fd;
+}
+
+
+.mesh-card-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 12px;
+}
+
+
+.mesh-node-id {
+    font-size: 17px;
+
+    font-weight: 700;
+}
+
+
+.mesh-role {
+    font-size: 11px;
+
+    padding: 4px 8px;
+
+    border-radius: 999px;
+
+    background: #e5e7eb;
+}
+
+
+.mesh-role.master {
+    background: #dbeafe;
+
+    color: #1d4ed8;
+}
+
+
+.mesh-detail {
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 6px 0;
+
+    border-bottom: 1px solid #f3f4f6;
+
+    font-size: 13px;
+}
+
+
+.mesh-detail:last-child {
+    border-bottom: none;
+}
+
+
+.mesh-detail span:first-child {
+    color: #6b7280;
+}
+
+
+.empty-message {
+    padding: 20px;
+
+    text-align: center;
+
+    color: #6b7280;
+
+    background: #f9fafb;
+
+    border-radius: 8px;
+}
+
+
+/* ============================================================
+   ROUTE
+   ============================================================ */
+
+.route-form {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1fr
+        180px
+        auto;
+
+    gap: 12px;
+
+    align-items: end;
+}
+
+
+.form-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+
+.form-group label {
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #4b5563;
+}
+
+
+input,
+select {
+    width: 100%;
+
+    height: 40px;
+
+    padding: 0 11px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    outline: none;
+}
+
+
+input:focus,
+select:focus {
+    border-color: #6b7280;
+}
+
+
+.route-result {
+    margin-top: 16px;
+
+    padding: 15px;
+
+    border-radius: 8px;
+
+    background: #f3f4f6;
+}
+
+
+.route-result.direct {
+    border-left: 4px solid #16a34a;
+}
+
+
+.route-result.relay {
+    border-left: 4px solid #2563eb;
+}
+
+
+.route-result.error {
+    border-left: 4px solid #dc2626;
+}
+
+
+.route-result-title {
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+
+.route-result-details {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+
+.settings-form {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+
+    align-items: end;
+}
+
+
+.settings-form button {
+    grid-column: 1 / -1;
+
+    justify-self: start;
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn {
+    height: 40px;
+
+    padding: 0 15px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+.btn.primary {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+
+.btn.primary:hover {
+    background: #1d4ed8;
+}
+
+
+.btn.secondary {
+    background: #e5e7eb;
+
+    color: #111827;
+}
+
+
+.btn.secondary:hover {
+    background: #d1d5db;
+}
+
+
+/* ============================================================
+   CHAT
+   ============================================================ */
+
+.chat-placeholder {
+    text-align: center;
+
+    padding: 35px 20px;
+
+    border: 1px dashed #d1d5db;
+
+    border-radius: 10px;
+
+    background: #fafafa;
+}
+
+
+.chat-icon {
+    font-size: 36px;
+
+    margin-bottom: 8px;
+}
+
+
+.chat-placeholder h3 {
+    margin: 0 0 8px;
+}
+
+
+.chat-placeholder p {
+    max-width: 600px;
+
+    margin: 0 auto 12px;
+
+    color: #6b7280;
+
+    line-height: 1.5;
+}
+
+
+.chat-placeholder span {
+    font-size: 12px;
+
+    color: #9ca3af;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1100px) {
+
+    .overview-grid,
+    .statistics-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .mesh-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .settings-form {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .route-form {
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .communication-page {
+        padding: 12px;
+    }
+
+
+    .communication-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    .overview-grid,
+    .statistics-grid,
+    .mesh-grid,
+    .settings-form,
+    .route-form {
+        grid-template-columns: 1fr;
+    }
+
+
+    .route-result-details {
+        grid-template-columns: 1fr;
+    }
+
+}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}System{% endblock %}
+{% block page_title %}System{% endblock %}
+{% block page_subtitle %}Gateway system configuration and maintenance{% endblock %}
+
+{% block content %}
+
+<div class="page-toolbar">
+    <div class="toolbar-left">
+        <select id="system-node" class="input" aria-label="Node selector">
+            <option value="">Select Node</option>
+        </select>
+    </div>
+</div>
+
+<form id="system-form" class="settings-grid">
+
+    <section class="settings-card">
+        <div class="settings-card-icon">⌁</div>
+        <div class="settings-card-content">
+            <h3>Device Information</h3>
+            <p>Gateway/node identity and hardware information.</p>
+            <div class="settings-fields">
+                <label>Node Name<input id="system-node-name" class="input" name="name"></label>
+                <label>Node ID<input id="system-node-id" class="input" name="node_id" readonly></label>
+                <label>Node Address<input id="system-address" class="input" name="node_address"></label>
+                <label>MCU<input id="system-mcu" class="input" readonly></label>
+                <label>Hardware Revision<input id="system-hardware" class="input" name="hardware_revision"></label>
+            </div>
+        </div>
+    </section>
+
+    <section class="settings-card">
+        <div class="settings-card-icon">◉</div>
+        <div class="settings-card-content">
+            <h3>Firmware</h3>
+            <p>Current firmware information.</p>
+            <div class="settings-fields">
+                <label>Firmware Version<input id="system-firmware" class="input" name="firmware_version"></label>
+                <div class="settings-readonly">OTA update is handled by the gateway firmware layer.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="settings-card">
+        <div class="settings-card-icon">◌</div>
+        <div class="settings-card-content">
+            <h3>Network & Time Defaults</h3>
+            <p>Common node configuration values.</p>
+            <div class="settings-fields">
+                <label>Timezone<input id="system-timezone" class="input" name="timezone"></label>
+                <label class="switch-row"><span>Time Sync</span><input id="system-time-sync" type="checkbox" name="time_sync"></label>
+                <label>Watchdog Timeout (s)<input id="system-watchdog" class="input" type="number" min="1" name="watchdog"></label>
+            </div>
+        </div>
+    </section>
+
+    <section class="settings-card danger-card">
+        <div class="settings-card-icon danger">!</div>
+        <div class="settings-card-content">
+            <h3>Maintenance</h3>
+            <p>Restart the gateway or restore configuration defaults.</p>
+            <div class="maintenance-actions">
+                <button type="button" class="btn btn-secondary" id="system-reboot">Reboot Gateway</button>
+                <button type="button" class="btn btn-danger" id="system-factory-reset">Factory Reset</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="sticky-actions settings-actions">
+        <button type="button" class="btn btn-secondary" id="system-reset">Reset Defaults</button>
+        <button type="button" class="btn btn-primary" id="system-save">Save Configuration</button>
+    </div>
+
+</form>
+
+<div id="system-modal-root"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/system.js') }}?v=14"></script>
+{% endblock %}

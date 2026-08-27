@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}System Overview{% endblock %}
+
+
+{% block page_title %}System Overview{% endblock %}
+
+{% block page_subtitle %}
+Gateway health and system-wide status
+{% endblock %}
+
+{% block content %}
+
+<div class="page-toolbar">
+    <div>
+        <h2>System Health</h2>
+        <p>One-glance status of the complete gateway.</p>
+    </div>
+</div>
+
+
+<div class="health-grid">
+
+    <div class="health-card">
+        <span class="health-label">Gateway Status</span>
+        <strong id="overview-gateway-status" class="health-online">—</strong>
+    </div>
+
+    <div class="health-card">
+        <span class="health-label">Node Status</span>
+        <strong id="overview-node-status">
+            —
+        </strong>
+    </div>
+
+    <div class="health-card">
+        <span class="health-label">Communication</span>
+        <strong id="overview-communication-status" class="health-online">—</strong>
+    </div>
+
+    <div class="health-card">
+        <span class="health-label">Sensor Status</span>
+        <strong id="overview-sensor-status">
+            —
+        </strong>
+    </div>
+
+    <div class="health-card">
+        <span class="health-label">System Health</span>
+        <strong id="overview-system-health" class="health-online">—</strong>
+    </div>
+
+</div>
+
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+            <h3>Recent Events</h3>
+            <p>Latest gateway activity.</p>
+        </div>
+
+        <a href="/logs" class="orange-link">
+            View Logs →
+        </a>
+
+    </div>
+
+    <div id="overview-events"
+         class="timeline">
+
+        <div class="loading">
+            Loading events...
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/system-overview.js') }}?v=14"></script>
+{% endblock %}

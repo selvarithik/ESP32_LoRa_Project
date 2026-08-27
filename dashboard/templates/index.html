@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | SELVARITHIK'S LORA GATEWAY{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block page_subtitle %}
+Real-time gateway monitoring and system status
+{% endblock %}
+
+{% block content %}
+
+<div class="page-toolbar">
+    <div>
+        <h2>Gateway Dashboard</h2>
+        <p>Live overview of gateway, nodes and sensor activity.</p>
+    </div>
+
+    <button class="btn btn-secondary" id="dashboard-refresh">
+        ↻ Refresh
+    </button>
+</div>
+
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-icon navy">⌘</div>
+        <div>
+            <span>Total Nodes</span>
+            <strong id="total-nodes">—</strong>
+            <small>Configured nodes</small>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon green">✓</div>
+        <div>
+            <span>Online Nodes</span>
+            <strong id="online-nodes">—</strong>
+            <small>Currently connected</small>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon orange">◉</div>
+        <div>
+            <span>Sensor Parameters</span>
+            <strong id="sensor-count">—</strong>
+            <small>Active parameters</small>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon red">!</div>
+        <div>
+            <span>Active Alarms</span>
+            <strong id="alarm-count">—</strong>
+            <small>Current alarms</small>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="dashboard-grid">
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
+                <h3>Node Status</h3>
+                <p>Select a node to see its sensor summary.</p>
+            </div>
+
+            <span class="live-badge">
+                <i></i> LIVE
+            </span>
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Node</th>
+                        <th>Communication</th>
+                        <th>Status</th>
+                        <th>Last Seen</th>
+                    </tr>
+                </thead>
+
+                <tbody id="dashboard-nodes">
+                    <tr>
+                        <td colspan="4" class="loading">
+                            Loading nodes...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h3>Live Sensor Summary</h3>
+                <p id="selected-node">
+                    Select a node.
+                </p>
+            </div>
+
+            <span class="muted-label">
+                Auto refresh
+            </span>
+
+        </div>
+
+        <div class="sensor-grid"
+             id="dashboard-sensors">
+
+            <div class="empty-state">
+                Select a node to view sensor data.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="panel full-width">
+
+        <div class="panel-header">
+
+            <div>
+                <h3>Gateway Activity</h3>
+                <p>Recent gateway events.</p>
+            </div>
+
+            <a href="/logs" class="orange-link">
+                View Logs →
+            </a>
+
+        </div>
+
+        <div id="activity-list"
+             class="activity-list">
+
+            <div class="loading">
+                Loading activity...
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=13"></script>
+{% endblock %}
