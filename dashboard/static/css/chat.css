@@ -460,26 +460,29 @@
 }
 
 .message-bubble {
-    max-width: min(72%, 620px);
+    width: fit-content;
+    max-width: min(74%, 620px);
     padding: 8px 10px 6px;
     border-radius: 10px;
     box-shadow: 0 1px 1px rgba(16,24,40,.05);
+    color: #fff;
+    overflow-wrap: anywhere;
 }
 
 .incoming .message-bubble {
-    background: #fff;
-    border: 1px solid #eaecf0;
+    background: var(--chat-orange);
+    border: 1px solid var(--chat-orange);
     border-top-left-radius: 3px;
 }
 
 .outgoing .message-bubble {
-    background: #eaf8df;
-    border: 1px solid #d8efc9;
+    background: #2563eb;
+    border: 1px solid #2563eb;
     border-top-right-radius: 3px;
 }
 
 .message-text {
-    color: #1d2939;
+    color: inherit;
     font-size: 12px;
     line-height: 1.45;
     white-space: pre-wrap;
@@ -492,26 +495,27 @@
     align-items: center;
     justify-content: flex-end;
     gap: 4px;
-    color: #98a2b3;
+    color: rgba(255, 255, 255, .86);
     font-size: 8px;
+    white-space: nowrap;
 }
 
 .message-status {
-    letter-spacing: -2px;
+    letter-spacing: -1px;
     font-size: 11px;
     line-height: 1;
 }
 
 .message-status.seen {
-    color: #2563eb;
+    color: #fff;
 }
 
 .message-status.delivered {
-    color: #667085;
+    color: #fff;
 }
 
 .message-status.sent {
-    color: #98a2b3;
+    color: rgba(255, 255, 255, .86);
 }
 
 .chat-no-messages {
@@ -670,6 +674,6 @@
     }
 
     .message-bubble {
-        max-width: 86%;
+        max-width: 74%;
     }
 }

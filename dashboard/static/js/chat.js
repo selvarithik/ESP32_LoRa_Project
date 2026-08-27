@@ -760,22 +760,33 @@
                             "SENT"
                         ).toUpperCase();
 
+                    const statusClass =
+                        status.toLowerCase();
+
+                    const statusText =
+                        status === "SEEN"
+                            ? "✓✓"
+                            : (
+                                status === "DELIVERED"
+                                    ? "✓✓"
+                                    : "✓"
+                            );
+
                     return `
                         <div
-                            class="chat-message ${
+                            class="message-line ${
                                 sent
-                                    ? "sent"
-                                    : "received"
+                                    ? "outgoing"
+                                    : "incoming"
                             }"
                         >
 
-                            <div>
-
-                                <div class="chat-bubble">
+                            <div class="message-bubble">
+                                <div class="message-text">
                                     ${escapeHtml(text)}
                                 </div>
 
-                                <div class="chat-message-meta">
+                                <div class="message-meta">
 
                                     <span>
                                         ${escapeHtml(
@@ -789,9 +800,10 @@
                                         sent
                                             ? `
                                                 <span
-                                                    class="chat-message-status"
+                                                    class="message-status ${escapeHtml(statusClass)}"
+                                                    title="${escapeHtml(status)}"
                                                 >
-                                                    ${status}
+                                                    ${statusText}
                                                 </span>
                                               `
                                             : ""
@@ -800,7 +812,6 @@
                                 </div>
 
                             </div>
-
                         </div>
                     `;
                 })
