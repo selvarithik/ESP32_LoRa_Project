@@ -81,6 +81,32 @@
     }
 
 
+    function updateGatewayIdentity() {
+
+        const select =
+            $("chatIdentity");
+
+        if (!select) {
+            return;
+        }
+
+        select.innerHTML = "";
+
+        const option =
+            document.createElement("option");
+
+        option.value = GATEWAY_ID;
+        option.textContent = "Gateway Control Center";
+
+        select.appendChild(option);
+
+        select.value = GATEWAY_ID;
+        select.disabled = true;
+
+        state.currentUserId = GATEWAY_ID;
+    }
+
+
     function initials(name) {
 
         const text =
@@ -1076,6 +1102,21 @@
                 }
             );
         }
+
+
+        const identity =
+            $("chatIdentity");
+
+        if (identity) {
+
+            identity.addEventListener(
+                "change",
+                () => {
+
+                    updateGatewayIdentity();
+                }
+            );
+        }
     }
 
 
@@ -1089,7 +1130,11 @@
             "[CHAT] Initializing"
         );
 
+        updateGatewayIdentity();
+
         setupEvents();
+
+        updateGatewayIdentity();
 
         disableComposer(true);
 

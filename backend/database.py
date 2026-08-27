@@ -38,7 +38,12 @@ def get_connection():
 # ============================================================
 
 def initialize_database():
-        # ========================================================
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    # ========================================================
     # PRIVATE CHAT CONVERSATIONS
     # ========================================================
 
@@ -139,11 +144,6 @@ def initialize_database():
             message_id
         )
     """)
-
-    connection = get_connection()
-
-    cursor = connection.cursor()
-
 
     # ========================================================
     # NODES

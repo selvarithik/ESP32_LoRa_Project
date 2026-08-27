@@ -2180,7 +2180,7 @@ def api_chat_conversations():
             .strip()
         )
 
-        conversations = get_chat_conversations(
+        conversations = chat_get_conversations(
                 user_id
             )
 
@@ -2256,7 +2256,7 @@ def api_chat_messages():
             )
         )
 
-        messages = get_chat_messages(
+        messages = chat_get_messages(
                 user_id,
                 conversation_id,
                 limit
