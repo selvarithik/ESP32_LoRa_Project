@@ -501,6 +501,235 @@ def initialize_database():
     """)
 
 
+    # ========================================================
+    # FIRMWARE RELEASES
+    # Metadata only. Firmware binaries are stored on disk under
+    # data/firmware/releases/<release_id>/firmware.bin.
+    # ========================================================
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS firmware_releases (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            release_id TEXT UNIQUE NOT NULL,
+
+            version TEXT NOT NULL,
+
+            build INTEGER NOT NULL,
+
+            hardware_family TEXT NOT NULL,
+
+            hardware_model TEXT NOT NULL,
+
+            hardware_revision TEXT NOT NULL,
+
+            filename TEXT NOT NULL,
+
+            file_size INTEGER NOT NULL,
+
+            sha256 TEXT NOT NULL,
+
+            signature TEXT,
+
+            channel TEXT DEFAULT 'stable',
+
+            release_notes TEXT DEFAULT '',
+
+            minimum_bootloader TEXT,
+
+            security_version INTEGER DEFAULT 0,
+
+            mandatory INTEGER DEFAULT 0,
+
+            status TEXT DEFAULT 'DRAFT',
+
+            created_at TEXT NOT NULL,
+
+            approved_at TEXT,
+
+            retired_at TEXT,
+
+            revoked_at TEXT
+
+        )
+    """)
+
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_firmware_releases_lookup
+
+        ON firmware_releases (
+            hardware_family,
+            hardware_model,
+            hardware_revision,
+            channel,
+            status,
+            build
+        )
+    """)
+
+
+    # ========================================================
+    # DEVICE FIRMWARE STATE
+    # ========================================================
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS device_firmware (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            node_id TEXT UNIQUE NOT NULL,
+
+            hardware_family TEXT,
+
+            hardware_model TEXT,
+
+            hardware_revision TEXT,
+
+            current_version TEXT,
+
+            current_build INTEGER DEFAULT 0,
+
+            target_release_id TEXT,
+
+            target_version TEXT,
+
+            target_build INTEGER,
+
+            ota_state TEXT DEFAULT 'IDLE',
+
+            channel TEXT DEFAULT 'stable',
+
+            last_check_at TEXT,
+
+            last_update_at TEXT,
+
+            rollback_release_id TEXT,
+
+            failure_count INTEGER DEFAULT 0,
+
+            last_error TEXT,
+
+            updated_at TEXT NOT NULL
+
+        )
+    """)
+
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_device_firmware_state
+
+        ON device_firmware (
+            ota_state,
+            channel,
+            updated_at
+        )
+    """)
+
+
+    # ========================================================
+    # FIRMWARE UPDATE JOBS
+    # ========================================================
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS firmware_update_jobs (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            job_id TEXT UNIQUE NOT NULL,
+
+            node_id TEXT NOT NULL,
+
+            release_id TEXT NOT NULL,
+
+            from_version TEXT,
+
+            from_build INTEGER,
+
+            target_version TEXT NOT NULL,
+
+            target_build INTEGER NOT NULL,
+
+            state TEXT DEFAULT 'APPROVED',
+
+            progress INTEGER DEFAULT 0,
+
+            authorized INTEGER DEFAULT 0,
+
+            started_at TEXT,
+
+            completed_at TEXT,
+
+            result TEXT,
+
+            error TEXT,
+
+            created_at TEXT NOT NULL,
+
+            updated_at TEXT NOT NULL
+
+        )
+    """)
+
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_firmware_update_jobs_node
+
+        ON firmware_update_jobs (
+            node_id,
+            created_at
+        )
+    """)
+
+
+    # ========================================================
+    # FIRMWARE UPDATE EVENTS
+    # ========================================================
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS firmware_update_events (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            event_id TEXT UNIQUE NOT NULL,
+
+            job_id TEXT,
+
+            node_id TEXT,
+
+            release_id TEXT,
+
+            event_type TEXT NOT NULL,
+
+            state TEXT,
+
+            progress INTEGER,
+
+            message TEXT,
+
+            error TEXT,
+
+            created_at TEXT NOT NULL
+
+        )
+    """)
+
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_firmware_update_events_job
+
+        ON firmware_update_events (
+            job_id,
+            created_at
+        )
+    """)
+
+
     connection.commit()
 
     connection.close()

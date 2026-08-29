@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% block title %}Firmware Management{% endblock %}
+
+{% block page_title %}Firmware Management{% endblock %}
+
+{% block page_subtitle %}
+Server-side firmware releases and OTA update control
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/firmware.css') }}?v=1">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-toolbar">
+    <div class="toolbar-left">
+        <button class="icon-btn" id="firmware-refresh" title="Refresh">↻</button>
+    </div>
+
+    <button class="btn btn-primary" id="firmware-upload-open">
+        + Upload Firmware
+    </button>
+</div>
+
+
+<div class="counter-strip firmware-overview">
+    <div>
+        <span>Total Devices</span>
+        <strong id="fw-total-devices">0</strong>
+    </div>
+    <div>
+        <span>Up To Date</span>
+        <strong class="green-text" id="fw-up-to-date">0</strong>
+    </div>
+    <div>
+        <span>Updates Available</span>
+        <strong id="fw-updates-available">0</strong>
+    </div>
+    <div>
+        <span>Updating</span>
+        <strong id="fw-updating">0</strong>
+    </div>
+    <div>
+        <span>Failed</span>
+        <strong id="fw-failed">0</strong>
+    </div>
+</div>
+
+
+<section class="panel firmware-upload-panel" id="firmware-upload-panel">
+    <div class="panel-header">
+        <div>
+            <h3>Firmware Upload</h3>
+            <p>Create a DRAFT release with validation and manifest generation</p>
+        </div>
+    </div>
+
+    <form id="firmware-upload-form" class="firmware-form">
+        <label>
+            Firmware File
+            <input class="input" type="file" name="firmware" accept=".bin,application/octet-stream" required>
+        </label>
+        <label>
+            Version
+            <input class="input" name="version" placeholder="1.0.1" required>
+        </label>
+        <label>
+            Build
+            <input class="input" type="number" min="0" name="build" required>
+        </label>
+        <label>
+            Hardware Family
+            <input class="input" name="hardware_family" value="ESP32" required>
+        </label>
+        <label>
+            Hardware Model
+            <input class="input" name="hardware_model" value="ESP32-WROOM-32" required>
+        </label>
+        <label>
+            Hardware Revision
+            <input class="input" name="hardware_revision" value="REV-A" required>
+        </label>
+        <label>
+            Channel
+            <select class="input" name="channel">
+                <option value="stable">stable</option>
+                <option value="beta">beta</option>
+                <option value="dev">dev</option>
+            </select>
+        </label>
+        <label>
+            Minimum Bootloader
+            <input class="input" name="minimum_bootloader" placeholder="1.0.0">
+        </label>
+        <label>
+            Security Version
+            <input class="input" type="number" min="0" name="security_version" value="0">
+        </label>
+        <label class="switch-row firmware-switch">
+            <span>Mandatory Update</span>
+            <input type="checkbox" name="mandatory">
+        </label>
+        <label class="full-width">
+            Release Notes
+            <textarea class="input firmware-textarea" name="release_notes"></textarea>
+        </label>
+        <div class="full-width firmware-form-actions">
+            <button type="submit" class="btn btn-primary">Upload</button>
+            <button type="button" class="btn btn-secondary" id="firmware-upload-clear">Clear</button>
+        </div>
+    </form>
+
+    <div class="firmware-validation" id="firmware-validation"></div>
+</section>
+
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h3>Firmware Releases</h3>
+            <p>Release lifecycle: DRAFT to TESTING to APPROVED to ACTIVE</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Version</th>
+                    <th>Build</th>
+                    <th>Hardware</th>
+                    <th>Revision</th>
+                    <th>Channel</th>
+                    <th>Size</th>
+                    <th>SHA-256</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="firmware-releases-table">
+                <tr>
+                    <td colspan="10" class="loading">Loading releases...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h3>Device Firmware</h3>
+            <p>Current firmware state known by the server</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Node</th>
+                    <th>Hardware</th>
+                    <th>Current Version</th>
+                    <th>Target Version</th>
+                    <th>OTA State</th>
+                    <th>Channel</th>
+                    <th>Last Update</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="firmware-devices-table">
+                <tr>
+                    <td colspan="8" class="loading">Loading device firmware...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h3>Update Jobs</h3>
+            <p>Authorized server-side OTA jobs</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Job ID</th>
+                    <th>Node</th>
+                    <th>From Version</th>
+                    <th>Target Version</th>
+                    <th>State</th>
+                    <th>Progress</th>
+                    <th>Started</th>
+                    <th>Completed</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="firmware-jobs-table">
+                <tr>
+                    <td colspan="9" class="loading">Loading update jobs...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h3>Update History</h3>
+            <p>Recent OTA events and errors</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Event</th>
+                    <th>Node</th>
+                    <th>Job</th>
+                    <th>State</th>
+                    <th>Progress</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody id="firmware-history-table">
+                <tr>
+                    <td colspan="7" class="loading">Loading update history...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h3>OTA Configuration</h3>
+            <p>Policy defaults for future ESP32 OTA clients</p>
+        </div>
+    </div>
+
+    <div class="firmware-config-grid">
+        <label class="switch-row firmware-switch">
+            <span>OTA Enabled</span>
+            <input type="checkbox" id="ota-enabled" checked>
+        </label>
+        <label>
+            Update Channel
+            <select class="input" id="ota-channel">
+                <option value="stable">stable</option>
+                <option value="beta">beta</option>
+                <option value="dev">dev</option>
+            </select>
+        </label>
+        <label class="switch-row firmware-switch">
+            <span>Automatic Updates</span>
+            <input type="checkbox" id="ota-automatic">
+        </label>
+        <label>
+            Check Interval
+            <input class="input" id="ota-check-interval" type="number" value="60" min="1">
+        </label>
+        <label class="switch-row firmware-switch">
+            <span>Manual Approval</span>
+            <input type="checkbox" id="ota-manual-approval" checked>
+        </label>
+        <label class="switch-row firmware-switch">
+            <span>Rollback Enabled</span>
+            <input type="checkbox" id="ota-rollback" checked>
+        </label>
+        <label class="switch-row firmware-switch">
+            <span>Allow Downgrade</span>
+            <input type="checkbox" id="ota-allow-downgrade">
+        </label>
+        <label class="switch-row firmware-switch">
+            <span>Require HTTPS</span>
+            <input type="checkbox" id="ota-require-https" checked>
+        </label>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/firmware.js') }}?v=1"></script>
+{% endblock %}

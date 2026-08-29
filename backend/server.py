@@ -1,13 +1,16 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_file
 from flask_socketio import SocketIO, emit
 
 from datetime import datetime
+from pathlib import Path
 
 import node_manager
 import config_manager
 import telemetry_manager
 import sensor_manager
 import database
+import firmware_manager
+import ota_manager
 from communication_manager import communication_manager
 from mesh_manager import mesh_manager
 from routing_manager import routing_manager
@@ -128,6 +131,523 @@ def system_page():
 @app.route("/logs")
 def logs_page():
     return render_template("logs.html")
+
+# ============================================================
+# FIRMWARE / OTA API
+# ============================================================
+
+@app.route("/firmware")
+def firmware_page():
+    return render_template("firmware.html")
+
+
+# ============================================================
+# FIRMWARE API
+# ============================================================
+
+def firmware_error(error, status_code=400):
+    return jsonify({
+        "success": False,
+        "error": str(error)
+    }), status_code
+
+
+def get_form_bool(value):
+    return str(value or "").lower() in (
+        "1",
+        "true",
+        "yes",
+        "on"
+    )
+
+
+def get_firmware_device_rows():
+    states = {
+        device["node_id"]: device
+        for device in ota_manager.list_device_states()
+    }
+
+    for node in node_manager.get_all_nodes():
+        node_id = node.get("node_id")
+
+        if node_id in states:
+            continue
+
+        states[node_id] = {
+            "node_id": node_id,
+            "hardware_family": node.get("mcu_family"),
+            "hardware_model": node.get("mcu_model"),
+            "hardware_revision": node.get("hardware_revision"),
+            "current_version": node.get("firmware_version"),
+            "current_build": 0,
+            "target_release_id": None,
+            "target_version": None,
+            "target_build": None,
+            "ota_state": "IDLE",
+            "channel": "stable",
+            "last_check_at": None,
+            "last_update_at": node.get("updated_at"),
+            "rollback_release_id": None,
+            "failure_count": 0,
+            "last_error": None,
+            "updated_at": node.get("updated_at")
+        }
+
+    return sorted(
+        states.values(),
+        key=lambda device: device.get("node_id") or ""
+    )
+
+
+@app.route("/api/firmware/releases", methods=["GET"])
+def api_firmware_releases():
+    try:
+        return jsonify({
+            "success": True,
+            "releases": firmware_manager.list_releases()
+        })
+    except Exception as error:
+        return firmware_error(error, 500)
+
+
+@app.route("/api/firmware/releases", methods=["POST"])
+def api_create_firmware_release():
+    try:
+        firmware_manager.ensure_storage()
+
+        upload = request.files.get("firmware")
+
+        if upload is None:
+            return firmware_error(
+                "Firmware file is required",
+                400
+            )
+
+        original_filename = Path(
+            upload.filename or "firmware.bin"
+        ).name
+
+        if not original_filename:
+            return firmware_error(
+                "Invalid firmware filename",
+                400
+            )
+
+        staging_name = (
+            f"{datetime.now().strftime('%Y%m%d%H%M%S%f')}-"
+            f"{original_filename}"
+        )
+        staging_path = firmware_manager.STAGING_DIR / staging_name
+        upload.save(staging_path)
+
+        try:
+            release = firmware_manager.create_release(
+                source_path=staging_path,
+                original_filename=original_filename,
+                version=request.form.get("version"),
+                build=request.form.get("build"),
+                hardware_family=request.form.get("hardware_family"),
+                hardware_model=request.form.get("hardware_model"),
+                hardware_revision=request.form.get("hardware_revision"),
+                channel=request.form.get("channel") or "stable",
+                release_notes=request.form.get("release_notes") or "",
+                mandatory=get_form_bool(
+                    request.form.get("mandatory")
+                ),
+                minimum_bootloader=request.form.get(
+                    "minimum_bootloader"
+                ),
+                security_version=request.form.get(
+                    "security_version"
+                ) or 0,
+                signature=request.form.get("signature")
+            )
+        finally:
+            try:
+                staging_path.unlink(
+                    missing_ok=True
+                )
+            except Exception:
+                pass
+
+        create_log(
+            severity="info",
+            source="FIRMWARE",
+            message=f"Firmware release {release['release_id']} uploaded"
+        )
+
+        return jsonify({
+            "success": True,
+            "release": release,
+            "validation": {
+                "valid": True,
+                "sha256": release["sha256"],
+                "file_size": release["file_size"],
+                "manifest": "manifest.json"
+            }
+        }), 201
+
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+@app.route("/api/firmware/releases/<release_id>", methods=["GET"])
+def api_firmware_release(release_id):
+    try:
+        release = firmware_manager.get_release(
+            release_id
+        )
+
+        if release is None:
+            return firmware_error(
+                "Release not found",
+                404
+            )
+
+        return jsonify({
+            "success": True,
+            "release": release
+        })
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+@app.route("/api/firmware/releases/<release_id>/status", methods=["POST"])
+def api_firmware_release_status(release_id):
+    try:
+        payload = request.get_json(
+            silent=True
+        ) or {}
+        release = firmware_manager.update_release_status(
+            release_id,
+            payload.get("status")
+        )
+
+        if release is None:
+            return firmware_error(
+                "Release not found",
+                404
+            )
+
+        create_log(
+            severity="info",
+            source="FIRMWARE",
+            message=(
+                f"Firmware release {release_id} moved "
+                f"to {release['status']}"
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            "release": release
+        })
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+@app.route("/api/firmware/devices", methods=["GET"])
+def api_firmware_devices():
+    try:
+        return jsonify({
+            "success": True,
+            "devices": get_firmware_device_rows()
+        })
+    except Exception as error:
+        return firmware_error(error, 500)
+
+
+@app.route("/api/firmware/devices/<node_id>", methods=["GET"])
+def api_firmware_device(node_id):
+    try:
+        for device in get_firmware_device_rows():
+            if device["node_id"] == node_id:
+                return jsonify({
+                    "success": True,
+                    "device": device
+                })
+
+        return firmware_error(
+            "Device not found",
+            404
+        )
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+@app.route("/api/firmware/check", methods=["POST"])
+def api_firmware_check():
+    try:
+        payload = request.get_json(
+            silent=True
+        ) or {}
+        result = ota_manager.check_for_update(
+            payload
+        )
+        release = result["release"]
+
+        if not release:
+            return jsonify({
+                "success": True,
+                "update_available": False
+            })
+
+        return jsonify({
+            "success": True,
+            "update_available": True,
+            "release": {
+                "release_id": release["release_id"],
+                "version": release["version"],
+                "build": release["build"],
+                "download_url": release["download_url"],
+                "size": release["file_size"],
+                "sha256": release["sha256"]
+            }
+        })
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+@app.route("/api/firmware/update", methods=["POST"])
+def api_firmware_update():
+    try:
+        payload = request.get_json(
+            silent=True
+        ) or {}
+        node_id = payload.get("node_id")
+        release_id = payload.get("release_id")
+
+        if not node_id or not release_id:
+            return firmware_error(
+                "node_id and release_id are required",
+                400
+            )
+
+        job = ota_manager.create_update_job(
+            node_id=node_id,
+            release_id=release_id,
+            authorized=get_form_bool(
+                payload.get("authorized", True)
+            )
+        )
+
+        return jsonify({
+            "success": True,
+            "job": job
+        }), 201
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+@app.route("/api/firmware/jobs", methods=["GET"])
+def api_firmware_jobs():
+    try:
+        return jsonify({
+            "success": True,
+            "jobs": ota_manager.list_jobs(),
+            "events": ota_manager.list_events()
+        })
+    except Exception as error:
+        return firmware_error(error, 500)
+
+
+@app.route("/api/firmware/jobs/<job_id>", methods=["GET"])
+def api_firmware_job(job_id):
+    try:
+        job = ota_manager.get_job(
+            job_id
+        )
+
+        if job is None:
+            return firmware_error(
+                "Job not found",
+                404
+            )
+
+        return jsonify({
+            "success": True,
+            "job": job
+        })
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+@app.route("/api/firmware/jobs/<job_id>/state", methods=["POST"])
+def api_firmware_job_state(job_id):
+    try:
+        payload = request.get_json(
+            silent=True
+        ) or {}
+        job = ota_manager.update_job_state(
+            job_id=job_id,
+            state=payload.get("state"),
+            progress=payload.get("progress"),
+            result=payload.get("result"),
+            error=payload.get("error")
+        )
+
+        if job is None:
+            return firmware_error(
+                "Job not found",
+                404
+            )
+
+        return jsonify({
+            "success": True,
+            "job": job
+        })
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+@app.route("/api/firmware/device/<node_id>/check", methods=["POST"])
+def api_firmware_device_check(node_id):
+    try:
+        payload = request.get_json(
+            silent=True
+        ) or {}
+        node = node_manager.get_node(
+            node_id
+        )
+
+        if node is None:
+            return firmware_error(
+                "Device not found",
+                404
+            )
+
+        payload.update({
+            "node_id": node_id,
+            "hardware_family": (
+                payload.get("hardware_family")
+                or node.get("mcu_family")
+            ),
+            "hardware_model": (
+                payload.get("hardware_model")
+                or node.get("mcu_model")
+            ),
+            "hardware_revision": (
+                payload.get("hardware_revision")
+                or node.get("hardware_revision")
+            ),
+            "firmware_version": (
+                payload.get("firmware_version")
+                or node.get("firmware_version")
+                or "0.0.0"
+            ),
+            "build": payload.get("build") or 0,
+            "ota_protocol_version": (
+                payload.get("ota_protocol_version") or 1
+            )
+        })
+
+        result = ota_manager.check_for_update(
+            payload
+        )
+        release = result["release"]
+
+        return jsonify({
+            "success": True,
+            "update_available": bool(release),
+            "release": release
+        })
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+@app.route("/api/firmware/download/<release_id>", methods=["GET"])
+def api_firmware_download(release_id):
+    try:
+        release = firmware_manager.get_release(
+            release_id
+        )
+
+        if release is None:
+            return firmware_error(
+                "Release not found",
+                404
+            )
+
+        if release["status"] not in (
+            "ACTIVE",
+            "APPROVED",
+            "TESTING"
+        ):
+            return firmware_error(
+                "Release is not available for download",
+                403
+            )
+
+        firmware_path = firmware_manager.firmware_path_for_release(
+            release_id
+        )
+
+        return send_file(
+            firmware_path,
+            as_attachment=True,
+            download_name="firmware.bin",
+            mimetype="application/octet-stream"
+        )
+    except FileNotFoundError as error:
+        return firmware_error(error, 404)
+    except Exception as error:
+        return firmware_error(error, 400)
+
+
+
+# ============================================================
+# FIRMWARE OTA CONFIGURATION
+# ============================================================
+
+@app.route("/api/firmware/config", methods=["GET"])
+def api_firmware_config_get():
+
+    try:
+
+        return jsonify({
+            "success": True,
+            "config": ota_manager.get_ota_config()
+        })
+
+    except Exception as error:
+
+        return firmware_error(
+            error,
+            500
+        )
+
+
+@app.route("/api/firmware/config", methods=["PUT"])
+def api_firmware_config_put():
+
+    try:
+
+        payload = request.get_json(
+            silent=True
+        ) or {}
+
+        config = ota_manager.save_ota_config(
+            payload
+        )
+
+        create_log(
+            severity="info",
+            source="FIRMWARE",
+            message="OTA configuration updated"
+        )
+
+        return jsonify({
+            "success": True,
+            "config": config
+        })
+
+    except Exception as error:
+
+        return firmware_error(
+            error,
+            400
+        )
+
 
 # ============================================================
 # LOGS API
