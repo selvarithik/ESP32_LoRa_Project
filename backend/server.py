@@ -11,6 +11,7 @@ import sensor_manager
 import database
 import firmware_manager
 import ota_manager
+import command_manager
 from communication_manager import communication_manager
 from mesh_manager import mesh_manager
 from routing_manager import routing_manager
@@ -647,6 +648,234 @@ def api_firmware_config_put():
             error,
             400
         )
+
+
+# ============================================================
+# COMMAND CORE API (PHASE 1 — SERVER SIDE ONLY)
+# ============================================================
+
+def command_error(error, status_code=400):
+    return jsonify({
+        "success": False,
+        "error": str(error)
+    }), status_code
+
+
+@app.route("/api/commands", methods=["POST"])
+def api_create_command():
+    try:
+        data = request.get_json(silent=True) or request.form.to_dict() or {}
+
+        node_id = data.get("node_id")
+        command_type = data.get("command_type")
+        payload = data.get("payload")
+        priority = data.get("priority", command_manager.DEFAULT_PRIORITY)
+        max_retries = data.get("max_retries", command_manager.DEFAULT_MAX_RETRIES)
+        timeout_seconds = data.get("timeout_seconds", command_manager.DEFAULT_TIMEOUT_SECONDS)
+        command_id = data.get("command_id")
+
+        if not node_id:
+            return command_error("node_id is required", 400)
+        if not command_type:
+            return command_error("command_type is required", 400)
+
+        cmd = command_manager.create_command(
+            node_id=node_id,
+            command_type=command_type,
+            payload=payload,
+            priority=priority,
+            max_retries=max_retries,
+            timeout_seconds=timeout_seconds,
+            command_id=command_id
+        )
+
+        create_log(
+            severity="info",
+            source="COMMAND",
+            message=f"Command created: {cmd['command_id']} ({cmd['command_type']}) for node {cmd['node_id']}",
+            node_id=cmd["node_id"]
+        )
+
+        socketio.emit(
+            "command_update",
+            cmd
+        )
+
+        return jsonify({
+            "success": True,
+            "command": cmd
+        }), 201
+
+    except Exception as error:
+        return command_error(error, 400)
+
+
+@app.route("/api/commands", methods=["GET"])
+def api_list_commands():
+    try:
+        node_id = request.args.get("node_id", "").strip() or None
+        state = request.args.get("state", "").strip() or None
+        limit = int(request.args.get("limit", 100))
+        offset = int(request.args.get("offset", 0))
+
+        cmds = command_manager.list_commands(
+            node_id=node_id,
+            state=state,
+            limit=limit,
+            offset=offset
+        )
+
+        return jsonify({
+            "success": True,
+            "commands": cmds,
+            "count": len(cmds)
+        })
+
+    except Exception as error:
+        return command_error(error, 400)
+
+
+@app.route("/api/commands/<command_id>", methods=["GET"])
+def api_get_command(command_id):
+    try:
+        cmd = command_manager.get_command(command_id)
+        if cmd is None:
+            return command_error(f"Command not found: {command_id}", 404)
+
+        return jsonify({
+            "success": True,
+            "command": cmd
+        })
+
+    except Exception as error:
+        return command_error(error, 400)
+
+
+@app.route("/api/commands/node/<node_id>", methods=["GET"])
+def api_get_node_commands(node_id):
+    try:
+        state = request.args.get("state", "").strip() or None
+        limit = int(request.args.get("limit", 50))
+
+        cmds = command_manager.get_node_commands(
+            node_id=node_id,
+            limit=limit,
+            state=state
+        )
+
+        return jsonify({
+            "success": True,
+            "node_id": node_id,
+            "commands": cmds,
+            "count": len(cmds)
+        })
+
+    except Exception as error:
+        return command_error(error, 400)
+
+
+@app.route("/api/commands/<command_id>/state", methods=["POST"])
+def api_update_command_state(command_id):
+    try:
+        data = request.get_json(silent=True) or request.form.to_dict() or {}
+        new_state = data.get("state")
+        error_msg = data.get("error")
+        result = data.get("result")
+
+        if not new_state:
+            return command_error("state is required", 400)
+
+        cmd = command_manager.update_command_state(
+            command_id=command_id,
+            new_state=new_state,
+            error=error_msg,
+            result=result
+        )
+
+        severity = "error" if cmd["state"] == "FAILED" else ("warning" if cmd["state"] in ("TIMEOUT", "CANCELLED") else "info")
+        create_log(
+            severity=severity,
+            source="COMMAND",
+            message=f"Command {command_id} state changed to {cmd['state']}",
+            node_id=cmd.get("node_id")
+        )
+
+        socketio.emit(
+            "command_update",
+            cmd
+        )
+
+        return jsonify({
+            "success": True,
+            "command": cmd
+        })
+
+    except ValueError as error:
+        return command_error(error, 400)
+    except Exception as error:
+        return command_error(error, 500)
+
+
+@app.route("/api/commands/<command_id>/cancel", methods=["POST"])
+def api_cancel_command(command_id):
+    try:
+        data = request.get_json(silent=True) or request.form.to_dict() or {}
+        reason = data.get("reason", "User cancelled")
+
+        cmd = command_manager.cancel_command(
+            command_id=command_id,
+            reason=reason
+        )
+
+        create_log(
+            severity="warning",
+            source="COMMAND",
+            message=f"Command {command_id} cancelled: {reason}",
+            node_id=cmd.get("node_id")
+        )
+
+        socketio.emit(
+            "command_update",
+            cmd
+        )
+
+        return jsonify({
+            "success": True,
+            "command": cmd
+        })
+
+    except ValueError as error:
+        return command_error(error, 400)
+    except Exception as error:
+        return command_error(error, 500)
+
+
+@app.route("/api/commands/<command_id>/timeout", methods=["POST"])
+def api_timeout_command(command_id):
+    try:
+        cmd = command_manager.handle_command_timeout(command_id)
+
+        create_log(
+            severity="warning",
+            source="COMMAND",
+            message=f"Command {command_id} timed out",
+            node_id=cmd.get("node_id")
+        )
+
+        socketio.emit(
+            "command_update",
+            cmd
+        )
+
+        return jsonify({
+            "success": True,
+            "command": cmd
+        })
+
+    except ValueError as error:
+        return command_error(error, 400)
+    except Exception as error:
+        return command_error(error, 500)
 
 
 # ============================================================

@@ -395,30 +395,114 @@ def initialize_database():
 
 
     # ========================================================
-    # COMMAND HISTORY
+    # COMMAND HISTORY & MANAGEMENT (PHASE 1)
     # ========================================================
+
+    # Check for existing table schema migration
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='commands'")
+    if cursor.fetchone():
+        cursor.execute("PRAGMA table_info(commands)")
+        existing_cols = {row[1] for row in cursor.fetchall()}
+        if existing_cols and "command_type" not in existing_cols:
+            cursor.execute("SELECT COUNT(*) FROM commands")
+            if cursor.fetchone()[0] == 0:
+                cursor.execute("DROP TABLE commands")
+            else:
+                migration_cols = {
+                    "command_type": "TEXT DEFAULT 'UNKNOWN'",
+                    "payload": "TEXT",
+                    "state": "TEXT DEFAULT 'QUEUED'",
+                    "priority": "INTEGER DEFAULT 1",
+                    "retry_count": "INTEGER DEFAULT 0",
+                    "max_retries": "INTEGER DEFAULT 3",
+                    "timeout_seconds": "INTEGER DEFAULT 30",
+                    "sent_at": "TEXT",
+                    "timeout_at": "TEXT",
+                    "cancelled_at": "TEXT",
+                    "error": "TEXT",
+                    "result": "TEXT",
+                    "updated_at": "TEXT"
+                }
+                for col_name, col_def in migration_cols.items():
+                    if col_name not in existing_cols:
+                        cursor.execute(f"ALTER TABLE commands ADD COLUMN {col_name} {col_def}")
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS commands (
 
             id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-            command_id TEXT UNIQUE,
+            command_id TEXT UNIQUE NOT NULL,
 
-            node_id TEXT,
+            node_id TEXT NOT NULL,
 
-            command TEXT,
+            command_type TEXT NOT NULL,
 
-            parameters TEXT,
+            payload TEXT,
 
-            status TEXT,
+            state TEXT DEFAULT 'QUEUED' NOT NULL,
 
-            response TEXT,
+            priority INTEGER DEFAULT 1,
 
-            created_at TEXT,
+            retry_count INTEGER DEFAULT 0,
 
-            completed_at TEXT
+            max_retries INTEGER DEFAULT 3,
 
+            timeout_seconds INTEGER DEFAULT 30,
+
+            created_at TEXT NOT NULL,
+
+            sent_at TEXT,
+
+            timeout_at TEXT,
+
+            completed_at TEXT,
+
+            cancelled_at TEXT,
+
+            error TEXT,
+
+            result TEXT,
+
+            updated_at TEXT NOT NULL
+
+        )
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_commands_node_created
+
+        ON commands (
+            node_id,
+            created_at
+        )
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_commands_state
+
+        ON commands (
+            state
+        )
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_commands_command_id
+
+        ON commands (
+            command_id
+        )
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_commands_created_at
+
+        ON commands (
+            created_at
         )
     """)
 
