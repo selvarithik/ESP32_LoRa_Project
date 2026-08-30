@@ -395,7 +395,7 @@ def initialize_database():
 
 
     # ========================================================
-    # COMMAND HISTORY & MANAGEMENT (PHASE 1)
+    # COMMAND HISTORY & MANAGEMENT (PHASE 1 & 2)
     # ========================================================
 
     # Check for existing table schema migration
@@ -403,29 +403,30 @@ def initialize_database():
     if cursor.fetchone():
         cursor.execute("PRAGMA table_info(commands)")
         existing_cols = {row[1] for row in cursor.fetchall()}
-        if existing_cols and "command_type" not in existing_cols:
-            cursor.execute("SELECT COUNT(*) FROM commands")
-            if cursor.fetchone()[0] == 0:
-                cursor.execute("DROP TABLE commands")
-            else:
-                migration_cols = {
-                    "command_type": "TEXT DEFAULT 'UNKNOWN'",
-                    "payload": "TEXT",
-                    "state": "TEXT DEFAULT 'QUEUED'",
-                    "priority": "INTEGER DEFAULT 1",
-                    "retry_count": "INTEGER DEFAULT 0",
-                    "max_retries": "INTEGER DEFAULT 3",
-                    "timeout_seconds": "INTEGER DEFAULT 30",
-                    "sent_at": "TEXT",
-                    "timeout_at": "TEXT",
-                    "cancelled_at": "TEXT",
-                    "error": "TEXT",
-                    "result": "TEXT",
-                    "updated_at": "TEXT"
-                }
-                for col_name, col_def in migration_cols.items():
-                    if col_name not in existing_cols:
-                        cursor.execute(f"ALTER TABLE commands ADD COLUMN {col_name} {col_def}")
+        migration_cols = {
+            "command_type": "TEXT DEFAULT 'UNKNOWN'",
+            "payload": "TEXT",
+            "state": "TEXT DEFAULT 'QUEUED'",
+            "priority": "INTEGER DEFAULT 1",
+            "retry_count": "INTEGER DEFAULT 0",
+            "max_retries": "INTEGER DEFAULT 3",
+            "timeout_seconds": "INTEGER DEFAULT 30",
+            "sent_at": "TEXT",
+            "ack_at": "TEXT",
+            "executing_at": "TEXT",
+            "response_at": "TEXT",
+            "ack_status": "TEXT",
+            "ack_message": "TEXT",
+            "timeout_at": "TEXT",
+            "completed_at": "TEXT",
+            "cancelled_at": "TEXT",
+            "error": "TEXT",
+            "result": "TEXT",
+            "updated_at": "TEXT"
+        }
+        for col_name, col_def in migration_cols.items():
+            if col_name not in existing_cols:
+                cursor.execute(f"ALTER TABLE commands ADD COLUMN {col_name} {col_def}")
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS commands (
@@ -453,6 +454,16 @@ def initialize_database():
             created_at TEXT NOT NULL,
 
             sent_at TEXT,
+
+            ack_at TEXT,
+
+            executing_at TEXT,
+
+            response_at TEXT,
+
+            ack_status TEXT,
+
+            ack_message TEXT,
 
             timeout_at TEXT,
 
@@ -502,6 +513,44 @@ def initialize_database():
         idx_commands_created_at
 
         ON commands (
+            created_at
+        )
+    """)
+
+    # ========================================================
+    # COMMAND EVENTS AUDIT TRAIL (PHASE 2)
+    # ========================================================
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS command_events (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            event_id TEXT UNIQUE NOT NULL,
+
+            command_id TEXT NOT NULL,
+
+            node_id TEXT NOT NULL,
+
+            event_type TEXT NOT NULL,
+
+            state TEXT NOT NULL,
+
+            details TEXT,
+
+            error TEXT,
+
+            created_at TEXT NOT NULL
+
+        )
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_command_events_command
+
+        ON command_events (
+            command_id,
             created_at
         )
     """)

@@ -1,0 +1,509 @@
+{% extends "base.html" %}
+
+{% block title %}Command Center | SELVARITHIK'S LORA GATEWAY{% endblock %}
+
+{% block page_title %}Command Center{% endblock %}
+
+{% block page_subtitle %}
+Real-time node command dispatch, lifecycle tracking, ACK & response analytics
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/command_center.css') }}?v=1">
+{% endblock %}
+
+{% block content %}
+
+<!-- TOOLBAR -->
+<div class="page-toolbar cmd-page-toolbar">
+    <div class="toolbar-left">
+        <h2>Command Center</h2>
+        <span class="cmd-target-badge" id="top-target-badge">Target: None</span>
+    </div>
+
+    <div class="toolbar-right">
+        <div class="socket-status-pill" id="socket-status-pill" title="Live WebSocket Status">
+            <span class="socket-dot"></span>
+            <strong id="socket-status-text">Connecting...</strong>
+        </div>
+        <button class="btn btn-secondary" id="cmd-refresh-btn" title="Refresh data">
+            ↻ Refresh
+        </button>
+    </div>
+</div>
+
+
+<!-- COMMAND CENTER MASTER CONTAINER -->
+<div class="command-center-layout">
+
+    <!-- LEFT SIDEBAR: SECTIONS 1 & 2 -->
+    <aside class="cmd-sidebar-col">
+
+        <!-- SECTION 1: NODE & ITS SETTINGS -->
+        <section class="panel cmd-panel node-selection-panel">
+            <div class="panel-header cmd-panel-header">
+                <div>
+                    <h3>Nodes & Settings</h3>
+                    <small>Select target device</small>
+                </div>
+                <span class="node-count-badge" id="node-count-badge">0 Nodes</span>
+            </div>
+
+            <div class="node-search-box">
+                <input type="text" id="node-search-input" class="cmd-input" placeholder="Search node ID / name...">
+            </div>
+
+            <div class="node-list-scrollable" id="node-list-container">
+                <div class="cmd-empty-state" id="no-nodes-message">
+                    <p>Loading nodes...</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: DEVICE STATUS & INFO -->
+        <section class="panel cmd-panel device-status-panel">
+            <div class="panel-header cmd-panel-header">
+                <div>
+                    <h3>Device Status & Info</h3>
+                    <small>Selected hardware specs</small>
+                </div>
+                <span class="cmd-status-indicator" id="device-status-indicator">—</span>
+            </div>
+
+            <div class="device-status-content" id="device-status-content">
+                <div class="cmd-info-grid">
+                    <div class="info-item">
+                        <label>Node ID</label>
+                        <strong id="dev-node-id">—</strong>
+                    </div>
+                    <div class="info-item">
+                        <label>Connection</label>
+                        <strong id="dev-status">—</strong>
+                    </div>
+                    <div class="info-item">
+                        <label>Last Seen</label>
+                        <span id="dev-last-seen">—</span>
+                    </div>
+                    <div class="info-item">
+                        <label>MCU Model</label>
+                        <span id="dev-mcu">—</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Hardware Rev</label>
+                        <span id="dev-hw-rev">—</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Firmware</label>
+                        <span id="dev-fw">—</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Comm Type</label>
+                        <span id="dev-comm">—</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Last Command</label>
+                        <span id="dev-last-cmd-state" class="state-pill state-pill-sm">—</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT AREA: SECTIONS 3, 4, 5, 6, 7, 8 -->
+    <main class="cmd-main-col">
+
+        <!-- SECTION 3: SELECTED NODE INFO & STATUS -->
+        <section class="panel cmd-panel selected-node-panel">
+            <div class="panel-header cmd-panel-header">
+                <div>
+                    <h3>Selected Node Info & Status</h3>
+                    <small>Live hardware metrics & connection overview</small>
+                </div>
+            </div>
+            <div class="selected-node-banner">
+                <div class="banner-left">
+                    <div class="node-avatar-badge" id="banner-avatar">⬡</div>
+                    <div>
+                        <div class="banner-title-row">
+                            <h2 id="banner-node-name">No Node Selected</h2>
+                            <span class="node-id-tag" id="banner-node-id">NONE</span>
+                            <span class="connection-badge" id="banner-connection-badge">OFFLINE</span>
+                        </div>
+                        <p class="banner-subtitle" id="banner-node-details">Select a node from the left panel to begin dispatching commands.</p>
+                    </div>
+                </div>
+
+                <div class="banner-metrics">
+                    <div class="metric-card">
+                        <small>Active Command</small>
+                        <strong id="banner-active-cmd">None</strong>
+                    </div>
+                    <div class="metric-card">
+                        <small>Command State</small>
+                        <strong id="banner-cmd-state" class="state-pill state-pill-sm state-idle">IDLE</strong>
+                    </div>
+                    <div class="metric-card">
+                        <small>Last Response</small>
+                        <strong id="banner-last-resp">N/A</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- MIDDLE ROW: SERVER COMMAND & NODE RESPONSE + HISTORY -->
+        <div class="cmd-middle-grid">
+
+            <!-- LEFT MIDDLE: SECTIONS 4 & 5 (SERVER COMMAND & RESPONSE) -->
+            <div class="cmd-middle-left">
+
+                <!-- SECTION 4: SERVER COMMAND & INFO -->
+                <section class="panel cmd-panel command-detail-panel">
+                    <div class="panel-header cmd-panel-header">
+                        <div>
+                            <h3>Server Command & Info</h3>
+                            <small id="cmd-header-id">No active command</small>
+                        </div>
+                        <div class="cmd-header-actions">
+                            <span class="state-pill" id="active-cmd-state-pill">IDLE</span>
+                            <button class="btn-action btn-cancel" id="btn-cancel-cmd" title="Cancel command" disabled>
+                                ✕ Cancel
+                            </button>
+                            <button class="btn-action btn-retry" id="btn-retry-cmd" title="Retry command" disabled>
+                                ↻ Retry
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP PROGRESS TRACKER -->
+                    <div class="lifecycle-stepper" id="lifecycle-stepper">
+                        <div class="step-node" id="step-queued" data-step="QUEUED">
+                            <div class="step-circle">1</div>
+                            <span>Queued</span>
+                        </div>
+                        <div class="step-line" id="line-1"></div>
+                        <div class="step-node" id="step-sent" data-step="SENT">
+                            <div class="step-circle">2</div>
+                            <span>Sent</span>
+                        </div>
+                        <div class="step-line" id="line-2"></div>
+                        <div class="step-node" id="step-waiting-ack" data-step="WAITING_ACK">
+                            <div class="step-circle">3</div>
+                            <span>Wait ACK</span>
+                        </div>
+                        <div class="step-line" id="line-3"></div>
+                        <div class="step-node" id="step-ack-received" data-step="ACK_RECEIVED">
+                            <div class="step-circle">4</div>
+                            <span>ACK OK</span>
+                        </div>
+                        <div class="step-line" id="line-4"></div>
+                        <div class="step-node" id="step-executing" data-step="EXECUTING">
+                            <div class="step-circle">5</div>
+                            <span>Executing</span>
+                        </div>
+                        <div class="step-line" id="line-5"></div>
+                        <div class="step-node" id="step-completed" data-step="COMPLETED">
+                            <div class="step-circle">✓</div>
+                            <span>Completed</span>
+                        </div>
+                    </div>
+
+                    <!-- COMMAND METADATA GRID -->
+                    <div class="cmd-meta-grid">
+                        <div><label>Command Type:</label> <strong id="meta-cmd-type">—</strong></div>
+                        <div><label>Target Node:</label> <strong id="meta-cmd-target">—</strong></div>
+                        <div><label>Priority:</label> <span id="meta-cmd-priority">—</span></div>
+                        <div><label>Retries:</label> <span id="meta-cmd-retries">0 / 3</span></div>
+                        <div><label>Created At:</label> <span id="meta-cmd-created">—</span></div>
+                        <div><label>Timeout At:</label> <span id="meta-cmd-timeout">—</span></div>
+                    </div>
+                </section>
+
+
+                <!-- SECTION 5: NODE RESPONSE / INFO / STATUS / DATA -->
+                <section class="panel cmd-panel response-detail-panel">
+                    <div class="panel-header cmd-panel-header">
+                        <div>
+                            <h3>Node Response / Status / Data</h3>
+                            <small>ESP32 feedback & return payload</small>
+                        </div>
+                        <button class="icon-btn-sm" id="btn-copy-result" title="Copy result data">📋 Copy</button>
+                    </div>
+
+                    <div class="response-dual-cards">
+                        <!-- ACK STATUS CARD -->
+                        <div class="ack-status-card">
+                            <div class="card-mini-head">
+                                <span>ACK STATUS</span>
+                                <strong class="ack-badge" id="ack-badge-status">WAITING</strong>
+                            </div>
+                            <div class="card-mini-body">
+                                <p id="ack-message-text">Waiting for device ACK...</p>
+                                <small id="ack-timestamp-text">—</small>
+                            </div>
+                        </div>
+
+                        <!-- RESPONSE STATUS CARD -->
+                        <div class="resp-status-card">
+                            <div class="card-mini-head">
+                                <span>RESPONSE STATUS</span>
+                                <strong class="resp-badge" id="resp-badge-status">WAITING</strong>
+                            </div>
+                            <div class="card-mini-body">
+                                <p id="resp-summary-text">Waiting for command completion...</p>
+                                <small id="resp-timestamp-text">—</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ERROR BANNER (SHOWN ON FAILURE) -->
+                    <div class="cmd-error-banner" id="cmd-error-banner" style="display: none;">
+                        <strong>Error:</strong> <span id="cmd-error-message">—</span>
+                    </div>
+
+                    <!-- STRUCTURED RESULT VIEWER -->
+                    <div class="result-data-viewer">
+                        <div class="viewer-header">
+                            <span>Returned Data Payload</span>
+                            <small id="viewer-datatype">JSON</small>
+                        </div>
+                        <pre class="json-code-block" id="response-data-json">Waiting for node response...</pre>
+                    </div>
+                </section>
+
+            </div>
+
+
+            <!-- RIGHT MIDDLE: SECTION 6 (COMMAND / RESPONSE HISTORY) -->
+            <section class="panel cmd-panel history-panel">
+                <div class="panel-header cmd-panel-header">
+                    <div>
+                        <h3>Command History</h3>
+                        <small id="history-target-label">Selected Node</small>
+                    </div>
+                    <div class="history-actions">
+                        <select id="history-filter-select" class="cmd-select-sm">
+                            <option value="ALL">All States</option>
+                            <option value="ACTIVE">Active</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="FAILED">Failed</option>
+                            <option value="TIMEOUT">Timeout</option>
+                        </select>
+                        <button class="btn btn-secondary btn-sm" id="btn-view-timeline" title="View event audit trail">
+                            📜 Timeline
+                        </button>
+                    </div>
+                </div>
+
+                <div class="history-list-container" id="history-list-container">
+                    <div class="cmd-empty-state" id="no-history-message">
+                        <p>No command history for this node.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+
+        <!-- BOTTOM ROW: SECTIONS 7 & 8 (COMMAND CONFIGURATION & SEND) -->
+        <section class="panel cmd-panel configuration-panel">
+            <div class="panel-header cmd-panel-header">
+                <div>
+                    <h3>Command & Its Configuration</h3>
+                    <small>Choose command type and define parameters</small>
+                </div>
+            </div>
+
+            <div class="config-send-grid">
+
+                <!-- SECTION 7: CONFIGURATION FORM -->
+                <div class="config-form-col">
+                    <div class="config-row-main">
+                        <div class="form-group flex-2">
+                            <label for="cmd-type-select">Command Type</label>
+                            <select id="cmd-type-select" class="cmd-select">
+                                <option value="STATUS">STATUS — Query device telemetry & state</option>
+                                <option value="PING">PING — Test round-trip connectivity</option>
+                                <option value="WIFI_SCAN">WIFI_SCAN — Scan nearby Wi-Fi networks</option>
+                                <option value="WIFI_CONNECT">WIFI_CONNECT — Configure Wi-Fi station</option>
+                                <option value="RESTART">RESTART — Reboot node MCU</option>
+                                <option value="GET_CONFIG">GET_CONFIG — Fetch current configuration</option>
+                                <option value="SET_INTERVAL">SET_INTERVAL — Change telemetry interval</option>
+                                <option value="CUSTOM">CUSTOM — User-defined command & payload</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group flex-1">
+                            <label for="cmd-priority-select">Priority</label>
+                            <select id="cmd-priority-select" class="cmd-select">
+                                <option value="1">1 — Normal</option>
+                                <option value="2">2 — High</option>
+                                <option value="3">3 — Urgent</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group flex-1">
+                            <label for="cmd-timeout-input">Timeout (s)</label>
+                            <input type="number" id="cmd-timeout-input" class="cmd-input" value="30" min="1" max="3600">
+                        </div>
+
+                        <div class="form-group flex-1">
+                            <label for="cmd-retries-input">Max Retries</label>
+                            <input type="number" id="cmd-retries-input" class="cmd-input" value="3" min="0" max="10">
+                        </div>
+                    </div>
+
+                    <!-- DYNAMIC PARAMETER CONTAINERS -->
+                    <div class="dynamic-param-box" id="dynamic-param-container">
+                        <!-- STATUS -->
+                        <div class="param-pane active" id="pane-STATUS">
+                            <p class="param-hint">Queries live telemetry, signal metrics (RSSI/SNR), battery levels, and runtime diagnostics from the node.</p>
+                        </div>
+
+                        <!-- PING -->
+                        <div class="param-pane" id="pane-PING">
+                            <div class="param-form-row">
+                                <label for="param-ping-msg">Echo Payload</label>
+                                <input type="text" id="param-ping-msg" class="cmd-input" placeholder="Echo test message" value="Hello LoRa Node">
+                            </div>
+                        </div>
+
+                        <!-- WIFI_SCAN -->
+                        <div class="param-pane" id="pane-WIFI_SCAN">
+                            <div class="param-form-row">
+                                <div class="form-group flex-1">
+                                    <label for="param-scan-band">Band</label>
+                                    <select id="param-scan-band" class="cmd-select">
+                                        <option value="2.4GHz">2.4 GHz</option>
+                                        <option value="5GHz">5 GHz (if supported)</option>
+                                        <option value="ALL">All Bands</option>
+                                    </select>
+                                </div>
+                                <div class="form-group flex-1">
+                                    <label for="param-scan-limit">Max Networks</label>
+                                    <input type="number" id="param-scan-limit" class="cmd-input" value="20" min="1" max="50">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WIFI_CONNECT -->
+                        <div class="param-pane" id="pane-WIFI_CONNECT">
+                            <div class="param-form-row">
+                                <div class="form-group flex-2">
+                                    <label for="param-wifi-ssid">SSID <span class="required">*</span></label>
+                                    <input type="text" id="param-wifi-ssid" class="cmd-input" placeholder="Wi-Fi Network Name" required>
+                                </div>
+                                <div class="form-group flex-2">
+                                    <label for="param-wifi-pass">Password</label>
+                                    <input type="password" id="param-wifi-pass" class="cmd-input" placeholder="Network Password">
+                                </div>
+                                <div class="form-group flex-1">
+                                    <label for="param-wifi-save">Persist in Flash</label>
+                                    <select id="param-wifi-save" class="cmd-select">
+                                        <option value="true">Yes</option>
+                                        <option value="false">Session Only</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RESTART -->
+                        <div class="param-pane" id="pane-RESTART">
+                            <div class="param-form-row">
+                                <div class="form-group flex-1">
+                                    <label for="param-reboot-delay">Delay (seconds)</label>
+                                    <input type="number" id="param-reboot-delay" class="cmd-input" value="1" min="0" max="60">
+                                </div>
+                                <div class="form-group flex-2">
+                                    <label for="param-reboot-reason">Reason</label>
+                                    <input type="text" id="param-reboot-reason" class="cmd-input" placeholder="Maintenance reboot" value="Operator requested">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GET_CONFIG -->
+                        <div class="param-pane" id="pane-GET_CONFIG">
+                            <div class="param-form-row">
+                                <label for="param-config-section">Config Section / Key</label>
+                                <input type="text" id="param-config-section" class="cmd-input" placeholder="Leave empty for full config" value="all">
+                            </div>
+                        </div>
+
+                        <!-- SET_INTERVAL -->
+                        <div class="param-pane" id="pane-SET_INTERVAL">
+                            <div class="param-form-row">
+                                <label for="param-interval-ms">Telemetry Interval (ms) <span class="required">*</span></label>
+                                <input type="number" id="param-interval-ms" class="cmd-input" value="5000" min="500" max="3600000">
+                            </div>
+                        </div>
+
+                        <!-- CUSTOM -->
+                        <div class="param-pane" id="pane-CUSTOM">
+                            <div class="param-form-row mb-2">
+                                <label for="param-custom-name">Custom Command Name <span class="required">*</span></label>
+                                <input type="text" id="param-custom-name" class="cmd-input" placeholder="MY_CUSTOM_COMMAND">
+                            </div>
+                            <div class="param-form-row">
+                                <label for="param-custom-json">JSON Payload</label>
+                                <textarea id="param-custom-json" class="cmd-textarea" rows="3" placeholder='{"key": "value"}'></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- SECTION 8: SEND BUTTON -->
+                <div class="send-button-col">
+                    <button class="btn-dispatch-command" id="btn-send-command">
+                        <span class="btn-icon">⚡</span>
+                        <span class="btn-text">SEND COMMAND</span>
+                        <small class="btn-subtext" id="send-btn-subtext">Target: None</small>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- COMMAND EVENTS AUDIT TIMELINE MODAL -->
+<div class="cmd-modal-overlay" id="timeline-modal-overlay" style="display: none;">
+    <div class="cmd-modal-dialog">
+        <div class="cmd-modal-header">
+            <div>
+                <h3>Command Lifecycle Timeline</h3>
+                <small id="modal-cmd-id">CMD-XXXXXXXXXXXX</small>
+            </div>
+            <button class="modal-close-btn" id="btn-close-timeline-modal">✕</button>
+        </div>
+        <div class="cmd-modal-body">
+            <div class="timeline-container" id="timeline-events-list">
+                <div class="cmd-empty-state">
+                    <p>Loading timeline events...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Socket.IO Client Library -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    // Fallback if local Socket.IO is not served
+    if (typeof io === 'undefined') {
+        const cdnScript = document.createElement('script');
+        cdnScript.src = 'https://cdn.socket.io/4.7.5/socket.io.min.js';
+        document.head.appendChild(cdnScript);
+    }
+</script>
+<script src="{{ url_for('static', filename='js/command_center.js') }}?v=1"></script>
+{% endblock %}

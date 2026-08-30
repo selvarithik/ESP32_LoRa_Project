@@ -142,6 +142,11 @@ def firmware_page():
     return render_template("firmware.html")
 
 
+@app.route("/command-center")
+def command_center_page():
+    return render_template("command_center.html")
+
+
 # ============================================================
 # FIRMWARE API
 # ============================================================
@@ -864,7 +869,223 @@ def api_timeout_command(command_id):
 
         socketio.emit(
             "command_update",
-            cmd
+            {
+                "event": "TIMEOUT",
+                "command_id": command_id,
+                "node_id": cmd.get("node_id"),
+                "state": "TIMEOUT",
+                "command": cmd
+            }
+        )
+
+        return jsonify({
+            "success": True,
+            "command": cmd
+        })
+
+    except ValueError as error:
+        return command_error(error, 400)
+    except Exception as error:
+        return command_error(error, 500)
+
+
+@app.route("/api/commands/<command_id>/ack", methods=["POST"])
+def api_command_ack(command_id):
+    try:
+        data = request.get_json(silent=True) or request.form.to_dict() or {}
+        node_id = data.get("node_id")
+        status = data.get("status", "RECEIVED")
+        message = data.get("message")
+        timestamp = data.get("timestamp")
+
+        # Fallback if command_id in payload doesn't match URL
+        body_cmd_id = data.get("command_id")
+        if body_cmd_id and body_cmd_id != command_id:
+            return command_error(f"command_id mismatch: URL ({command_id}) vs payload ({body_cmd_id})", 400)
+
+        if not node_id:
+            return command_error("node_id is required in ACK payload", 400)
+
+        res = command_manager.process_command_ack(
+            command_id=command_id,
+            node_id=node_id,
+            status=status,
+            message=message,
+            timestamp=timestamp
+        )
+
+        cmd = res.get("command") or {}
+        severity = "info" if res.get("state") == "ACK_RECEIVED" else "warning"
+        create_log(
+            severity=severity,
+            source="COMMAND",
+            message=f"Command {command_id} ACK: {status} ({res.get('state')})",
+            node_id=node_id
+        )
+
+        socketio.emit(
+            "command_update",
+            {
+                "event": "ACK_RECEIVED",
+                "command_id": command_id,
+                "node_id": node_id,
+                "state": res.get("state"),
+                "duplicate": res.get("duplicate", False),
+                "command": cmd
+            }
+        )
+
+        return jsonify(res)
+
+    except ValueError as error:
+        err_str = str(error)
+        status_code = 404 if "not found" in err_str.lower() else 400
+        return command_error(error, status_code)
+    except Exception as error:
+        return command_error(error, 500)
+
+
+@app.route("/api/commands/<command_id>/execute", methods=["POST"])
+def api_command_execute(command_id):
+    try:
+        data = request.get_json(silent=True) or request.form.to_dict() or {}
+        node_id = data.get("node_id")
+
+        res = command_manager.mark_command_executing(
+            command_id=command_id,
+            node_id=node_id
+        )
+
+        cmd = res.get("command") or {}
+        create_log(
+            severity="info",
+            source="COMMAND",
+            message=f"Command {command_id} is now EXECUTING",
+            node_id=cmd.get("node_id")
+        )
+
+        socketio.emit(
+            "command_update",
+            {
+                "event": "EXECUTING",
+                "command_id": command_id,
+                "node_id": cmd.get("node_id"),
+                "state": "EXECUTING",
+                "duplicate": res.get("duplicate", False),
+                "command": cmd
+            }
+        )
+
+        return jsonify(res)
+
+    except ValueError as error:
+        err_str = str(error)
+        status_code = 404 if "not found" in err_str.lower() else 400
+        return command_error(error, status_code)
+    except Exception as error:
+        return command_error(error, 500)
+
+
+@app.route("/api/commands/<command_id>/response", methods=["POST"])
+def api_command_response(command_id):
+    try:
+        data = request.get_json(silent=True) or request.form.to_dict() or {}
+        node_id = data.get("node_id")
+        status = data.get("status", "SUCCESS")
+        res_data = data.get("data")
+        message = data.get("message")
+        error_msg = data.get("error")
+        timestamp = data.get("timestamp")
+
+        # Fallback if command_id in payload doesn't match URL
+        body_cmd_id = data.get("command_id")
+        if body_cmd_id and body_cmd_id != command_id:
+            return command_error(f"command_id mismatch: URL ({command_id}) vs payload ({body_cmd_id})", 400)
+
+        if not node_id:
+            return command_error("node_id is required in response payload", 400)
+
+        res = command_manager.process_command_response(
+            command_id=command_id,
+            node_id=node_id,
+            status=status,
+            data=res_data,
+            message=message,
+            error=error_msg,
+            timestamp=timestamp
+        )
+
+        cmd = res.get("command") or {}
+        severity = "info" if res.get("state") == "COMPLETED" else "error"
+        create_log(
+            severity=severity,
+            source="COMMAND",
+            message=f"Command {command_id} response processed: {res.get('state')}",
+            node_id=node_id
+        )
+
+        socketio.emit(
+            "command_update",
+            {
+                "event": "RESPONSE_RECEIVED",
+                "command_id": command_id,
+                "node_id": node_id,
+                "state": res.get("state"),
+                "duplicate": res.get("duplicate", False),
+                "command": cmd
+            }
+        )
+
+        return jsonify(res)
+
+    except ValueError as error:
+        err_str = str(error)
+        status_code = 404 if "not found" in err_str.lower() else 400
+        return command_error(error, status_code)
+    except Exception as error:
+        return command_error(error, 500)
+
+
+@app.route("/api/commands/<command_id>/events", methods=["GET"])
+def api_command_events(command_id):
+    try:
+        cmd = command_manager.get_command(command_id)
+        if cmd is None:
+            return command_error(f"Command not found: {command_id}", 404)
+
+        events = command_manager.get_command_events(command_id)
+        return jsonify({
+            "success": True,
+            "command_id": command_id,
+            "events": events,
+            "count": len(events)
+        })
+
+    except Exception as error:
+        return command_error(error, 400)
+
+
+@app.route("/api/commands/<command_id>/retry", methods=["POST"])
+def api_command_retry(command_id):
+    try:
+        cmd = command_manager.prepare_command_retry(command_id)
+
+        create_log(
+            severity="info",
+            source="COMMAND",
+            message=f"Command {command_id} prepared for retry (attempt {cmd['retry_count']}/{cmd['max_retries']})",
+            node_id=cmd.get("node_id")
+        )
+
+        socketio.emit(
+            "command_update",
+            {
+                "event": "COMMAND_RETRY",
+                "command_id": command_id,
+                "node_id": cmd.get("node_id"),
+                "state": "QUEUED",
+                "command": cmd
+            }
         )
 
         return jsonify({
