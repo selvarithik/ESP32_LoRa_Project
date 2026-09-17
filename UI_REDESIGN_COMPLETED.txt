@@ -1,0 +1,24 @@
+SELVARITHIK'S LORA GATEWAY - FRONTEND UI REDESIGN COMPLETED
+
+This archive contains the existing project with the frontend redesign applied.
+
+Changes are confined to dashboard/templates and dashboard/static (CSS/JS).
+Backend, protocol, simulator and firmware source were not modified by this redesign pass.
+
+Highlights:
+- Compact Connexio-style horizontal top navigation
+- Professional ESP32 + LoRa branding
+- Centralized light/dark themes plus advanced color customization
+- Custom header/navigation/page/card/text/icon colors
+- Dashboard telemetry chart using real API data only (no fake fallback data)
+- Dashboard widget visibility preferences
+- Custom sensor widgets with live API data, value/gauge/bar/status displays,
+  edit/delete support and localStorage persistence
+- Consistent industrial styling across Node, Sensor, Command, Communication,
+  Firmware/OTA, Logs, System Overview and System pages
+- Private Chat internal WhatsApp-style layout preserved; only shell/theme
+  compatibility styling was adjusted.
+
+IMPORTANT:
+The .git directory is intentionally NOT included. Extract/merge these files
+into your existing ESP32_LoRa_Project folder so your existing Git metadata remains.

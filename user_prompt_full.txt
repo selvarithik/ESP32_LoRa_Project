@@ -1,0 +1,483 @@
+<USER_REQUEST>
+You are working on my EXISTING project:
+
+selvarithik/ESP32_LoRa_Project
+
+GOAL:
+Upgrade the complete web UI/UX into a professional industrial IoT / ESP32 LoRa Gateway interface while preserving all existing functionality, API calls, routes, data flow, JavaScript behavior, and backend operation.
+
+IMPORTANT — FIRST:
+Before changing anything, analyze the FULL project and understand:
+- frontend structure
+- Flask/Jinja template inheritance
+- existing routes
+- API endpoints used by the frontend
+- DOM IDs/classes used by JavaScript
+- page-specific CSS/JS dependencies
+- backend functionality that the frontend depends on
+
+Then implement the UI enhancement.
+
+Do NOT rebuild the application.
+Do NOT replace the backend architecture.
+Do NOT invent unrelated features.
+Do NOT add unnecessary libraries.
+
+==================================================
+DESIGN DIRECTION
+==================================================
+
+Professional industrial IoT / LoRa gateway UI.
+
+Style:
+- clean
+- modern
+- compact
+- professional
+- spacious
+- technically focused
+- consistent
+- responsive
+
+Navigation:
+- REMOVE the large 250px left sidebar
+- use a compact professional HORIZONTAL TOP NAVIGATION inspired by Connexio-style UI
+- logo/branding on the left
+- navigation links in the top bar
+- search/status/theme/account on the right
+- active page clearly highlighted
+- simple consistent professional icons
+
+Brand:
+SELVARITHIK'S LORA GATEWAY
+
+Use a professional ESP32 + LoRa visual logo/mark.
+
+Do NOT use:
+- robot images
+- large decorative illustrations
+- oversized gateway images
+- generic SaaS dashboard graphics
+
+Main brand color:
+ORANGE
+
+Use orange consistently for:
+- active navigation
+- primary buttons
+- selected states
+- important highlights
+
+Keep the rest of the design neutral and professional.
+
+==================================================
+GLOBAL THEME / COLOR CUSTOMIZATION
+==================================================
+
+Create a centralized design-token/theme system.
+
+Support:
+- Light theme
+- Dark theme
+- Orange brand accent
+- customizable primary/accent color
+- customizable header color
+- consistent card/button/input/status colors
+- compact/comfortable density
+
+Do not scatter colors throughout the code.
+
+Use CSS variables/design tokens so the whole application can change theme consistently.
+
+THEME CUSTOMIZATION MUST APPLY TO ALL PAGES:
+- Dashboard
+- Nodes
+- Sensors
+- Command Center
+- Communication
+- Firmware / OTA
+- Logs
+- System Overview
+- System
+- Private Chat
+
+However, Private Chat must keep its existing WhatsApp-Web-style structure and behavior.
+
+==================================================
+DASHBOARD
+==================================================
+
+Dashboard = OVERVIEW ONLY.
+
+Do not put every available data point on Dashboard.
+
+Keep:
+- Total Nodes
+- Online/Offline
+- packet/activity summary
+- active alarms
+- main sensor graph
+- compact sensor summary
+- node overview
+- recent sensor data/activity
+
+Make the main sensor graph a major visual element.
+
+Keep existing live API functionality and polling.
+
+Detailed information remains on individual pages.
+
+==================================================
+NODE MANAGEMENT
+==================================================
+
+Improve the existing Node Management page visually.
+
+Keep all current functionality:
+- search
+- refresh
+- add node
+- edit/configure node
+- node identity
+- hardware information
+- communication type
+- enable/disable
+- node status
+- last seen
+- drawer interactions
+
+Do not remove fields or API behavior.
+
+Make tables, counters, filters and drawer UI more professional and consistent.
+
+==================================================
+SENSOR MANAGEMENT
+==================================================
+
+Improve the existing Sensor Management page.
+
+Keep:
+- node selection
+- parameter search
+- filters
+- sensor table
+- value/unit/quality/status
+- last update
+- sensor detail drawer
+- historical graph functionality
+
+Use a cleaner sensor-focused layout.
+
+Do not move all sensor details into Dashboard.
+
+==================================================
+COMMAND CENTER
+==================================================
+
+This page contains important command functionality.
+
+Preserve ALL existing functionality:
+- node selection
+- device information
+- command configuration
+- command types
+- priority
+- timeout
+- retries
+- lifecycle states
+- ACK state
+- response state
+- returned data
+- command history
+- retry/cancel
+- timeline
+- dynamic command parameters
+- send/dispatch behavior
+
+Only redesign the UI/UX:
+- better hierarchy
+- cleaner sections
+- better spacing
+- better controls
+- professional status indicators
+- responsive layout
+
+Do not simplify away technical information.
+
+==================================================
+COMMUNICATION / NETWORK
+==================================================
+
+Preserve all existing functionality and information:
+- Master Node
+- Gateway
+- uplink/downlink thresholds
+- packet statistics
+- packets created/sent/received/failed
+- ACK
+- retries
+- route failures
+- duplicates
+- LoRa mesh nodes
+- neighbors
+- mesh link details
+- RSSI
+- SNR
+- success rate
+- packet loss
+- latency
+- route test
+- mesh settings
+
+Redesign into a professional network/LoRa interface.
+
+Keep the technical meaning of every field.
+
+==================================================
+FIRMWARE / OTA
+==================================================
+
+Preserve all firmware functionality:
+- firmware upload
+- release creation
+- validation
+- version/build
+- hardware family/model/revision
+- release channel
+- bootloader/security information
+- mandatory update
+- release notes
+- firmware releases
+- device firmware status
+- update jobs
+- update history
+- OTA configuration
+- rollback
+- HTTPS requirement
+- automatic/manual update settings
+
+Improve visual organization so this page does not look congested.
+
+Use clear sections/cards/tables and professional OTA status indicators.
+
+Do not change backend OTA behavior.
+
+==================================================
+LOGS
+==================================================
+
+Keep current log functionality and data.
+
+Improve:
+- filtering/readability
+- table styling
+- timestamps
+- status indicators
+- spacing
+- empty/loading/error states
+
+==================================================
+SYSTEM OVERVIEW
+==================================================
+
+Keep the current system health information.
+
+Improve the visual hierarchy and make it clearly different from Dashboard.
+
+Dashboard = operational overview.
+System Overview = infrastructure/system health.
+
+==================================================
+SYSTEM
+==================================================
+
+Keep existing system/configuration functionality.
+
+Only improve:
+- layout
+- grouping
+- labels
+- inputs
+- buttons
+- spacing
+- theme support
+
+==================================================
+PRIVATE CHAT — PROTECTED
+==================================================
+
+VERY IMPORTANT.
+
+Private Chat must remain a WhatsApp-Web-style interface.
+
+DO NOT redesign the internal chat experience.
+
+Preserve:
+- chat list
+- search
+- unread filter
+- chat selection
+- conversation header
+- messages
+- message composer
+- attachments
+- emoji
+- microphone
+- send
+- responsive chat behavior
+
+Do not change chat functionality.
+
+The new global top navigation may surround the page, but the internal chat UI must remain WhatsApp-Web style.
+
+Do not rename or remove its existing DOM IDs/classes unless absolutely necessary.
+
+Keep chat.js functionality intact.
+
+Make sure the new global theme variables can visually affect the chat safely without destroying its layout.
+
+==================================================
+RESPONSIVE DESIGN
+==================================================
+
+Desktop:
+- compact professional horizontal navigation
+
+Tablet:
+- reduced navigation spacing
+- collapsible/overflow navigation where required
+
+Mobile:
+- hamburger/menu for top navigation
+- clean responsive content
+- tables become horizontally scrollable or responsive
+- drawers remain usable
+- Private Chat keeps its current mobile behavior
+
+==================================================
+CUSTOMIZABLE DASHBOARD
+==================================================
+
+Build the frontend architecture so Dashboard can support:
+
+- Add Widget
+- Remove Widget
+- Move Widget
+- Resize Widget
+- Configure Widget
+- Hide/Show Widget
+
+Possible widget types:
+- Sensor Value
+- Sensor Graph
+- Node Status
+- Node Count
+- RSSI
+- SNR
+- Battery
+- RX/TX
+- Alerts
+- Gateway Status
+- Actuator Status
+- Recent Data
+
+Do not add unnecessary backend work for this unless required by the existing architecture.
+
+==================================================
+CODE / FUNCTIONALITY RULES
+==================================================
+
+Preserve existing:
+- Flask/Jinja templates
+- routes
+- API endpoints
+- DOM IDs used by JavaScript
+- JavaScript functions
+- backend communication
+- LoRa functionality
+- MQTT functionality
+- OTA functionality
+- command functionality
+
+Use the existing architecture wherever possible.
+
+Do NOT convert the project to React/Next.js.
+
+Do NOT add heavy UI frameworks or chart libraries unless truly necessary.
+
+Prefer the current vanilla JS/CSS architecture.
+
+==================================================
+FILES
+==================================================
+
+Primary shared files:
+- dashboard/templates/base.html
+- dashboard/static/css/style.css
+- dashboard/static/js/app.js
+
+Dashboard:
+- dashboard/templates/index.html
+- dashboard/static/js/dashboard.js
+
+Other pages:
+- nodes.html / nodes.js
+- sensors.html / sensors.js
+- command_center.html / command_center.js
+- communication.html / communication.js
+- firmware.html / firmware.js
+- logs.html / logs.js
+- system-overview.html / system-overview.js
+- system.html / system.js
+
+Private Chat:
+- chat.html
+- chat.css
+- chat.js
+
+==================================================
+IMPLEMENTATION RULE
+==================================================
+
+FIRST:
+Analyze the complete project and dependency relationships.
+
+SECOND:
+Create the redesign using the existing architecture.
+
+THIRD:
+Test every page after the global layout change.
+
+FOURTH:
+Specifically test Private Chat because it has its own layout geometry.
+
+FINAL RESULT:
+A professional SELVARITHIK'S ESP32 + LoRa Gateway web application with:
+- compact top navigation
+- professional branding
+- clean dashboard
+- detailed dedicated pages
+- customizable colors
+- light/dark theme
+- future-ready dashboard widgets
+- consistent professional icons
+- responsive layout
+- NO unnecessary features
+
+Most important:
+ENHANCE THE EXISTING APPLICATION.
+DO NOT REBUILD OR BREAK IT.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-06T14:02:48+05:30.
+
+The user's current state is as follows:
+Active Document: d:\esp32 selva\ESP32_LoRa_ESP32_Firmware\platformio.ini (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 15
+Other open documents:
+- d:\esp32 selva\ESP32_LoRa_Project\dashboard\static\js\firmware.js (LANGUAGE_UNSPECIFIED)
+- d:\esp32 selva\ESP32_LoRa_ESP32_Firmware\test\README (LANGUAGE_UNSPECIFIED)
+- d:\esp32 selva\ESP32_LoRa_Project\dashboard\static\js\command_center.js (LANGUAGE_UNSPECIFIED)
+- d:\esp32 selva\ESP32_LoRa_Project\dashboard\templates\base.html (LANGUAGE_UNSPECIFIED)
+- d:\esp32 selva\ESP32_LoRa_Project\dashboard\templates\command_center.html (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>
