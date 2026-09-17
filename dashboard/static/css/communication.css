@@ -613,3 +613,32 @@ select:focus {
     }
 
 }
+
+/* Final theme-token bridge for Communication Center */
+.communication-page, .communication-header, .overview-grid, .info-card,
+.mesh-card, .route-result, .settings-form, .route-form {
+    color: var(--text-main);
+}
+.communication-page .info-card, .communication-page .mesh-card,
+.communication-page .route-result, .communication-page .section,
+.communication-page .panel {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+}
+.communication-page .section-title, .communication-page .card-label,
+.communication-page .mesh-role, .communication-page .mesh-detail {
+    color: var(--text-muted);
+}
+.communication-page .card-value, .communication-page .mesh-node-id,
+.communication-page h2, .communication-page h3 {
+    color: var(--text-main);
+}
+.communication-page input, .communication-page select {
+    background: var(--bg-input) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+.communication-page .status-badge {
+    background: var(--status-online-bg);
+    color: var(--status-online);
+}

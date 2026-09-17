@@ -296,3 +296,25 @@
 .modal-body {
     padding:16px;
 }
+
+
+/* Final theme-token bridge for Firmware / OTA */
+.firmware-upload-panel, .firmware-config-grid, .firmware-validation-card,
+.firmware-actions, .modal-card {
+    color: var(--text-main);
+}
+.firmware-upload-panel, .modal-card {
+    background: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+}
+.firmware-form input, .firmware-form select, .firmware-form textarea,
+.firmware-config-grid input, .firmware-config-grid select {
+    background: var(--bg-input) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+.firmware-hash, .firmware-detail-grid, .firmware-detail-notes {
+    color: var(--text-muted);
+}
+.firmware-progress-track { background: var(--bg-surface-subtle) !important; }
+.firmware-progress-bar { background: var(--brand-primary) !important; }

@@ -2,167 +2,294 @@
 
 {% block title %}Dashboard | SELVARITHIK'S LORA GATEWAY{% endblock %}
 
-{% block page_title %}Dashboard{% endblock %}
+{% block page_title %}Operational Overview{% endblock %}
 
 {% block page_subtitle %}
-Real-time gateway monitoring and system status
+Real-time gateway monitoring, telemetry analytics and connected node health
 {% endblock %}
 
 {% block content %}
 
+<!-- TOOLBAR & CUSTOMIZATION CONTROLS -->
 <div class="page-toolbar">
     <div>
         <h2>Gateway Dashboard</h2>
-        <p>Live overview of gateway, nodes and sensor activity.</p>
+        <p>Live operational telemetry and network activity overview.</p>
     </div>
 
-    <button class="btn btn-secondary" id="dashboard-refresh">
-        ↻ Refresh
-    </button>
+    <div class="toolbar-actions">
+        <button class="btn btn-secondary" id="dashboard-customize-btn" title="Customize Dashboard Layout">
+            ⚙ Customize Widgets
+        </button>
+        <button class="btn btn-primary" id="dashboard-refresh" title="Refresh Live Data">
+            ↻ Refresh
+        </button>
+    </div>
 </div>
 
 
-<div class="stats-grid">
-
-    <div class="stat-card">
-        <div class="stat-icon navy">⌘</div>
+<!-- WIDGET CUSTOMIZATION DRAWER / MODAL -->
+<div class="drawer-overlay" id="widget-drawer-overlay"></div>
+<aside class="drawer" id="widget-drawer">
+    <div class="drawer-head">
         <div>
-            <span>Total Nodes</span>
-            <strong id="total-nodes">—</strong>
-            <small>Configured nodes</small>
+            <h3>Customize Dashboard</h3>
+            <small>Show, hide or reorder dashboard widgets</small>
+        </div>
+        <button type="button" class="icon-btn" id="close-widget-drawer">✕</button>
+    </div>
+    <div class="drawer-body">
+        <div class="widget-toggle-list" id="widgetToggleList">
+            <label class="switch-row widget-toggle-item">
+                <span>System Metrics Summary</span>
+                <input type="checkbox" data-target-widget="widget-stats" checked>
+            </label>
+            <label class="switch-row widget-toggle-item">
+                <span>Live Telemetry Sensor Graph</span>
+                <input type="checkbox" data-target-widget="widget-chart" checked>
+            </label>
+            <label class="switch-row widget-toggle-item">
+                <span>Connected Node Status</span>
+                <input type="checkbox" data-target-widget="widget-nodes" checked>
+            </label>
+            <label class="switch-row widget-toggle-item">
+                <span>Selected Node Sensor Cards</span>
+                <input type="checkbox" data-target-widget="widget-sensors" checked>
+            </label>
+            <label class="switch-row widget-toggle-item">
+                <span>Custom Sensor Widgets</span>
+                <input type="checkbox" data-target-widget="widget-custom-sensors" checked>
+            </label>
+            <label class="switch-row widget-toggle-item">
+                <span>Recent Gateway Activity Stream</span>
+                <input type="checkbox" data-target-widget="widget-activity" checked>
+            </label>
+        </div>
+        <div class="widget-drawer-sensor-actions">
+            <button type="button" class="btn btn-primary" id="add-sensor-widget-btn">+ Add Sensor Widget</button>
+        </div>
+    </div>
+    <div class="drawer-foot">
+        <button type="button" class="btn btn-secondary" id="reset-widgets-btn">Reset Defaults</button>
+        <button type="button" class="btn btn-primary" id="save-widgets-btn">Save Layout</button>
+    </div>
+</aside>
+
+
+<!-- DASHBOARD MODULAR CONTAINER -->
+<div class="dashboard-widgets-container" id="dashboardWidgetsContainer">
+
+    <!-- WIDGET 1: STATS COUNTERS -->
+    <div class="dashboard-widget" data-widget-id="widget-stats">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon navy">⬡</div>
+                <div>
+                    <span>Total Nodes</span>
+                    <strong id="total-nodes">—</strong>
+                    <small>Configured nodes</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green">✓</div>
+                <div>
+                    <span>Online Nodes</span>
+                    <strong id="online-nodes">—</strong>
+                    <small>Currently connected</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">◉</div>
+                <div>
+                    <span>Sensor Parameters</span>
+                    <strong id="sensor-count">—</strong>
+                    <small>Active parameters</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon red">!</div>
+                <div>
+                    <span>Active Alarms</span>
+                    <strong id="alarm-count">—</strong>
+                    <small>Current alarms</small>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-icon green">✓</div>
-        <div>
-            <span>Online Nodes</span>
-            <strong id="online-nodes">—</strong>
-            <small>Currently connected</small>
-        </div>
+
+    <!-- WIDGET 2: MAIN SENSOR TELEMETRY GRAPH -->
+    <div class="dashboard-widget" data-widget-id="widget-chart">
+        <section class="panel chart-panel">
+            <div class="panel-header">
+                <div class="chart-header-left">
+                    <h3>Live Telemetry Analytics</h3>
+                    <p id="chart-subtitle">Real-time sensor parameter trend & history</p>
+                </div>
+                <div class="chart-header-controls">
+                    <select id="chart-parameter-select" class="input select-input select-sm" title="Select Parameter">
+                        <option value="">Auto (Selected Parameter)</option>
+                    </select>
+                    <div class="time-range-group" id="chartTimeRangeGroup">
+                        <button type="button" class="time-range-btn active" data-range="1h">1H</button>
+                        <button type="button" class="time-range-btn" data-range="6h">6H</button>
+                        <button type="button" class="time-range-btn" data-range="24h">24H</button>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-canvas-wrapper">
+                <canvas id="dashboard-telemetry-chart" height="220"></canvas>
+                <div class="chart-empty-placeholder" id="chart-empty-state" style="display: none;">
+                    <p>Select a node or parameter to display live telemetry history.</p>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-icon orange">◉</div>
-        <div>
-            <span>Sensor Parameters</span>
-            <strong id="sensor-count">—</strong>
-            <small>Active parameters</small>
+
+    <!-- WIDGETS ROW: NODES & SENSORS -->
+    <div class="dashboard-grid">
+
+        <!-- WIDGET 3: NODE TABLE -->
+        <div class="dashboard-widget flex-1" data-widget-id="widget-nodes">
+            <section class="panel h-full">
+                <div class="panel-header">
+                    <div>
+                        <h3>Node Status</h3>
+                        <p>Select a node to inspect its live sensors.</p>
+                    </div>
+                    <span class="live-badge"><i></i> LIVE</span>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Node</th>
+                                <th>Communication</th>
+                                <th>Status</th>
+                                <th>Last Seen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-nodes">
+                            <tr>
+                                <td colspan="4" class="loading">Loading nodes...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </div>
+
+        <!-- WIDGET 4: SENSOR SUMMARY -->
+        <div class="dashboard-widget flex-1" data-widget-id="widget-sensors">
+            <section class="panel h-full">
+                <div class="panel-header">
+                    <div>
+                        <h3>Live Sensor Summary</h3>
+                        <p id="selected-node">Select a node.</p>
+                    </div>
+                    <span class="muted-label">Auto refresh (2s)</span>
+                </div>
+
+                <div class="sensor-grid" id="dashboard-sensors">
+                    <div class="empty-state">Select a node to view sensor data.</div>
+                </div>
+            </section>
+        </div>
+
     </div>
 
-    <div class="stat-card">
-        <div class="stat-icon red">!</div>
-        <div>
-            <span>Active Alarms</span>
-            <strong id="alarm-count">—</strong>
-            <small>Current alarms</small>
-        </div>
+
+    <!-- CUSTOM SENSOR WIDGETS -->
+    <div class="dashboard-widget" data-widget-id="widget-custom-sensors">
+        <section class="panel custom-sensor-panel">
+            <div class="panel-header">
+                <div>
+                    <h3>Custom Sensor Widgets</h3>
+                    <p>Personalized live sensor views for selected nodes.</p>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="add-sensor-widget-inline">+ Add</button>
+            </div>
+            <div class="custom-sensor-widgets-grid" id="custom-sensor-widgets">
+                <div class="empty-state custom-widget-empty">
+                    No custom sensor widgets yet. Use “+ Add” to create one.
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- WIDGET 5: RECENT ACTIVITY -->
+    <div class="dashboard-widget" data-widget-id="widget-activity">
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h3>Gateway Activity Stream</h3>
+                    <p>Recent events, command transitions and diagnostic logs.</p>
+                </div>
+                <a href="/logs" class="orange-link">View Logs →</a>
+            </div>
+
+            <div id="activity-list" class="activity-list">
+                <div class="loading">Loading activity...</div>
+            </div>
+        </section>
     </div>
 
 </div>
 
 
-<div class="dashboard-grid">
-
-    <section class="panel">
-
-        <div class="panel-header">
-            <div>
-                <h3>Node Status</h3>
-                <p>Select a node to see its sensor summary.</p>
-            </div>
-
-            <span class="live-badge">
-                <i></i> LIVE
-            </span>
+<!-- CUSTOM SENSOR WIDGET EDITOR -->
+<div class="sensor-widget-overlay" id="sensor-widget-overlay"></div>
+<aside class="sensor-widget-editor" id="sensor-widget-editor" aria-hidden="true">
+    <div class="drawer-head">
+        <div>
+            <h3>Create Sensor Widget</h3>
+            <small>Bind a live sensor to a compact dashboard widget.</small>
         </div>
-
-        <div class="table-wrap">
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Node</th>
-                        <th>Communication</th>
-                        <th>Status</th>
-                        <th>Last Seen</th>
-                    </tr>
-                </thead>
-
-                <tbody id="dashboard-nodes">
-                    <tr>
-                        <td colspan="4" class="loading">
-                            Loading nodes...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-
-    </section>
-
-
-    <section class="panel">
-
-        <div class="panel-header">
-
-            <div>
-                <h3>Live Sensor Summary</h3>
-                <p id="selected-node">
-                    Select a node.
-                </p>
-            </div>
-
-            <span class="muted-label">
-                Auto refresh
-            </span>
-
-        </div>
-
-        <div class="sensor-grid"
-             id="dashboard-sensors">
-
-            <div class="empty-state">
-                Select a node to view sensor data.
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <section class="panel full-width">
-
-        <div class="panel-header">
-
-            <div>
-                <h3>Gateway Activity</h3>
-                <p>Recent gateway events.</p>
-            </div>
-
-            <a href="/logs" class="orange-link">
-                View Logs →
-            </a>
-
-        </div>
-
-        <div id="activity-list"
-             class="activity-list">
-
-            <div class="loading">
-                Loading activity...
-            </div>
-
-        </div>
-
-    </section>
-
-</div>
+        <button type="button" class="icon-btn" id="close-sensor-widget-editor" aria-label="Close editor">✕</button>
+    </div>
+    <div class="drawer-body">
+        <label>Widget Name
+            <input id="sensor-widget-name" class="input" placeholder="Tank Temperature">
+        </label>
+        <label>Node
+            <select id="sensor-widget-node" class="input">
+                <option value="">Select Node</option>
+            </select>
+        </label>
+        <label>Sensor / Parameter
+            <select id="sensor-widget-parameter" class="input">
+                <option value="">Select Parameter</option>
+            </select>
+        </label>
+        <label>Visualization
+            <select id="sensor-widget-type" class="input">
+                <option value="value">Numeric Value</option>
+                <option value="gauge">Gauge</option>
+                <option value="bar">Horizontal Bar</option>
+                <option value="status">Status</option>
+            </select>
+        </label>
+        <label>Widget Color
+            <input id="sensor-widget-color" type="color" value="#E87522">
+        </label>
+        <label class="switch-row">
+            <span>Show Node / Last Update</span>
+            <input id="sensor-widget-meta" type="checkbox" checked>
+        </label>
+    </div>
+    <div class="drawer-foot">
+        <button type="button" class="btn btn-secondary" id="cancel-sensor-widget">Cancel</button>
+        <button type="button" class="btn btn-primary" id="save-sensor-widget">Create Widget</button>
+    </div>
+</aside>
 
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=13"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=15"></script>
 {% endblock %}

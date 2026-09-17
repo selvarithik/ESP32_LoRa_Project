@@ -1,272 +1,240 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-accent="orange">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{% block title %}SELVARITHIK'S LORA GATEWAY{% endblock %}</title>
 
-     <link rel="stylesheet" 
-      href="{{ url_for('static', filename='css/style.css') }}?v=10">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=15">
+    {% block extra_css %}{% endblock %}
 
-      {% block extra_css %}{% endblock %} 
-
-      <script src="{{ url_for('static', filename='js/app.js') }}?v=13"></script>
-
-     {% block extra_js %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/app.js') }}?v=15"></script>
+    {% block extra_js %}{% endblock %}
 </head>
 
-<body>
+<body class="gateway-body" data-page="{{ request.path }}">
 
 <div class="app-shell">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <!-- ============================================================
+         HORIZONTAL TOP NAVIGATION (CONNEXIO STYLE)
+         ============================================================ -->
+    <header class="top-nav-bar">
+        <div class="top-nav-container">
 
-        <div class="sidebar-brand">
+            <!-- LEFT: BRANDING -->
+            <a href="/" class="top-brand" title="Selvarithik's LoRa Gateway">
+                <div class="brand-mark">
+                    <svg viewBox="0 0 32 32" fill="none">
+                        <!-- ESP32 Chip Body -->
+                        <rect x="7" y="7" width="18" height="18" rx="3" class="svg-chip-bg" stroke="currentColor" stroke-width="1.8"/>
+                        <!-- Antenna Wave Nodes -->
+                        <path d="M16 11V16" stroke="var(--brand-primary)" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="16" cy="18" r="1.5" fill="var(--brand-primary)"/>
+                        <!-- LoRa Radio Waves -->
+                        <path d="M12 9C9.5 11.5 9.5 15.5 12 18" stroke="var(--brand-primary)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                        <path d="M20 9C22.5 11.5 22.5 15.5 20 18" stroke="var(--brand-primary)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                        <!-- Chip Pins -->
+                        <path d="M4 11H7M4 16H7M4 21H7M25 11H28M25 16H28M25 21H28M11 4V7M16 4V7M21 4V7M11 25V28M16 25V28M21 25V28" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+                    </svg>
+                </div>
+                <div class="brand-text-block">
+                    <span class="brand-title">SELVARITHIK'S</span>
+                    <span class="brand-subtitle">LORA GATEWAY</span>
+                </div>
+            </a>
 
-            <div class="brand-logo">
-                <svg viewBox="0 0 48 48">
-                    <rect x="18" y="20" width="12" height="20" rx="2"/>
-                    <circle cx="24" cy="25" r="2.5" class="logo-fill"/>
-
-                    <path d="M13 20C9 16 9 12 13 8"/>
-                    <path d="M35 20C39 16 39 12 35 8"/>
-
-                    <path d="M8 25C2 19 2 11 8 5" class="logo-fade"/>
-                    <path d="M40 25C46 19 46 11 40 5" class="logo-fade"/>
-
-                    <circle cx="8" cy="30" r="2" class="logo-fill"/>
-                    <circle cx="40" cy="30" r="2" class="logo-fill"/>
-                </svg>
-            </div>
-
-            <div>
-                <div class="brand-name">SELVARITHIK'S</div>
-                <div class="brand-subtitle">LORA GATEWAY</div>
-            </div>
-
-        </div>
-
-
-        <nav class="sidebar-nav">
-
-            <div class="nav-group">
-                <div class="nav-title">MAIN</div>
-
-                <a href="/"
-                   class="nav-item"
-                   data-path="/">
-                    <span class="nav-svg">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="3" width="7" height="7"/>
-                            <rect x="14" y="3" width="7" height="7"/>
-                            <rect x="3" y="14" width="7" height="7"/>
-                            <rect x="14" y="14" width="7" height="7"/>
-                        </svg>
+            <!-- CENTER: DESKTOP NAVIGATION LINKS -->
+            <nav class="top-nav-links" id="desktopNavLinks">
+                <a href="/" class="nav-item" data-path="/">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                     </span>
-                    Dashboard
+                    <span>Dashboard</span>
                 </a>
 
-                <a href="/system-overview"
-                   class="nav-item"
-                   data-path="/system-overview">
-                    <span class="nav-svg">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="4" width="18" height="14" rx="2"/>
-                            <path d="M7 21h10"/>
-                            <path d="M7 14l3-3 3 2 4-5"/>
-                        </svg>
+                <a href="/nodes" class="nav-item" data-path="/nodes">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M4 9h3M4 15h3M17 9h3M17 15h3M9 4v3M15 4v3M9 17v3M15 17v3"/></svg>
                     </span>
-                    System Overview
-                </a>
-            </div>
-
-
-            <div class="nav-group">
-                <div class="nav-title">DEVICES</div>
-
-                <a href="/nodes"
-                   class="nav-item"
-                   data-path="/nodes">
-                    <span class="nav-svg">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="7" y="7" width="10" height="10" rx="2"/>
-                            <path d="M4 9h3M4 15h3M17 9h3M17 15h3"/>
-                            <path d="M9 4v3M15 4v3M9 17v3M15 17v3"/>
-                        </svg>
-                    </span>
-                    Node Management
+                    <span>Nodes</span>
                 </a>
 
-                <a href="/sensors"
-                   class="nav-item"
-                   data-path="/sensors">
-                    <span class="nav-svg">
-                        <svg viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="7"/>
-                            <path d="M12 8v4l3 2"/>
-                            <path d="M5 5L3 3M19 5l2-2"/>
-                        </svg>
+                <a href="/sensors" class="nav-item" data-path="/sensors">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 8v4l3 2"/><path d="M5 5L3 3M19 5l2-2"/></svg>
                     </span>
-                    Sensor Management
+                    <span>Sensors</span>
                 </a>
 
-                <a href="/command-center"
-                   class="nav-item"
-                   data-path="/command-center">
-                    <span class="nav-svg">
-                        <svg viewBox="0 0 24 24">
-                            <polyline points="4 17 10 11 4 5"/>
-                            <line x1="12" y1="19" x2="20" y2="19"/>
-                        </svg>
+                <a href="/command-center" class="nav-item" data-path="/command-center">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                     </span>
-                    Command Center
+                    <span>Commands</span>
                 </a>
 
-                <a href="/firmware"
-                   class="nav-item"
-                   data-path="/firmware">
-                    <span class="nav-svg">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="5" y="5" width="14" height="14" rx="2"/>
-                            <path d="M9 2v3M15 2v3M9 19v3M15 19v-3"/>
-                            <path d="M2 9h3M2 15h3M19 9h3M19 15h3"/>
-                            <path d="M9 12h6M12 9v6"/>
-                        </svg>
+                <a href="/communication" class="nav-item" data-path="/communication">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M5 9a8 8 0 0 0 0 6M19 9a8 8 0 0 1 0 6M2 6a12 12 0 0 0 0 12M22 6a12 12 0 0 1 0 12"/></svg>
                     </span>
-                    Firmware / OTA
+                    <span>Network</span>
                 </a>
-            </div>
 
-
-            <div class="nav-group">
-                <div class="nav-title">CONFIGURATION</div>
-
-                <a href="/communication"
-                   class="nav-item"
-                   data-path="/communication">
-                    <span class="nav-svg">
-                        <svg viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="2.5"/>
-                            <path d="M5 9a8 8 0 0 0 0 6"/>
-                            <path d="M19 9a8 8 0 0 1 0 6"/>
-                            <path d="M2 6a12 12 0 0 0 0 12"/>
-                            <path d="M22 6a12 12 0 0 1 0 12"/>
-                        </svg>
+                <a href="/firmware" class="nav-item" data-path="/firmware">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v-3M2 9h3M2 15h3M19 9h3M19 15h3M9 12h6M12 9v6"/></svg>
                     </span>
-                    Communication
+                    <span>Firmware</span>
                 </a>
-<a href="/chat"
-   class="nav-item">
 
-    <span class="nav-icon">
-        <svg viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2">
-
-            <path d="M20 11.5a7.5 7.5 0 0 1-8 7.5
-                     7.8 7.8 0 0 1-3.5-.8
-                     L4 20l1.5-3.5
-                     A7.5 7.5 0 1 1 20 11.5z"/>
-
-            <path d="M8 11h.01"/>
-            <path d="M12 11h.01"/>
-            <path d="M16 11h.01"/>
-
-        </svg>
-    </span>
-
-    <span>
-        Private Chat
-    </span>
-
-</a>
-                <a href="/system"
-                   class="nav-item"
-                   data-path="/system">
-                    <span class="nav-svg">
-                        <svg viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="4"/>
-                            <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
-                            <path d="M4.9 4.9l2.1 2.1M17 17l2.1 2.1"/>
-                            <path d="M19.1 4.9L17 7M7 17l-2.1 2.1"/>
-                        </svg>
+                <a href="/logs" class="nav-item" data-path="/logs">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
                     </span>
-                    System
+                    <span>Logs</span>
                 </a>
-            </div>
 
+                <a href="/system-overview" class="nav-item" data-path="/system-overview">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 21h10M7 14l3-3 3 2 4-5"/></svg>
+                    </span>
+                    <span>Health</span>
+                </a>
 
-            <div class="nav-group">
-                <div class="nav-title">DIAGNOSTICS</div>
+                <a href="/system" class="nav-item" data-path="/system">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+                    </span>
+                    <span>System</span>
+                </a>
 
+                <a href="/chat" class="nav-item nav-chat-item" data-path="/chat">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 7.8 7.8 0 0 1-3.5-.8L4 20l1.5-3.5A7.5 7.5 0 1 1 20 11.5z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg>
+                    </span>
+                    <span>Chat</span>
+                </a>
+            </nav>
+
+            <!-- RIGHT: TOOLS, CLOCK, THEME & SYSTEM STATUS -->
+            <div class="top-nav-tools">
+
+                <!-- GLOBAL PAGE SEARCH -->
+                <div class="global-search" role="search">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="m16.5 16.5 4 4"></path>
+                    </svg>
+                    <input id="global-nav-search"
+                           type="search"
+                           placeholder="Search pages..."
+                           autocomplete="off"
+                           aria-label="Search pages">
+                </div>
+
+                <!-- ALERTS / LOGS -->
                 <a href="/logs"
-                   class="nav-item"
-                   data-path="/logs">
-                    <span class="nav-svg">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="5" y="3" width="14" height="18" rx="2"/>
-                            <path d="M8 8h8M8 12h8M8 16h5"/>
-                        </svg>
-                    </span>
-                    Logs
+                   class="nav-tool-btn nav-alert-btn"
+                   id="global-alert-btn"
+                   title="View alarms and logs"
+                   aria-label="View alarms and logs">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                        <path d="M10 21h4"></path>
+                    </svg>
+                    <span class="nav-alert-dot" aria-hidden="true"></span>
                 </a>
-            </div>
 
-        </nav>
-
-
-        <div class="sidebar-footer">
-
-            <div class="gateway-state">
-                <span></span>
-                Gateway Control Center
-            </div>
-
-            <small>
-                SELVARITHIK • INDUSTRIAL IoT
-            </small>
-
-        </div>
-
-    </aside>
-
-
-    <!-- MAIN -->
-    <main class="main-area">
-
-        <header class="top-header">
-
-            <div>
-                <h1 id="page-title">
-                    {% block page_title %}{% endblock %}
-                </h1>
-
-                <p id="page-subtitle">
-                    {% block page_subtitle %}{% endblock %}
-                </p>
-            </div>
-
-
-            <div class="header-tools">
-
-                <div class="clock">
+                <!-- LIVE CLOCK -->
+                <div class="clock" title="Gateway Time (IST)">
                     <div id="date">—</div>
                     <strong id="time">—</strong>
                 </div>
 
-                <div class="system-pill">
+                <!-- SYSTEM ONLINE PILL -->
+                <div class="system-pill" title="Gateway status">
                     <span></span>
-                    SYSTEM ONLINE
+                    <strong class="pill-text">ONLINE</strong>
                 </div>
+
+                <!-- THEME SWITCHER (LIGHT / DARK) -->
+                <button type="button" class="nav-tool-btn" id="theme-toggle-btn" title="Toggle Light / Dark theme" aria-label="Toggle theme">
+                    <svg class="theme-icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="theme-icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+
+                <!-- ACCENT COLOR CUSTOMIZER DROPDOWN -->
+                <div class="nav-dropdown-wrapper">
+                    <button type="button" class="nav-tool-btn" id="accent-picker-btn" title="Customize Accent Color" aria-label="Customize accent">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 0 0 0 14h1a2 2 0 0 1 2 2v1a3 3 0 0 0 6 0 10 10 0 0 0-9-17z"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="12" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="10.5" r="1.5" fill="currentColor"/></svg>
+                    </button>
+                    <div class="accent-dropdown-menu" id="accent-dropdown-menu">
+                        <div class="accent-dropdown-title">Theme Accent</div>
+                        <div class="accent-palette-grid">
+                            <button type="button" class="accent-swatch swatch-orange active" data-accent-choice="orange" title="Industrial Orange"></button>
+                            <button type="button" class="accent-swatch swatch-emerald" data-accent-choice="emerald" title="Emerald Green"></button>
+                            <button type="button" class="accent-swatch swatch-cyan" data-accent-choice="cyan" title="Cyber Cyan"></button>
+                            <button type="button" class="accent-swatch swatch-indigo" data-accent-choice="indigo" title="Deep Indigo"></button>
+                            <button type="button" class="accent-swatch swatch-amber" data-accent-choice="amber" title="Amber Gold"></button>
+                        </div>
+                        <button type="button" class="appearance-open-btn" id="appearance-editor-btn">
+                            Advanced appearance
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MOBILE HAMBURGER MENU BUTTON -->
+                <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" title="Open navigation" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
             </div>
 
+        </div>
+
+        <!-- MOBILE SLIDE-DOWN NAVIGATION DRAWER -->
+        <div class="mobile-nav-drawer" id="mobileNavDrawer">
+            <div class="mobile-nav-grid">
+                <a href="/" class="mobile-nav-link" data-path="/"><span>Dashboard</span></a>
+                <a href="/nodes" class="mobile-nav-link" data-path="/nodes"><span>Nodes</span></a>
+                <a href="/sensors" class="mobile-nav-link" data-path="/sensors"><span>Sensors</span></a>
+                <a href="/command-center" class="mobile-nav-link" data-path="/command-center"><span>Command Center</span></a>
+                <a href="/communication" class="mobile-nav-link" data-path="/communication"><span>Communication</span></a>
+                <a href="/firmware" class="mobile-nav-link" data-path="/firmware"><span>Firmware / OTA</span></a>
+                <a href="/logs" class="mobile-nav-link" data-path="/logs"><span>Logs</span></a>
+                <a href="/system-overview" class="mobile-nav-link" data-path="/system-overview"><span>System Health</span></a>
+                <a href="/system" class="mobile-nav-link" data-path="/system"><span>System Config</span></a>
+                <a href="/chat" class="mobile-nav-link" data-path="/chat"><span>Private Chat</span></a>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- ============================================================
+         MAIN CONTENT AREA
+         ============================================================ -->
+    <main class="main-area">
+
+        <!-- SUB HEADER / PAGE TITLE BAR -->
+        <header class="top-header">
+            <div class="page-title-wrap">
+                <h1 id="page-title">
+                    {% block page_title %}{% endblock %}
+                </h1>
+                <p id="page-subtitle">
+                    {% block page_subtitle %}{% endblock %}
+                </p>
+            </div>
+            <div class="header-tools" id="headerExtraTools">
+                <!-- Page-specific header tools or breadcrumbs can mount here -->
+            </div>
         </header>
 
-
+        <!-- PAGE CONTENT CONTAINER -->
         <section class="page-content">
             {% block content %}{% endblock %}
         </section>
@@ -276,12 +244,62 @@
 </div>
 
 
-<!-- TOAST -->
+<!-- TOAST CONTAINER -->
 <div id="toast-container"></div>
 
-
-<!-- MODAL -->
+<!-- MODAL ROOT -->
 <div id="modal-root"></div>
+
+
+<!-- ============================================================
+     ADVANCED APPEARANCE EDITOR
+     ============================================================ -->
+<div class="appearance-overlay" id="appearance-overlay" aria-hidden="true"></div>
+<aside class="appearance-drawer" id="appearance-drawer" aria-hidden="true">
+    <div class="appearance-drawer-head">
+        <div>
+            <div class="appearance-kicker">UI CUSTOMIZATION</div>
+            <h2>Appearance</h2>
+            <p>Customize the gateway workspace without editing code.</p>
+        </div>
+        <button type="button" class="icon-btn" id="appearance-close-btn" aria-label="Close appearance settings">✕</button>
+    </div>
+
+    <div class="appearance-drawer-body">
+        <section class="appearance-section">
+            <div class="appearance-section-title">Theme</div>
+            <div class="appearance-theme-grid">
+                <button type="button" class="theme-preset-btn" data-theme-preset="light">Industrial Light</button>
+                <button type="button" class="theme-preset-btn" data-theme-preset="dark">Industrial Dark</button>
+                <button type="button" class="theme-preset-btn" data-theme-preset="midnight">Midnight</button>
+                <button type="button" class="theme-preset-btn" data-theme-preset="clean">Clean Light</button>
+                <button type="button" class="theme-preset-btn" data-theme-preset="contrast">High Contrast</button>
+            </div>
+        </section>
+
+        <section class="appearance-section">
+            <div class="appearance-section-title">Custom colors</div>
+            <div class="appearance-color-grid">
+                <label>Primary Accent<input type="color" id="color-primary" value="#E87522"></label>
+                <label>Page Background<input type="color" id="color-page-bg" value="#F8FAFC"></label>
+                <label>Base Surface<input type="color" id="color-surface" value="#FFFFFF"></label>
+                <label>Header Background<input type="color" id="color-header-bg" value="#FFFFFF"></label>
+                <label>Header Text<input type="color" id="color-header-text" value="#0F172A"></label>
+                <label>Header Subtext<input type="color" id="color-header-muted" value="#64748B"></label>
+                <label>Navigation Background<input type="color" id="color-nav-bg" value="#0F172A"></label>
+                <label>Navigation Text<input type="color" id="color-nav-text" value="#E2E8F0"></label>
+                <label>Primary Text<input type="color" id="color-text-main" value="#0F172A"></label>
+                <label>Secondary Text<input type="color" id="color-text-muted" value="#64748B"></label>
+                <label>Border<input type="color" id="color-border" value="#E2E8F0"></label>
+                <label>Icon Color<input type="color" id="color-icon" value="#64748B"></label>
+            </div>
+            <div class="appearance-actions">
+                <button type="button" class="btn btn-secondary" id="appearance-reset-btn">Reset Custom Colors</button>
+                <button type="button" class="btn btn-primary" id="appearance-save-btn">Apply Colors</button>
+            </div>
+        </section>
+    </div>
+</aside>
 
 </body>
 </html>

@@ -999,3 +999,40 @@
     }
 }
 
+
+
+/* Final theme-token bridge for redesigned Command Center */
+.cmd-panel, .node-selection-panel, .device-status-panel, .history-panel,
+.command-detail-panel, .response-detail-panel, .configuration-panel,
+.metric-card, .node-item-card, .cmd-modal-dialog {
+    background: var(--bg-surface) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+.cmd-panel-header, .node-search-box, .cmd-info-grid, .cmd-meta-grid {
+    border-color: var(--border-subtle) !important;
+}
+.cmd-input, .cmd-select, .cmd-select-sm, .cmd-textarea {
+    background: var(--bg-input) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+.cmd-input:focus, .cmd-select:focus, .cmd-textarea:focus {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 3px var(--brand-primary-glow) !important;
+}
+.cmd-target-badge, .node-count-badge {
+    background: var(--brand-primary-light) !important;
+    color: var(--brand-primary) !important;
+    border-color: var(--brand-primary-border) !important;
+}
+.node-item-card:hover, .node-item-card.selected {
+    border-color: var(--brand-primary) !important;
+    background: var(--brand-primary-light) !important;
+}
+.lifecycle-stepper .step-node.active .step-circle,
+.step-node.completed .step-circle {
+    background: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+}
+.step-line.active { background: var(--brand-primary) !important; }
