@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (nodeId === selectedNode && currentSensorsList.length) {
                 sensors = currentSensorsList;
             } else {
-                const data = await gateway.get(`/api/parameters/${nodeId}`);
+                const data = await gateway.get(`/api/nodes/${encodeURIComponent(nodeId)}/parameters`);
                 sensors = Array.isArray(data) ? data : (data.parameters || []);
             }
 
@@ -577,7 +577,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const data = await gateway.get(`/api/parameters/${nodeId}`);
+            const data = await gateway.get(`/api/nodes/${encodeURIComponent(nodeId)}/parameters`);
             const sensors = Array.isArray(data) ? data : (data.parameters || []);
             currentSensorsList = sensors;
 
@@ -676,8 +676,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             // Fetch live telemetry records from server
-            const res = await gateway.get(`/api/telemetry/${selectedNode}?limit=50`);
-            const records = Array.isArray(res) ? res : (res.telemetry || []);
+            const res = await gateway.get(`/api/nodes/${encodeURIComponent(selectedNode)}/telemetry/${encodeURIComponent((currentSensorsList.find(x => (x.parameter_name || x.name) === selectedParam) || currentSensorsList[0] || {}).parameter_id || "")}?limit=50`);
+            const records = Array.isArray(res) ? res : (res.data || res.telemetry || []);
 
             // Extract points for selected parameter
             const points = [];
