@@ -294,9 +294,11 @@ document.addEventListener("DOMContentLoaded", function () {
             ["Hardware", node.hardware_revision],
             ["Firmware", node.firmware_version],
             ["Communication", node.communication_type],
+            ["Communication Config", node.communication_config ? JSON.stringify(node.communication_config) : null],
             ["Enabled", node.enabled === false ? "NO" : "YES"],
             ["Status", String(node.status || "—").toUpperCase()],
             ["Last Seen", formatTime(node.last_seen)],
+            ["Created", formatTime(node.created_at)],
             ["Updated", formatTime(node.updated_at)]
         ];
 
@@ -475,9 +477,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         '<div class="dashboard-node-config-item"><span>Communication</span><strong>' + esc(node.communication_type || "—") + '</strong></div>' +
                         '<div class="dashboard-node-config-item"><span>Last Seen</span><strong>' + esc(formatTime(node.last_seen)) + '</strong></div>' +
                     '</div>' +
-                    (state.showConfig
-                        ? '<div class="dashboard-node-inspector"><div class="dashboard-node-inspector-head">Complete Node Configuration</div><div class="dashboard-node-inspector-grid">' + nodeConfigFields(node) + '</div></div>'
-                        : "") +
                     '<button class="dashboard-node-toggle" type="button" data-toggle-node="' + esc(node.node_id) + '">Collapse</button>' +
                 '</header>' +
                 '<div class="dashboard-node-body">' +
