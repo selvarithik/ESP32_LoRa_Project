@@ -475,6 +475,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         '<div class="dashboard-node-config-item"><span>Communication</span><strong>' + esc(node.communication_type || "—") + '</strong></div>' +
                         '<div class="dashboard-node-config-item"><span>Last Seen</span><strong>' + esc(formatTime(node.last_seen)) + '</strong></div>' +
                     '</div>' +
+                    (state.showConfig
+                        ? '<div class="dashboard-node-inspector"><div class="dashboard-node-inspector-head">Complete Node Configuration</div><div class="dashboard-node-inspector-grid">' + nodeConfigFields(node) + '</div></div>'
+                        : "") +
                     '<button class="dashboard-node-toggle" type="button" data-toggle-node="' + esc(node.node_id) + '">Collapse</button>' +
                 '</header>' +
                 '<div class="dashboard-node-body">' +
