@@ -343,6 +343,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 '<div><span>Updated</span><strong>' + esc(formatTime(p.timestamp)) + '</strong></div>' +
                 '<div><span>Range</span><strong>' + esc(range) + '</strong></div>' +
                 '<div><span>Alarm</span><strong>' + esc(alarms) + '</strong></div>' +
+                '<div><span>Precision</span><strong>' + esc(p.decimal_places === null || p.decimal_places === undefined ? "—" : p.decimal_places + " dp") + '</strong></div>' +
+                '<div><span>Graph</span><strong>' + esc(p.graph_enabled ? "ENABLED" : "OFF") + '</strong></div>' +
+                '<div><span>Display</span><strong>' + esc(p.display_enabled === false ? "OFF" : "ON") + '</strong></div>' +
+                '<div><span>Description</span><strong title="' + esc(p.description || "—") + '">' + esc(p.description || "—") + '</strong></div>' +
             '</div>' +
         '</article>';
     }
@@ -659,7 +663,8 @@ document.addEventListener("DOMContentLoaded", function () {
         box.innerHTML = state.customWidgets.map(function (widget) {
             var found = allParameters().find(function (item) {
                 return item.node.node_id === widget.nodeId &&
-                    String(item.parameter.parameter_id) === String(widget.parameter);
+                    (String(item.parameter.parameter_id) === String(widget.parameter) ||
+                     String(item.parameter.parameter_name) === String(widget.parameter));
             });
             var p = found && found.parameter;
             return '<article class="dashboard-custom-card">' +
