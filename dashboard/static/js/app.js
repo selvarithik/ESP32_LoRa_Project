@@ -763,10 +763,31 @@ gateway.initTheme = function () {
             : "orange"
     );
 
-    /* Remove any stale inline appearance state from earlier UI versions. */
-    Object.keys(root.style)
-        .filter(name => /color|header|nav/i.test(name))
-        .forEach(name => root.style.removeProperty(name));
+    /* Remove known inline color overrides left by older UI versions. */
+    [
+        "--brand-primary",
+        "--brand-primary-hover",
+        "--brand-primary-light",
+        "--brand-primary-border",
+        "--brand-primary-glow",
+        "--nav-active-bg",
+        "--bg-app",
+        "--bg-surface",
+        "--bg-surface-elevated",
+        "--bg-surface-subtle",
+        "--bg-input",
+        "--text-main",
+        "--text-muted",
+        "--text-subtle",
+        "--border-color",
+        "--border-subtle",
+        "--header-bg",
+        "--header-text",
+        "--header-muted",
+        "--nav-bg",
+        "--nav-text",
+        "--nav-muted"
+    ].forEach(name => root.style.removeProperty(name));
 
     document
         .querySelectorAll(".accent-swatch")
