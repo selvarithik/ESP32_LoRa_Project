@@ -718,7 +718,9 @@ gateway.bindRefresh = function (
 
 
 /* ============================================================
-   THEME, ACCENT & APPEARANCE MANAGEMENT
+   THEME & ACCENT MANAGEMENT
+   Fixed light/dark themes + 12 curated accent presets.
+   No RGB/HEX/custom appearance editor.
    ============================================================ */
 
 const THEME_PRESETS = {
@@ -732,290 +734,192 @@ const ACCENTS = [
     "red", "amber", "teal", "slate"
 ];
 
-const CUSTOM_COLOR_VARS = {
-    "color-primary": "--brand-primary",
-    "color-page-bg": "--bg-app",
-    "color-surface": "--bg-surface",
-    "color-header-bg": "--header-bg",
-    "color-header-text": "--header-text",
-    "color-header-muted": "--header-muted",
-    "color-nav-bg": "--nav-bg",
-    "color-nav-text": "--nav-text",
-    "color-text-main": "--text-main",
-    "color-text-muted": "--text-muted",
-    "color-border": "--border-color",
-    "color-icon": "--global-icon"
-};
-
-function isHexColor(value) {
-    return /^#[0-9A-Fa-f]{6}$/.test(String(value || "").trim());
-}
-
-function hexToRgb(hex) {
-    if (!isHexColor(hex)) return null;
-    const n = parseInt(hex.slice(1), 16);
-    return {
-        r: (n >> 16) & 255,
-        g: (n >> 8) & 255,
-        b: n & 255
-    };
-}
-
-function mixHex(hexA, hexB, amount) {
-    const a = hexToRgb(hexA);
-    const b = hexToRgb(hexB);
-    if (!a || !b) return hexA;
-    const t = Math.max(0, Math.min(1, amount));
-    const c = {
-        r: Math.round(a.r + (b.r - a.r) * t),
-        g: Math.round(a.g + (b.g - a.g) * t),
-        b: Math.round(a.b + (b.b - a.b) * t)
-    };
-    return "#" + [c.r, c.g, c.b].map(v => v.toString(16).padStart(2, "0")).join("");
-}
-
-function hexToRgbaString(hex, alpha) {
-    const rgb = hexToRgb(hex);
-    if (!rgb) return `rgba(0,0,0,${alpha})`;
-    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
-}
-
-gateway.applyPrimaryColor = function (hex) {
-    if (!isHexColor(hex)) return;
-    const root = document.documentElement;
-    root.style.setProperty("--brand-primary", hex);
-    root.style.setProperty("--brand-primary-hover", mixHex(hex, "#000000", 0.14));
-    root.style.setProperty("--brand-primary-light", mixHex(hex, "#FFFFFF", 0.90));
-    root.style.setProperty("--brand-primary-border", mixHex(hex, "#FFFFFF", 0.58));
-    root.style.setProperty("--brand-primary-glow", hexToRgbaString(hex, 0.25));
-    root.style.setProperty("--nav-active-bg", hexToRgbaString(hex, 0.18));
-};
-
-gateway.applyCustomColors = function (colors) {
-    if (!colors || typeof colors !== "object") return;
-    const root = document.documentElement;
-
-    Object.entries(CUSTOM_COLOR_VARS).forEach(([inputId, cssVar]) => {
-        const value = colors[inputId];
-        if (inputId === "color-primary") {
-            if (isHexColor(value)) gateway.applyPrimaryColor(value);
-            return;
-        }
-        if (isHexColor(value)) {
-            root.style.setProperty(cssVar, value);
-        }
-    });
-};
-
-gateway.clearCustomColors = function () {
-    const root = document.documentElement;
-    Object.values(CUSTOM_COLOR_VARS).forEach(cssVar => root.style.removeProperty(cssVar));
-    [
-        "--brand-primary-hover",
-        "--brand-primary-light",
-        "--brand-primary-border",
-        "--brand-primary-glow",
-        "--nav-active-bg"
-    ].forEach(cssVar => root.style.removeProperty(cssVar));
-    localStorage.removeItem("gateway_custom_colors");
-    gateway.syncAppearanceInputs();
-};
-
-function cssColorToHex(value) {
-    const text = String(value || "").trim();
-    if (isHexColor(text)) return text.toUpperCase();
-
-    const match = text.match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/i);
-    if (!match) return "";
-    const rgb = [Number(match[1]), Number(match[2]), Number(match[3])];
-    if (rgb.some(v => !Number.isFinite(v) || v < 0 || v > 255)) return "";
-    return "#" + rgb.map(v => v.toString(16).padStart(2, "0")).join("").toUpperCase();
-}
-
-gateway.syncAppearanceInputs = function () {
-    const rootStyles = getComputedStyle(document.documentElement);
-    Object.entries(CUSTOM_COLOR_VARS).forEach(([inputId, cssVar]) => {
-        const input = document.getElementById(inputId);
-        if (!input) return;
-        const value = cssColorToHex(rootStyles.getPropertyValue(cssVar));
-        if (value) input.value = value;
-    });
-};
-
 gateway.initAppearanceEditor = function () {
-    const openBtn = document.getElementById("appearance-editor-btn");
-    const closeBtn = document.getElementById("appearance-close-btn");
-    const saveBtn = document.getElementById("appearance-save-btn");
-    const resetBtn = document.getElementById("appearance-reset-btn");
-    const overlay = document.getElementById("appearance-overlay");
-    const drawer = document.getElementById("appearance-drawer");
-
-    if (!drawer || !overlay) return;
-
-    const open = () => {
-        gateway.syncAppearanceInputs();
-        drawer.classList.add("open");
-        overlay.classList.add("open");
-        drawer.setAttribute("aria-hidden", "false");
-        overlay.setAttribute("aria-hidden", "false");
-    };
-
-    const close = () => {
-        drawer.classList.remove("open");
-        overlay.classList.remove("open");
-        drawer.setAttribute("aria-hidden", "true");
-        overlay.setAttribute("aria-hidden", "true");
-    };
-
-    openBtn?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        document.getElementById("accent-dropdown-menu")?.classList.remove("show");
-        open();
-    });
-
-    closeBtn?.addEventListener("click", close);
-    overlay.addEventListener("click", close);
-
-    saveBtn?.addEventListener("click", () => {
-        const colors = {};
-        Object.keys(CUSTOM_COLOR_VARS).forEach(inputId => {
-            const input = document.getElementById(inputId);
-            if (input && isHexColor(input.value)) colors[inputId] = input.value;
-        });
-
-        gateway.applyCustomColors(colors);
-        localStorage.setItem("gateway_custom_colors", JSON.stringify(colors));
-        gateway.syncAppearanceInputs();
-        close();
-
-        window.dispatchEvent(new CustomEvent("gateway:themechange"));
-        gateway.toast?.("Appearance updated", "success");
-    });
-
-    resetBtn?.addEventListener("click", () => {
-        gateway.clearCustomColors();
-        window.dispatchEvent(new CustomEvent("gateway:themechange"));
-        gateway.toast?.("Custom colors reset", "info");
-    });
-
-    document.querySelectorAll("[data-theme-preset]").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const preset = btn.getAttribute("data-theme-preset");
-            if (!THEME_PRESETS[preset]) return;
-
-            document.documentElement.setAttribute("data-theme", preset);
-            localStorage.setItem("gateway_theme", preset);
-
-            document.querySelectorAll(".theme-preset-btn").forEach(b => {
-                b.classList.toggle("active", b.getAttribute("data-theme-preset") === preset);
-            });
-
-            window.dispatchEvent(new CustomEvent("gateway:themechange"));
-        });
-    });
+    /* Legacy hook retained so older pages cannot open a removed color editor. */
 };
 
 gateway.initTheme = function () {
-    const savedTheme = localStorage.getItem("gateway_theme") || "light";
-    const savedAccent = localStorage.getItem("gateway_accent") || "orange";
 
     const root = document.documentElement;
-    const normalizedTheme = savedTheme === "dark" ? "dark" : "light";
-    root.setAttribute("data-theme", normalizedTheme);
-    root.setAttribute("data-accent", ACCENTS.includes(savedAccent) ? savedAccent : "orange");
 
-    document.querySelectorAll(".accent-swatch").forEach(swatch => {
-        swatch.classList.toggle(
-            "active",
-            swatch.getAttribute("data-accent-choice") === root.getAttribute("data-accent")
-        );
-    });
+    const savedTheme =
+        localStorage.getItem("gateway_theme") || "light";
 
-    document.querySelectorAll(".theme-preset-btn").forEach(btn => {
-        btn.classList.toggle(
-            "active",
-            btn.getAttribute("data-theme-preset") === root.getAttribute("data-theme")
-        );
-    });
+    const savedAccent =
+        localStorage.getItem("gateway_accent") || "orange";
 
-    const themeToggleBtn = document.getElementById("theme-toggle-btn");
-    themeToggleBtn?.addEventListener("click", () => gateway.toggleTheme());
+    const normalizedTheme =
+        savedTheme === "dark" ? "dark" : "light";
 
-    const accentBtn = document.getElementById("accent-picker-btn");
-    const accentMenu = document.getElementById("accent-dropdown-menu");
+    root.setAttribute(
+        "data-theme",
+        normalizedTheme
+    );
 
-    if (accentBtn && accentMenu) {
-        accentBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            accentMenu.classList.toggle("show");
+    root.setAttribute(
+        "data-accent",
+        ACCENTS.includes(savedAccent)
+            ? savedAccent
+            : "orange"
+    );
+
+    /* Remove any stale inline appearance state from earlier UI versions. */
+    Object.keys(root.style)
+        .filter(name => /color|header|nav/i.test(name))
+        .forEach(name => root.style.removeProperty(name));
+
+    document
+        .querySelectorAll(".accent-swatch")
+        .forEach(swatch => {
+            swatch.classList.toggle(
+                "active",
+                swatch.getAttribute("data-accent-choice")
+                === root.getAttribute("data-accent")
+            );
         });
 
-        document.addEventListener("click", (e) => {
-            if (!accentMenu.contains(e.target) && e.target !== accentBtn) {
-                accentMenu.classList.remove("show");
+    const themeToggleBtn =
+        document.getElementById("theme-toggle-btn");
+
+    themeToggleBtn?.addEventListener(
+        "click",
+        () => gateway.toggleTheme()
+    );
+
+    const accentBtn =
+        document.getElementById("accent-picker-btn");
+
+    const accentMenu =
+        document.getElementById("accent-dropdown-menu");
+
+    if (
+        accentBtn &&
+        accentMenu
+    ) {
+
+        accentBtn.addEventListener(
+            "click",
+            event => {
+                event.stopPropagation();
+
+                accentMenu.classList.toggle(
+                    "show"
+                );
             }
-        });
+        );
 
-        document.querySelectorAll(".accent-swatch").forEach(swatch => {
-            swatch.addEventListener("click", () => {
-                const choice = swatch.getAttribute("data-accent-choice");
-                if (choice && ACCENTS.includes(choice)) {
-                    gateway.setAccent(choice);
-                    accentMenu.classList.remove("show");
+        document.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    !accentMenu.contains(
+                        event.target
+                    ) &&
+                    event.target !== accentBtn
+                ) {
+
+                    accentMenu.classList.remove(
+                        "show"
+                    );
                 }
-            });
-        });
-    }
+            }
+        );
 
-    /* Appearance now uses preset theme/accent controls only; no RGB/hex inputs. */
-    gateway.initAppearanceEditor();
+        document
+            .querySelectorAll(".accent-swatch")
+            .forEach(swatch => {
+
+                swatch.addEventListener(
+                    "click",
+                    () => {
+
+                        const choice =
+                            swatch.getAttribute(
+                                "data-accent-choice"
+                            );
+
+                        if (
+                            choice &&
+                            ACCENTS.includes(choice)
+                        ) {
+
+                            gateway.setAccent(
+                                choice
+                            );
+
+                            accentMenu.classList.remove(
+                                "show"
+                            );
+                        }
+                    }
+                );
+            });
+    }
 };
 
 gateway.toggleTheme = function () {
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
-    const nextTheme = currentTheme === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", nextTheme);
-    localStorage.setItem("gateway_theme", nextTheme);
 
-    document.querySelectorAll(".theme-preset-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("data-theme-preset") === nextTheme);
-    });
+    const currentTheme =
+        document.documentElement.getAttribute(
+            "data-theme"
+        ) || "light";
 
-    window.dispatchEvent(new CustomEvent("gateway:themechange"));
+    const nextTheme =
+        currentTheme === "dark"
+            ? "light"
+            : "dark";
+
+    document.documentElement.setAttribute(
+        "data-theme",
+        nextTheme
+    );
+
+    localStorage.setItem(
+        "gateway_theme",
+        nextTheme
+    );
+
+    window.dispatchEvent(
+        new CustomEvent(
+            "gateway:themechange"
+        )
+    );
 };
 
 gateway.setAccent = function (accent) {
-    if (!ACCENTS.includes(accent)) return;
 
-    document.documentElement.setAttribute("data-accent", accent);
-    localStorage.setItem("gateway_accent", accent);
-
-    /* Selecting a preset accent releases only a custom primary-color override. */
-    const root = document.documentElement;
-    root.style.removeProperty("--brand-primary");
-    root.style.removeProperty("--brand-primary-hover");
-    root.style.removeProperty("--brand-primary-light");
-    root.style.removeProperty("--brand-primary-border");
-    root.style.removeProperty("--brand-primary-glow");
-    root.style.removeProperty("--nav-active-bg");
-
-    try {
-        const saved = JSON.parse(localStorage.getItem("gateway_custom_colors") || "{}");
-        delete saved["color-primary"];
-        localStorage.setItem("gateway_custom_colors", JSON.stringify(saved));
-    } catch (_) {
-        /* Ignore invalid local storage and continue. */
+    if (!ACCENTS.includes(accent)) {
+        return;
     }
 
-    document.querySelectorAll(".accent-swatch").forEach(swatch => {
-        swatch.classList.toggle(
-            "active",
-            swatch.getAttribute("data-accent-choice") === accent
-        );
-    });
+    document.documentElement.setAttribute(
+        "data-accent",
+        accent
+    );
 
-    window.dispatchEvent(new CustomEvent("gateway:themechange"));
+    localStorage.setItem(
+        "gateway_accent",
+        accent
+    );
+
+    document
+        .querySelectorAll(".accent-swatch")
+        .forEach(swatch => {
+
+            swatch.classList.toggle(
+                "active",
+                swatch.getAttribute(
+                    "data-accent-choice"
+                ) === accent
+            );
+        });
+
+    window.dispatchEvent(
+        new CustomEvent(
+            "gateway:themechange"
+        )
+    );
 };
 
 /* ============================================================
