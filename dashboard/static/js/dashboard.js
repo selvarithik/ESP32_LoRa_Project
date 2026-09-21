@@ -294,7 +294,6 @@ document.addEventListener("DOMContentLoaded", function () {
             ["Hardware", node.hardware_revision],
             ["Firmware", node.firmware_version],
             ["Communication", node.communication_type],
-            ["Communication Config", node.communication_config ? JSON.stringify(node.communication_config) : null],
             ["Enabled", node.enabled === false ? "NO" : "YES"],
             ["Status", String(node.status || "—").toUpperCase()],
             ["Last Seen", formatTime(node.last_seen)],
@@ -302,12 +301,27 @@ document.addEventListener("DOMContentLoaded", function () {
             ["Updated", formatTime(node.updated_at)]
         ];
 
-        return fields.map(function (field) {
+        var html = fields.map(function (field) {
             return '<div class="dashboard-inspector-field">' +
                 '<span>' + esc(field[0]) + '</span>' +
                 '<strong title="' + esc(field[1] || "—") + '">' + esc(field[1] || "—") + '</strong>' +
                 '</div>';
         }).join("");
+
+        if (node.communication_config) {
+            var prettyConfig = "";
+            try {
+                prettyConfig = JSON.stringify(node.communication_config, null, 2);
+            } catch (_) {
+                prettyConfig = String(node.communication_config);
+            }
+            html += '<details class="dashboard-config-details">' +
+                '<summary>Communication Config</summary>' +
+                '<pre>' + esc(prettyConfig) + '</pre>' +
+                '</details>';
+        }
+
+        return html;
     }
 
     function sensorCard(p) {
@@ -345,6 +359,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 '<div><span>Updated</span><strong>' + esc(formatTime(p.timestamp)) + '</strong></div>' +
                 '<div><span>Range</span><strong>' + esc(range) + '</strong></div>' +
                 '<div><span>Alarm</span><strong>' + esc(alarms) + '</strong></div>' +
+                '<div><span>Quality</span><strong>' + esc(p.quality || "—") + '</strong></div>' +
+                '<div><span>Alarm State</span><strong>' + esc(p.alarm_status || "—") + '</strong></div>' +
                 '<div><span>Precision</span><strong>' + esc(p.decimal_places === null || p.decimal_places === undefined ? "—" : p.decimal_places + " dp") + '</strong></div>' +
                 '<div><span>Graph</span><strong>' + esc(p.graph_enabled ? "ENABLED" : "OFF") + '</strong></div>' +
                 '<div><span>Display</span><strong>' + esc(p.display_enabled === false ? "OFF" : "ON") + '</strong></div>' +
@@ -414,8 +430,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var labels =
             '<text x="' + (left-7) + '" y="' + (top+4) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue(max, p.decimal_places)) + '</text>' +
-            '<text x="' + (left-7) + '" y="' + (top+ih/2+3) + '" text-anchor="end" fill="#60768c" font-size="8">' + esc(formatValue(avg, p.decimal_places)) + '</text>' +
-            '<text x="' + (left-7) + '" y="' + (top+ih+3) + '" text-anchor="end" fill="#60768c" font-size="8">' + esc(formatValue(min, p.decimal_places)) + '</text>';
+            '<text x="' + (left-7) + '" y="' + (top+ih/2+3) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue(avg, p.decimal_places)) + '</text>' +
+            '<text x="' + (left-7) + '" y="' + (top+ih+3) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue(min, p.decimal_places)) + '</text>';
 
         return '<article class="dashboard-graph-card">' +
             '<div class="dashboard-graph-head"><div class="dashboard-graph-title">' +
