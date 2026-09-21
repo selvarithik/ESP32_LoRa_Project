@@ -16,7 +16,6 @@
       </div>
       <div class="dashboard-v4-actions">
         <span class="dashboard-live-chip" id="dashboard-live-indicator"><i></i> LIVE · 2S</span>
-        <button class="dashboard-action" id="dashboard-customize-btn" type="button">Customize</button>
         <button class="dashboard-action primary" id="dashboard-refresh" type="button">Refresh</button>
       </div>
     </section>
@@ -90,20 +89,6 @@
           </div>
         </section>
 
-        <section class="dashboard-section" id="widget-custom-sensors">
-          <header class="dashboard-section-head">
-            <div>
-              <h2>Operator Workspace</h2>
-              <p>Optional browser-local shortcuts for frequently watched parameters.</p>
-            </div>
-            <div class="dashboard-section-tools">
-              <button class="dashboard-mini-tool" id="add-sensor-widget-inline" type="button">+ Add widget</button>
-            </div>
-          </header>
-          <div id="custom-sensor-widgets" class="dashboard-custom-grid">
-            <div class="dashboard-empty">No custom widgets configured.</div>
-          </div>
-        </section>
       </main>
 
       <aside class="dashboard-right-stack">
@@ -145,31 +130,13 @@
     </div>
   </div>
 
-  <div class="dashboard-drawer-overlay" id="widget-drawer-overlay"></div>
-  <aside class="dashboard-widget-drawer" id="widget-drawer" aria-hidden="true">
-    <div class="dashboard-drawer-head">
-      <h3>Dashboard Layout</h3>
-      <button class="dashboard-drawer-close" id="close-widget-drawer" type="button" aria-label="Close">×</button>
-    </div>
-    <div class="dashboard-drawer-body" id="widgetToggleList">
-      <p>Control secondary dashboard sections. The live node telemetry workspace stays primary.</p>
-      <div class="dashboard-drawer-row"><span>Fleet Pulse</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-fleet" checked><span></span></label></div>
-      <div class="dashboard-drawer-row"><span>Active Problems</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-alerts" checked><span></span></label></div>
-      <div class="dashboard-drawer-row"><span>Recent Activity</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-activity" checked><span></span></label></div>
-      <div class="dashboard-drawer-row"><span>Operator Workspace</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-custom-sensors" checked><span></span></label></div>
-    </div>
-    <div class="dashboard-drawer-footer">
-      <button class="dashboard-action" id="reset-widgets-btn" type="button">Reset</button>
-      <button class="dashboard-action primary" id="save-widgets-btn" type="button">Save</button>
-    </div>
-  </aside>
 </div>
 {% endblock %}
 
 {% block extra_css_after %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v4.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v5.css') }}?v=1">
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=19"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=20"></script>
 {% endblock %}
