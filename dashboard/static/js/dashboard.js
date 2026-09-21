@@ -409,11 +409,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var grid = [0, 0.5, 1].map(function (frac) {
             var y = top + frac * ih;
-            return '<line x1="' + left + '" y1="' + y.toFixed(1) + '" x2="' + (w-right) + '" y2="' + y.toFixed(1) + '" stroke="#19304a" stroke-width="1"/>';
+            return '<line x1="' + left + '" y1="' + y.toFixed(1) + '" x2="' + (w-right) + '" y2="' + y.toFixed(1) + '" stroke="currentColor" stroke-width="1"/>';
         }).join("");
 
         var labels =
-            '<text x="' + (left-7) + '" y="' + (top+4) + '" text-anchor="end" fill="#60768c" font-size="8">' + esc(formatValue(max, p.decimal_places)) + '</text>' +
+            '<text x="' + (left-7) + '" y="' + (top+4) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue(max, p.decimal_places)) + '</text>' +
             '<text x="' + (left-7) + '" y="' + (top+ih/2+3) + '" text-anchor="end" fill="#60768c" font-size="8">' + esc(formatValue(avg, p.decimal_places)) + '</text>' +
             '<text x="' + (left-7) + '" y="' + (top+ih+3) + '" text-anchor="end" fill="#60768c" font-size="8">' + esc(formatValue(min, p.decimal_places)) + '</text>';
 
@@ -424,7 +424,7 @@ document.addEventListener("DOMContentLoaded", function () {
             '</div><div class="dashboard-graph-stat">' + esc(formatValue(points[points.length-1].value, p.decimal_places)) + ' ' + esc(p.unit || "") + '</div></div>' +
             '<svg class="dashboard-graph-svg" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + esc(p.parameter_name || p.parameter_id) + ' telemetry graph">' +
                 grid + labels +
-                '<path d="' + path + '" fill="none" stroke="#22d3ee" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' +
+                '<path d="' + path + '" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' +
             '</svg>' +
             '<div class="dashboard-graph-foot"><span>MIN ' + esc(formatValue(min, p.decimal_places)) + '</span>' +
                 '<span>AVG ' + esc(formatValue(avg, p.decimal_places)) + '</span>' +
