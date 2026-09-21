@@ -723,13 +723,14 @@ gateway.bindRefresh = function (
 
 const THEME_PRESETS = {
     light: "light",
-    dark: "dark",
-    midnight: "midnight",
-    clean: "clean",
-    contrast: "contrast"
+    dark: "dark"
 };
 
-const ACCENTS = ["orange", "emerald", "cyan", "indigo", "amber"];
+const ACCENTS = [
+    "orange", "emerald", "cyan", "blue",
+    "indigo", "violet", "magenta", "rose",
+    "red", "amber", "teal", "slate"
+];
 
 const CUSTOM_COLOR_VARS = {
     "color-primary": "--brand-primary",
@@ -918,20 +919,11 @@ gateway.initAppearanceEditor = function () {
 gateway.initTheme = function () {
     const savedTheme = localStorage.getItem("gateway_theme") || "light";
     const savedAccent = localStorage.getItem("gateway_accent") || "orange";
-    const savedCustom = localStorage.getItem("gateway_custom_colors");
 
     const root = document.documentElement;
-    root.setAttribute("data-theme", THEME_PRESETS[savedTheme] || "light");
+    const normalizedTheme = savedTheme === "dark" ? "dark" : "light";
+    root.setAttribute("data-theme", normalizedTheme);
     root.setAttribute("data-accent", ACCENTS.includes(savedAccent) ? savedAccent : "orange");
-
-    if (savedCustom) {
-        try {
-            gateway.applyCustomColors(JSON.parse(savedCustom));
-        } catch (error) {
-            console.warn("Invalid saved custom colors:", error);
-            localStorage.removeItem("gateway_custom_colors");
-        }
-    }
 
     document.querySelectorAll(".accent-swatch").forEach(swatch => {
         swatch.classList.toggle(
@@ -976,8 +968,8 @@ gateway.initTheme = function () {
         });
     }
 
+    /* Appearance now uses preset theme/accent controls only; no RGB/hex inputs. */
     gateway.initAppearanceEditor();
-    gateway.syncAppearanceInputs();
 };
 
 gateway.toggleTheme = function () {
