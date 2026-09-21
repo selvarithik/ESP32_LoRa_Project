@@ -88,6 +88,20 @@
   --status-alarm-bg:rgba(239,68,68,.13);
 }
 
+/* Dark-theme accent variants: brighter foregrounds keep selected colors readable on dark surfaces. */
+[data-theme="dark"][data-accent="orange"]  {--brand-primary:#F59E0B;--brand-primary-hover:#FBBF24;--accent-on-primary:#08111D;--brand-primary-glow:rgba(245,158,11,.24)}
+[data-theme="dark"][data-accent="emerald"] {--brand-primary:#34D399;--brand-primary-hover:#6EE7B7;--accent-on-primary:#07140F;--brand-primary-glow:rgba(52,211,153,.24)}
+[data-theme="dark"][data-accent="cyan"]    {--brand-primary:#22D3EE;--brand-primary-hover:#67E8F9;--accent-on-primary:#06131A;--brand-primary-glow:rgba(34,211,238,.24)}
+[data-theme="dark"][data-accent="blue"]    {--brand-primary:#60A5FA;--brand-primary-hover:#93C5FD;--accent-on-primary:#071222;--brand-primary-glow:rgba(96,165,250,.24)}
+[data-theme="dark"][data-accent="indigo"]  {--brand-primary:#818CF8;--brand-primary-hover:#A5B4FC;--accent-on-primary:#0B0D20;--brand-primary-glow:rgba(129,140,248,.24)}
+[data-theme="dark"][data-accent="violet"]  {--brand-primary:#A78BFA;--brand-primary-hover:#C4B5FD;--accent-on-primary:#110A20;--brand-primary-glow:rgba(167,139,250,.24)}
+[data-theme="dark"][data-accent="magenta"] {--brand-primary:#E879F9;--brand-primary-hover:#F0ABFC;--accent-on-primary:#17071A;--brand-primary-glow:rgba(232,121,249,.24)}
+[data-theme="dark"][data-accent="rose"]    {--brand-primary:#FB7185;--brand-primary-hover:#FDA4AF;--accent-on-primary:#1B080D;--brand-primary-glow:rgba(251,113,133,.24)}
+[data-theme="dark"][data-accent="red"]     {--brand-primary:#F87171;--brand-primary-hover:#FCA5A5;--accent-on-primary:#1A0707;--brand-primary-glow:rgba(248,113,113,.24)}
+[data-theme="dark"][data-accent="amber"]   {--brand-primary:#FBBF24;--brand-primary-hover:#FCD34D;--accent-on-primary:#171003;--brand-primary-glow:rgba(251,191,36,.24)}
+[data-theme="dark"][data-accent="teal"]    {--brand-primary:#2DD4BF;--brand-primary-hover:#5EEAD4;--accent-on-primary:#061613;--brand-primary-glow:rgba(45,212,191,.24)}
+[data-theme="dark"][data-accent="slate"]   {--brand-primary:#CBD5E1;--brand-primary-hover:#E2E8F0;--accent-on-primary:#111827;--brand-primary-glow:rgba(203,213,225,.20)}
+
 html[data-accent] {
   --brand-primary-light:color-mix(in srgb,var(--brand-primary) 11%,var(--bg-surface));
   --brand-primary-border:color-mix(in srgb,var(--brand-primary) 34%,var(--border-color));
