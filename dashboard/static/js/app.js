@@ -728,33 +728,42 @@ const THEME_PRESETS = {
 };
 
 const COLOR_PALETTES = {
-    "signal-blue": { name: "Signal Blue", hex: "#0057FF", secondary: "#F8F7F4" },
-    "emerald-ink": { name: "Emerald Ink", hex: "#064E3B", secondary: "#F8E7C9" },
-    "neon-lime": { name: "Neon Lime", hex: "#C8FF3D", secondary: "#2D1B69" },
-    "butter-yellow": { name: "Butter Yellow", hex: "#FFF275", secondary: "#3A0CA3" },
-    "burnt-orange": { name: "Burnt Orange", hex: "#FC6C26", secondary: "#FFF4D6" },
-    "lime-spark": { name: "Lime Spark", hex: "#B6FF2E", secondary: "#23262F" }
+    "signal-blue": { name: "Signal Blue", primary: "#0057FF", companion: "#F8F7F4" },
+    "emerald-ink": { name: "Emerald Ink", primary: "#064E3B", companion: "#F8E7C9" },
+    "neon-lime": { name: "Neon Lime", primary: "#C8FF3D", companion: "#2D1B69" },
+    "butter-yellow": { name: "Butter Yellow", primary: "#FFF275", companion: "#3A0CA3" },
+    "burnt-orange": { name: "Burnt Orange", primary: "#FC6C26", companion: "#FFF4D6" },
+    "lime-spark": { name: "Lime Spark", primary: "#B6FF2E", companion: "#23262F" }
 };
 
 gateway.initAppearanceEditor = function () {
-    /* Retained as a compatibility hook. The palette picker is intentionally limited
-       to the supplied combinations; no RGB/HEX editor is exposed. */
+    /* Retained as a no-op compatibility hook. RGB/HEX editor is removed. */
 };
 
 gateway.initTheme = function () {
 
-    const root = document.documentElement;
+    const root =
+        document.documentElement;
 
     const savedTheme =
-        localStorage.getItem("gateway_theme") || "light";
+        localStorage.getItem(
+            "gateway_theme"
+        ) || "light";
+
+    /* Remove legacy user-selectable accent state from previous UI versions. */
+    localStorage.removeItem("gateway_accent");
 
     root.setAttribute(
         "data-theme",
-        savedTheme === "dark" ? "dark" : "light"
+        savedTheme === "dark"
+            ? "dark"
+            : "light"
     );
 
     const themeToggleBtn =
-        document.getElementById("theme-toggle-btn");
+        document.getElementById(
+            "theme-toggle-btn"
+        );
 
     themeToggleBtn?.addEventListener(
         "click",
@@ -762,64 +771,68 @@ gateway.initTheme = function () {
     );
 
     document.dispatchEvent(
-        new CustomEvent("gateway:themechange")
+        new CustomEvent(
+            "gateway:themechange"
+        )
     );
 };
 
 gateway.toggleTheme = function () {
 
-    const root = document.documentElement;
+    const root =
+        document.documentElement;
 
     const current =
-        root.getAttribute("data-theme") || "light";
+        root.getAttribute(
+            "data-theme"
+        ) || "light";
 
     const next =
-        current === "dark" ? "light" : "dark";
+        current === "dark"
+            ? "light"
+            : "dark";
 
-    root.setAttribute("data-theme", next);
+    root.setAttribute(
+        "data-theme",
+        next
+    );
 
-    localStorage.setItem("gateway_theme", next);
+    localStorage.setItem(
+        "gateway_theme",
+        next
+    );
 
     window.dispatchEvent(
         new CustomEvent(
             "gateway:themechange",
-            { detail: { theme: next } }
+            {
+                detail: {
+                    theme: next
+                }
+            }
         )
     );
 };
 
-gateway.applyPalette = function (palette) {
 
-    const root = document.documentElement;
+gateway.applyPalette = function (palette) {
 
     const selected =
         COLOR_PALETTES[palette]
             ? palette
             : "signal-blue";
 
-    root.setAttribute(
-        "data-palette",
-        selected
-    );
+    const root = document.documentElement;
 
-    localStorage.setItem(
-        "gateway_palette",
-        selected
-    );
+    root.setAttribute("data-palette", selected);
+    localStorage.setItem("gateway_palette", selected);
 
-    document.querySelectorAll(
-        "[data-palette-choice]"
-    ).forEach(button => {
-        button.classList.toggle(
-            "active",
-            button.getAttribute("data-palette-choice") === selected
-        );
-        button.setAttribute(
-            "aria-checked",
-            button.getAttribute("data-palette-choice") === selected
-                ? "true"
-                : "false"
-        );
+    document.querySelectorAll("[data-palette-choice]").forEach(button => {
+        const active =
+            button.getAttribute("data-palette-choice") === selected;
+
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-checked", active ? "true" : "false");
     });
 
     const label =
@@ -830,6 +843,11 @@ gateway.applyPalette = function (palette) {
             COLOR_PALETTES[selected].name;
     }
 
+    document.querySelectorAll(".palette-control-swatch-v1").forEach(swatch => {
+        swatch.style.background =
+            `linear-gradient(135deg, ${COLOR_PALETTES[selected].primary} 0 50%, ${COLOR_PALETTES[selected].companion} 50% 100%)`;
+    });
+
     window.dispatchEvent(
         new CustomEvent(
             "gateway:palettechange",
@@ -839,8 +857,6 @@ gateway.applyPalette = function (palette) {
 };
 
 gateway.initPalette = function () {
-
-    const root = document.documentElement;
 
     const saved =
         localStorage.getItem("gateway_palette") || "signal-blue";
@@ -853,38 +869,52 @@ gateway.initPalette = function () {
     const menu =
         document.getElementById("palette-dropdown-menu");
 
-    if (!button || !menu) return;
+    if (button && menu) {
 
-    const close = () => {
-        menu.classList.remove("open");
-        button.setAttribute("aria-expanded", "false");
-    };
+        const close = () => {
+            menu.classList.remove("open");
+            button.setAttribute("aria-expanded", "false");
+        };
 
-    button.addEventListener("click", event => {
-        event.stopPropagation();
-        const open = !menu.classList.contains("open");
-        menu.classList.toggle("open", open);
-        button.setAttribute("aria-expanded", open ? "true" : "false");
-    });
+        button.addEventListener("click", event => {
+            event.stopPropagation();
 
-    menu.querySelectorAll("[data-palette-choice]").forEach(choice => {
-        choice.addEventListener("click", () => {
-            gateway.applyPalette(
-                choice.getAttribute("data-palette-choice")
+            const open =
+                !menu.classList.contains("open");
+
+            menu.classList.toggle("open", open);
+            button.setAttribute(
+                "aria-expanded",
+                open ? "true" : "false"
             );
-            close();
         });
-    });
 
-    document.addEventListener("click", event => {
-        if (!menu.contains(event.target) && !button.contains(event.target)) {
-            close();
-        }
-    });
+        menu
+            .querySelectorAll("[data-palette-choice]")
+            .forEach(choice => {
+                choice.addEventListener("click", () => {
+                    gateway.applyPalette(
+                        choice.getAttribute("data-palette-choice")
+                    );
+                    close();
+                });
+            });
 
-    document.addEventListener("keydown", event => {
-        if (event.key === "Escape") close();
-    });
+        document.addEventListener("click", event => {
+            if (
+                !menu.contains(event.target) &&
+                !button.contains(event.target)
+            ) {
+                close();
+            }
+        });
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                close();
+            }
+        });
+    }
 };
 
 /* ============================================================
