@@ -1,0 +1,280 @@
+/* ============================================================
+   SELVARITHIK PALETTE SYSTEM
+   One source of truth for the six supplied color combinations.
+   It changes accent treatment only; layout and semantic status
+   colors remain unchanged.
+   ============================================================ */
+
+:root{
+  --palette-primary:#0057FF;
+  --palette-primary-hover:#0049D6;
+  --palette-companion:#F8F7F4;
+  --palette-soft:rgba(0,87,255,.10);
+  --palette-border:rgba(0,87,255,.30);
+  --palette-on-primary:#FFFFFF;
+}
+
+html[data-palette="signal-blue"]{
+  --palette-primary:#0057FF;
+  --palette-primary-hover:#0049D6;
+  --palette-companion:#F8F7F4;
+  --palette-soft:rgba(0,87,255,.10);
+  --palette-border:rgba(0,87,255,.30);
+  --palette-on-primary:#FFFFFF;
+}
+html[data-palette="emerald-ink"]{
+  --palette-primary:#064E3B;
+  --palette-primary-hover:#075B45;
+  --palette-companion:#F8E7C9;
+  --palette-soft:rgba(6,78,59,.10);
+  --palette-border:rgba(6,78,59,.27);
+  --palette-on-primary:#FFFFFF;
+}
+html[data-palette="neon-lime"]{
+  --palette-primary:#C8FF3D;
+  --palette-primary-hover:#B5E62E;
+  --palette-companion:#2D1B69;
+  --palette-soft:rgba(200,255,61,.16);
+  --palette-border:rgba(120,155,20,.40);
+  --palette-on-primary:#172006;
+}
+html[data-palette="butter-yellow"]{
+  --palette-primary:#FFF275;
+  --palette-primary-hover:#ECDD55;
+  --palette-companion:#3A0CA3;
+  --palette-soft:rgba(255,242,117,.18);
+  --palette-border:rgba(175,155,35,.40);
+  --palette-on-primary:#241A00;
+}
+html[data-palette="burnt-orange"]{
+  --palette-primary:#FC6C26;
+  --palette-primary-hover:#E85D19;
+  --palette-companion:#FFF4D6;
+  --palette-soft:rgba(252,108,38,.12);
+  --palette-border:rgba(252,108,38,.32);
+  --palette-on-primary:#FFFFFF;
+}
+html[data-palette="lime-spark"]{
+  --palette-primary:#B6FF2E;
+  --palette-primary-hover:#A4E426;
+  --palette-companion:#23262F;
+  --palette-soft:rgba(182,255,46,.15);
+  --palette-border:rgba(122,162,28,.38);
+  --palette-on-primary:#172006;
+}
+
+/* Existing theme variables consume the palette. */
+html[data-palette]{
+  --sb-accent:var(--palette-primary);
+  --sb-accent-hover:var(--palette-primary-hover);
+  --sb-accent-soft:var(--palette-soft);
+  --sb-accent-border:var(--palette-border);
+  --v7-accent:var(--palette-primary);
+  --v8-blue:var(--palette-primary);
+  --v8-blue-soft:var(--palette-soft);
+  --d-accent:var(--palette-primary);
+  --d-accent-soft:var(--palette-soft);
+  --brand-primary:var(--palette-primary)!important;
+  --brand-primary-hover:var(--palette-primary-hover)!important;
+  --orange:var(--palette-primary)!important;
+  --v3-accent:var(--palette-primary)!important;
+  --chat-orange:var(--palette-primary)!important;
+}
+
+/* Fixed shell: keep the industrial navy chrome in both themes. */
+.selvarithik-v7 .sidebar-v6,
+.selvarithik-v7 .topbar-v6{
+  background:var(--v7-chrome)!important;
+}
+[data-theme="dark"] .selvarithik-v7 .sidebar-v6,
+[data-theme="dark"] .selvarithik-v7 .topbar-v6{
+  background:var(--v7-chrome)!important;
+}
+
+/* Navigation */
+.selvarithik-v7 .nav-v6.active{
+  color:var(--palette-primary)!important;
+  background:var(--palette-soft)!important;
+  border-color:var(--palette-border)!important;
+  box-shadow:inset 3px 0 0 var(--palette-primary)!important;
+}
+.selvarithik-v7 .nav-v6.active .nav-icon{
+  color:var(--palette-primary)!important;
+}
+.selvarithik-v7 .nav-v6.active::after{
+  background:var(--palette-primary)!important;
+}
+
+/* Accent-bearing labels and controls */
+.selvarithik-v7 .topbar-page-v6 .topbar-kicker-v6,
+.selvarithik-v7 .v3-eyebrow,
+.selvarithik-v7 .dashboard-v4-kicker,
+.selvarithik-v7 .dashboard-live-indicator .dot,
+.selvarithik-v7 .dashboard-mini-tool.active,
+.selvarithik-v7 .dashboard-mini-tool:hover{
+  color:var(--palette-primary)!important;
+}
+.selvarithik-v7 .dashboard-mini-tool.active,
+.selvarithik-v7 .dashboard-mini-tool:hover{
+  background:var(--palette-soft)!important;
+  border-color:var(--palette-border)!important;
+}
+.selvarithik-v7 .btn-primary,
+.selvarithik-v7 .btn-dispatch-command,
+.selvarithik-v7 .dashboard-action.primary{
+  background:var(--palette-primary)!important;
+  border-color:var(--palette-primary)!important;
+  color:var(--palette-on-primary)!important;
+}
+.selvarithik-v7 .btn-primary:hover,
+.selvarithik-v7 .btn-dispatch-command:hover,
+.selvarithik-v7 .dashboard-action.primary:hover{
+  background:var(--palette-primary-hover)!important;
+  border-color:var(--palette-primary-hover)!important;
+}
+.selvarithik-v7 input:focus,
+.selvarithik-v7 select:focus,
+.selvarithik-v7 textarea:focus,
+.selvarithik-v7 .v3-search-control:focus-within,
+.selvarithik-v7 .global-search-v6:focus-within{
+  border-color:var(--palette-primary)!important;
+  box-shadow:0 0 0 3px var(--palette-soft)!important;
+}
+.selvarithik-v7 .step-node.active .step-circle,
+.selvarithik-v7 .step-node.completed .step-circle{
+  background:var(--palette-primary)!important;
+  border-color:var(--palette-primary)!important;
+  color:var(--palette-on-primary)!important;
+}
+.selvarithik-v7 .step-line.active{
+  background:var(--palette-primary)!important;
+}
+.selvarithik-v7 .dashboard-console .dashboard-graph-svg path{
+  stroke:var(--palette-primary)!important;
+}
+
+/* Small companion treatment: selection surfaces only. */
+.selvarithik-v7 .palette-selection-surface,
+.selvarithik-v7 .selected-node-banner,
+.selvarithik-v7 .node-item-card.selected,
+.selvarithik-v7 .history-item-card.active{
+  background:var(--palette-soft)!important;
+  border-color:var(--palette-border)!important;
+}
+.selvarithik-v7 .selected-node-banner{
+  box-shadow:inset 3px 0 0 var(--palette-primary)!important;
+}
+
+/* Chat uses the active palette; semantic state colors remain untouched. */
+.selvarithik-v7 .chat-send-button,
+.selvarithik-v7 .incoming .message-bubble{
+  background:var(--palette-primary)!important;
+  border-color:var(--palette-primary)!important;
+  color:var(--palette-on-primary)!important;
+}
+
+/* Global palette control lives in the sidebar footer. */
+.sidebar-footer-v6{
+  position:relative;
+  flex-wrap:wrap;
+}
+.palette-control-v1{
+  margin-left:auto;
+  min-width:105px;
+  height:30px;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:0 8px;
+  border:1px solid var(--sb-sidebar-line);
+  border-radius:7px;
+  background:var(--v7-chrome-2);
+  color:var(--sb-sidebar-text);
+  font-size:9px;
+  font-weight:750;
+}
+.palette-control-v1:hover,
+.palette-control-v1[aria-expanded="true"]{
+  border-color:var(--palette-border);
+  color:var(--palette-primary);
+  background:var(--palette-soft);
+}
+.palette-control-swatch-v1{
+  width:14px;height:14px;flex:0 0 14px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(135deg,#0057FF 0 50%,#F8F7F4 50% 100%);
+}
+.palette-dropdown-v1{
+  position:absolute;
+  right:8px;
+  bottom:58px;
+  z-index:2500;
+  width:280px;
+  display:none;
+  padding:9px;
+  border:1px solid var(--sb-border);
+  border-radius:11px;
+  background:var(--sb-surface);
+  color:var(--sb-text);
+  box-shadow:var(--sb-shadow-lg);
+}
+.palette-dropdown-v1.open{display:block}
+.palette-dropdown-title-v1{
+  padding:4px 7px 8px;
+  color:var(--sb-muted);
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.12em;
+}
+.palette-choice-v1{
+  width:100%;
+  min-height:48px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:6px 7px;
+  margin:2px 0;
+  border:1px solid transparent;
+  border-radius:8px;
+  background:transparent;
+  color:var(--sb-text);
+  text-align:left;
+}
+.palette-choice-v1:hover{
+  background:var(--sb-surface-3);
+}
+.palette-choice-v1.active{
+  background:var(--palette-soft);
+  border-color:var(--palette-border);
+}
+.palette-choice-v1 strong{
+  display:block;
+  font-size:10px;
+  line-height:1.2;
+}
+.palette-choice-v1 small{
+  display:block;
+  margin-top:2px;
+  color:var(--sb-muted);
+  font-size:8.5px;
+  line-height:1.2;
+}
+.palette-pair-v1{
+  width:34px;height:26px;display:flex;flex:0 0 34px;overflow:hidden;
+  border:1px solid var(--sb-border);border-radius:6px;
+}
+.palette-pair-v1 i{display:block;flex:1;background:var(--p)}
+
+.mobile-palette-control-v1{display:none}
+
+@media(max-width:850px){
+  .palette-control-v1{display:none}
+  .mobile-palette-control-v1{
+    display:grid;place-items:center;
+    margin-left:auto;
+    width:34px;height:34px;
+    border:1px solid var(--sb-border);
+    border-radius:8px;
+    background:var(--sb-surface-2);
+  }
+}
