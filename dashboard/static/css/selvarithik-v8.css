@@ -490,6 +490,12 @@
   stroke:none!important;
 }
 
+/* ---------- private chat remains WhatsApp-like, but uses the fixed brand blue ---------- */
+.selvarithik-v7 .private-chat{--chat-orange:#00A8FC}
+.selvarithik-v7 .chat-send-button{background:#00A8FC!important}
+.selvarithik-v7 .incoming .message-bubble{background:#00A8FC!important;border-color:#00A8FC!important}
+.selvarithik-v7 .outgoing .message-bubble{background:#0E5FA7!important;border-color:#0E5FA7!important}
+
 /* ---------- dark mode ---------- */
 [data-theme="dark"] .selvarithik-v7 .v3-kpi,
 [data-theme="dark"] .selvarithik-v7 .v3-panel,
