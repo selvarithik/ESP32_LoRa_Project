@@ -11,23 +11,21 @@
 {% block extra_css %}{% endblock %}
 {% block extra_css_after %}{% endblock %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v6.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v7.css') }}?v=1">
 
 <script src="{{ url_for('static', filename='js/app.js') }}?v=21"></script>
 <script src="{{ url_for('static', filename='js/redesign-v3.js') }}?v=2"></script>
 {% block extra_js %}{% endblock %}
 </head>
 
-<body class="gateway-body selvarithik-v6" data-page="{{ request.path }}">
+<body class="gateway-body selvarithik-v6 selvarithik-v7" data-page="{{ request.path }}">
 <a class="skip-link" href="#main-content">Skip to content</a>
 
 <div class="app-shell" id="app-shell">
 
   <aside class="sidebar-v6" id="side-navigation" aria-label="Gateway navigation">
-    <a class="sidebar-brand-v6" href="/" aria-label="SELVARITHIK LoRa Gateway">
-      <span class="sidebar-logo-frame-v6">
-        <img src="{{ url_for('static', filename='img/selvarithik-logo-light.svg') }}"
-             alt="SELVARITHIK LoRa Gateway">
-      </span>
+    <a class="sidebar-brand-v6" href="/" aria-label="SELVARITHIK'S LoRa Gateway">
+      <span class="sidebar-brand-mark-v7" aria-hidden="true"></span>
       <span class="sidebar-brand-copy-v6">
         <strong>SELVARITHIK'S</strong>
         <span>LORA GATEWAY</span>
