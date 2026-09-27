@@ -612,9 +612,49 @@ document.addEventListener("DOMContentLoaded", function () {
         text("sensor-count", paramCount);
         text("alarm-count", problemCount);
 
+        var offlineCount = state.nodes.filter(function (n) {
+            return n.enabled !== false && !online(n);
+        }).length;
+        var disabledCount = state.nodes.filter(function (n) {
+            return n.enabled === false;
+        }).length;
+
         text("fleet-online", onlineCount);
-        text("fleet-offline", state.nodes.filter(function (n) { return n.enabled !== false && !online(n); }).length);
-        text("fleet-disabled", state.nodes.filter(function (n) { return n.enabled === false; }).length);
+        text("fleet-offline", offlineCount);
+        text("fleet-disabled", disabledCount);
+
+        /* Live visualization overview — derived from the same real counters. */
+        var totalNodes = state.nodes.length;
+        var availability = totalNodes ? Math.round((onlineCount / totalNodes) * 100) : 0;
+        var telemetryHealth = paramCount ? Math.max(0, Math.round(((paramCount - problemCount) / paramCount) * 100)) : 100;
+        var clearCount = Math.max(0, paramCount - problemCount);
+        var enabledNodes = Math.max(0, totalNodes - disabledCount);
+
+        text("dashboard-availability-pct", availability + "%");
+        text("dashboard-availability-online", onlineCount);
+        text("dashboard-availability-total", totalNodes);
+        text("dashboard-health-pct", telemetryHealth + "%");
+        text("dashboard-health-good", clearCount);
+        text("dashboard-health-problems", problemCount);
+        text("dashboard-node-state-label", onlineCount + " / " + totalNodes);
+        text("dashboard-state-online-count", onlineCount);
+        text("dashboard-state-offline-count", offlineCount);
+        text("dashboard-state-disabled-count", disabledCount);
+
+        var availabilityBar = document.getElementById("dashboard-availability-bar");
+        var healthBar = document.getElementById("dashboard-health-bar");
+        if (availabilityBar) availabilityBar.style.width = availability + "%";
+        if (healthBar) healthBar.style.width = telemetryHealth + "%";
+
+        var denominator = totalNodes || 1;
+        var onlineBar = document.getElementById("dashboard-state-online");
+        var offlineBar = document.getElementById("dashboard-state-offline");
+        var disabledBar = document.getElementById("dashboard-state-disabled");
+        if (onlineBar) onlineBar.style.width = (onlineCount / denominator * 100) + "%";
+        if (offlineBar) offlineBar.style.width = (offlineCount / denominator * 100) + "%";
+        if (disabledBar) disabledBar.style.width = (disabledCount / denominator * 100) + "%";
+
+        void enabledNodes;
     }
 
     function loadLayout() {
