@@ -72,6 +72,60 @@
       </div>
     </section>
 
+    <section class="dashboard-visual-overview" aria-label="Live data overview">
+      <div class="dashboard-visual-intro">
+        <div>
+          <span class="dashboard-visual-kicker">LIVE DATA OVERVIEW</span>
+          <h2>Fleet &amp; Telemetry Health</h2>
+          <p>Derived only from the configured nodes and live telemetry already shown below.</p>
+        </div>
+        <span class="dashboard-visual-source">LIVE API</span>
+      </div>
+
+      <div class="dashboard-visual-grid">
+        <article class="dashboard-visual-card">
+          <div class="dashboard-visual-card-head">
+            <span>Fleet availability</span>
+            <strong id="dashboard-availability-pct">0%</strong>
+          </div>
+          <div class="dashboard-visual-bar"><i id="dashboard-availability-bar" style="width:0%"></i></div>
+          <div class="dashboard-visual-foot">
+            <span><b id="dashboard-availability-online">0</b> online</span>
+            <span><b id="dashboard-availability-total">0</b> configured</span>
+          </div>
+        </article>
+
+        <article class="dashboard-visual-card">
+          <div class="dashboard-visual-card-head">
+            <span>Telemetry health</span>
+            <strong id="dashboard-health-pct">100%</strong>
+          </div>
+          <div class="dashboard-visual-bar dashboard-visual-health"><i id="dashboard-health-bar" style="width:100%"></i></div>
+          <div class="dashboard-visual-foot">
+            <span><b id="dashboard-health-good">0</b> clear</span>
+            <span><b id="dashboard-health-problems">0</b> problems</span>
+          </div>
+        </article>
+
+        <article class="dashboard-visual-card dashboard-visual-node-state">
+          <div class="dashboard-visual-card-head">
+            <span>Node state</span>
+            <strong id="dashboard-node-state-label">0 / 0</strong>
+          </div>
+          <div class="dashboard-state-segments">
+            <i class="online" id="dashboard-state-online" style="width:0%"></i>
+            <i class="offline" id="dashboard-state-offline" style="width:0%"></i>
+            <i class="disabled" id="dashboard-state-disabled" style="width:0%"></i>
+          </div>
+          <div class="dashboard-visual-foot">
+            <span><b id="dashboard-state-online-count">0</b> online</span>
+            <span><b id="dashboard-state-offline-count">0</b> offline</span>
+            <span><b id="dashboard-state-disabled-count">0</b> disabled</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <div class="dashboard-main-grid">
       <main>
         <section class="dashboard-section" id="widget-sensors">
