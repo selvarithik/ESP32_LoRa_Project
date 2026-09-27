@@ -257,16 +257,6 @@ gateway.send = async function (
 
     } catch (error) {
 
-        window.dispatchEvent(
-            new CustomEvent("gateway:request", {
-                detail: {
-                    ok: false,
-                    url: url,
-                    method: normalizedMethod
-                }
-            })
-        );
-
         throw new Error(
             error.message ||
             "Network request failed"
@@ -281,17 +271,6 @@ gateway.send = async function (
 
     if (!response.ok) {
 
-        window.dispatchEvent(
-            new CustomEvent("gateway:request", {
-                detail: {
-                    ok: false,
-                    url: url,
-                    method: normalizedMethod,
-                    status: response.status
-                }
-            })
-        );
-
         throw new Error(
             getErrorMessage(response, data)
         );
@@ -303,17 +282,6 @@ gateway.send = async function (
         data.success === false
     ) {
 
-        window.dispatchEvent(
-            new CustomEvent("gateway:request", {
-                detail: {
-                    ok: false,
-                    url: url,
-                    method: normalizedMethod,
-                    status: response.status
-                }
-            })
-        );
-
         throw new Error(
             data.error ||
             data.message ||
@@ -321,17 +289,6 @@ gateway.send = async function (
         );
     }
 
-
-    window.dispatchEvent(
-        new CustomEvent("gateway:request", {
-            detail: {
-                ok: true,
-                url: url,
-                method: normalizedMethod,
-                status: response.status
-            }
-        })
-    );
 
     return data;
 };
@@ -865,11 +822,7 @@ gateway.initConnectionHealth = function () {
         return;
     }
 
-    let timer = null;
-
-    const setState = function (
-        state
-    ) {
+    const setState = function (state) {
 
         pill.classList.remove(
             "is-live",
@@ -908,6 +861,63 @@ gateway.initConnectionHealth = function () {
 
     setState("connecting");
 
+    if (!window.__selvarithikFetchPatched) {
+
+        window.__selvarithikFetchPatched = true;
+
+        const originalFetch =
+            window.fetch.bind(window);
+
+        window.fetch = async function (
+            input,
+            init
+        ) {
+
+            try {
+
+                const response =
+                    await originalFetch(
+                        input,
+                        init
+                    );
+
+                window.dispatchEvent(
+                    new CustomEvent(
+                        "gateway:request",
+                        {
+                            detail: {
+                                ok: response.ok,
+                                status: response.status,
+                                url: String(
+                                    response.url || input || ""
+                                )
+                            }
+                        }
+                    )
+                );
+
+                return response;
+
+            } catch (error) {
+
+                window.dispatchEvent(
+                    new CustomEvent(
+                        "gateway:request",
+                        {
+                            detail: {
+                                ok: false,
+                                status: 0,
+                                url: String(input || "")
+                            }
+                        }
+                    )
+                );
+
+                throw error;
+            }
+        };
+    }
+
     window.addEventListener(
         "gateway:request",
         event => {
@@ -922,19 +932,6 @@ gateway.initConnectionHealth = function () {
                     ? "live"
                     : "error"
             );
-
-            if (timer) {
-                clearTimeout(timer);
-            }
-
-            if (ok) {
-
-                timer =
-                    window.setTimeout(
-                        () => setState("error"),
-                        10000
-                    );
-            }
         }
     );
 };
