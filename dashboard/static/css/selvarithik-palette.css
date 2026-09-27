@@ -445,3 +445,33 @@ html[data-palette] .dashboard-graph-foot{
   background:var(--palette-soft)!important;
   border-color:var(--palette-border)!important;
 }
+
+/* Contrast accent used inside the dark chrome so navigation never disappears. */
+html[data-palette="signal-blue"]{--palette-chrome-accent:#F8F7F4}
+html[data-palette="emerald-ink"]{--palette-chrome-accent:#F8E7C9}
+html[data-palette="neon-lime"]{--palette-chrome-accent:#C8FF3D}
+html[data-palette="butter-yellow"]{--palette-chrome-accent:#FFF275}
+html[data-palette="burnt-orange"]{--palette-chrome-accent:#FFF4D6}
+html[data-palette="lime-spark"]{--palette-chrome-accent:#B6FF2E}
+
+html[data-palette] .topbar-page-v6 .topbar-kicker-v6,
+html[data-palette] .sidebar-brand-copy-v6 span{
+  color:var(--palette-chrome-accent)!important;
+}
+html[data-palette] .nav-v6.active,
+html[data-palette] .nav-v6.active .nav-icon{
+  color:var(--palette-chrome-accent)!important;
+}
+html[data-palette] .nav-v6.active{
+  background:color-mix(in srgb, var(--palette-chrome-accent) 13%, transparent)!important;
+  border-color:color-mix(in srgb, var(--palette-chrome-accent) 25%, transparent)!important;
+  box-shadow:inset 4px 0 0 var(--palette-chrome-accent)!important;
+}
+html[data-palette] .nav-v6.active::after{
+  background:var(--palette-chrome-accent)!important;
+}
+html[data-palette] .palette-control-v1:hover,
+html[data-palette] .palette-control-v1[aria-expanded="true"]{
+  color:var(--palette-chrome-accent)!important;
+  border-color:color-mix(in srgb, var(--palette-chrome-accent) 50%, transparent)!important;
+}
