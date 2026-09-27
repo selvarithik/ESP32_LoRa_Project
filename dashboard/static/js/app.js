@@ -741,6 +741,9 @@ gateway.initTheme = function () {
             "gateway_theme"
         ) || "light";
 
+    /* Remove legacy user-selectable accent state from previous UI versions. */
+    localStorage.removeItem("gateway_accent");
+
     root.setAttribute(
         "data-theme",
         savedTheme === "dark"
