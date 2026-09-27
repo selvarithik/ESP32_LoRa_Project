@@ -257,6 +257,16 @@ gateway.send = async function (
 
     } catch (error) {
 
+        window.dispatchEvent(
+            new CustomEvent("gateway:request", {
+                detail: {
+                    ok: false,
+                    url: url,
+                    method: normalizedMethod
+                }
+            })
+        );
+
         throw new Error(
             error.message ||
             "Network request failed"
@@ -271,6 +281,17 @@ gateway.send = async function (
 
     if (!response.ok) {
 
+        window.dispatchEvent(
+            new CustomEvent("gateway:request", {
+                detail: {
+                    ok: false,
+                    url: url,
+                    method: normalizedMethod,
+                    status: response.status
+                }
+            })
+        );
+
         throw new Error(
             getErrorMessage(response, data)
         );
@@ -282,6 +303,17 @@ gateway.send = async function (
         data.success === false
     ) {
 
+        window.dispatchEvent(
+            new CustomEvent("gateway:request", {
+                detail: {
+                    ok: false,
+                    url: url,
+                    method: normalizedMethod,
+                    status: response.status
+                }
+            })
+        );
+
         throw new Error(
             data.error ||
             data.message ||
@@ -289,6 +321,17 @@ gateway.send = async function (
         );
     }
 
+
+    window.dispatchEvent(
+        new CustomEvent("gateway:request", {
+            detail: {
+                ok: true,
+                url: url,
+                method: normalizedMethod,
+                status: response.status
+            }
+        })
+    );
 
     return data;
 };
@@ -718,9 +761,8 @@ gateway.bindRefresh = function (
 
 
 /* ============================================================
-   THEME & ACCENT MANAGEMENT
-   Fixed light/dark themes + 12 curated accent presets.
-   No RGB/HEX/custom appearance editor.
+   THEME MANAGEMENT
+   Fixed Signal Blue brand. Light/dark only.
    ============================================================ */
 
 const THEME_PRESETS = {
@@ -728,221 +770,178 @@ const THEME_PRESETS = {
     dark: "dark"
 };
 
-const ACCENTS = [
-    "orange", "emerald", "cyan", "blue",
-    "indigo", "violet", "magenta", "rose",
-    "red", "amber", "teal", "slate"
-];
-
 gateway.initAppearanceEditor = function () {
-    /* Legacy hook retained so older pages cannot open a removed color editor. */
+    /* Retained as a no-op compatibility hook. RGB/HEX editor is removed. */
 };
 
 gateway.initTheme = function () {
 
-    const root = document.documentElement;
+    const root =
+        document.documentElement;
 
     const savedTheme =
-        localStorage.getItem("gateway_theme") || "light";
-
-    const savedAccent =
-        localStorage.getItem("gateway_accent") || "orange";
-
-    const normalizedTheme =
-        savedTheme === "dark" ? "dark" : "light";
+        localStorage.getItem(
+            "gateway_theme"
+        ) || "light";
 
     root.setAttribute(
         "data-theme",
-        normalizedTheme
+        savedTheme === "dark"
+            ? "dark"
+            : "light"
     );
-
-    root.setAttribute(
-        "data-accent",
-        ACCENTS.includes(savedAccent)
-            ? savedAccent
-            : "orange"
-    );
-
-    /* Remove known inline color overrides left by older UI versions. */
-    [
-        "--brand-primary",
-        "--brand-primary-hover",
-        "--brand-primary-light",
-        "--brand-primary-border",
-        "--brand-primary-glow",
-        "--nav-active-bg",
-        "--bg-app",
-        "--bg-surface",
-        "--bg-surface-elevated",
-        "--bg-surface-subtle",
-        "--bg-input",
-        "--text-main",
-        "--text-muted",
-        "--text-subtle",
-        "--border-color",
-        "--border-subtle",
-        "--header-bg",
-        "--header-text",
-        "--header-muted",
-        "--nav-bg",
-        "--nav-text",
-        "--nav-muted"
-    ].forEach(name => root.style.removeProperty(name));
-
-    document
-        .querySelectorAll(".accent-swatch")
-        .forEach(swatch => {
-            swatch.classList.toggle(
-                "active",
-                swatch.getAttribute("data-accent-choice")
-                === root.getAttribute("data-accent")
-            );
-        });
 
     const themeToggleBtn =
-        document.getElementById("theme-toggle-btn");
+        document.getElementById(
+            "theme-toggle-btn"
+        );
 
     themeToggleBtn?.addEventListener(
         "click",
         () => gateway.toggleTheme()
     );
 
-    const accentBtn =
-        document.getElementById("accent-picker-btn");
-
-    const accentMenu =
-        document.getElementById("accent-dropdown-menu");
-
-    if (
-        accentBtn &&
-        accentMenu
-    ) {
-
-        accentBtn.addEventListener(
-            "click",
-            event => {
-                event.stopPropagation();
-
-                accentMenu.classList.toggle(
-                    "show"
-                );
-            }
-        );
-
-        document.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    !accentMenu.contains(
-                        event.target
-                    ) &&
-                    event.target !== accentBtn
-                ) {
-
-                    accentMenu.classList.remove(
-                        "show"
-                    );
-                }
-            }
-        );
-
-        document
-            .querySelectorAll(".accent-swatch")
-            .forEach(swatch => {
-
-                swatch.addEventListener(
-                    "click",
-                    () => {
-
-                        const choice =
-                            swatch.getAttribute(
-                                "data-accent-choice"
-                            );
-
-                        if (
-                            choice &&
-                            ACCENTS.includes(choice)
-                        ) {
-
-                            gateway.setAccent(
-                                choice
-                            );
-
-                            accentMenu.classList.remove(
-                                "show"
-                            );
-                        }
-                    }
-                );
-            });
-    }
+    document.dispatchEvent(
+        new CustomEvent(
+            "gateway:themechange"
+        )
+    );
 };
 
 gateway.toggleTheme = function () {
 
-    const currentTheme =
-        document.documentElement.getAttribute(
+    const root =
+        document.documentElement;
+
+    const current =
+        root.getAttribute(
             "data-theme"
         ) || "light";
 
-    const nextTheme =
-        currentTheme === "dark"
+    const next =
+        current === "dark"
             ? "light"
             : "dark";
 
-    document.documentElement.setAttribute(
+    root.setAttribute(
         "data-theme",
-        nextTheme
+        next
     );
 
     localStorage.setItem(
         "gateway_theme",
-        nextTheme
+        next
     );
 
     window.dispatchEvent(
         new CustomEvent(
-            "gateway:themechange"
+            "gateway:themechange",
+            {
+                detail: {
+                    theme: next
+                }
+            }
         )
     );
 };
 
-gateway.setAccent = function (accent) {
+/* ============================================================
+   CONNECTION HEALTH
+   ============================================================ */
 
-    if (!ACCENTS.includes(accent)) {
+gateway.initConnectionHealth = function () {
+
+    const pill =
+        document.getElementById(
+            "global-connection-pill"
+        );
+
+    const text =
+        document.getElementById(
+            "global-connection-text"
+        );
+
+    if (!pill || !text) {
         return;
     }
 
-    document.documentElement.setAttribute(
-        "data-accent",
-        accent
-    );
+    let timer = null;
 
-    localStorage.setItem(
-        "gateway_accent",
-        accent
-    );
+    const setState = function (
+        state
+    ) {
 
-    document
-        .querySelectorAll(".accent-swatch")
-        .forEach(swatch => {
+        pill.classList.remove(
+            "is-live",
+            "is-error",
+            "is-connecting"
+        );
 
-            swatch.classList.toggle(
-                "active",
-                swatch.getAttribute(
-                    "data-accent-choice"
-                ) === accent
+        if (state === "live") {
+
+            pill.classList.add(
+                "is-live"
             );
-        });
 
-    window.dispatchEvent(
-        new CustomEvent(
-            "gateway:themechange"
-        )
+            text.textContent =
+                "LIVE";
+
+        } else if (state === "error") {
+
+            pill.classList.add(
+                "is-error"
+            );
+
+            text.textContent =
+                "CONNECTION ERROR";
+
+        } else {
+
+            pill.classList.add(
+                "is-connecting"
+            );
+
+            text.textContent =
+                "CONNECTING";
+        }
+    };
+
+    setState("connecting");
+
+    window.addEventListener(
+        "gateway:request",
+        event => {
+
+            const ok =
+                Boolean(
+                    event.detail?.ok
+                );
+
+            setState(
+                ok
+                    ? "live"
+                    : "error"
+            );
+
+            if (timer) {
+                clearTimeout(timer);
+            }
+
+            if (ok) {
+
+                timer =
+                    window.setTimeout(
+                        () => setState("error"),
+                        10000
+                    );
+            }
+        }
     );
 };
 
+/* ============================================================
+   INITIAL THEME / CONNECTION
+   ============================================================ */
 /* ============================================================
    NAVIGATION, SEARCH & MOBILE MENU
    ============================================================ */
@@ -983,16 +982,45 @@ gateway.initMobileNav = function () {
     const drawer = document.getElementById("mobileNavDrawer");
 
     if (menuBtn && drawer) {
+        const closeButton =
+            drawer.querySelector(".mobile-drawer-close-v6");
+
+        const closeDrawer = () => {
+            drawer.classList.remove("open");
+            drawer.setAttribute("aria-hidden", "true");
+            menuBtn.setAttribute("aria-expanded", "false");
+        };
+
         menuBtn.addEventListener("click", () => {
-            drawer.classList.toggle("open");
-            menuBtn.setAttribute("aria-expanded", drawer.classList.contains("open") ? "true" : "false");
+            const open =
+                !drawer.classList.contains("open");
+
+            drawer.classList.toggle(
+                "open",
+                open
+            );
+
+            drawer.setAttribute(
+                "aria-hidden",
+                open ? "false" : "true"
+            );
+
+            menuBtn.setAttribute(
+                "aria-expanded",
+                open ? "true" : "false"
+            );
         });
 
+        closeButton?.addEventListener(
+            "click",
+            closeDrawer
+        );
+
         drawer.querySelectorAll("a").forEach(link => {
-            link.addEventListener("click", () => {
-                drawer.classList.remove("open");
-                menuBtn.setAttribute("aria-expanded", "false");
-            });
+            link.addEventListener(
+                "click",
+                closeDrawer
+            );
         });
     }
 };
@@ -1006,5 +1034,6 @@ document.addEventListener("DOMContentLoaded", () => {
     gateway.highlightActiveNav();
     gateway.initGlobalSearch();
     gateway.initMobileNav();
+    gateway.initConnectionHealth();
     gateway.startClock();
 });
