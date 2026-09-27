@@ -531,3 +531,47 @@
   .selvarithik-v7 .v3-search-control{min-width:0!important;flex:1 1 220px}
   .selvarithik-v7 .v3-kpi-rail,.selvarithik-v7 .v3-kpi-5{grid-template-columns:1fr!important}
 }
+
+/* ---------- command palette: only appears on Ctrl/Cmd+K; never corrupt the page ---------- */
+.selvarithik-v7 .v3-command-palette{
+  display:none!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:5000!important;
+  background:rgba(2,6,23,.46)!important;
+}
+.selvarithik-v7 .v3-command-palette.open{
+  display:block!important;
+}
+.selvarithik-v7 .v3-command-dialog{
+  width:min(650px,calc(100% - 24px))!important;
+  margin:12vh auto!important;
+}
+.selvarithik-v7 .v3-command-head{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+.selvarithik-v7 .v3-command-head > svg{
+  width:18px!important;
+  height:18px!important;
+  min-width:18px!important;
+  max-width:18px!important;
+  min-height:18px!important;
+  max-height:18px!important;
+  flex:0 0 18px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  overflow:visible!important;
+}
+.selvarithik-v7 .v3-command-head input{
+  min-width:0!important;
+  width:100%!important;
+  height:38px!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+}
