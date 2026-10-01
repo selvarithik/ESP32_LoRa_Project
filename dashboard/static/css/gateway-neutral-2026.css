@@ -634,3 +634,475 @@ body.gateway-body.ui-modern {
         transition: none !important;
     }
 }
+
+
+/* ============================================================
+   REFINED COLOR LAYER
+   Professional admin-dashboard palette:
+   deep navy + soft blue + restrained orange/green accents.
+   ============================================================ */
+
+:root {
+    --ref-navy: #17324D;
+    --ref-navy-2: #223F5A;
+    --ref-blue: #2E6FA3;
+    --ref-blue-soft: #EEF5FA;
+    --ref-blue-line: #C9DCEB;
+    --ref-orange: #C9824A;
+    --ref-orange-soft: #FBF3EC;
+    --ref-green: #4E876F;
+    --ref-green-soft: #EDF5F0;
+    --ref-bg: #F5F7FA;
+    --ref-line: #DDE4EB;
+    --ref-text: #253242;
+    --ref-muted: #6E7B89;
+}
+
+/* Page canvas */
+.ui-modern .main-area-v6,
+.ui-modern .page-content-v6 {
+    background: var(--ref-bg) !important;
+}
+
+.ui-modern .page-content-v6 {
+    padding: 22px 24px 38px !important;
+}
+
+/* Sidebar: navy, not black. */
+.ui-modern .sidebar-v6 {
+    background: var(--ref-navy) !important;
+    border-right: 1px solid #10283D !important;
+    box-shadow: 5px 0 18px rgba(23,50,77,.10) !important;
+}
+
+.ui-modern .sidebar-v6::after {
+    background: var(--ref-blue) !important;
+    opacity: 1 !important;
+    height: 3px !important;
+}
+
+.ui-modern .sidebar-brand-v6 {
+    background: var(--ref-navy) !important;
+    border-bottom-color: rgba(255,255,255,.11) !important;
+}
+
+.ui-modern .sidebar-label-v6 {
+    color: #A9B9C8 !important;
+}
+
+.ui-modern .nav-item.nav-v6 {
+    color: #D9E3EC !important;
+}
+
+.ui-modern .nav-item.nav-v6:hover,
+.ui-modern .nav-item.nav-v6:focus-visible {
+    background: rgba(255,255,255,.075) !important;
+    color: #FFFFFF !important;
+    border-color: rgba(255,255,255,.08) !important;
+}
+
+.ui-modern .nav-item.nav-v6.active {
+    background: #F7FAFD !important;
+    color: var(--ref-blue) !important;
+    border-color: #D9E7F2 !important;
+    box-shadow: 0 5px 14px rgba(10,35,58,.10) !important;
+}
+
+.ui-modern .nav-item.nav-v6.active::before {
+    background: var(--ref-blue) !important;
+}
+
+/* Header */
+.ui-modern .topbar-v6 {
+    background: #FFFFFF !important;
+    border-bottom-color: var(--ref-line) !important;
+}
+
+.ui-modern .topbar-kicker-v6 {
+    color: var(--ref-blue) !important;
+}
+
+.ui-modern .topbar-page-v6 > strong {
+    color: var(--ref-navy) !important;
+}
+
+.ui-modern .topbar-page-v6 > span {
+    color: var(--ref-muted) !important;
+}
+
+.ui-modern .global-search-v6 {
+    background: #FFFFFF !important;
+    border-color: var(--ref-line) !important;
+}
+
+.ui-modern .global-search-v6 svg {
+    stroke: var(--ref-blue) !important;
+}
+
+.ui-modern .topbar-status-v6 {
+    border-color: #CFE1D7 !important;
+    background: var(--ref-green-soft) !important;
+    color: #3E6D59 !important;
+}
+
+.ui-modern .topbar-status-v6 .status-dot-v6 {
+    background: var(--ref-green) !important;
+}
+
+/* User chip */
+.gateway-user-v6 .gateway-user-avatar {
+    background: var(--ref-blue-soft) !important;
+    border-color: var(--ref-blue-line) !important;
+    color: var(--ref-blue) !important;
+}
+
+.gateway-user-copy strong {
+    color: var(--ref-text) !important;
+}
+
+.gateway-user-copy span {
+    color: var(--ref-muted) !important;
+}
+
+.gateway-user-logout:hover {
+    background: var(--ref-blue-soft) !important;
+    border-color: var(--ref-blue-line) !important;
+    color: var(--ref-blue) !important;
+}
+
+/* Main intro panel */
+.ui-modern .dashboard-v4-top {
+    background: #FFFFFF !important;
+    border-color: var(--ref-line) !important;
+    box-shadow: 0 10px 28px rgba(36,56,76,.06) !important;
+}
+
+.ui-modern .dashboard-v4-top::after {
+    background: var(--ref-blue) !important;
+    opacity: .30 !important;
+}
+
+.ui-modern .dashboard-v4-kicker,
+.ui-modern .dashboard-visual-kicker {
+    color: var(--ref-orange) !important;
+}
+
+.ui-modern .dashboard-v4-top h1 {
+    color: var(--ref-navy) !important;
+}
+
+.ui-modern .dashboard-v4-top p {
+    color: var(--ref-muted) !important;
+}
+
+/* Buttons */
+.ui-modern .dashboard-action {
+    border-color: var(--ref-blue-line) !important;
+    color: var(--ref-blue) !important;
+    background: #FFFFFF !important;
+}
+
+.ui-modern .dashboard-action:hover {
+    background: var(--ref-blue-soft) !important;
+    border-color: #AFCADF !important;
+    color: #245C87 !important;
+}
+
+.ui-modern .dashboard-action.primary {
+    background: var(--ref-blue) !important;
+    border-color: var(--ref-blue) !important;
+    color: #FFFFFF !important;
+}
+
+.ui-modern .dashboard-action.primary:hover {
+    background: #285F8B !important;
+    border-color: #285F8B !important;
+}
+
+/* Filter bar */
+.ui-modern .dashboard-command {
+    background: #FFFFFF !important;
+    border-color: var(--ref-line) !important;
+}
+
+.ui-modern .dashboard-command input,
+.ui-modern .dashboard-command select {
+    border-color: var(--ref-line) !important;
+    background: #FFFFFF !important;
+    color: var(--ref-text) !important;
+}
+
+.ui-modern .dashboard-command input:focus,
+.ui-modern .dashboard-command select:focus {
+    border-color: var(--ref-blue-line) !important;
+    box-shadow: 0 0 0 3px rgba(46,111,163,.08) !important;
+}
+
+/* Metric cards: restore their text and use restrained category accents. */
+.ui-modern .dashboard-metric,
+.ui-modern .dashboard-metric:nth-child(2),
+.ui-modern .dashboard-metric:nth-child(3),
+.ui-modern .dashboard-metric:nth-child(4),
+.ui-modern .dashboard-metric:nth-child(5) {
+    background: #FFFFFF !important;
+    color: var(--ref-text) !important;
+    border-color: var(--ref-line) !important;
+    border-top: 3px solid var(--ref-blue-line) !important;
+}
+
+.ui-modern .dashboard-metric:nth-child(3) {
+    border-top-color: #A9C6B8 !important;
+    background: var(--ref-green-soft) !important;
+}
+
+.ui-modern .dashboard-metric:nth-child(4) {
+    border-top-color: #E2C0A4 !important;
+    background: var(--ref-orange-soft) !important;
+}
+
+.ui-modern .dashboard-metric:nth-child(5) {
+    border-top-color: var(--ref-blue-line) !important;
+    background: var(--ref-blue-soft) !important;
+}
+
+.ui-modern .dashboard-metric:nth-child(3) .dashboard-metric-label,
+.ui-modern .dashboard-metric:nth-child(4) .dashboard-metric-label,
+.ui-modern .dashboard-metric:nth-child(3) .dashboard-metric-caption,
+.ui-modern .dashboard-metric:nth-child(4) .dashboard-metric-caption,
+.ui-modern .dashboard-metric:nth-child(3) .dashboard-metric-value,
+.ui-modern .dashboard-metric:nth-child(4) .dashboard-metric-value {
+    color: var(--ref-text) !important;
+}
+
+.ui-modern .dashboard-metric-label {
+    color: var(--ref-muted) !important;
+}
+
+.ui-modern .dashboard-metric-value {
+    color: var(--ref-navy) !important;
+}
+
+.ui-modern .dashboard-metric:nth-child(3) .dashboard-metric-value {
+    color: var(--ref-green) !important;
+}
+
+.ui-modern .dashboard-metric:nth-child(4) .dashboard-metric-value {
+    color: var(--ref-orange) !important;
+}
+
+.ui-modern .dashboard-metric:nth-child(5) .dashboard-metric-value {
+    color: var(--ref-blue) !important;
+}
+
+.ui-modern .dashboard-metric-caption {
+    color: var(--ref-muted) !important;
+}
+
+/* Gateway card */
+.ui-modern .dashboard-gateway-strip {
+    background: var(--ref-navy) !important;
+    border-color: var(--ref-navy) !important;
+    color: #FFFFFF !important;
+}
+
+.ui-modern .dashboard-gateway-state,
+.ui-modern .dashboard-gateway-title,
+.ui-modern .dashboard-gateway-sub,
+.ui-modern .dashboard-meta-item span,
+.ui-modern .dashboard-meta-item strong {
+    color: #FFFFFF !important;
+}
+
+.ui-modern .dashboard-gateway-state-dot {
+    background: var(--ref-green) !important;
+}
+
+/* Live overview */
+.ui-modern .dashboard-visual-overview,
+.ui-modern .dashboard-section {
+    background: #FFFFFF !important;
+    border-color: var(--ref-line) !important;
+}
+
+.ui-modern .dashboard-visual-intro h2,
+.ui-modern .dashboard-section-head h2 {
+    color: var(--ref-navy) !important;
+}
+
+.ui-modern .dashboard-visual-source {
+    border-color: var(--ref-blue-line) !important;
+    background: var(--ref-blue-soft) !important;
+    color: var(--ref-blue) !important;
+}
+
+.ui-modern .dashboard-visual-card {
+    background: #FBFCFD !important;
+    border-color: var(--ref-line) !important;
+}
+
+.ui-modern .dashboard-visual-card:nth-child(1) {
+    border-top-color: #AFCADF !important;
+}
+
+.ui-modern .dashboard-visual-card:nth-child(2) {
+    border-top-color: #E2C0A4 !important;
+}
+
+.ui-modern .dashboard-visual-card:nth-child(3) {
+    border-top-color: #A9C6B8 !important;
+}
+
+.ui-modern .dashboard-visual-card-head strong {
+    color: var(--ref-navy) !important;
+}
+
+.ui-modern .dashboard-visual-bar i {
+    background: var(--ref-blue) !important;
+}
+
+.ui-modern .dashboard-visual-health i {
+    background: var(--ref-orange) !important;
+}
+
+.ui-modern .dashboard-state-segments i.online {
+    background: var(--ref-green) !important;
+}
+
+.ui-modern .dashboard-state-segments i.offline {
+    background: #A97958 !important;
+}
+
+.ui-modern .dashboard-state-segments i.disabled {
+    background: #8A98A6 !important;
+}
+
+/* Node and telemetry */
+.ui-modern .dashboard-node {
+    background: #FFFFFF !important;
+    border-color: var(--ref-line) !important;
+}
+
+.ui-modern .dashboard-node-head {
+    background: #F9FBFC !important;
+}
+
+.ui-modern .dashboard-node-head::before {
+    background: var(--ref-blue) !important;
+}
+
+.ui-modern .dashboard-node-status.online {
+    background: var(--ref-green) !important;
+}
+
+.ui-modern .dashboard-node-status:not(.online) {
+    background: #7B8794 !important;
+}
+
+.ui-modern .dashboard-node-name,
+.ui-modern .dashboard-node-id {
+    color: var(--ref-navy) !important;
+}
+
+.ui-modern .dashboard-sensor-card.good {
+    border-left-color: var(--ref-green) !important;
+}
+
+.ui-modern .dashboard-sensor-card.warning,
+.ui-modern .dashboard-sensor-card.error,
+.ui-modern .dashboard-sensor-card.offline {
+    border-left-color: var(--ref-orange) !important;
+}
+
+.ui-modern .dashboard-sensor-name,
+.ui-modern .dashboard-sensor-value {
+    color: var(--ref-navy) !important;
+}
+
+.ui-modern .dashboard-sensor-status.good {
+    color: var(--ref-green) !important;
+}
+
+.ui-modern .dashboard-sensor-status.warning,
+.ui-modern .dashboard-sensor-status.error,
+.ui-modern .dashboard-sensor-status.offline {
+    color: #9A603A !important;
+}
+
+.ui-modern .dashboard-sensor-status.good i {
+    background: var(--ref-green) !important;
+}
+
+.ui-modern .dashboard-sensor-status.warning i,
+.ui-modern .dashboard-sensor-status.error i,
+.ui-modern .dashboard-sensor-status.offline i {
+    background: var(--ref-orange) !important;
+}
+
+/* Right-side lists */
+.ui-modern .dashboard-health-dot {
+    background: var(--ref-green) !important;
+}
+
+.ui-modern .dashboard-health-dot.offline {
+    background: #8A6B57 !important;
+}
+
+.ui-modern .dashboard-event-dot {
+    background: var(--ref-blue) !important;
+}
+
+.ui-modern .dashboard-alert-icon {
+    background: var(--ref-orange-soft) !important;
+    color: #9A603A !important;
+}
+
+.ui-modern .dashboard-row-main strong {
+    color: var(--ref-navy) !important;
+}
+
+.ui-modern .dashboard-row-value {
+    color: var(--ref-blue) !important;
+}
+
+.ui-modern .dashboard-link {
+    color: var(--ref-blue) !important;
+}
+
+.ui-modern .dashboard-link:hover {
+    color: var(--ref-orange) !important;
+}
+
+/* Hover card */
+.ui-nav-hover-card {
+    border-color: var(--ref-line) !important;
+    border-top-color: var(--ref-blue) !important;
+    box-shadow: 0 16px 34px rgba(23,50,77,.12) !important;
+}
+
+.ui-nav-hover-card__kicker,
+.ui-nav-hover-card__title {
+    color: var(--ref-blue) !important;
+}
+
+.ui-nav-hover-card__kicker::before {
+    background: var(--ref-green) !important;
+}
+
+/* Less "cartoon" motion. */
+.ui-modern .dashboard-gateway-strip:hover,
+.ui-modern .dashboard-metric:hover,
+.ui-modern .dashboard-visual-card:hover,
+.ui-modern .dashboard-node:hover,
+.ui-modern .dashboard-sensor-card:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 12px 28px rgba(23,50,77,.07) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ui-modern *,
+    .ui-modern *::before,
+    .ui-modern *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
