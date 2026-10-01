@@ -1,0 +1,636 @@
+/* ============================================================
+   SELVARITHIK'S LORA GATEWAY
+   UI 2026 — NEUTRAL / PROFESSIONAL INDUSTRIAL
+   Removes saturated blue/orange/green UI treatment.
+   ============================================================ */
+
+:root {
+    --ui-black: #111827;
+    --ui-dark: #1F2937;
+    --ui-mid: #4B5563;
+    --ui-muted-neutral: #6B7280;
+    --ui-faint: #9CA3AF;
+    --ui-white: #FFFFFF;
+    --ui-surface: #FFFFFF;
+    --ui-soft-neutral: #F7F8FA;
+    --ui-line-neutral: #E5E7EB;
+    --ui-line-strong-neutral: #D1D5DB;
+    --ui-shadow-neutral: 0 10px 28px rgba(17, 24, 39, 0.06);
+    --ui-shadow-hover-neutral: 0 14px 34px rgba(17, 24, 39, 0.10);
+}
+
+/* Global neutral base. */
+html,
+html[data-theme],
+html[data-accent],
+html[data-palette],
+body.gateway-body.ui-modern {
+    background: var(--ui-white) !important;
+    color: var(--ui-dark) !important;
+    color-scheme: light !important;
+}
+
+/* ------------------------------------------------------------
+   SIDEBAR
+   ------------------------------------------------------------ */
+
+.ui-modern .sidebar-v6 {
+    width: 218px !important;
+    background: #202A36 !important;
+    color: #FFFFFF !important;
+    border-right: 1px solid #171F29 !important;
+    box-shadow: 5px 0 18px rgba(17,24,39,.08) !important;
+}
+
+.ui-modern .sidebar-v6::after {
+    height: 2px !important;
+    background: #FFFFFF !important;
+    opacity: .18;
+}
+
+.ui-modern .sidebar-brand-v6 {
+    min-height: 86px !important;
+    padding: 21px 18px 18px !important;
+    background: #202A36 !important;
+    border-bottom: 1px solid rgba(255,255,255,.10) !important;
+}
+
+.ui-modern .sidebar-brand-copy-v6 strong,
+.ui-modern .sidebar-brand-copy-v6 span {
+    color: #FFFFFF !important;
+}
+
+.ui-modern .sidebar-brand-copy-v6 strong {
+    font-size: 15px !important;
+    letter-spacing: .08em !important;
+}
+
+.ui-modern .sidebar-brand-copy-v6 span {
+    color: #CBD5E1 !important;
+    opacity: 1 !important;
+    font-size: 9px !important;
+}
+
+.ui-modern .sidebar-nav-v6 {
+    padding: 14px 10px !important;
+}
+
+.ui-modern .sidebar-label-v6 {
+    color: #94A3B8 !important;
+    margin: 15px 10px 6px !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    letter-spacing: .17em !important;
+}
+
+.ui-modern .nav-item.nav-v6 {
+    min-height: 42px !important;
+    margin: 3px 0 !important;
+    padding: 0 12px !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: #D7DEE7 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease !important;
+}
+
+.ui-modern .nav-item.nav-v6:hover,
+.ui-modern .nav-item.nav-v6:focus-visible {
+    transform: none !important;
+    background: rgba(255,255,255,.07) !important;
+    border-color: rgba(255,255,255,.08) !important;
+    color: #FFFFFF !important;
+}
+
+.ui-modern .nav-item.nav-v6.active {
+    transform: none !important;
+    background: #FFFFFF !important;
+    color: #1F2937 !important;
+    border-color: #FFFFFF !important;
+    box-shadow: none !important;
+}
+
+.ui-modern .nav-item.nav-v6.active::before {
+    left: 0 !important;
+    top: 7px !important;
+    bottom: 7px !important;
+    width: 3px !important;
+    background: #111827 !important;
+}
+
+.ui-modern .nav-item .nav-icon,
+.ui-modern .nav-item.active .nav-icon,
+.ui-modern .nav-item:hover .nav-icon {
+    color: currentColor !important;
+    stroke: currentColor !important;
+    filter: none !important;
+    transform: none !important;
+}
+
+.ui-modern .sidebar-footer-v6 {
+    background: rgba(0,0,0,.08) !important;
+    border-top: 1px solid rgba(255,255,255,.10) !important;
+}
+
+.ui-modern .sidebar-footer-v6 > span:not(.sidebar-live-dot) {
+    color: #94A3B8 !important;
+}
+
+.ui-modern .sidebar-live-dot {
+    width: 6px !important;
+    height: 6px !important;
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+}
+
+/* ------------------------------------------------------------
+   TOP HEADER
+   ------------------------------------------------------------ */
+
+.ui-modern .topbar-v6 {
+    left: 218px !important;
+    height: 68px !important;
+    background: #FFFFFF !important;
+    color: var(--ui-dark) !important;
+    border-bottom: 1px solid var(--ui-line-neutral) !important;
+    box-shadow: 0 3px 12px rgba(17,24,39,.035) !important;
+}
+
+.ui-modern .topbar-kicker-v6,
+.ui-modern .topbar-page-v6 > strong,
+.ui-modern .topbar-page-v6 > span,
+.ui-modern .topbar-clock-v6 span,
+.ui-modern .topbar-clock-v6 strong {
+    color: inherit !important;
+}
+
+.ui-modern .topbar-kicker-v6 {
+    color: #6B7280 !important;
+    font-size: 8px !important;
+}
+
+.ui-modern .topbar-page-v6 > strong {
+    color: #111827 !important;
+    font-size: 16px !important;
+}
+
+.ui-modern .topbar-page-v6 > span {
+    color: #6B7280 !important;
+}
+
+.ui-modern .global-search-v6 {
+    width: 205px !important;
+    height: 36px !important;
+    border: 1px solid var(--ui-line-neutral) !important;
+    border-radius: 8px !important;
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+}
+
+.ui-modern .global-search-v6:focus-within {
+    border-color: #9CA3AF !important;
+    box-shadow: 0 0 0 3px rgba(17,24,39,.05) !important;
+    transform: none !important;
+}
+
+.ui-modern .global-search-v6 svg {
+    stroke: #6B7280 !important;
+}
+
+.ui-modern .global-search-v6 input {
+    color: #374151 !important;
+}
+
+.ui-modern .global-search-v6 input::placeholder {
+    color: #9CA3AF !important;
+}
+
+.ui-modern .topbar-status-v6 {
+    border-color: #D1D5DB !important;
+    background: #F7F8FA !important;
+    color: #374151 !important;
+}
+
+.ui-modern .topbar-status-v6 .status-dot-v6 {
+    background: #374151 !important;
+    box-shadow: none !important;
+}
+
+.gateway-user-v6 .gateway-user-avatar {
+    border-color: #E5E7EB !important;
+    background: #F7F8FA !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+}
+
+.gateway-user-copy strong {
+    color: #1F2937 !important;
+}
+
+.gateway-user-copy span {
+    color: #6B7280 !important;
+}
+
+.gateway-user-logout {
+    border-color: #E5E7EB !important;
+    background: #FFFFFF !important;
+    color: #374151 !important;
+}
+
+.gateway-user-logout:hover {
+    color: #111827 !important;
+    background: #F3F4F6 !important;
+    border-color: #D1D5DB !important;
+    transform: none !important;
+}
+
+/* ------------------------------------------------------------
+   PAGE / COMMON
+   ------------------------------------------------------------ */
+
+.ui-modern .main-area-v6,
+.ui-modern .page-content-v6 {
+    background: #FFFFFF !important;
+}
+
+.ui-modern .page-content-v6 {
+    padding: 22px 24px 36px !important;
+}
+
+.ui-modern .dashboard-v4-top,
+.ui-modern .dashboard-status-board,
+.ui-modern .dashboard-visual-overview,
+.ui-modern .dashboard-section,
+.ui-modern .dashboard-metric,
+.ui-modern .dashboard-gateway-strip,
+.ui-modern .dashboard-visual-card,
+.ui-modern .dashboard-node,
+.ui-modern .dashboard-sensor-card,
+.ui-modern .dashboard-custom-card,
+.ui-modern .panel,
+.ui-modern .card,
+.ui-modern .stat-card,
+.ui-modern .sensor-card,
+.ui-modern .table-wrap,
+.ui-modern .form-card,
+.ui-modern .section-card,
+.ui-modern .data-card,
+.ui-modern .communication-card,
+.ui-modern .firmware-card {
+    border-color: var(--ui-line-neutral) !important;
+    background: #FFFFFF !important;
+    box-shadow: var(--ui-shadow-neutral) !important;
+}
+
+/* ------------------------------------------------------------
+   DASHBOARD HEADER / ACTIONS
+   ------------------------------------------------------------ */
+
+.ui-modern .dashboard-v4-top::after {
+    height: 2px !important;
+    background: #111827 !important;
+    opacity: .10;
+}
+
+.ui-modern .dashboard-v4-kicker,
+.ui-modern .dashboard-visual-kicker {
+    color: #6B7280 !important;
+}
+
+.ui-modern .dashboard-v4-top h1,
+.ui-modern .dashboard-visual-intro h2,
+.ui-modern .dashboard-section-head h2,
+.ui-modern .dashboard-page-title,
+.ui-modern .page-title,
+.ui-modern .section-title,
+.ui-modern .panel-title {
+    color: #111827 !important;
+}
+
+.ui-modern .dashboard-v4-top p,
+.ui-modern .dashboard-visual-intro p,
+.ui-modern .dashboard-section-head p,
+.ui-modern .dashboard-v4-top .dashboard-v4-sub {
+    color: #6B7280 !important;
+}
+
+.ui-modern .dashboard-live-chip {
+    border-color: #D1D5DB !important;
+    background: #F7F8FA !important;
+    color: #374151 !important;
+}
+
+.ui-modern .dashboard-live-chip i {
+    background: #374151 !important;
+    box-shadow: none !important;
+    animation: none !important;
+}
+
+.ui-modern .dashboard-action,
+.ui-modern .dashboard-mini-tool {
+    border-color: #D1D5DB !important;
+    background: #FFFFFF !important;
+    color: #374151 !important;
+    box-shadow: none !important;
+}
+
+.ui-modern .dashboard-action:hover,
+.ui-modern .dashboard-mini-tool:hover {
+    transform: none !important;
+    border-color: #9CA3AF !important;
+    background: #F7F8FA !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+}
+
+.ui-modern .dashboard-action.primary,
+.ui-modern .dashboard-mini-tool.active {
+    border-color: #1F2937 !important;
+    background: #1F2937 !important;
+    color: #FFFFFF !important;
+}
+
+.ui-modern .dashboard-action.primary:hover {
+    border-color: #111827 !important;
+    background: #111827 !important;
+}
+
+/* ------------------------------------------------------------
+   SEARCH / FILTER BAR
+   ------------------------------------------------------------ */
+
+.ui-modern .dashboard-command {
+    border-color: var(--ui-line-neutral) !important;
+    background: #F7F8FA !important;
+}
+
+.ui-modern .dashboard-command input,
+.ui-modern .dashboard-command select,
+.ui-modern input,
+.ui-modern select,
+.ui-modern textarea {
+    border-color: #D1D5DB !important;
+    background: #FFFFFF !important;
+    color: #374151 !important;
+}
+
+.ui-modern .dashboard-command input:focus,
+.ui-modern .dashboard-command select:focus,
+.ui-modern input:focus,
+.ui-modern select:focus,
+.ui-modern textarea:focus {
+    border-color: #9CA3AF !important;
+    box-shadow: 0 0 0 3px rgba(17,24,39,.05) !important;
+}
+
+/* ------------------------------------------------------------
+   METRICS — flat and neutral
+   ------------------------------------------------------------ */
+
+.ui-modern .dashboard-gateway-strip,
+.ui-modern .dashboard-metric,
+.ui-modern .dashboard-metric:nth-child(2),
+.ui-modern .dashboard-metric:nth-child(3),
+.ui-modern .dashboard-metric:nth-child(4),
+.ui-modern .dashboard-metric:nth-child(5) {
+    background: #FFFFFF !important;
+    color: #1F2937 !important;
+    border: 1px solid var(--ui-line-neutral) !important;
+    border-top: 3px solid #D1D5DB !important;
+}
+
+.ui-modern .dashboard-gateway-strip::after {
+    display: none !important;
+}
+
+.ui-modern .dashboard-gateway-state,
+.ui-modern .dashboard-gateway-title,
+.ui-modern .dashboard-gateway-sub,
+.ui-modern .dashboard-meta-item span,
+.ui-modern .dashboard-meta-item strong,
+.ui-modern .dashboard-metric-label,
+.ui-modern .dashboard-metric-value,
+.ui-modern .dashboard-metric-caption {
+    color: inherit !important;
+}
+
+.ui-modern .dashboard-gateway-state-dot,
+.ui-modern .dashboard-metric:nth-child(3) .dashboard-gateway-state-dot {
+    background: #374151 !important;
+    box-shadow: none !important;
+}
+
+.ui-modern .dashboard-gateway-state,
+.ui-modern .dashboard-metric-label {
+    color: #6B7280 !important;
+}
+
+.ui-modern .dashboard-gateway-title,
+.ui-modern .dashboard-metric-value {
+    color: #111827 !important;
+}
+
+.ui-modern .dashboard-metric-caption {
+    color: #6B7280 !important;
+}
+
+.ui-modern .dashboard-gateway-strip:hover,
+.ui-modern .dashboard-metric:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: var(--ui-shadow-hover-neutral) !important;
+}
+
+/* ------------------------------------------------------------
+   OVERVIEW / PROGRESS
+   ------------------------------------------------------------ */
+
+.ui-modern .dashboard-visual-card:nth-child(1),
+.ui-modern .dashboard-visual-card:nth-child(2),
+.ui-modern .dashboard-visual-card:nth-child(3) {
+    border-top-color: #D1D5DB !important;
+}
+
+.ui-modern .dashboard-visual-source {
+    border-color: #D1D5DB !important;
+    background: #F7F8FA !important;
+    color: #4B5563 !important;
+}
+
+.ui-modern .dashboard-visual-card-head strong {
+    color: #111827 !important;
+}
+
+.ui-modern .dashboard-visual-bar,
+.ui-modern .dashboard-state-segments {
+    background: #ECEFF3 !important;
+}
+
+.ui-modern .dashboard-visual-bar i,
+.ui-modern .dashboard-visual-health i,
+.ui-modern .dashboard-state-segments i.online,
+.ui-modern .dashboard-state-segments i.offline,
+.ui-modern .dashboard-state-segments i.disabled {
+    background: #59636F !important;
+}
+
+.ui-modern .dashboard-state-segments i + i {
+    border-left: 1px solid rgba(255,255,255,.75);
+}
+
+/* ------------------------------------------------------------
+   NODES / TELEMETRY
+   ------------------------------------------------------------ */
+
+.ui-modern .dashboard-node-head {
+    background: #FAFBFC !important;
+}
+
+.ui-modern .dashboard-node-head::before {
+    width: 3px !important;
+    background: #9CA3AF !important;
+}
+
+.ui-modern .dashboard-node-status.online,
+.ui-modern .dashboard-node-status:not(.online) {
+    background: #4B5563 !important;
+    box-shadow: none !important;
+}
+
+.ui-modern .dashboard-node-name,
+.ui-modern .dashboard-node-id,
+.ui-modern .dashboard-sensor-name,
+.ui-modern .dashboard-sensor-value,
+.ui-modern .dashboard-row-main strong,
+.ui-modern .dashboard-row-value,
+.ui-modern .dashboard-summary-cell strong {
+    color: #1F2937 !important;
+}
+
+.ui-modern .dashboard-sensor-card,
+.ui-modern .dashboard-sensor-card.good,
+.ui-modern .dashboard-sensor-card.warning,
+.ui-modern .dashboard-sensor-card.error,
+.ui-modern .dashboard-sensor-card.offline {
+    border-left-color: #9CA3AF !important;
+}
+
+.ui-modern .dashboard-sensor-badge {
+    border-color: #D1D5DB !important;
+    background: #F7F8FA !important;
+    color: #6B7280 !important;
+}
+
+.ui-modern .dashboard-sensor-status.good,
+.ui-modern .dashboard-sensor-status.warning,
+.ui-modern .dashboard-sensor-status.error,
+.ui-modern .dashboard-sensor-status.offline {
+    color: #4B5563 !important;
+}
+
+.ui-modern .dashboard-sensor-status.good i,
+.ui-modern .dashboard-sensor-status.warning i,
+.ui-modern .dashboard-sensor-status.error i,
+.ui-modern .dashboard-sensor-status.offline i {
+    background: #4B5563 !important;
+}
+
+.ui-modern .dashboard-node-toggle {
+    border-color: #D1D5DB !important;
+    background: #FFFFFF !important;
+    color: #374151 !important;
+}
+
+.ui-modern .dashboard-node-toggle:hover {
+    background: #F3F4F6 !important;
+    color: #111827 !important;
+}
+
+/* ------------------------------------------------------------
+   RIGHT COLUMN / FEEDS
+   ------------------------------------------------------------ */
+
+.ui-modern .dashboard-health-row,
+.ui-modern .dashboard-alert-row,
+.ui-modern .dashboard-event-row {
+    border-bottom-color: var(--ui-line-neutral) !important;
+    background: #FFFFFF !important;
+}
+
+.ui-modern .dashboard-health-row:hover,
+.ui-modern .dashboard-alert-row:hover,
+.ui-modern .dashboard-event-row:hover {
+    background: #F7F8FA !important;
+}
+
+.ui-modern .dashboard-health-dot,
+.ui-modern .dashboard-health-dot.offline,
+.ui-modern .dashboard-event-dot {
+    background: #4B5563 !important;
+    box-shadow: none !important;
+}
+
+.ui-modern .dashboard-alert-icon {
+    background: #F3F4F6 !important;
+    color: #374151 !important;
+}
+
+.ui-modern .dashboard-link {
+    color: #374151 !important;
+}
+
+.ui-modern .dashboard-link:hover {
+    color: #111827 !important;
+}
+
+/* ------------------------------------------------------------
+   NAV HOVER POPUP
+   ------------------------------------------------------------ */
+
+.ui-nav-hover-card {
+    border: 1px solid #D1D5DB !important;
+    border-top: 3px solid #374151 !important;
+    background: #FFFFFF !important;
+    color: #1F2937 !important;
+    box-shadow: 0 16px 34px rgba(17,24,39,.12) !important;
+}
+
+.ui-nav-hover-card__kicker,
+.ui-nav-hover-card__title {
+    color: #374151 !important;
+}
+
+.ui-nav-hover-card__kicker::before {
+    background: #4B5563 !important;
+    box-shadow: none !important;
+}
+
+.ui-nav-hover-card__text {
+    color: #6B7280 !important;
+}
+
+/* ------------------------------------------------------------
+   MOTION: restrained
+   ------------------------------------------------------------ */
+
+@keyframes uiPageInNeutral {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ui-modern .dashboard-v4-top,
+.ui-modern .dashboard-status-board,
+.ui-modern .dashboard-visual-overview,
+.ui-modern .dashboard-main-grid {
+    animation: uiPageInNeutral 220ms ease both !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ui-modern *,
+    .ui-modern *::before,
+    .ui-modern *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
