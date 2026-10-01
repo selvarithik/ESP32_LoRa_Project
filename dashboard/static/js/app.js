@@ -719,202 +719,62 @@ gateway.bindRefresh = function (
 
 /* ============================================================
    THEME MANAGEMENT
-   Fixed Signal Blue brand. Light/dark only.
+   Fixed gateway UI: BLUE / ORANGE / GREEN + WHITE.
+   User-selectable palette and dark mode are removed.
    ============================================================ */
 
-const THEME_PRESETS = {
-    light: "light",
-    dark: "dark"
-};
-
-const COLOR_PALETTES = {
-    "signal-blue": { name: "Signal Blue", primary: "#0057FF", companion: "#F8F7F4" },
-    "emerald-ink": { name: "Emerald Ink", primary: "#064E3B", companion: "#F8E7C9" },
-    "neon-lime": { name: "Neon Lime", primary: "#C8FF3D", companion: "#2D1B69" },
-    "butter-yellow": { name: "Butter Yellow", primary: "#FFF275", companion: "#3A0CA3" },
-    "burnt-orange": { name: "Burnt Orange", primary: "#FC6C26", companion: "#FFF4D6" },
-    "lime-spark": { name: "Lime Spark", primary: "#B6FF2E", companion: "#23262F" }
+const GATEWAY_UI_PALETTE = {
+    blue: "#0057FF",
+    orange: "#FC6C26",
+    green: "#009E4D",
+    white: "#FFFFFF"
 };
 
 gateway.initAppearanceEditor = function () {
-    /* Retained as a no-op compatibility hook. RGB/HEX editor is removed. */
+    /* Compatibility hook retained for older callers. */
 };
 
 gateway.initTheme = function () {
+    const root = document.documentElement;
 
-    const root =
-        document.documentElement;
+    root.setAttribute("data-theme", "light");
+    root.removeAttribute("data-accent");
+    root.removeAttribute("data-palette");
 
-    const savedTheme =
-        localStorage.getItem(
-            "gateway_theme"
-        ) || "light";
-
-    /* Remove legacy user-selectable accent state from previous UI versions. */
+    localStorage.removeItem("gateway_theme");
     localStorage.removeItem("gateway_accent");
-
-    root.setAttribute(
-        "data-theme",
-        savedTheme === "dark"
-            ? "dark"
-            : "light"
-    );
-
-    const themeToggleBtn =
-        document.getElementById(
-            "theme-toggle-btn"
-        );
-
-    themeToggleBtn?.addEventListener(
-        "click",
-        () => gateway.toggleTheme()
-    );
+    localStorage.removeItem("gateway_palette");
 
     document.dispatchEvent(
-        new CustomEvent(
-            "gateway:themechange"
-        )
+        new CustomEvent("gateway:themechange", {
+            detail: { theme: "light", palette: "gateway-triad" }
+        })
     );
 };
 
 gateway.toggleTheme = function () {
-
-    const root =
-        document.documentElement;
-
-    const current =
-        root.getAttribute(
-            "data-theme"
-        ) || "light";
-
-    const next =
-        current === "dark"
-            ? "light"
-            : "dark";
-
-    root.setAttribute(
-        "data-theme",
-        next
-    );
-
-    localStorage.setItem(
-        "gateway_theme",
-        next
-    );
-
-    window.dispatchEvent(
-        new CustomEvent(
-            "gateway:themechange",
-            {
-                detail: {
-                    theme: next
-                }
-            }
-        )
-    );
+    gateway.initTheme();
 };
 
-
-gateway.applyPalette = function (palette) {
-
-    const selected =
-        COLOR_PALETTES[palette]
-            ? palette
-            : "signal-blue";
-
+gateway.applyPalette = function () {
     const root = document.documentElement;
 
-    root.setAttribute("data-palette", selected);
-    localStorage.setItem("gateway_palette", selected);
-
-    document.querySelectorAll("[data-palette-choice]").forEach(button => {
-        const active =
-            button.getAttribute("data-palette-choice") === selected;
-
-        button.classList.toggle("active", active);
-        button.setAttribute("aria-checked", active ? "true" : "false");
-    });
-
-    const label =
-        document.getElementById("palette-current-label");
-
-    if (label) {
-        label.textContent =
-            COLOR_PALETTES[selected].name;
-    }
-
-    document.querySelectorAll(".palette-control-swatch-v1").forEach(swatch => {
-        swatch.style.background =
-            `linear-gradient(135deg, ${COLOR_PALETTES[selected].primary} 0 50%, ${COLOR_PALETTES[selected].companion} 50% 100%)`;
-    });
+    root.setAttribute("data-theme", "light");
+    root.removeAttribute("data-accent");
+    root.removeAttribute("data-palette");
 
     window.dispatchEvent(
-        new CustomEvent(
-            "gateway:palettechange",
-            { detail: { palette: selected } }
-        )
+        new CustomEvent("gateway:palettechange", {
+            detail: {
+                palette: "gateway-triad",
+                colors: GATEWAY_UI_PALETTE
+            }
+        })
     );
 };
 
 gateway.initPalette = function () {
-
-    const saved =
-        localStorage.getItem("gateway_palette") || "signal-blue";
-
-    gateway.applyPalette(saved);
-
-    const button =
-        document.getElementById("palette-picker-btn");
-
-    const menu =
-        document.getElementById("palette-dropdown-menu");
-
-    if (button && menu) {
-
-        const close = () => {
-            menu.classList.remove("open");
-            button.setAttribute("aria-expanded", "false");
-        };
-
-        button.addEventListener("click", event => {
-            event.stopPropagation();
-
-            const open =
-                !menu.classList.contains("open");
-
-            menu.classList.toggle("open", open);
-            button.setAttribute(
-                "aria-expanded",
-                open ? "true" : "false"
-            );
-        });
-
-        menu
-            .querySelectorAll("[data-palette-choice]")
-            .forEach(choice => {
-                choice.addEventListener("click", () => {
-                    gateway.applyPalette(
-                        choice.getAttribute("data-palette-choice")
-                    );
-                    close();
-                });
-            });
-
-        document.addEventListener("click", event => {
-            if (
-                !menu.contains(event.target) &&
-                !button.contains(event.target)
-            ) {
-                close();
-            }
-        });
-
-        document.addEventListener("keydown", event => {
-            if (event.key === "Escape") {
-                close();
-            }
-        });
-    }
+    gateway.applyPalette();
 };
 
 /* ============================================================
