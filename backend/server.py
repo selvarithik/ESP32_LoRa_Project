@@ -1,11 +1,13 @@
-from flask import Flask, render_template, jsonify, request, send_file
+from flask import Flask, render_template, jsonify, request, send_file, session, redirect, url_for
 from flask_socketio import SocketIO, emit
 
 from datetime import datetime
 from pathlib import Path
+import os
 
 import node_manager
 import config_manager
+import auth_manager
 import telemetry_manager
 import sensor_manager
 import database
@@ -35,6 +37,59 @@ socketio = SocketIO(
     app,
     cors_allowed_origins="*"
 )
+
+# Local web-session security. Override GATEWAY_SECRET_KEY for a deployment.
+app.secret_key = os.environ.get(
+    "GATEWAY_SECRET_KEY",
+    "selvarithik-lora-gateway-development-secret-change-me"
+)
+
+# Browser pages require a signed session. These paths stay public for the
+# login page, static assets, and embedded-node ingress/feedback.
+PUBLIC_PATHS = {
+    "/login",
+    "/logout",
+    "/api/auth/login",
+    "/api/auth/logout",
+    "/api/auth/status",
+}
+
+PUBLIC_PREFIXES = (
+    "/static/",
+    "/api/telemetry",
+    "/api/communication/receive",
+    "/api/firmware/download/",
+)
+
+PUBLIC_COMMAND_SUFFIXES = (
+    "/ack",
+    "/response",
+    "/state",
+)
+
+@app.before_request
+def require_gateway_login():
+    path = request.path
+
+    if path in PUBLIC_PATHS or path.startswith(PUBLIC_PREFIXES):
+        return None
+
+    if path.startswith("/api/commands/") and path.endswith(PUBLIC_COMMAND_SUFFIXES):
+        return None
+
+    if session.get("gateway_authenticated") is True:
+        return None
+
+    if path.startswith("/api/"):
+        return jsonify({
+            "success": False,
+            "error": "Authentication required",
+            "login_required": True
+        }), 401
+
+    next_url = request.full_path.rstrip("?")
+    return redirect(url_for("login", next=next_url))
+
 
 
 # ============================================================
@@ -87,6 +142,95 @@ def create_log(
 # ============================================================
 
 nodes = {}
+
+
+# ============================================================
+# WEB AUTHENTICATION
+# ============================================================
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if session.get("gateway_authenticated") is True:
+        return redirect(request.args.get("next") or url_for("dashboard"))
+
+    next_url = request.args.get("next") or (
+        request.form.get("next") if request.method == "POST" else ""
+    )
+
+    if request.method == "POST":
+        username = (request.form.get("username") or "").strip()
+        password = request.form.get("password") or ""
+
+        if auth_manager.authenticate(username, password):
+            session.clear()
+            session["gateway_authenticated"] = True
+            session["gateway_username"] = auth_manager.get_username()
+            session.permanent = True
+
+            target = next_url or url_for("dashboard")
+            if not target.startswith("/"):
+                target = url_for("dashboard")
+
+            return redirect(target)
+
+        return render_template(
+            "login.html",
+            error="Invalid user ID or password.",
+            username=username,
+            next_url=next_url,
+        ), 401
+
+    return render_template(
+        "login.html",
+        error=None,
+        username="",
+        next_url=next_url,
+    )
+
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+
+@app.route("/api/auth/login", methods=["POST"])
+def api_auth_login():
+    payload = request.get_json(silent=True) or request.form.to_dict()
+    username = (payload.get("username") or "").strip()
+    password = payload.get("password") or ""
+
+    if not auth_manager.authenticate(username, password):
+        return jsonify({
+            "success": False,
+            "error": "Invalid user ID or password."
+        }), 401
+
+    session.clear()
+    session["gateway_authenticated"] = True
+    session["gateway_username"] = auth_manager.get_username()
+    session.permanent = True
+
+    return jsonify({
+        "success": True,
+        "username": session["gateway_username"]
+    })
+
+
+@app.route("/api/auth/logout", methods=["POST"])
+def api_auth_logout():
+    session.clear()
+    return jsonify({"success": True})
+
+
+@app.route("/api/auth/status", methods=["GET"])
+def api_auth_status():
+    return jsonify({
+        "success": True,
+        "authenticated": session.get("gateway_authenticated") is True,
+        "username": session.get("gateway_username"),
+        "default_credentials": auth_manager.is_default_credentials()
+    })
 
 
 # ============================================================
