@@ -3,139 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#FFFFFF">
+    <meta name="theme-color" content="#0F1C2B">
     <title>Sign in · SELVARITHIK'S LoRa Gateway</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}?v=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}?v=3">
 </head>
 <body class="auth-page">
-    <main class="auth-shell">
-        <aside class="auth-brand" aria-hidden="true">
-            <div class="auth-brand__grid"></div>
-            <div class="auth-brand__content">
-                <div class="auth-brand__mark">
-                    <span class="auth-brand__diamond">◆</span>
-                    <span>SELVARITHIK'S</span>
-                </div>
-                <div class="auth-brand__title">LORA GATEWAY</div>
-                <p class="auth-brand__pitch">
-                    Monitor nodes, telemetry, communication, firmware and gateway diagnostics from one control center.
-                </p>
+    <main class="auth-layout">
+        <section class="auth-visual" aria-label="LoRa gateway technology">
+            <img
+                class="auth-visual__image"
+                src="{{ url_for('static', filename='img/lora-login-hero.jpg') }}"
+                alt="ESP32 and LoRa electronics with wireless signal visualization"
+            >
+            <div class="auth-visual__shade"></div>
+            <div class="auth-visual__grid"></div>
 
-                <div class="auth-brand__stats">
-                    <div>
-                        <strong>LIVE</strong>
-                        <span>Telemetry</span>
-                    </div>
-                    <div>
-                        <strong>ESP32</strong>
-                        <span>Gateway nodes</span>
-                    </div>
-                    <div>
-                        <strong>LoRa</strong>
-                        <span>Connectivity</span>
-                    </div>
+            <div class="auth-visual__content">
+                <a class="auth-brand" href="#" aria-label="SELVARITHIK'S LoRa Gateway">
+                    <span class="auth-brand__mark">◆</span>
+                    <span>
+                        <strong>SELVARITHIK'S</strong>
+                        <small>LORA GATEWAY</small>
+                    </span>
+                </a>
+
+                <div class="auth-hero-copy">
+                    <span class="auth-eyebrow">INDUSTRIAL IoT GATEWAY</span>
+                    <h1>Connect.<br><span>Monitor.</span><br>Control.</h1>
+                    <p>
+                        Secure access to your ESP32 and LoRa gateway workspace,
+                        live telemetry, nodes, communication and diagnostics.
+                    </p>
                 </div>
 
-                <div class="auth-brand__quote">
-                    <span class="auth-brand__quote-mark">“</span>
-                    <p>One workspace for the gateway, nodes and every signal in the field.</p>
-                    <span class="auth-brand__quote-line"></span>
-                    <small>Gateway Control Center</small>
+                <div class="auth-visual__footer">
+                    <div class="auth-visual__signal">
+                        <span class="auth-signal-dot"></span>
+                        <span>LoRa network</span>
+                    </div>
+                    <div class="auth-visual__signal-bars" aria-hidden="true">
+                        <i></i><i></i><i></i><i></i>
+                    </div>
                 </div>
             </div>
-        </aside>
+        </section>
 
         <section class="auth-panel">
             <div class="auth-panel__top">
                 <span class="auth-panel__kicker">GATEWAY ACCESS</span>
-                <span class="auth-panel__status"><i></i> SECURE SESSION</span>
+                <span class="auth-panel__secure"><i></i> LOCAL SESSION</span>
             </div>
 
-            <form class="auth-form" method="post" action="{{ url_for('login') }}" novalidate>
-                <input type="hidden" name="next" value="{{ next_url or '' }}">
+            <div class="auth-panel__body">
+                <form class="auth-form" method="post" action="{{ url_for('login') }}" novalidate>
+                    <input type="hidden" name="next" value="{{ next_url or '' }}">
 
-                <div class="auth-form__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 3 20 6v5.5c0 4.5-3.2 7.2-8 9.5-4.8-2.3-8-5-8-9.5V6z"></path>
-                        <path d="m8.5 12 2.2 2.2 4.8-5"></path>
-                    </svg>
-                </div>
+                    <div class="auth-form__eyebrow">CONTROL CENTER</div>
+                    <h2>Welcome back</h2>
+                    <p class="auth-form__subtitle">
+                        Sign in to continue to your gateway dashboard.
+                    </p>
 
-                <h1>Welcome back</h1>
-                <p class="auth-form__sub">
-                    Sign in to your SELVARITHIK'S LoRa Gateway workspace.
-                </p>
+                    {% if error %}
+                    <div class="auth-alert" role="alert">{{ error }}</div>
+                    {% endif %}
 
-                {% if error %}
-                <div class="auth-alert" role="alert">{{ error }}</div>
-                {% endif %}
-
-                <label class="auth-field">
-                    <span class="auth-field__label">User ID</span>
-                    <div class="auth-field__input-wrap">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <circle cx="12" cy="8" r="3.3"></circle>
-                            <path d="M5.5 20c.8-3.1 2.9-4.7 6.5-4.7s5.7 1.6 6.5 4.7"></path>
-                        </svg>
-                        <input
-                            type="text"
-                            name="username"
-                            value="{{ username or '' }}"
-                            autocomplete="username"
-                            placeholder="Enter user ID"
-                            required
-                            autofocus>
-                    </div>
-                </label>
-
-                <label class="auth-field">
-                    <span class="auth-field__label">Password</span>
-                    <div class="auth-field__input-wrap">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <rect x="5" y="10" width="14" height="10" rx="2"></rect>
-                            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
-                        </svg>
-                        <input
-                            id="auth-password"
-                            type="password"
-                            name="password"
-                            autocomplete="current-password"
-                            placeholder="Enter password"
-                            required>
-                        <button class="auth-password-toggle" id="auth-password-toggle" type="button" aria-label="Show password">
+                    <label class="auth-field">
+                        <span class="auth-field__label">User ID</span>
+                        <div class="auth-input">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M3.5 12s3.2-5 8.5-5 8.5 5 8.5 5-3.2 5-8.5 5-8.5-5-8.5-5Z"></path>
-                                <circle cx="12" cy="12" r="2"></circle>
+                                <circle cx="12" cy="8" r="3.2"></circle>
+                                <path d="M5.5 20c.8-3 2.9-4.6 6.5-4.6s5.7 1.6 6.5 4.6"></path>
                             </svg>
-                        </button>
+                            <input
+                                type="text"
+                                name="username"
+                                value="{{ username or '' }}"
+                                autocomplete="username"
+                                placeholder="Enter user ID"
+                                required
+                                autofocus
+                            >
+                        </div>
+                    </label>
+
+                    <label class="auth-field">
+                        <span class="auth-field__label">Password</span>
+                        <div class="auth-input">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                            </svg>
+                            <input
+                                id="auth-password"
+                                type="password"
+                                name="password"
+                                autocomplete="current-password"
+                                placeholder="Enter password"
+                                required
+                            >
+                            <button
+                                type="button"
+                                class="auth-password-toggle"
+                                id="auth-password-toggle"
+                                aria-label="Show password"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M3.5 12s3.2-5 8.5-5 8.5 5 8.5 5-3.2 5-8.5 5-8.5-5-8.5-5Z"></path>
+                                    <circle cx="12" cy="12" r="2"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </label>
+
+                    <div class="auth-row">
+                        <span class="auth-session"><i></i> Gateway session</span>
+                        <span class="auth-local">Local access</span>
                     </div>
-                </label>
 
-                <div class="auth-form__meta">
-                    <span><i></i> Gateway session</span>
-                    <span>Local access</span>
-                </div>
+                    <button class="auth-submit" type="submit">
+                        <span>Sign in</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h13"></path>
+                            <path d="m13 6 6 6-6 6"></path>
+                        </svg>
+                    </button>
 
-                <button class="auth-submit" type="submit">
-                    <span>Sign in</span>
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M5 12h13"></path>
-                        <path d="m13 6 6 6-6 6"></path>
-                    </svg>
-                </button>
+                    <div class="auth-default">
+                        <span>Development credentials</span>
+                        <code>admin / admin</code>
+                    </div>
+                </form>
+            </div>
 
-                <p class="auth-foot">
-                    Default development access: <strong>admin</strong> / <strong>admin</strong>
-                </p>
-            </form>
-
-            <footer class="auth-panel__footer">
+            <footer class="auth-footer">
                 <span>SELVARITHIK'S LORA GATEWAY</span>
-                <span>Flask Control Center</span>
+                <span>ESP32 · LoRa · Flask</span>
             </footer>
         </section>
     </main>
-
-    <script src="{{ url_for('static', filename='js/auth.js') }}?v=1"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}?v=2"></script>
 </body>
 </html>
