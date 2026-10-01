@@ -508,3 +508,77 @@ button, input { font: inherit; }
         transition: none !important;
     }
 }
+
+
+/* Final login visual: use the generated ESP32/LoRa composition as the complete left panel. */
+.auth-visual {
+    background: #081321 !important;
+}
+
+.auth-visual__image {
+    object-position: left center !important;
+    object-fit: cover !important;
+    transform: none !important;
+}
+
+.auth-visual__shade {
+    background:
+        linear-gradient(90deg, rgba(5, 14, 24, .10) 0%, rgba(5, 14, 24, .04) 62%, rgba(5, 14, 24, .38) 100%),
+        linear-gradient(180deg, rgba(5,14,24,.04) 0%, rgba(5,14,24,.02) 58%, rgba(5,14,24,.26) 100%) !important;
+}
+
+.auth-visual__grid,
+.auth-visual__content {
+    display: none !important;
+}
+
+.auth-panel {
+    background: #FFFFFF !important;
+}
+
+.auth-panel__body {
+    background: #FFFFFF !important;
+}
+
+.auth-form {
+    width: min(390px, 100%);
+}
+
+.auth-form__eyebrow {
+    color: #4C78A8 !important;
+}
+
+.auth-form h2 {
+    color: #17324D !important;
+}
+
+.auth-input:focus-within {
+    border-color: #AFC6DB !important;
+    box-shadow: 0 0 0 3px rgba(76,120,168,.10) !important;
+}
+
+.auth-password-toggle:hover {
+    background: #EEF4F9 !important;
+    color: #4C78A8 !important;
+}
+
+.auth-submit {
+    border-color: #2474B8 !important;
+    background: #2474B8 !important;
+}
+
+.auth-submit:hover {
+    background: #1E619B !important;
+    border-color: #1E619B !important;
+    box-shadow: 0 10px 22px rgba(36,116,184,.18) !important;
+}
+
+@media (max-width: 860px) {
+    .auth-visual {
+        min-height: 330px !important;
+    }
+
+    .auth-visual__image {
+        object-position: 28% center !important;
+    }
+}
