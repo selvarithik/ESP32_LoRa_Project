@@ -1,7 +1,0 @@
-LOGIN HERO ASSET
-
-Place the generated ESP32 + LoRa hero image at:
-
-dashboard/static/img/lora-login-hero.jpg
-
-The login page references this exact path.
