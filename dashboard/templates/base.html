@@ -3,24 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#F8F7F4">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/selvarithik-logo-light.svg') }}">
 <title>{% block title %}SELVARITHIK'S LORA GATEWAY{% endblock %}</title>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=21">
 {% block extra_css %}{% endblock %}
 {% block extra_css_after %}{% endblock %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v6.css') }}?v=2">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v7.css') }}?v=1">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v8.css') }}?v=2">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-palette.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gateway-ui-2026.css') }}?v=1">
 
-<script src="{{ url_for('static', filename='js/app.js') }}?v=30"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}?v=31"></script>
 <script src="{{ url_for('static', filename='js/redesign-v3.js') }}?v=3"></script>
+<script src="{{ url_for('static', filename='js/gateway-ui-2026.js') }}?v=1"></script>
 {% block extra_js %}{% endblock %}
 </head>
 
-<body class="gateway-body selvarithik-v6 selvarithik-v7" data-page="{{ request.path }}">
+<body class="gateway-body ui-modern selvarithik-v6 selvarithik-v7" data-page="{{ request.path }}">
 <a class="skip-link" href="#main-content">Skip to content</a>
 
 <div class="app-shell" id="app-shell">
@@ -36,56 +38,56 @@
     <div class="sidebar-nav-v6">
       <div class="sidebar-label-v6">Main</div>
 
-      <a href="/" class="nav-item nav-v6" data-path="/" aria-label="Dashboard">
+      <a href="/" class="nav-item nav-v6" data-path="/" aria-label="Dashboard" data-tooltip-title="Dashboard" data-tooltip-text="Live gateway overview, node availability and telemetry health.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg>
         <span>Dashboard</span>
       </a>
 
-      <a href="/nodes" class="nav-item nav-v6" data-path="/nodes" aria-label="Nodes">
+      <a href="/nodes" class="nav-item nav-v6" data-path="/nodes" aria-label="Nodes" data-tooltip-title="Nodes" data-tooltip-text="Manage connected nodes, configuration and device status.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/><path d="M10 7h4M7 10v4M17 14v-4M14 17h-4"/></svg>
         <span>Nodes</span>
       </a>
 
-      <a href="/sensors" class="nav-item nav-v6" data-path="/sensors" aria-label="Sensors">
+      <a href="/sensors" class="nav-item nav-v6" data-path="/sensors" aria-label="Sensors" data-tooltip-title="Sensors" data-tooltip-text="View sensor parameters, values, quality and alarm state.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V9M10 18V5M16 18v-8M22 18v-6"/><path d="M3 18h20"/></svg>
         <span>Sensors</span>
       </a>
 
-      <a href="/command-center" class="nav-item nav-v6" data-path="/command-center" aria-label="Commands">
+      <a href="/command-center" class="nav-item nav-v6" data-path="/command-center" aria-label="Commands" data-tooltip-title="Commands" data-tooltip-text="Send, monitor and audit commands for gateway nodes.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg>
         <span>Commands</span>
       </a>
 
       <div class="sidebar-label-v6">Connectivity</div>
 
-      <a href="/communication" class="nav-item nav-v6" data-path="/communication" aria-label="Network">
+      <a href="/communication" class="nav-item nav-v6" data-path="/communication" aria-label="Network" data-tooltip-title="Network" data-tooltip-text="Configure communication links and gateway connectivity.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 11 7.5-4M8.2 13l7.5 4"/></svg>
         <span>Network</span>
       </a>
 
-      <a href="/firmware" class="nav-item nav-v6" data-path="/firmware" aria-label="Firmware">
+      <a href="/firmware" class="nav-item nav-v6" data-path="/firmware" aria-label="Firmware" data-tooltip-title="Firmware" data-tooltip-text="Review firmware releases, device versions and OTA jobs.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="6" width="10" height="12" rx="2"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M4 9h3M4 15h3M17 9h3M17 15h3"/><path d="M10 10h4v4h-4z"/></svg>
         <span>Firmware</span>
       </a>
 
       <div class="sidebar-label-v6">Diagnostics</div>
 
-      <a href="/logs" class="nav-item nav-v6" data-path="/logs" aria-label="Logs">
+      <a href="/logs" class="nav-item nav-v6" data-path="/logs" aria-label="Logs" data-tooltip-title="Logs" data-tooltip-text="Inspect gateway events, diagnostics and communication records.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 9h14M5 13h9M5 17h14"/><circle cx="18" cy="13" r="2.5"/></svg>
         <span>Logs</span>
       </a>
 
-      <a href="/system-overview" class="nav-item nav-v6" data-path="/system-overview" aria-label="System Health">
+      <a href="/system-overview" class="nav-item nav-v6" data-path="/system-overview" aria-label="System Health" data-tooltip-title="System Health" data-tooltip-text="Check gateway runtime health and service status.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 4.8-3.4 7.7-8 9-4.6-1.3-8-4.2-8-9V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>
         <span>System Health</span>
       </a>
 
-      <a href="/system" class="nav-item nav-v6" data-path="/system" aria-label="System">
+      <a href="/system" class="nav-item nav-v6" data-path="/system" aria-label="System" data-tooltip-title="System" data-tooltip-text="Manage gateway configuration and system settings.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6-.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6 1.8.3a1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.2V14h-.2A1.6 1.6 0 0 0 19.4 15Z"/></svg>
         <span>System</span>
       </a>
 
-      <a href="/chat" class="nav-item nav-v6" data-path="/chat" aria-label="Private Chat">
+      <a href="/chat" class="nav-item nav-v6" data-path="/chat" aria-label="Private Chat" data-tooltip-title="Private Chat" data-tooltip-text="Use the private gateway-to-node communication channel.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v5A3.5 3.5 0 0 1 15.5 15H11l-4.5 4v-4.7A3.5 3.5 0 0 1 5 11.5z"/><path d="M9 8h6M9 11h4"/></svg>
         <span>Private Chat</span>
       </a>
@@ -94,39 +96,7 @@
     <div class="sidebar-footer-v6">
       <span class="sidebar-live-dot"></span>
       <span>Gateway control center</span>
-      <button class="palette-control-v1" id="palette-picker-btn" type="button"
-              aria-expanded="false" aria-controls="palette-dropdown-menu">
-        <span class="palette-control-swatch-v1" aria-hidden="true"></span>
-        <span id="palette-current-label">Signal Blue</span>
-      </button>
-      <div class="palette-dropdown-v1" id="palette-dropdown-menu" role="radiogroup" aria-label="Color combinations">
-        <div class="palette-dropdown-title-v1">COLOR COMBINATIONS</div>
-        <button type="button" class="palette-choice-v1" data-palette-choice="signal-blue" aria-checked="true">
-          <span class="palette-pair-v1"><i style="--p:#0057FF"></i><i style="--p:#F8F7F4"></i></span>
-          <span><strong>Signal Blue</strong><small>Porcelain · #F8F7F4</small></span>
-        </button>
-        <button type="button" class="palette-choice-v1" data-palette-choice="emerald-ink" aria-checked="false">
-          <span class="palette-pair-v1"><i style="--p:#064E3B"></i><i style="--p:#F8E7C9"></i></span>
-          <span><strong>Emerald Ink</strong><small>Champagne · #F8E7C9</small></span>
-        </button>
-        <button type="button" class="palette-choice-v1" data-palette-choice="neon-lime" aria-checked="false">
-          <span class="palette-pair-v1"><i style="--p:#C8FF3D"></i><i style="--p:#2D1B69"></i></span>
-          <span><strong>Neon Lime</strong><small>Violet Ink · #2D1B69</small></span>
-        </button>
-        <button type="button" class="palette-choice-v1" data-palette-choice="butter-yellow" aria-checked="false">
-          <span class="palette-pair-v1"><i style="--p:#FFF275"></i><i style="--p:#3A0CA3"></i></span>
-          <span><strong>Butter Yellow</strong><small>Royal Iris · #3A0CA3</small></span>
-        </button>
-        <button type="button" class="palette-choice-v1" data-palette-choice="burnt-orange" aria-checked="false">
-          <span class="palette-pair-v1"><i style="--p:#FC6C26"></i><i style="--p:#FFF4D6"></i></span>
-          <span><strong>Burnt Orange</strong><small>Vanilla · #FFF4D6</small></span>
-        </button>
-        <button type="button" class="palette-choice-v1" data-palette-choice="lime-spark" aria-checked="false">
-          <span class="palette-pair-v1"><i style="--p:#B6FF2E"></i><i style="--p:#23262F"></i></span>
-          <span><strong>Lime Spark</strong><small>Graphite · #23262F</small></span>
-        </button>
-      </div>
-    </div>
+        </div>
   </aside>
 
   <header class="topbar-v6" role="banner">
@@ -159,11 +129,6 @@
         <span class="status-dot-v6" id="global-connection-dot"></span>
         <strong id="global-connection-text">CONNECTING</strong>
       </div>
-
-      <button class="theme-toggle-v6" id="theme-toggle-btn" type="button" aria-label="Switch theme" title="Switch light/dark theme">
-        <svg class="theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-        <svg class="theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 15.4A8.8 8.8 0 0 1 8.6 3.5 8.8 8.8 0 1 0 20.5 15.4Z"/></svg>
-      </button>
     </div>
   </header>
 
