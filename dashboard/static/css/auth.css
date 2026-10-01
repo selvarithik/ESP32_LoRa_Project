@@ -582,3 +582,11 @@ button, input { font: inherit; }
         object-position: 28% center !important;
     }
 }
+
+
+/* SVG hero: vector asset fills the left side without raster-specific styling. */
+.auth-visual__image {
+    object-fit: cover !important;
+    object-position: center !important;
+    image-rendering: auto;
+}
