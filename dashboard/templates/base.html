@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/selvarithik-logo-light.svg') }}">
 <title>{% block title %}SELVARITHIK'S LORA GATEWAY{% endblock %}</title>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=21">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=22">
 {% block extra_css %}{% endblock %}
 {% block extra_css_after %}{% endblock %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v6.css') }}?v=2">
@@ -128,6 +128,15 @@
       <div class="topbar-status-v6 is-connecting" id="global-connection-pill" aria-live="polite">
         <span class="status-dot-v6" id="global-connection-dot"></span>
         <strong id="global-connection-text">CONNECTING</strong>
+      </div>
+
+      <div class="gateway-user-v6">
+        <div class="gateway-user-avatar" aria-hidden="true">AD</div>
+        <div class="gateway-user-copy">
+          <strong>{{ session.get('gateway_username', 'admin') }}</strong>
+          <span>Administrator</span>
+        </div>
+        <a class="gateway-user-logout" href="{{ url_for('logout') }}" aria-label="Log out">↪</a>
       </div>
     </div>
   </header>
