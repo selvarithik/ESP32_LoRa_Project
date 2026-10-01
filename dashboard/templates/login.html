@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FFFFFF">
+    <title>Sign in · SELVARITHIK'S LoRa Gateway</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}?v=1">
+</head>
+<body class="auth-page">
+    <main class="auth-shell">
+        <aside class="auth-brand" aria-hidden="true">
+            <div class="auth-brand__grid"></div>
+            <div class="auth-brand__content">
+                <div class="auth-brand__mark">
+                    <span class="auth-brand__diamond">◆</span>
+                    <span>SELVARITHIK'S</span>
+                </div>
+                <div class="auth-brand__title">LORA GATEWAY</div>
+                <p class="auth-brand__pitch">
+                    Monitor nodes, telemetry, communication, firmware and gateway diagnostics from one control center.
+                </p>
+
+                <div class="auth-brand__stats">
+                    <div>
+                        <strong>LIVE</strong>
+                        <span>Telemetry</span>
+                    </div>
+                    <div>
+                        <strong>ESP32</strong>
+                        <span>Gateway nodes</span>
+                    </div>
+                    <div>
+                        <strong>LoRa</strong>
+                        <span>Connectivity</span>
+                    </div>
+                </div>
+
+                <div class="auth-brand__quote">
+                    <span class="auth-brand__quote-mark">“</span>
+                    <p>One workspace for the gateway, nodes and every signal in the field.</p>
+                    <span class="auth-brand__quote-line"></span>
+                    <small>Gateway Control Center</small>
+                </div>
+            </div>
+        </aside>
+
+        <section class="auth-panel">
+            <div class="auth-panel__top">
+                <span class="auth-panel__kicker">GATEWAY ACCESS</span>
+                <span class="auth-panel__status"><i></i> SECURE SESSION</span>
+            </div>
+
+            <form class="auth-form" method="post" action="{{ url_for('login') }}" novalidate>
+                <input type="hidden" name="next" value="{{ next_url or '' }}">
+
+                <div class="auth-form__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 3 20 6v5.5c0 4.5-3.2 7.2-8 9.5-4.8-2.3-8-5-8-9.5V6z"></path>
+                        <path d="m8.5 12 2.2 2.2 4.8-5"></path>
+                    </svg>
+                </div>
+
+                <h1>Welcome back</h1>
+                <p class="auth-form__sub">
+                    Sign in to your SELVARITHIK'S LoRa Gateway workspace.
+                </p>
+
+                {% if error %}
+                <div class="auth-alert" role="alert">{{ error }}</div>
+                {% endif %}
+
+                <label class="auth-field">
+                    <span class="auth-field__label">User ID</span>
+                    <div class="auth-field__input-wrap">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="8" r="3.3"></circle>
+                            <path d="M5.5 20c.8-3.1 2.9-4.7 6.5-4.7s5.7 1.6 6.5 4.7"></path>
+                        </svg>
+                        <input
+                            type="text"
+                            name="username"
+                            value="{{ username or '' }}"
+                            autocomplete="username"
+                            placeholder="Enter user ID"
+                            required
+                            autofocus>
+                    </div>
+                </label>
+
+                <label class="auth-field">
+                    <span class="auth-field__label">Password</span>
+                    <div class="auth-field__input-wrap">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                        </svg>
+                        <input
+                            id="auth-password"
+                            type="password"
+                            name="password"
+                            autocomplete="current-password"
+                            placeholder="Enter password"
+                            required>
+                        <button class="auth-password-toggle" id="auth-password-toggle" type="button" aria-label="Show password">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M3.5 12s3.2-5 8.5-5 8.5 5 8.5 5-3.2 5-8.5 5-8.5-5-8.5-5Z"></path>
+                                <circle cx="12" cy="12" r="2"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </label>
+
+                <div class="auth-form__meta">
+                    <span><i></i> Gateway session</span>
+                    <span>Local access</span>
+                </div>
+
+                <button class="auth-submit" type="submit">
+                    <span>Sign in</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 12h13"></path>
+                        <path d="m13 6 6 6-6 6"></path>
+                    </svg>
+                </button>
+
+                <p class="auth-foot">
+                    Default development access: <strong>admin</strong> / <strong>admin</strong>
+                </p>
+            </form>
+
+            <footer class="auth-panel__footer">
+                <span>SELVARITHIK'S LORA GATEWAY</span>
+                <span>Flask Control Center</span>
+            </footer>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}?v=1"></script>
+</body>
+</html>
