@@ -1360,7 +1360,7 @@ def get_logs():
 def status():
 
     return jsonify({
-        "server": "SELVARITHIK'S LORA GATEWAY",
+        "server": "SELVARITHIK'S A&D LORA GATEWAY",
         "status": "online",
         "time": datetime.now().isoformat(),
         "nodes": len(node_manager.get_all_nodes())
@@ -4020,7 +4020,7 @@ if __name__ == "__main__":
     print("=" * 60)
 
     print(
-        "SELVARITHIK'S LORA GATEWAY"
+        "SELVARITHIK'S A&D LORA GATEWAY"
     )
 
     print(
