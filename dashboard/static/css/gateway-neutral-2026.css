@@ -1631,3 +1631,86 @@ body.gateway-body.ui-modern {
 .ui-modern .sidebar9-actions {
     flex: 0 0 44px !important;
 }
+
+
+/* ============================================================
+   COLLAPSED SIDEBAR: LOGO + ICONS ONLY
+   ============================================================ */
+
+.ui-modern .sidebar9-inspired .sidebar-brand-logo {
+    width: 38px !important;
+    height: 38px !important;
+    display: none !important;
+    flex: 0 0 38px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    border-radius: 7px !important;
+}
+
+.ui-modern .sidebar9-inspired .sidebar-brand-text {
+    display: flex !important;
+    min-width: 0 !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+}
+
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar-brand-logo {
+    display: block !important;
+}
+
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar-brand-text {
+    display: none !important;
+}
+
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar-brand-v6 {
+    justify-content: center !important;
+    padding: 6px !important;
+}
+
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar-brand-copy-v6 {
+    justify-content: center !important;
+    padding-left: 0 !important;
+}
+
+.ui-modern .sidebar9-inspired:hover .sidebar-brand-logo {
+    display: none !important;
+}
+
+.ui-modern .sidebar9-inspired:hover .sidebar-brand-text {
+    display: flex !important;
+}
+
+/* No text in collapsed navigation/footer. */
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar9-status {
+    justify-content: center !important;
+    margin-right: 0 !important;
+}
+
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar9-status .sidebar-live-dot,
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar9-status span:last-child {
+    display: none !important;
+}
+
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar9-action {
+    margin-left: 8px !important;
+}
+
+.ui-modern .sidebar9-inspired:hover .sidebar9-status {
+    display: flex !important;
+}
+
+/* In expanded mode the wordmark uses the requested spelling everywhere. */
+.ui-modern .sidebar9-inspired .sidebar-brand-full {
+    color: #0B1F3A !important;
+}
+
+.ui-modern .sidebar9-inspired .sidebar-brand-full::after {
+    background: #F36F21 !important;
+}
+
+/* Ensure the nav is never hidden behind the fixed header. */
+@media (min-width: 961px) {
+    .ui-modern .sidebar9-inspired {
+        z-index: 1200 !important;
+    }
+}
