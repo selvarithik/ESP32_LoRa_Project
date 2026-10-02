@@ -1540,3 +1540,94 @@ body.gateway-body.ui-modern {
 .ui-modern .sidebar9-inspired .sidebar9-section {
     color: #8997A5 !important;
 }
+
+
+/* ============================================================
+   SIDEBAR VISIBILITY / LAYOUT FIX
+   - brand is fully visible
+   - expanded sidebar pushes content instead of covering it
+   - all navigation items remain reachable
+   ============================================================ */
+
+@media (min-width: 961px) {
+    .ui-modern .topbar-v6,
+    .ui-modern .main-area-v6 {
+        transition: left .30s ease, margin-left .30s ease !important;
+    }
+
+    .ui-modern .topbar-v6 {
+        left: 102px !important;
+    }
+
+    .ui-modern .main-area-v6 {
+        margin-left: 102px !important;
+    }
+
+    body:has(.sidebar9-inspired:hover) .topbar-v6 {
+        left: 264px !important;
+    }
+
+    body:has(.sidebar9-inspired:hover) .main-area-v6 {
+        margin-left: 264px !important;
+    }
+}
+
+/* Brand block: give the A&D identity enough vertical room. */
+.ui-modern .sidebar9-inspired .sidebar-brand-v6 {
+    min-height: 58px !important;
+    height: 58px !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    padding: 7px 5px 11px !important;
+}
+
+.ui-modern .sidebar9-inspired .sidebar-brand-copy-v6 {
+    min-height: 42px !important;
+    height: 42px !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    overflow: hidden !important;
+}
+
+.ui-modern .sidebar9-inspired:hover .sidebar-brand-copy-v6 {
+    align-items: center !important;
+}
+
+.ui-modern .sidebar9-brand .sidebar-brand-full {
+    position: relative;
+    top: 0 !important;
+    line-height: 1.15 !important;
+}
+
+.ui-modern .sidebar9-brand .sidebar-brand-copy-v6 > span {
+    line-height: 1.1 !important;
+}
+
+/* Compact state: show only A&D but keep it vertically centered. */
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar-brand-short {
+    margin: 0 !important;
+}
+
+/* Expanded state: labels fit and the whole menu can scroll. */
+.ui-modern .sidebar9-inspired:hover .sidebar-nav-v6 {
+    padding-bottom: 8px !important;
+}
+
+.ui-modern .sidebar9-inspired .nav-item.nav-v6 {
+    min-height: 38px !important;
+}
+
+.ui-modern .sidebar9-inspired .sidebar9-section {
+    margin-top: 7px !important;
+    margin-bottom: 3px !important;
+}
+
+.ui-modern .sidebar9-inspired .sidebar-nav-v6 hr {
+    margin: 5px 6px !important;
+}
+
+/* Keep the footer visible; only the navigation list scrolls. */
+.ui-modern .sidebar9-actions {
+    flex: 0 0 44px !important;
+}
