@@ -1010,3 +1010,43 @@ document.addEventListener("DOMContentLoaded", () => {
     gateway.initConnectionHealth();
     gateway.startClock();
 });
+
+
+/* ============================================================
+   Sidebar collapse — persistent desktop preference
+   ============================================================ */
+(function initSidebarCollapse() {
+    function setup() {
+        const body = document.body;
+        const button = document.getElementById("sidebar-collapse-btn");
+        if (!body || !button || button.dataset.bound === "1") return;
+        button.dataset.bound = "1";
+
+        const key = "selvarithik-sidebar-collapsed";
+        const apply = (collapsed) => {
+            body.classList.toggle("sidebar-collapsed", collapsed);
+            button.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+            button.setAttribute("title", collapsed ? "Expand sidebar" : "Collapse sidebar");
+        };
+
+        let collapsed = false;
+        try {
+            collapsed = localStorage.getItem(key) === "1";
+        } catch (_) {}
+        apply(collapsed);
+
+        button.addEventListener("click", () => {
+            collapsed = !body.classList.contains("sidebar-collapsed");
+            apply(collapsed);
+            try {
+                localStorage.setItem(key, collapsed ? "1" : "0");
+            } catch (_) {}
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setup, { once: true });
+    } else {
+        setup();
+    }
+})();
