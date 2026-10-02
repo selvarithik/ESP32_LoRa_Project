@@ -28,7 +28,7 @@
 
 <div class="app-shell" id="app-shell">
 
-  <aside class="sidebar-v6" id="side-navigation" aria-label="Gateway navigation">
+  <aside class="sidebar-v6 sidebar9-inspired" id="side-navigation" aria-label="Gateway navigation">
     <a class="sidebar-brand-v6" href="/" aria-label="SELVARITHIK'S LoRa Gateway">
       <span class="sidebar-brand-copy-v6">
         <strong>SELVARITHIK'S</strong>
@@ -36,8 +36,13 @@
       </span>
     </a>
 
-    <div class="sidebar-nav-v6">
-      <div class="sidebar-label-v6">Main</div>
+    <div class="sidebar-nav-v6 sidebar9-nav"><div class="sidebar9-search" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg>
+        <input id="sidebar-page-search" type="search" placeholder="Search dashboard" aria-label="Search dashboard">
+      </div>
+
+      
+      <div class="sidebar-label-v6 sidebar9-section">Main</div>
 
       <a href="/" class="nav-item nav-v6" data-path="/" aria-label="Dashboard" data-tooltip-title="Dashboard" data-tooltip-text="Live gateway overview, node availability and telemetry health.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg>
@@ -59,7 +64,7 @@
         <span>Commands</span>
       </a>
 
-      <div class="sidebar-label-v6">Connectivity</div>
+      <div class="sidebar-label-v6 sidebar9-section">Connectivity</div>
 
       <a href="/communication" class="nav-item nav-v6" data-path="/communication" aria-label="Network" data-tooltip-title="Network" data-tooltip-text="Configure communication links and gateway connectivity.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 11 7.5-4M8.2 13l7.5 4"/></svg>
@@ -71,7 +76,7 @@
         <span>Firmware</span>
       </a>
 
-      <div class="sidebar-label-v6">Diagnostics</div>
+      <div class="sidebar-label-v6 sidebar9-section">Diagnostics</div>
 
       <a href="/logs" class="nav-item nav-v6" data-path="/logs" aria-label="Logs" data-tooltip-title="Logs" data-tooltip-text="Inspect gateway events, diagnostics and communication records.">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 9h14M5 13h9M5 17h14"/><circle cx="18" cy="13" r="2.5"/></svg>
@@ -94,10 +99,24 @@
       </a>
     </div>
 
-    <div class="sidebar-footer-v6">
-      <span class="sidebar-live-dot"></span>
-      <span>Gateway control center</span>
-        </div>
+    <div class="sidebar-footer-v6 sidebar9-actions">
+      <div class="sidebar9-status">
+        <span class="sidebar-live-dot"></span>
+        <span>Gateway control center</span>
+      </div>
+      <a class="sidebar9-action" href="/system" title="System settings" aria-label="System settings">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6-.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6 1.8.3a1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.2V14h-.2A1.6 1.6 0 0 0 19.4 15Z"/>
+        </svg>
+      </a>
+      <a class="sidebar9-action" href="/logout" title="Log out" aria-label="Log out">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 5H6.5A2.5 2.5 0 0 0 4 7.5v9A2.5 2.5 0 0 0 6.5 19H10"/>
+          <path d="M14 8l4 4-4 4M18 12H9"/>
+        </svg>
+      </a>
+    </div>
   </aside>
 
   <header class="topbar-v6" role="banner">
