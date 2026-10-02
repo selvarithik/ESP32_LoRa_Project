@@ -1418,3 +1418,125 @@ body.gateway-body.ui-modern {
         margin-left: 0 !important;
     }
 }
+
+
+/* ============================================================
+   SIDEBAR 9 FINAL POLISH
+   A&D branding + one top search + one logout
+   ============================================================ */
+
+.ui-modern .sidebar9-inspired {
+    background: #F8FAFC !important;
+    border-color: #D7E0E8 !important;
+}
+
+.ui-modern .sidebar9-inspired .sidebar-brand-v6 {
+    background: #FFFFFF !important;
+    border-bottom: 1px solid #E6ECF1 !important;
+    border-radius: 10px !important;
+    padding: 0 3px 10px !important;
+}
+
+.ui-modern .sidebar9-brand .sidebar-brand-copy-v6 {
+    width: 100%;
+    position: relative;
+}
+
+.ui-modern .sidebar9-brand .sidebar-brand-full {
+    display: block !important;
+    color: #0B1F3A !important;
+    font-size: 11px !important;
+    line-height: 1.08 !important;
+    font-weight: 900 !important;
+    letter-spacing: .035em !important;
+    white-space: nowrap !important;
+}
+
+.ui-modern .sidebar9-brand .sidebar-brand-full::after {
+    content: "";
+    display: block;
+    width: 76px;
+    height: 3px;
+    margin-top: 6px;
+    border-radius: 3px;
+    background: #F36F21;
+}
+
+.ui-modern .sidebar9-brand .sidebar-brand-short {
+    display: none !important;
+    color: #0B1F3A !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+    letter-spacing: .04em !important;
+}
+
+.ui-modern .sidebar9-brand .sidebar-brand-copy-v6 > span {
+    display: block !important;
+    margin-top: 5px !important;
+    color: #7D8A98 !important;
+    font-size: 7px !important;
+    line-height: 1 !important;
+    letter-spacing: .15em !important;
+    white-space: nowrap !important;
+}
+
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar9-brand .sidebar-brand-full {
+    display: none !important;
+}
+
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar9-brand .sidebar-brand-short {
+    display: block !important;
+}
+
+.ui-modern .sidebar9-inspired:not(:hover) .sidebar9-brand .sidebar-brand-copy-v6 > span {
+    display: none !important;
+}
+
+.ui-modern .sidebar9-inspired:hover .sidebar9-brand .sidebar-brand-full {
+    display: block !important;
+}
+
+.ui-modern .sidebar9-inspired:hover .sidebar9-brand .sidebar-brand-short {
+    display: none !important;
+}
+
+.ui-modern .sidebar9-inspired:hover .sidebar9-brand .sidebar-brand-copy-v6 > span {
+    display: block !important;
+}
+
+/* No second search in the sidebar: the top header owns search. */
+.ui-modern .sidebar9-search {
+    display: none !important;
+}
+
+/* No second logout in the sidebar: the top user control owns logout. */
+.ui-modern .sidebar9-actions .sidebar9-action[href="/logout"] {
+    display: none !important;
+}
+
+.ui-modern .sidebar9-action {
+    background: #FFFFFF !important;
+    border-color: #DCE4EB !important;
+    color: #617286 !important;
+}
+
+.ui-modern .sidebar9-action:hover {
+    background: #EEF5FA !important;
+    border-color: #C9DCEB !important;
+    color: #2E6FA3 !important;
+}
+
+.ui-modern .sidebar9-inspired .nav-item.nav-v6.active {
+    color: #2E6FA3 !important;
+    background: #EEF5FA !important;
+    border-left: 2px solid #F36F21 !important;
+}
+
+.ui-modern .sidebar9-inspired .nav-item.nav-v6:hover {
+    color: #2E6FA3 !important;
+    background: #F1F6FA !important;
+}
+
+.ui-modern .sidebar9-inspired .sidebar9-section {
+    color: #8997A5 !important;
+}
