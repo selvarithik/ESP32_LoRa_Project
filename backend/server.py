@@ -67,28 +67,9 @@ PUBLIC_COMMAND_SUFFIXES = (
     "/state",
 )
 
-@app.before_request
-def require_gateway_login():
-    path = request.path
-
-    if path in PUBLIC_PATHS or path.startswith(PUBLIC_PREFIXES):
-        return None
-
-    if path.startswith("/api/commands/") and path.endswith(PUBLIC_COMMAND_SUFFIXES):
-        return None
-
-    if session.get("gateway_authenticated") is True:
-        return None
-
-    if path.startswith("/api/"):
-        return jsonify({
-            "success": False,
-            "error": "Authentication required",
-            "login_required": True
-        }), 401
-
-    next_url = request.full_path.rstrip("?")
-    return redirect(url_for("login", next=next_url))
+# Web login/authentication is intentionally disabled for this gateway UI.
+# All dashboard pages and API routes are directly accessible.
+# Keep the application on a trusted/local network when running without auth.
 
 
 
@@ -150,48 +131,15 @@ nodes = {}
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if session.get("gateway_authenticated") is True:
-        return redirect(request.args.get("next") or url_for("dashboard"))
-
-    next_url = request.args.get("next") or (
-        request.form.get("next") if request.method == "POST" else ""
-    )
-
-    if request.method == "POST":
-        username = (request.form.get("username") or "").strip()
-        password = request.form.get("password") or ""
-
-        if auth_manager.authenticate(username, password):
-            session.clear()
-            session["gateway_authenticated"] = True
-            session["gateway_username"] = auth_manager.get_username()
-            session.permanent = True
-
-            target = next_url or url_for("dashboard")
-            if not target.startswith("/"):
-                target = url_for("dashboard")
-
-            return redirect(target)
-
-        return render_template(
-            "login.html",
-            error="Invalid user ID or password.",
-            username=username,
-            next_url=next_url,
-        ), 401
-
-    return render_template(
-        "login.html",
-        error=None,
-        username="",
-        next_url=next_url,
-    )
+    # Legacy route retained for compatibility; web login is disabled.
+    return redirect(url_for("dashboard"))
 
 
 @app.route("/logout", methods=["GET"])
 def logout():
+    # Legacy route retained for compatibility; there is no web session to log out.
     session.clear()
-    return redirect(url_for("login"))
+    return redirect(url_for("dashboard"))
 
 
 @app.route("/api/auth/login", methods=["POST"])
@@ -227,9 +175,10 @@ def api_auth_logout():
 def api_auth_status():
     return jsonify({
         "success": True,
-        "authenticated": session.get("gateway_authenticated") is True,
-        "username": session.get("gateway_username"),
-        "default_credentials": auth_manager.is_default_credentials()
+        "authenticated": True,
+        "username": "admin",
+        "default_credentials": False,
+        "login_disabled": True
     })
 
 

@@ -144,13 +144,12 @@
         <strong id="global-connection-text">CONNECTING</strong>
       </div>
 
-      <div class="gateway-user-v6">
-        <div class="gateway-user-avatar" aria-hidden="true">AD</div>
+      <div class="gateway-user-v6 gateway-user-static" aria-label="Gateway access">
+        <div class="gateway-user-avatar" aria-hidden="true">GW</div>
         <div class="gateway-user-copy">
-          <strong>{{ session.get('gateway_username', 'admin') }}</strong>
-          <span>Administrator</span>
+          <strong>Gateway</strong>
+          <span>Local access</span>
         </div>
-        <a class="gateway-user-logout" href="{{ url_for('logout') }}" aria-label="Log out">↪</a>
       </div>
     </div>
   </header>
