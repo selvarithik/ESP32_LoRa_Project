@@ -223,6 +223,28 @@
 {% block extra_css_after %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v5.css') }}?v=1">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v6.css') }}?v=2">
+<style id="ui-v5-dashboard-body">
+body.ui-v5-rebuild .dashboard-v4-actions,
+body.ui-v5-rebuild .dashboard-command,
+body.ui-v5-rebuild .dashboard-status-board,
+body.ui-v5-rebuild .dashboard-visual-overview,
+body.ui-v5-rebuild .dashboard-main-grid{animation:v5-rise .5s var(--v5-ease) both}
+body.ui-v5-rebuild .dashboard-status-board>*{animation:v5-card .55s var(--v5-ease) both}
+body.ui-v5-rebuild .dashboard-metric-value{font-variant-numeric:tabular-nums}
+body.ui-v5-rebuild .dashboard-node,
+body.ui-v5-rebuild .dashboard-health-row,
+body.ui-v5-rebuild .dashboard-alert-row,
+body.ui-v5-rebuild .dashboard-event-row{transition:transform .2s var(--v5-ease),background .2s ease,box-shadow .2s ease}
+body.ui-v5-rebuild .dashboard-node:hover,
+body.ui-v5-rebuild .dashboard-health-row:hover,
+body.ui-v5-rebuild .dashboard-alert-row:hover,
+body.ui-v5-rebuild .dashboard-event-row:hover{transform:translateX(3px);box-shadow:inset 3px 0 0 var(--v5-orange)}
+body.ui-v5-rebuild .dashboard-live-chip{animation:v5-breathe 2.8s ease-in-out infinite}
+@keyframes v5-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes v5-card{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes v5-breathe{0%,100%{filter:drop-shadow(0 0 0 rgba(25,163,111,0))}50%{filter:drop-shadow(0 0 9px rgba(25,163,111,.16))}}
+@media(prefers-reduced-motion:reduce){body.ui-v5-rebuild .dashboard-v4-actions,body.ui-v5-rebuild .dashboard-command,body.ui-v5-rebuild .dashboard-status-board,body.ui-v5-rebuild .dashboard-visual-overview,body.ui-v5-rebuild .dashboard-main-grid,body.ui-v5-rebuild .dashboard-status-board>*{animation:none!important}}
+</style>
 {% endblock %}
 
 {% block extra_js %}
