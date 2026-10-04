@@ -28,27 +28,24 @@
 
   function ensureSidebarPersistence(){
     const btn=document.getElementById("sidebar-collapse-btn");
-    if(!btn || btn.dataset.v4Bound==="1") return;
-    btn.dataset.v4Bound="1";
+    if(!btn) return;
 
-    const key="selvarithik-sidebar-collapsed";
-    let collapsed=false;
-    try{ collapsed=localStorage.getItem(key)==="1"; }catch(_){}
+    // app.js already owns the collapse click handler. Do not bind a second
+    // listener here or one click would toggle the sidebar twice.
+    if(btn.dataset.bound!=="1"){
+      const key="selvarithik-sidebar-collapsed";
+      let collapsed=false;
+      try{ collapsed=localStorage.getItem(key)==="1"; }catch(_){}
+      body.classList.toggle("sidebar-collapsed",collapsed);
+    }
 
-    body.classList.toggle("sidebar-collapsed",collapsed);
     hardApplySidebarState();
 
-    btn.addEventListener("click",()=>{
-      const next=!body.classList.contains("sidebar-collapsed");
-      body.classList.toggle("sidebar-collapsed",next);
-      try{localStorage.setItem(key,next?"1":"0");}catch(_){}
-      hardApplySidebarState();
-    });
-
     window.addEventListener("resize",()=>{
-      if(window.innerWidth<=780 && body.classList.contains("sidebar-collapsed")){
+      if(window.innerWidth<=780){
         body.classList.remove("sidebar-collapsed");
       }
+      hardApplySidebarState();
     });
   }
 
