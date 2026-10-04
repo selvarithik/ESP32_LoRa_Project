@@ -536,3 +536,173 @@ body.ui-v3-shell .mobile-menu-btn-v6{
   .v3-command-backdrop,
   .v3-command-palette{animation:none!important;transition:none!important}
 }
+
+
+/* ============================================================
+   V3 FINAL OVERRIDE — force the new shell over legacy V6/V7/V8
+   ============================================================ */
+body.ui-v3-shell .sidebar9-inspired .sidebar-brand-copy-v6,
+body.ui-v3-shell .sidebar9-inspired:not(:hover) .sidebar-brand-copy-v6,
+body.ui-v3-shell .sidebar9-brand .sidebar-brand-copy-v6{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:auto!important;
+  max-width:none!important;
+  overflow:visible!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  flex-direction:column!important;
+  gap:3px!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-brand-full,
+body.ui-v3-shell .sidebar9-inspired .sidebar-brand-sub,
+body.ui-v3-shell .sidebar9-inspired .sidebar-brand-copy-v6 > span,
+body.ui-v3-shell .sidebar9-inspired:not(:hover) .sidebar-brand-full,
+body.ui-v3-shell .sidebar9-inspired:not(:hover) .sidebar-brand-sub,
+body.ui-v3-shell .sidebar9-inspired:not(:hover) .sidebar-brand-copy-v6 > span{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-brand-short{
+  display:none!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .nav-item.nav-v6 > span,
+body.ui-v3-shell .sidebar9-inspired:not(:hover) .nav-item.nav-v6 > span{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:auto!important;
+  max-width:none!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-label-v6,
+body.ui-v3-shell .sidebar9-inspired:not(:hover) .sidebar-label-v6{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired{
+  width:var(--v3-sidebar-w)!important;
+  background:linear-gradient(180deg,#08243b 0%,#0b2942 55%,#071d30 100%)!important;
+  border-right:1px solid #153f5e!important;
+  color:#eaf4fb!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-brand-v6{
+  height:var(--v3-header-h)!important;
+  min-height:var(--v3-header-h)!important;
+  padding:0 18px!important;
+  background:rgba(255,255,255,.025)!important;
+  border-bottom:1px solid rgba(255,255,255,.10)!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-brand-full{
+  color:#ffffff!important;
+  font-size:13px!important;
+  letter-spacing:.025em!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-brand-sub{
+  color:#8fb0c7!important;
+  font-size:8px!important;
+  letter-spacing:.18em!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-nav-v6{
+  padding:14px 10px!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-label-v6{
+  color:#6f91a9!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .nav-item.nav-v6{
+  color:#b8ccda!important;
+  background:transparent!important;
+  font-weight:650!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .nav-item.nav-v6:hover{
+  color:#ffffff!important;
+  background:rgba(255,255,255,.075)!important;
+  transform:translateX(3px)!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .nav-item.nav-v6.active{
+  color:#ffffff!important;
+  background:linear-gradient(90deg,rgba(23,105,170,.42),rgba(23,105,170,.16))!important;
+  box-shadow:inset 0 0 0 1px rgba(93,184,235,.16),0 6px 18px rgba(0,0,0,.10)!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .nav-item.nav-v6.active::before{
+  background:#49b7ed!important;
+  box-shadow:0 0 14px rgba(73,183,237,.55)!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .nav-item.nav-v6 .nav-icon{
+  color:currentColor!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-footer-v6{
+  background:linear-gradient(to top,rgba(4,18,30,.55),transparent)!important;
+  border-top:1px solid rgba(255,255,255,.10)!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar9-status{
+  color:#6f91a9!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-collapse-btn,
+body.ui-v3-shell .sidebar9-inspired .sidebar9-action{
+  background:rgba(255,255,255,.045)!important;
+  border-color:rgba(255,255,255,.13)!important;
+  color:#b8ccda!important;
+}
+
+body.ui-v3-shell .sidebar9-inspired .sidebar-collapse-btn:hover,
+body.ui-v3-shell .sidebar9-inspired .sidebar9-action:hover{
+  background:rgba(255,255,255,.10)!important;
+  color:#ffffff!important;
+  border-color:rgba(73,183,237,.45)!important;
+}
+
+/* Make the header visibly part of the V3 system. */
+body.ui-v3-shell .topbar-v6{
+  background:#ffffff!important;
+  border-bottom:2px solid #0b2942!important;
+  box-shadow:0 4px 20px rgba(11,41,66,.08)!important;
+}
+
+body.ui-v3-shell .topbar-page-v6{
+  border-left:3px solid #1769aa!important;
+}
+
+body.ui-v3-shell .global-search-v6{
+  background:#f4f8fb!important;
+}
+
+body.ui-v3-shell .topbar-status-v6.is-live{
+  box-shadow:0 0 0 3px rgba(22,132,93,.07)!important;
+}
+
+/* The dashboard content gets a clean V3 canvas without changing its data/API. */
+body.ui-v3-shell .main-area-v6{
+  background:
+    radial-gradient(circle at 88% 4%,rgba(23,105,170,.055),transparent 24rem),
+    var(--v3-bg)!important;
+}
+
+@media(max-width:780px){
+  body.ui-v3-shell .sidebar9-inspired .sidebar-brand-copy-v6,
+  body.ui-v3-shell .sidebar9-inspired:not(:hover) .sidebar-brand-copy-v6{
+    display:none!important;
+  }
+}
