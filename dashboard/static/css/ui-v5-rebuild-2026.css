@@ -81,3 +81,334 @@ body.ui-v5-rebuild .dashboard-action.primary{background:linear-gradient(135deg,v
 @keyframes v5-pop{from{transform:translateY(8px) scale(.97);opacity:0}to{transform:none;opacity:1}}
 @media(max-width:780px){body.ui-v5-rebuild .app-shell{padding-left:0!important;padding-top:66px!important}body.ui-v5-rebuild .sidebar9-inspired{display:none!important}body.ui-v5-rebuild .topbar-v6{left:0!important;height:66px!important;min-height:66px!important;grid-template-columns:1fr auto!important;padding:0 12px!important}body.ui-v5-rebuild .topbar-left-v6::after{display:none}body.ui-v5-rebuild .topbar-v6::before{display:none}body.ui-v5-rebuild .topbar-clock-v6,body.ui-v5-rebuild .gateway-user-copy{display:none!important}body.ui-v5-rebuild .global-search-v6{width:42px!important;background:transparent!important;border-color:transparent!important}body.ui-v5-rebuild .global-search-v6 input{display:none!important}}
 @media(prefers-reduced-motion:reduce){body.ui-v5-rebuild *,body.ui-v5-rebuild *::before,body.ui-v5-rebuild *::after{animation:none!important;transition:none!important}}
+/* ============================================================
+   V6 REFERENCE COMPOSITION — centered workspace + floating rail
+   ============================================================ */
+body.ui-v5-rebuild{
+  --v6-rail:246px;
+  --v6-header:68px;
+}
+body.ui-v5-rebuild .app-shell{
+  padding-left:0!important;
+  padding-top:var(--v6-header)!important;
+  min-height:100vh;
+  background:#ece8e8!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .app-shell{padding-left:0!important}
+
+/* floating rounded navigation rail modeled after the referenced Sidebar-9 silhouette */
+body.ui-v5-rebuild .sidebar9-inspired{
+  left:20px!important;
+  top:82px!important;
+  bottom:20px!important;
+  width:var(--v6-rail)!important;
+  min-width:var(--v6-rail)!important;
+  max-width:var(--v6-rail)!important;
+  border-radius:24px!important;
+  background:rgba(255,255,255,.94)!important;
+  border:1px solid rgba(17,40,58,.08)!important;
+  box-shadow:0 24px 60px rgba(31,41,55,.12)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+  transition:transform .3s var(--v5-ease),width .38s var(--v5-ease),box-shadow .3s ease;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar9-inspired{
+  width:82px!important;
+  min-width:82px!important;
+  max-width:82px!important;
+}
+
+/* top account block inside navigation */
+body.ui-v5-rebuild .sidebar9-brand{
+  margin:14px!important;
+  height:64px!important;
+  min-height:64px!important;
+  border-radius:14px!important;
+  background:#f4f6f8!important;
+  border:1px solid #e7ebef!important;
+  color:#263847!important;
+}
+body.ui-v5-rebuild .sidebar9-brand::before{
+  content:"SR";
+  width:38px!important;
+  height:38px!important;
+  margin-right:10px!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#0b63c7,#49a9ff)!important;
+  box-shadow:none!important;
+}
+body.ui-v5-rebuild .sidebar9-brand .sidebar-brand-full{
+  color:#152b3b!important;
+}
+body.ui-v5-rebuild .sidebar9-brand .sidebar-brand-sub{
+  color:#8393a0!important;
+}
+body.ui-v5-rebuild .sidebar9-brand .sidebar-brand-copy-v6{
+  gap:2px!important;
+}
+
+/* nav becomes light, layered, and compact like reference */
+body.ui-v5-rebuild .sidebar-nav-v6{
+  padding:8px 12px 12px!important;
+}
+body.ui-v5-rebuild .sidebar9-section{
+  color:#9ba7b0!important;
+  margin:10px 10px 6px!important;
+}
+body.ui-v5-rebuild .sidebar9-inspired .nav-item.nav-v6,
+body.ui-v5-rebuild .sidebar9-inspired .nav-item.nav-v6:hover{
+  color:#5f6e79!important;
+  background:transparent!important;
+  min-height:40px!important;
+  margin:2px 0!important;
+  border-radius:11px!important;
+  transform:none!important;
+  box-shadow:none!important;
+}
+body.ui-v5-rebuild .sidebar9-inspired .nav-item.nav-v6:hover{
+  color:#0b63c7!important;
+  background:#f4f8fc!important;
+}
+body.ui-v5-rebuild .sidebar9-inspired .nav-item.nav-v6.active{
+  color:#0b63c7!important;
+  background:#eaf4ff!important;
+  box-shadow:none!important;
+}
+body.ui-v5-rebuild .sidebar9-inspired .nav-item.nav-v6.active::before{
+  display:none!important;
+}
+body.ui-v5-rebuild .sidebar9-inspired .nav-item.nav-v6 .nav-icon{
+  color:currentColor!important;
+}
+body.ui-v5-rebuild .sidebar9-inspired .nav-item.nav-v6::after{
+  display:none!important;
+}
+
+/* search strip */
+body.ui-v5-rebuild .sidebar-nav-v6::before{
+  content:"Search dashboard"!important;
+  height:38px!important;
+  margin:0 0 8px!important;
+  padding:0 12px!important;
+  display:flex!important;
+  align-items:center!important;
+  border:1px solid #e7ebef!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#9ca9b4!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+}
+
+/* bottom action row */
+body.ui-v5-rebuild .sidebar9-actions{
+  margin:10px 12px 12px!important;
+  padding:9px!important;
+  border-radius:13px!important;
+  border:1px solid #e7ebef!important;
+  background:#fafbfc!important;
+}
+body.ui-v5-rebuild .sidebar9-actions .sidebar-collapse-btn,
+body.ui-v5-rebuild .sidebar9-actions .sidebar9-action{
+  background:#f0f3f6!important;
+  border:0!important;
+  color:#62727e!important;
+  border-radius:10px!important;
+}
+body.ui-v5-rebuild .sidebar9-actions .sidebar-collapse-btn:hover,
+body.ui-v5-rebuild .sidebar9-actions .sidebar9-action:hover{
+  background:#e9f3ff!important;
+  color:#0b63c7!important;
+  transform:translateY(-1px)!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar9-actions{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar9-actions .sidebar-collapse-btn{
+  display:flex!important;
+  margin:auto!important;
+}
+
+/* desktop top header matching screenshot proportions */
+body.ui-v5-rebuild .topbar-v6{
+  left:0!important;
+  height:68px!important;
+  min-height:68px!important;
+  padding:0 20px!important;
+  background:rgba(248,247,247,.94)!important;
+  border:0!important;
+  border-bottom:1px solid #e6e1e1!important;
+  box-shadow:none!important;
+  color:#263847!important;
+}
+body.ui-v5-rebuild .topbar-v6::after{
+  display:none!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .topbar-v6{left:0!important}
+body.ui-v5-rebuild .topbar-left-v6::before{
+  content:"SELVARITHIK'S A&D"!important;
+  color:#172c3b!important;
+  font-size:14px!important;
+}
+body.ui-v5-rebuild .topbar-left-v6::after{
+  content:"LoRa Gateway"!important;
+  color:#9aa6af!important;
+  border-left:1px solid #dfe5ea!important;
+}
+body.ui-v5-rebuild .global-search-v6{
+  background:#fff!important;
+  border:1px solid #e5e9ed!important;
+  color:#7a8790!important;
+  box-shadow:0 3px 10px rgba(31,41,55,.04)!important;
+  height:38px!important;
+  border-radius:10px!important;
+}
+body.ui-v5-rebuild .global-search-v6 input{
+  color:#4e5b66!important;
+}
+body.ui-v5-rebuild .global-search-v6 input::placeholder{
+  color:#a3adb5!important;
+}
+body.ui-v5-rebuild .topbar-clock-v6 span{
+  color:#8a969f!important;
+}
+body.ui-v5-rebuild .topbar-clock-v6 strong{
+  color:#35424c!important;
+}
+body.ui-v5-rebuild .topbar-status-v6.is-live{
+  background:#eaf8f2!important;
+  border-color:#ccecdc!important;
+  color:#1a9a68!important;
+}
+body.ui-v5-rebuild .gateway-user-v6{
+  border-left:1px solid #e2e6e9!important;
+}
+body.ui-v5-rebuild .gateway-user-avatar{
+  background:#172d3e!important;
+  border-radius:10px!important;
+}
+
+/* centered content canvas from reference */
+body.ui-v5-rebuild .main-area-v6{
+  padding:24px 26px 34px 286px!important;
+  min-height:calc(100vh - 68px)!important;
+  background:#ece8e8!important;
+}
+body.ui-v5-rebuild .page-content-v6{
+  max-width:1320px!important;
+  margin:0 auto!important;
+}
+body.ui-v5-rebuild .dashboard-v4-wrap{
+  padding:0 0 48px!important;
+}
+body.ui-v5-rebuild .dashboard-v4-top{
+  padding:22px 24px!important;
+  margin-bottom:14px!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  border:1px solid #e7ebef!important;
+  box-shadow:0 12px 30px rgba(31,41,55,.05)!important;
+}
+body.ui-v5-rebuild .dashboard-v4-top h1{
+  font-size:31px!important;
+  letter-spacing:-.035em!important;
+  color:#172b3a!important;
+}
+body.ui-v5-rebuild .dashboard-v4-kicker{
+  color:#98a4ad!important;
+}
+body.ui-v5-rebuild .dashboard-v4-top p{
+  color:#7e8b95!important;
+}
+
+/* reference-like multi-column dashboard hierarchy */
+body.ui-v5-rebuild .dashboard-status-board{
+  grid-template-columns:minmax(300px,1.55fr) repeat(4,minmax(120px,.55fr))!important;
+}
+body.ui-v5-rebuild .dashboard-gateway-strip,
+body.ui-v5-rebuild .dashboard-metric{
+  min-height:124px!important;
+  border-radius:14px!important;
+}
+body.ui-v5-rebuild .dashboard-main-grid{
+  grid-template-columns:minmax(0,1.55fr) minmax(300px,.8fr)!important;
+  gap:14px!important;
+}
+body.ui-v5-rebuild .dashboard-section{
+  border-radius:14px!important;
+  box-shadow:0 10px 28px rgba(31,41,55,.045)!important;
+}
+body.ui-v5-rebuild .dashboard-section-head{
+  padding:14px 16px!important;
+}
+body.ui-v5-rebuild .dashboard-node-sensors{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+body.ui-v5-rebuild .dashboard-node-graph-list{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+
+/* soft chart stages / product analytics feel */
+body.ui-v5-rebuild .dashboard-visual-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+body.ui-v5-rebuild .dashboard-visual-card,
+body.ui-v5-rebuild .dashboard-graph-card,
+body.ui-v5-rebuild .dashboard-sensor-card{
+  background:#fbfcfd!important;
+  border-color:#e8edf1!important;
+}
+body.ui-v5-rebuild .dashboard-graph-svg{
+  background:linear-gradient(to bottom,rgba(11,99,199,.05) 1px,transparent 1px) 0 0/100% 33.3333%!important;
+}
+body.ui-v5-rebuild .dashboard-graph-svg path{
+  stroke:#ef5478!important;
+}
+body.ui-v5-rebuild .dashboard-visual-bar i{
+  background:linear-gradient(90deg,#0b63c7,#58b8ff)!important;
+}
+body.ui-v5-rebuild .dashboard-visual-health i{
+  background:#19a36f!important;
+}
+
+/* collapse behavior */
+body.ui-v5-rebuild.sidebar-collapsed .main-area-v6{
+  padding-left:118px!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar-nav-v6::before{
+  content:"⌕"!important;
+  justify-content:center!important;
+  padding:0!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar9-brand .sidebar-brand-copy-v6{
+  display:none!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar9-brand{
+  display:flex!important;
+  justify-content:center!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar9-brand::before{
+  margin:0!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar9-inspired .nav-item.nav-v6{
+  justify-content:center!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar9-inspired .nav-item.nav-v6>span{
+  display:none!important;
+}
+body.ui-v5-rebuild.sidebar-collapsed .sidebar9-section{display:none!important}
+body.ui-v5-rebuild .v5-nav-tip{
+  background:#fff!important;
+  color:#24313b!important;
+  border-color:#e2e8ed!important;
+  box-shadow:0 14px 35px rgba(31,41,55,.18)!important;
+}
+@media(max-width:1100px){
+  body.ui-v5-rebuild .main-area-v6{padding-left:24px!important}
+}
+@media(max-width:780px){
+  body.ui-v5-rebuild .sidebar9-inspired{display:none!important}
+  body.ui-v5-rebuild .main-area-v6{padding:14px!important}
+}
