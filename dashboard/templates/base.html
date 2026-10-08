@@ -5,203 +5,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b2942">
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/selvarithik-logo-light.svg') }}">
-<title>{% block title %}SELVARITHIK'S A&D LORA GATEWAY{% endblock %}</title>
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=23">
+<title>{% block title %}SELVARITHIK'S A&D LoRa Gateway{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=24">
 {% block extra_css %}{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v5.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v6.css') }}?v=3">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modern-shell.css') }}?v=1">
 {% block extra_css_after %}{% endblock %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v6.css') }}?v=2">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v7.css') }}?v=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v8.css') }}?v=2">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-palette.css') }}?v=2">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/gateway-ui-2026.css') }}?v=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/gateway-neutral-2026.css') }}?v=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-overhaul-2026.css') }}?v=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-v2-2026.css') }}?v=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-v3-shell-2026.css') }}?v=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-v4-shell-2026.css') }}?v=3">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-v5-rebuild-2026.css') }}?v=3">
-
-<script src="{{ url_for('static', filename='js/app.js') }}?v=31"></script>
-<script src="{{ url_for('static', filename='js/redesign-v3.js') }}?v=3"></script>
-<script src="{{ url_for('static', filename='js/gateway-ui-2026.js') }}?v=1"></script>
-<script src="{{ url_for('static', filename='js/ui-overhaul-2026.js') }}?v=1"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}?v=32"></script>
+<script src="{{ url_for('static', filename='js/modern-shell.js') }}?v=1" defer></script>
 {% block extra_js %}{% endblock %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-reference-final-2026.css') }}?v=1">
-<script src="{{ url_for('static', filename='js/ui-reference-final-2026.js') }}?v=1"></script>
 </head>
 
-<body class="gateway-body ui-modern selvarithik-v6 selvarithik-v7 ui-overhaul-2026 ui-v2-2026 ui-v3-shell ui-v4-shell ui-v5-rebuild ui-reference-final" data-page="{{ request.path }}">
+<body class="gateway-body modern-shell" data-page="{{ request.path }}">
 <a class="skip-link" href="#main-content">Skip to content</a>
-
 <div class="app-shell" id="app-shell">
-
-  <aside class="sidebar-v6 sidebar9-inspired" id="side-navigation" aria-label="Gateway navigation">
-    <a class="sidebar-brand-v6 sidebar9-brand" href="/" aria-label="SR-A&D LoRa Gateway">
-      <span class="sidebar-brand-copy-v6">
-        <strong class="sidebar-brand-full">SELVARITHIK'S A&amp;D</strong>
-        <span class="sidebar-brand-short">SR-A&amp;D</span>
-        <span class="sidebar-brand-sub">LORA GATEWAY</span>
-      </span>
+  <aside class="modern-sidebar" id="side-navigation" aria-label="Gateway navigation">
+    <a class="modern-brand" href="/" aria-label="SELVARITHIK'S A&D LoRa Gateway">
+      <span class="brand-orb" aria-hidden="true">S</span>
+      <span class="brand-copy"><strong>SELVARITHIK'S A&amp;D</strong><small>LoRa Gateway</small></span>
     </a>
-
-    <div class="sidebar-nav-v6 sidebar9-nav"><div class="sidebar-label-v6 sidebar9-section">Main</div>
-
-      <a href="/" class="nav-item nav-v6" data-path="/" aria-label="Dashboard" data-tooltip-title="Dashboard" data-tooltip-text="Live gateway overview, node availability and telemetry health.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg>
-        <span>Dashboard</span>
-      </a>
-
-      <a href="/nodes" class="nav-item nav-v6" data-path="/nodes" aria-label="Nodes" data-tooltip-title="Nodes" data-tooltip-text="Manage connected nodes, configuration and device status.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/><path d="M10 7h4M7 10v4M17 14v-4M14 17h-4"/></svg>
-        <span>Nodes</span>
-      </a>
-
-      <a href="/sensors" class="nav-item nav-v6" data-path="/sensors" aria-label="Sensors" data-tooltip-title="Sensors" data-tooltip-text="View sensor parameters, values, quality and alarm state.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V9M10 18V5M16 18v-8M22 18v-6"/><path d="M3 18h20"/></svg>
-        <span>Sensors</span>
-      </a>
-
-      <a href="/command-center" class="nav-item nav-v6" data-path="/command-center" aria-label="Commands" data-tooltip-title="Commands" data-tooltip-text="Send, monitor and audit commands for gateway nodes.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg>
-        <span>Commands</span>
-      </a>
-
-      <div class="sidebar-label-v6 sidebar9-section">Connectivity</div>
-
-      <a href="/communication" class="nav-item nav-v6" data-path="/communication" aria-label="Network" data-tooltip-title="Network" data-tooltip-text="Configure communication links and gateway connectivity.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 11 7.5-4M8.2 13l7.5 4"/></svg>
-        <span>Network</span>
-      </a>
-
-      <a href="/firmware" class="nav-item nav-v6" data-path="/firmware" aria-label="Firmware" data-tooltip-title="Firmware" data-tooltip-text="Review firmware releases, device versions and OTA jobs.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="6" width="10" height="12" rx="2"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M4 9h3M4 15h3M17 9h3M17 15h3"/><path d="M10 10h4v4h-4z"/></svg>
-        <span>Firmware</span>
-      </a>
-
-      <div class="sidebar-label-v6 sidebar9-section">Diagnostics</div>
-
-      <a href="/logs" class="nav-item nav-v6" data-path="/logs" aria-label="Logs" data-tooltip-title="Logs" data-tooltip-text="Inspect gateway events, diagnostics and communication records.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 9h14M5 13h9M5 17h14"/><circle cx="18" cy="13" r="2.5"/></svg>
-        <span>Logs</span>
-      </a>
-
-      <a href="/system-overview" class="nav-item nav-v6" data-path="/system-overview" aria-label="System Health" data-tooltip-title="System Health" data-tooltip-text="Check gateway runtime health and service status.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 4.8-3.4 7.7-8 9-4.6-1.3-8-4.2-8-9V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>
-        <span>System Health</span>
-      </a>
-
-      <a href="/system" class="nav-item nav-v6" data-path="/system" aria-label="System" data-tooltip-title="System" data-tooltip-text="Manage gateway configuration and system settings.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6-.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6 1.8.3a1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.2V14h-.2A1.6 1.6 0 0 0 19.4 15Z"/></svg>
-        <span>System</span>
-      </a>
-
-      <a href="/chat" class="nav-item nav-v6" data-path="/chat" aria-label="Private Chat" data-tooltip-title="Private Chat" data-tooltip-text="Use the private gateway-to-node communication channel.">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v5A3.5 3.5 0 0 1 15.5 15H11l-4.5 4v-4.7A3.5 3.5 0 0 1 5 11.5z"/><path d="M9 8h6M9 11h4"/></svg>
-        <span>Private Chat</span>
-      </a>
-    </div>
-
-    <div class="sidebar-footer-v6 sidebar9-actions">
-      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
-      </button>
-      <div class="sidebar9-status">
-        <span class="sidebar-live-dot"></span>
-        <span>Gateway control center</span>
-      </div>
-      <a class="sidebar9-action" href="/system" title="System settings" aria-label="System settings">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6-.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6 1.8.3a1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.2V14h-.2A1.6 1.6 0 0 0 19.4 15Z"/>
-        </svg>
-      </a>
+    <nav class="modern-nav">
+      <span class="modern-nav-label">Operations</span>
+      <a href="/" class="nav-item" data-path="/" data-search-label="Dashboard telemetry gateway overview" title="Dashboard"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.4"/><rect x="14" y="4" width="6" height="6" rx="1.4"/><rect x="4" y="14" width="6" height="6" rx="1.4"/><rect x="14" y="14" width="6" height="6" rx="1.4"/></svg><span>Dashboard</span></a>
+      <a href="/nodes" class="nav-item" data-path="/nodes" data-search-label="Nodes device inventory status configuration" title="Nodes"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/><path d="M10 7h4M7 10v4M17 14v-4M14 17h-4"/></svg><span>Nodes</span></a>
+      <a href="/sensors" class="nav-item" data-path="/sensors" data-search-label="Sensors parameters telemetry quality history" title="Sensors"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V9M10 18V5M16 18v-8M22 18v-6M3 18h20"/></svg><span>Sensors</span></a>
+      <a href="/command-center" class="nav-item" data-path="/command-center" data-search-label="Commands command center execution audit" title="Commands"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Commands</span></a>
+      <span class="modern-nav-label">Connectivity</span>
+      <a href="/communication" class="nav-item" data-path="/communication" data-search-label="Communication network LoRa mesh routes packets" title="Network"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 11 7.5-4M8.2 13l7.5 4"/></svg><span>Network</span></a>
+      <a href="/firmware" class="nav-item" data-path="/firmware" data-search-label="Firmware OTA releases devices jobs" title="Firmware"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="6" width="10" height="12" rx="2"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M4 9h3M4 15h3M17 9h3M17 15h3"/><path d="M10 10h4v4h-4z"/></svg><span>Firmware</span></a>
+      <span class="modern-nav-label">Diagnostics</span>
+      <a href="/logs" class="nav-item" data-path="/logs" data-search-label="Logs events diagnostics records" title="Logs"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 9h14M5 13h9M5 17h14"/><circle cx="18" cy="13" r="2.5"/></svg><span>Logs</span></a>
+      <a href="/system-overview" class="nav-item" data-path="/system-overview" data-search-label="System health overview runtime service status" title="System Health"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 4.8-3.4 7.7-8 9-4.6-1.3-8-4.2-8-9V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg><span>System Health</span></a>
+      <a href="/system" class="nav-item" data-path="/system" data-search-label="System settings configuration reboot factory reset" title="System"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9 7 7M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>System</span></a>
+      <a href="/chat" class="nav-item" data-path="/chat" data-search-label="Private chat gateway node messages" title="Private Chat"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v5A3.5 3.5 0 0 1 15.5 15H11l-4.5 4v-4.7A3.5 3.5 0 0 1 5 11.5z"/><path d="M9 8h6M9 11h4"/></svg><span>Private Chat</span></a>
+    </nav>
+    <div class="modern-sidebar-footer">
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+      <a class="sidebar-round-link" href="/system" aria-label="Open system settings" title="System settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9 7 7M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></a>
     </div>
   </aside>
-
-  <header class="topbar-v6" role="banner">
-    <div class="topbar-left-v6">
-      <button class="mobile-menu-btn-v6" id="mobile-menu-btn" type="button" aria-label="Open navigation">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
-
-      <div class="topbar-page-v6">
-        <div class="topbar-kicker-v6">Gateway</div>
-        <strong id="page-title">{% block page_title %}Dashboard{% endblock %}</strong>
-        <span id="page-subtitle">{% block page_subtitle %}{% endblock %}</span>
+  <div class="modern-workspace">
+    <header class="modern-topbar" role="banner">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn-v6" id="mobile-menu-btn" type="button" aria-label="Open navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+        <div class="page-heading"><span>Gateway Control</span><strong id="page-title">{% block page_title %}Dashboard{% endblock %}</strong><small id="page-subtitle">{% block page_subtitle %}{% endblock %}</small></div>
       </div>
-    </div>
-
-    <div class="topbar-right-v6">
-      <div class="global-search-v6" role="search">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg>
-        <input id="global-nav-search" type="search" placeholder="Search pages" aria-label="Search pages">
+      <div class="topbar-right">
+        <button class="topbar-search" id="global-nav-search-button" type="button" aria-label="Search pages"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><span>Search</span></button>
+        <div id="headerExtraTools" class="topbar-extra-v6"></div>
+        <div class="topbar-clock-v6" aria-label="Current gateway time"><span id="date">-</span><strong id="time">-</strong></div>
+        <div class="topbar-status-v6 is-connecting" id="global-connection-pill" aria-live="polite"><span class="status-dot-v6" id="global-connection-dot"></span><strong id="global-connection-text">CONNECTING</strong></div>
+        <div class="gateway-user-v6 gateway-user-static" aria-label="Gateway access"><div class="gateway-user-avatar" aria-hidden="true">GW</div><div class="gateway-user-copy"><strong>Gateway</strong><span>Local access</span></div></div>
       </div>
-
-      <div id="headerExtraTools" class="topbar-extra-v6"></div>
-
-      <div class="topbar-clock-v6" aria-label="Current gateway time">
-        <span id="date">—</span>
-        <strong id="time">—</strong>
-      </div>
-
-      <div class="topbar-status-v6 is-connecting" id="global-connection-pill" aria-live="polite">
-        <span class="status-dot-v6" id="global-connection-dot"></span>
-        <strong id="global-connection-text">CONNECTING</strong>
-      </div>
-
-      <div class="gateway-user-v6 gateway-user-static" aria-label="Gateway access">
-        <div class="gateway-user-avatar" aria-hidden="true">GW</div>
-        <div class="gateway-user-copy">
-          <strong>Gateway</strong>
-          <span>Local access</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="main-area-v6" id="main-content" tabindex="-1">
-    <section class="page-content-v6">{% block content %}{% endblock %}</section>
-  </main>
-
-  <div class="mobile-nav-drawer-v6" id="mobileNavDrawer" aria-hidden="true">
-    <div class="mobile-drawer-head-v6">
-      <div>
-        <strong>SR-A&amp;D</strong>
-        <span>SELVARITHIK'S A&amp;D</span>
-      </div>
-      <button type="button" class="mobile-drawer-close-v6" aria-label="Close navigation">×</button>
-    </div>
-    <nav class="mobile-nav-grid-v6">
-      <a href="/" class="mobile-nav-link" data-path="/"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg><span>Dashboard</span></a>
-      <a href="/nodes" class="mobile-nav-link" data-path="/nodes"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/><path d="M10 7h4M7 10v4M17 14v-4M14 17h-4"/></svg><span>Nodes</span></a>
-      <a href="/sensors" class="mobile-nav-link" data-path="/sensors"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V9M10 18V5M16 18v-8M22 18v-6M3 18h20"/></svg><span>Sensors</span></a>
-      <a href="/command-center" class="mobile-nav-link" data-path="/command-center"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Commands</span></a>
-      <a href="/communication" class="mobile-nav-link" data-path="/communication"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 11 7.5-4M8.2 13l7.5 4"/></svg><span>Network</span></a>
-      <a href="/firmware" class="mobile-nav-link" data-path="/firmware"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="6" width="10" height="12" rx="2"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M4 9h3M4 15h3M17 9h3M17 15h3"/></svg><span>Firmware</span></a>
-      <a href="/logs" class="mobile-nav-link" data-path="/logs"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 9h14M5 13h9M5 17h14"/><circle cx="18" cy="13" r="2.5"/></svg><span>Logs</span></a>
-      <a href="/system-overview" class="mobile-nav-link" data-path="/system-overview"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 4.8-3.4 7.7-8 9-4.6-1.3-8-4.2-8-9V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg><span>System Health</span></a>
-      <a href="/system" class="mobile-nav-link" data-path="/system"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6-.1.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0 1.5-1h.2v-2.3h-.2a1.6 1.6 0 0 0-1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.2v2.3h-.2a1.6 1.6 0 0 0-1.5 1 1.6 1.6 0 0 0-.3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.2v2.3h-.2a1.6 1.6 0 0 0-1.5 1 1.6 1.6 0 0 0-.3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.2v2.3h-.2a1.6 1.6 0 0 0-1.5 1 1.6 1.6 0 0 0-.3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.2v2.3h-.2a1.6 1.6 0 0 0-1.5 1 1.6 1.6 0 0 0-.3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 .3 1.8l.1.1-1.6 1.6-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2h-2.3v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-1.6-1.6.1-.1A1.6 1.6 0 0 0 9 15a1.6 1.6 0 0 0-1.5-1H7.3v-2.3h.2A1.6 1.6 0 0 0 9 10.2a1.6 1.6 0 0 0-.3-1.8l-.1-.1 1.6-1.6.1.1a1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5v-.2h2.3v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 1.6 1.6-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.2v2.3h-.2A1.6 1.6 0 0 0 19.4 15Z"/></svg><span>System</span></a>
-      <a href="/chat" class="mobile-nav-link" data-path="/chat"><svg class="mobile-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v5A3.5 3.5 0 0 1 15.5 15H11l-4.5 4v-4.7A3.5 3.5 0 0 1 5 11.5z"/><path d="M9 8h6M9 11h4"/></svg><span>Private Chat</span></a>
-    </nav>
+    </header>
+    <main class="main-area-v6" id="main-content" tabindex="-1"><section class="page-content-v6">{% block content %}{% endblock %}</section></main>
   </div>
-
+  <div class="mobile-nav-drawer-v6" id="mobileNavDrawer" aria-hidden="true">
+    <div class="mobile-drawer-head-v6"><div><strong>SELVARITHIK'S A&amp;D</strong><span>LoRa Gateway</span></div><button type="button" class="mobile-drawer-close-v6" aria-label="Close navigation">×</button></div>
+    <nav class="mobile-nav-grid-v6" aria-label="Mobile navigation"><a href="/" class="mobile-nav-link" data-path="/">Dashboard</a><a href="/nodes" class="mobile-nav-link" data-path="/nodes">Nodes</a><a href="/sensors" class="mobile-nav-link" data-path="/sensors">Sensors</a><a href="/command-center" class="mobile-nav-link" data-path="/command-center">Commands</a><a href="/communication" class="mobile-nav-link" data-path="/communication">Network</a><a href="/firmware" class="mobile-nav-link" data-path="/firmware">Firmware</a><a href="/logs" class="mobile-nav-link" data-path="/logs">Logs</a><a href="/system-overview" class="mobile-nav-link" data-path="/system-overview">System Health</a><a href="/system" class="mobile-nav-link" data-path="/system">System</a><a href="/chat" class="mobile-nav-link" data-path="/chat">Private Chat</a></nav>
+  </div>
 </div>
-
 <div id="toast-container"></div>
 <div id="modal-root"></div>
-
-<div class="v3-command-palette" id="v3-command-palette" aria-hidden="true">
-  <div class="v3-command-backdrop"></div>
-  <div class="v3-command-dialog">
-    <div class="v3-command-head">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg>
-      <input id="v3-command-input" placeholder="Search pages…" autocomplete="off">
-      <kbd>ESC</kbd>
-    </div>
-    <div class="v3-command-results" id="v3-command-results"></div>
+<div class="search-modal" id="global-search-modal" aria-hidden="true">
+  <div class="search-backdrop" data-close-search></div>
+  <div class="search-dialog" role="dialog" aria-modal="true" aria-label="Search pages">
+    <div class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><input id="global-nav-search" type="search" autocomplete="off" placeholder="Search dashboard pages, nodes, sensors, logs..."><kbd>Esc</kbd></div>
+    <div class="search-results" id="global-search-results"></div>
   </div>
 </div>
-
 </body>
 </html>
