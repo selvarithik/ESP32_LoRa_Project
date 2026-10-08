@@ -11,7 +11,7 @@
     <section class="dashboard-v4-top" aria-labelledby="dashboard-heading">
       <div>
         <p class="dashboard-v4-kicker">Operations / Live Telemetry</p>
-        <h1 id="dashboard-heading">Gateway Operations</h1>
+        <h1 id="dashboard-heading"><span>Gateway</span> Operations</h1>
         <p>All configured nodes and enabled sensor parameters, rendered from the live gateway configuration.</p>
       </div>
       <div class="dashboard-v4-actions">
@@ -22,9 +22,12 @@
     </section>
 
     <section class="dashboard-command" aria-label="Dashboard filters">
-      <input id="dashboard-search" type="search" autocomplete="off"
-             placeholder="Search node, parameter, sensor ID, hardware or firmware…"
-             aria-label="Search dashboard">
+      <label class="dashboard-search-wrap" data-tip="Filter nodes and parameters">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg>
+        <input id="dashboard-search" type="search" autocomplete="off"
+               placeholder="Search node, parameter, sensor ID, hardware or firmware…"
+               aria-label="Search dashboard">
+      </label>
       <select id="dashboard-node-filter" aria-label="Filter by node">
         <option value="">All nodes</option>
       </select>
@@ -50,22 +53,26 @@
           <div class="dashboard-meta-item"><span>Source</span><strong>LIVE API</strong></div>
         </div>
       </div>
-      <div class="dashboard-metric">
+      <div class="dashboard-metric kpi-nodes" data-tip="Nodes configured on the gateway">
+        <span class="dashboard-metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/><path d="M10 7h4M7 10v4M17 14v-4M14 17h-4"/></svg></span>
         <div class="dashboard-metric-label">Total Nodes</div>
         <div class="dashboard-metric-value" id="total-nodes">—</div>
         <div class="dashboard-metric-caption">Configured</div>
       </div>
-      <div class="dashboard-metric">
+      <div class="dashboard-metric kpi-online" data-tip="Nodes reachable right now">
+        <span class="dashboard-metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0M8.2 15.6a5.5 5.5 0 0 1 7.6 0"/><circle cx="12" cy="18.6" r="1.2"/></svg></span>
         <div class="dashboard-metric-label">Online</div>
         <div class="dashboard-metric-value" id="online-nodes">—</div>
         <div class="dashboard-metric-caption">Reachable now</div>
       </div>
-      <div class="dashboard-metric">
+      <div class="dashboard-metric kpi-params" data-tip="Enabled sensor parameters">
+        <span class="dashboard-metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V9M10 18V5M16 18v-8M22 18v-6M3 18h20"/></svg></span>
         <div class="dashboard-metric-label">Parameters</div>
         <div class="dashboard-metric-value" id="sensor-count">—</div>
         <div class="dashboard-metric-caption">Enabled configuration</div>
       </div>
-      <div class="dashboard-metric">
+      <div class="dashboard-metric kpi-problems" data-tip="Alarm or sensor-error parameters">
+        <span class="dashboard-metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 3 19h18z"/><path d="M12 10v4M12 17h.01"/></svg></span>
         <div class="dashboard-metric-label">Problems</div>
         <div class="dashboard-metric-value" id="alarm-count">—</div>
         <div class="dashboard-metric-caption">Alarm / sensor error</div>
@@ -221,32 +228,10 @@
 {% endblock %}
 
 {% block extra_css_after %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v5.css') }}?v=1">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v6.css') }}?v=2">
-<style id="ui-v5-dashboard-body">
-body.ui-v5-rebuild .dashboard-v4-actions,
-body.ui-v5-rebuild .dashboard-command,
-body.ui-v5-rebuild .dashboard-status-board,
-body.ui-v5-rebuild .dashboard-visual-overview,
-body.ui-v5-rebuild .dashboard-main-grid{animation:v5-rise .5s var(--v5-ease) both}
-body.ui-v5-rebuild .dashboard-status-board>*{animation:v5-card .55s var(--v5-ease) both}
-body.ui-v5-rebuild .dashboard-metric-value{font-variant-numeric:tabular-nums}
-body.ui-v5-rebuild .dashboard-node,
-body.ui-v5-rebuild .dashboard-health-row,
-body.ui-v5-rebuild .dashboard-alert-row,
-body.ui-v5-rebuild .dashboard-event-row{transition:transform .2s var(--v5-ease),background .2s ease,box-shadow .2s ease}
-body.ui-v5-rebuild .dashboard-node:hover,
-body.ui-v5-rebuild .dashboard-health-row:hover,
-body.ui-v5-rebuild .dashboard-alert-row:hover,
-body.ui-v5-rebuild .dashboard-event-row:hover{transform:translateX(3px);box-shadow:inset 3px 0 0 var(--v5-orange)}
-body.ui-v5-rebuild .dashboard-live-chip{animation:v5-breathe 2.8s ease-in-out infinite}
-@keyframes v5-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes v5-card{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
-@keyframes v5-breathe{0%,100%{filter:drop-shadow(0 0 0 rgba(25,163,111,0))}50%{filter:drop-shadow(0 0 9px rgba(25,163,111,.16))}}
-@media(prefers-reduced-motion:reduce){body.ui-v5-rebuild .dashboard-v4-actions,body.ui-v5-rebuild .dashboard-command,body.ui-v5-rebuild .dashboard-status-board,body.ui-v5-rebuild .dashboard-visual-overview,body.ui-v5-rebuild .dashboard-main-grid,body.ui-v5-rebuild .dashboard-status-board>*{animation:none!important}}
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-modern.css') }}?v=1">
 {% endblock %}
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/dashboard.js') }}?v=20"></script>
+<script src="{{ url_for('static', filename='js/dashboard-modern.js') }}?v=1" defer></script>
 {% endblock %}
