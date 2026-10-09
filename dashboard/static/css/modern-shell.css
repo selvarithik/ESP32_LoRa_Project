@@ -147,3 +147,11 @@ body:not(.sidebar-collapsed) .modern-sidebar .nav-item[data-tip]::after{display:
 body.sidebar-collapsed .modern-nav{overflow:visible}
 body.sidebar-collapsed .modern-sidebar-footer{flex-direction:column;padding-inline:0}
 body.sidebar-collapsed .sidebar-round-link,body.sidebar-collapsed .sidebar-collapse-btn{flex:0 0 38px}
+
+
+/* Mobile drawer overlay and visible keyboard focus (shared by all pages). */
+.mobile-nav-overlay-v6{position:fixed;inset:0;z-index:1500;background:rgba(15,23,42,.38);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .22s ease}
+.mobile-nav-overlay-v6.open{opacity:1;pointer-events:auto}
+body.nav-open{overflow:hidden}
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:0!important;box-shadow:0 0 0 3px rgba(11,94,215,.25)!important}
+@media(prefers-reduced-motion:reduce){.mobile-nav-overlay-v6{transition:none!important}}

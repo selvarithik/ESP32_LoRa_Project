@@ -311,6 +311,8 @@
   .dashboard-console .dashboard-gateway-strip{grid-column:1/-1}
 }
 @media (max-width:1100px){
+  .dashboard-console .dashboard-status-board{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .dashboard-console .dashboard-gateway-strip{grid-column:1/-1}
   .dashboard-console .dashboard-node-head{grid-template-columns:1fr auto}
   .dashboard-console .dashboard-node-config{grid-column:1/-1;order:3}
   .dashboard-console .dashboard-visual-grid{grid-template-columns:1fr}
@@ -344,7 +346,7 @@
 .dashboard-console .dashboard-event-row:hover{background:var(--m-soft-blue)!important;box-shadow:inset 3px 0 0 var(--m-orange)!important}
 .dashboard-console .dashboard-node{margin:0!important;box-shadow:none}
 .dashboard-console .dashboard-node-head{border-radius:0!important}
-.dashboard-console .dashboard-node-body{display:flex!important;flex-direction:column;gap:16px}
+.dashboard-console .dashboard-node-body{display:flex;flex-direction:column;gap:16px}
 .dashboard-console .dashboard-node-body>*{margin:0!important}
 .dashboard-console .dashboard-sensor-card{transform:none}
 .dashboard-console .dashboard-sensor-card:hover{transform:translateY(-2px)}

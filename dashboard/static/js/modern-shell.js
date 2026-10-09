@@ -14,6 +14,7 @@
     var input = document.getElementById("global-nav-search");
     var results = document.getElementById("global-search-results");
     var openButton = document.getElementById("global-nav-search-button");
+    var lastFocused = null;
     var links = Array.prototype.slice.call(document.querySelectorAll(".modern-nav .nav-item[data-path]"));
 
 
@@ -66,6 +67,7 @@
 
     function openSearch() {
       if (!modal || !input) return;
+      lastFocused = document.activeElement;
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
       render(input.value);
@@ -79,6 +81,10 @@
       if (!modal) return;
       modal.classList.remove("open");
       modal.setAttribute("aria-hidden", "true");
+      if (lastFocused && typeof lastFocused.focus === "function") {
+        lastFocused.focus();
+      }
+      lastFocused = null;
     }
 
     openButton?.addEventListener("click", openSearch);
@@ -127,9 +133,32 @@
       if ((mac ? event.metaKey : event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         openSearch();
+        return;
       }
       if (event.key === "Escape" && modal?.classList.contains("open")) {
         closeSearch();
+        return;
+      }
+      if (event.key === "Tab" && modal?.classList.contains("open")) {
+        var focusables = Array.prototype.slice.call(
+          modal.querySelectorAll('input,button,[href],[tabindex]:not([tabindex="-1"])')
+        ).filter(function (el) {
+          return !el.disabled && el.getAttribute("aria-hidden") !== "true";
+        });
+        if (!focusables.length) {
+          event.preventDefault();
+          input && input.focus();
+          return;
+        }
+        var first = focusables[0];
+        var last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     });
   });
