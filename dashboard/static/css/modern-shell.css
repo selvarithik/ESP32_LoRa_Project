@@ -136,14 +136,3 @@ body.sidebar-collapsed .sidebar-collapse-btn svg{transform:rotate(180deg)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 @media (max-width:1180px){.app-shell{grid-template-columns:1fr!important}.modern-sidebar{display:none}.mobile-menu-btn-v6{display:grid;place-items:center}.modern-topbar{padding-inline:16px}.page-content-v6{padding-inline:16px}.topbar-clock-v6,.gateway-user-v6{display:none}.dashboard-status-board{grid-template-columns:1fr 1fr!important}}
 @media (max-width:760px){.modern-topbar{align-items:flex-start;flex-direction:column}.topbar-right{width:100%;justify-content:space-between}.page-heading small{white-space:normal}.topbar-search span,.topbar-status-v6 strong{display:none}.dashboard-status-board{grid-template-columns:1fr!important}.page-content-v6{padding:16px 12px 32px}.dashboard-v4-actions,.v3-hero-actions{width:100%;justify-content:flex-start;flex-wrap:wrap}.dashboard-command{grid-template-columns:1fr!important}.toast-container{left:12px;right:12px}.toast{min-width:0}}
-
-/* Header scroll shadow + collapsed-sidebar tooltips */
-.modern-topbar{transition:box-shadow .2s ease}
-.modern-topbar.is-scrolled{box-shadow:0 10px 30px rgba(15,23,42,.08)}
-.modern-sidebar .nav-item[data-tip]::after{left:calc(100% + 12px);bottom:auto;top:50%;transform:translate(-4px,-50%)}
-.modern-sidebar .nav-item[data-tip]:hover::after{transform:translate(0,-50%)}
-body:not(.sidebar-collapsed) .modern-sidebar .nav-item[data-tip]::after{display:none}
-.modern-nav{overflow-x:hidden}
-body.sidebar-collapsed .modern-nav{overflow:visible}
-body.sidebar-collapsed .modern-sidebar-footer{flex-direction:column;padding-inline:0}
-body.sidebar-collapsed .sidebar-round-link,body.sidebar-collapsed .sidebar-collapse-btn{flex:0 0 38px}
