@@ -16,19 +16,6 @@
     var openButton = document.getElementById("global-nav-search-button");
     var links = Array.prototype.slice.call(document.querySelectorAll(".modern-nav .nav-item[data-path]"));
 
-
-    /* Collapsed-sidebar tooltips: reuse each link's label */
-    links.forEach(function (link) {
-      var label = link.querySelector("span");
-      if (label && !link.hasAttribute("data-tip")) link.setAttribute("data-tip", label.textContent.trim());
-    });
-
-    /* Header shadow once the page scrolls */
-    var topbar = document.querySelector(".modern-topbar");
-    function onScroll() { topbar && topbar.classList.toggle("is-scrolled", window.scrollY > 6); }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-
     function pageItems() {
       return links.map(function (link) {
         return {
