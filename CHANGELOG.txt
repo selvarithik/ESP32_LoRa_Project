@@ -1,0 +1,30 @@
+SELVARITHIK'S A&D LoRa Gateway — CHANGELOG.txt
+Date: 2026-10-09
+
+SHARED SHELL / DASHBOARD UPDATE
+- Added the modern Sidebar-9 inspired shell and light industrial Dashboard UI.
+- Kept branding as SELVARITHIK'S A&D — LoRa Gateway.
+- Added a backdrop overlay for the mobile navigation drawer.
+- Mobile drawer now closes on its close button, overlay click, Escape, page-link navigation and when the viewport returns to desktop width.
+- Enhanced the global search popup with Ctrl/Cmd+K, arrow-key result selection, Enter navigation, Escape close, Tab focus trapping and focus restoration.
+- Added shared visible keyboard-focus styling.
+- Kept the existing app.js clock, status indicator, API helpers, active-route styling, sidebar-collapse preference and theme initialization.
+- Restored legacy shared CSS layers underneath modern-shell.css while existing page classes still depend on them.
+- Kept redesign-v3.js loaded because it supports Communication/Firmware tabs, legacy Logs ID mapping, System section hooks and mesh-topology drawing.
+- Kept ui-overhaul-2026.js loaded for active-route aria-current, responsive table wrappers and keyboard access helpers.
+- Removed the Dashboard node-body display override that could prevent the existing Collapse/Expand button from hiding a node body.
+- Adjusted the Dashboard tablet KPI grid.
+- Bumped static asset versions so browsers reload changed CSS/JS.
+- Added UI_AUDIT.txt documenting the route/template/controller/API/DOM-hook inventory and shared dependencies.
+
+SCOPE
+- Only frontend templates, CSS, JavaScript and audit/changelog documentation are changed by this patch.
+- No backend server, route implementation, API handler, manager, database, protocol, simulator or firmware source was modified.
+- Existing Dashboard polling remains in dashboard.js; dashboard-modern.js only enhances presentation and interactions.
+- Private Chat internal markup, CSS and chat.js were not edited.
+
+VALIDATION PERFORMED
+- JavaScript syntax parsing passed for app.js, modern-shell.js, redesign-v3.js, ui-overhaul-2026.js, dashboard.js and dashboard-modern.js.
+- Verified all re-enabled legacy shared CSS asset paths exist in the repository.
+- Static source checks confirm the new shared search, mobile overlay and Dashboard collapse styles are wired to existing elements.
+- Full rendered-browser testing at 1440px, 1024px and 390px, and a visual Private Chat check, have not been run in this environment because the user's local server is inaccessible from here.
