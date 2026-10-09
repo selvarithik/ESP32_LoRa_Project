@@ -10,10 +10,26 @@
 {% block extra_css %}{% endblock %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v5.css') }}?v=2">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-v6.css') }}?v=3">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/modern-shell.css') }}?v=1">
+<!-- Legacy shared visual layers are retained while page-specific v3 components still use them. -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v6.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v7.css') }}?v=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-v8.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/selvarithik-palette.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gateway-ui-2026.css') }}?v=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gateway-neutral-2026.css') }}?v=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-overhaul-2026.css') }}?v=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-v2-2026.css') }}?v=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-v3-shell-2026.css') }}?v=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-v4-shell-2026.css') }}?v=3">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-v5-rebuild-2026.css') }}?v=3">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-reference-final-2026.css') }}?v=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modern-shell.css') }}?v=2">
 {% block extra_css_after %}{% endblock %}
-<script src="{{ url_for('static', filename='js/app.js') }}?v=32"></script>
-<script src="{{ url_for('static', filename='js/modern-shell.js') }}?v=1" defer></script>
+<script src="{{ url_for('static', filename='js/app.js') }}?v=33"></script>
+<!-- These shared interactions remain required by existing pages: tabsets, logs ID adapter, mesh topology, responsive table wrappers. -->
+<script src="{{ url_for('static', filename='js/redesign-v3.js') }}?v=4"></script>
+<script src="{{ url_for('static', filename='js/ui-overhaul-2026.js') }}?v=2"></script>
+<script src="{{ url_for('static', filename='js/modern-shell.js') }}?v=2" defer></script>
 {% block extra_js %}{% endblock %}
 </head>
 
