@@ -929,14 +929,11 @@ gateway.highlightActiveNav = function () {
 
 gateway.initGlobalSearch = function () {
     const input = document.getElementById("global-nav-search");
-    const modal = document.getElementById("global-search-modal");
     if (!input) return;
 
     const searchable = Array.from(document.querySelectorAll(".nav-item[data-path]"));
 
     input.addEventListener("keydown", (event) => {
-        /* modern-shell.js owns keyboard selection while the search dialog is open. */
-        if (modal && modal.classList.contains("open")) return;
         if (event.key !== "Enter") return;
 
         const q = input.value.trim().toLowerCase();
@@ -955,56 +952,49 @@ gateway.initGlobalSearch = function () {
 gateway.initMobileNav = function () {
     const menuBtn = document.getElementById("mobile-menu-btn");
     const drawer = document.getElementById("mobileNavDrawer");
-    const overlay = document.getElementById("mobileNavOverlay");
 
-    if (!menuBtn || !drawer) return;
+    if (menuBtn && drawer) {
+        const closeButton =
+            drawer.querySelector(".mobile-drawer-close-v6");
 
-    const closeButton = drawer.querySelector(".mobile-drawer-close-v6");
+        const closeDrawer = () => {
+            drawer.classList.remove("open");
+            drawer.setAttribute("aria-hidden", "true");
+            menuBtn.setAttribute("aria-expanded", "false");
+        };
 
-    const closeDrawer = () => {
-        drawer.classList.remove("open");
-        drawer.setAttribute("aria-hidden", "true");
-        menuBtn.setAttribute("aria-expanded", "false");
-        overlay?.classList.remove("open");
-        overlay?.setAttribute("aria-hidden", "true");
-        document.body.classList.remove("nav-open");
-    };
+        menuBtn.addEventListener("click", () => {
+            const open =
+                !drawer.classList.contains("open");
 
-    const openDrawer = () => {
-        drawer.classList.add("open");
-        drawer.setAttribute("aria-hidden", "false");
-        menuBtn.setAttribute("aria-expanded", "true");
-        overlay?.classList.add("open");
-        overlay?.setAttribute("aria-hidden", "false");
-        document.body.classList.add("nav-open");
-        closeButton?.focus();
-    };
+            drawer.classList.toggle(
+                "open",
+                open
+            );
 
-    menuBtn.setAttribute("aria-expanded", "false");
-    menuBtn.addEventListener("click", () => {
-        drawer.classList.contains("open") ? closeDrawer() : openDrawer();
-    });
+            drawer.setAttribute(
+                "aria-hidden",
+                open ? "false" : "true"
+            );
 
-    closeButton?.addEventListener("click", closeDrawer);
-    overlay?.addEventListener("click", closeDrawer);
+            menuBtn.setAttribute(
+                "aria-expanded",
+                open ? "true" : "false"
+            );
+        });
 
-    drawer.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", closeDrawer);
-    });
+        closeButton?.addEventListener(
+            "click",
+            closeDrawer
+        );
 
-    document.addEventListener("keydown", event => {
-        if (event.key === "Escape" && drawer.classList.contains("open")) {
-            closeDrawer();
-            menuBtn.focus();
-        }
-    });
-
-    window.addEventListener("resize", () => {
-        if (window.innerWidth > 1180 && drawer.classList.contains("open")) {
-            closeDrawer();
-        }
-    }, { passive: true });
-
+        drawer.querySelectorAll("a").forEach(link => {
+            link.addEventListener(
+                "click",
+                closeDrawer
+            );
+        });
+    }
 };
 
 /* ============================================================
