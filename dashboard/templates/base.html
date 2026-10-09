@@ -61,12 +61,13 @@
     </header>
     <main class="main-area-v6" id="main-content" tabindex="-1"><section class="page-content-v6">{% block content %}{% endblock %}</section></main>
   </div>
+  <div class="mobile-nav-overlay-v6" id="mobileNavOverlay" aria-hidden="true"></div>
   <div class="mobile-nav-drawer-v6" id="mobileNavDrawer" aria-hidden="true">
     <div class="mobile-drawer-head-v6"><div><strong>SELVARITHIK'S A&amp;D</strong><span>LoRa Gateway</span></div><button type="button" class="mobile-drawer-close-v6" aria-label="Close navigation">×</button></div>
     <nav class="mobile-nav-grid-v6" aria-label="Mobile navigation"><a href="/" class="mobile-nav-link" data-path="/">Dashboard</a><a href="/nodes" class="mobile-nav-link" data-path="/nodes">Nodes</a><a href="/sensors" class="mobile-nav-link" data-path="/sensors">Sensors</a><a href="/command-center" class="mobile-nav-link" data-path="/command-center">Commands</a><a href="/communication" class="mobile-nav-link" data-path="/communication">Network</a><a href="/firmware" class="mobile-nav-link" data-path="/firmware">Firmware</a><a href="/logs" class="mobile-nav-link" data-path="/logs">Logs</a><a href="/system-overview" class="mobile-nav-link" data-path="/system-overview">System Health</a><a href="/system" class="mobile-nav-link" data-path="/system">System</a><a href="/chat" class="mobile-nav-link" data-path="/chat">Private Chat</a></nav>
   </div>
 </div>
-<div id="toast-container"></div>
+<div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
 <div id="modal-root"></div>
 <div class="search-modal" id="global-search-modal" aria-hidden="true">
   <div class="search-backdrop" data-close-search></div>
