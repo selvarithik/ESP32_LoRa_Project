@@ -15,6 +15,35 @@
     var results = document.getElementById("global-search-results");
     var openButton = document.getElementById("global-nav-search-button");
     var links = Array.prototype.slice.call(document.querySelectorAll(".modern-nav .nav-item[data-path]"));
+    var mobileLinks = Array.prototype.slice.call(document.querySelectorAll(".mobile-nav-link[data-path]"));
+    var collapseButton = document.getElementById("sidebar-collapse-btn");
+    var mobileMenuButton = document.getElementById("mobile-menu-btn");
+    var mobileDrawer = document.getElementById("mobileNavDrawer");
+    var mobileCloseButton = document.querySelector(".mobile-drawer-close-v6");
+
+    function currentPath() {
+      return window.location.pathname.replace(/\\/$/, "") || "/";
+    }
+
+    function syncActiveNavigation() {
+      var path = currentPath();
+      links.concat(mobileLinks).forEach(function (link) {
+        var target = (link.getAttribute("data-path") || "").replace(/\\/$/, "") || "/";
+        link.classList.toggle("active", target === path);
+      });
+    }
+
+    function closeMobileNavigation() {
+      if (!mobileDrawer) return;
+      mobileDrawer.classList.remove("open");
+      mobileDrawer.setAttribute("aria-hidden", "true");
+    }
+
+    function openMobileNavigation() {
+      if (!mobileDrawer) return;
+      mobileDrawer.classList.add("open");
+      mobileDrawer.setAttribute("aria-hidden", "false");
+    }
 
     function pageItems() {
       return links.map(function (link) {
@@ -67,6 +96,30 @@
       modal.classList.remove("open");
       modal.setAttribute("aria-hidden", "true");
     }
+
+    syncActiveNavigation();
+
+    collapseButton?.addEventListener("click", function () {
+      var collapsed = document.body.classList.toggle("sidebar-collapsed");
+      try { localStorage.setItem("gateway_sidebar_collapsed", collapsed ? "1" : "0"); } catch (error) {}
+      collapseButton.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+      collapseButton.setAttribute("title", collapsed ? "Expand sidebar" : "Collapse sidebar");
+    });
+
+    try {
+      if (localStorage.getItem("gateway_sidebar_collapsed") === "1") {
+        document.body.classList.add("sidebar-collapsed");
+      }
+    } catch (error) {}
+
+    mobileMenuButton?.addEventListener("click", openMobileNavigation);
+    mobileCloseButton?.addEventListener("click", closeMobileNavigation);
+    mobileDrawer?.addEventListener("click", function (event) {
+      if (event.target === mobileDrawer) closeMobileNavigation();
+    });
+    mobileLinks.forEach(function (link) {
+      link.addEventListener("click", closeMobileNavigation);
+    });
 
     openButton?.addEventListener("click", openSearch);
     document.querySelectorAll("[data-close-search]").forEach(function (el) {
