@@ -12,7 +12,10 @@ document.addEventListener("DOMContentLoaded", function () {
         search: "",
         nodeFilter: "",
         statusFilter: "",
-        showConfig: true,
+        showConfig: false,
+        view: "all",
+        animate: true,
+        subtab: "sensors",
         showHidden: true,
         busy: false,
         graphBusy: false,
@@ -448,6 +451,92 @@ document.addEventListener("DOMContentLoaded", function () {
             '</article>';
     }
 
+    function nodeStats(node) {
+        var params = (state.telemetry[node.node_id] || []).filter(function (p) { return p && p.enabled !== false; });
+        var problems = params.filter(function (p) {
+            var k = parameterStatus(p);
+            return k === "alarm" || k === "error";
+        }).length;
+        return {
+            params: params,
+            problems: problems,
+            graphs: params.filter(function (p) { return Boolean(p.graph_enabled); })
+        };
+    }
+
+    function miniValue(p) {
+        var v = p.value;
+        if (v === null || v === undefined || v === "") return "—";
+        return isFinite(Number(v)) ? formatValue(v, p.decimal_places) : String(v);
+    }
+
+    function nodeTile(node) {
+        var st = nodeStats(node);
+        var on = online(node);
+        var rows = st.params.slice(0, 4).map(function (p) {
+            var k = parameterStatus(p);
+            return '<li class="' + k + '"><i></i><span>' + esc(p.parameter_name || p.parameter_id) + '</span>' +
+                '<b>' + esc(miniValue(p)) + '<small>' + esc(p.unit || "") + '</small></b></li>';
+        }).join("") || '<li class="empty">No enabled parameters</li>';
+        var more = st.params.length > 4 ? '<li class="more">+' + (st.params.length - 4) + ' more</li>' : "";
+
+        return '<article class="tl-tile ' + (on ? "is-online" : "is-offline") + (st.problems ? " has-problem" : "") +
+            '" data-open-node="' + esc(node.node_id) + '" tabindex="0" role="button" aria-label="Open ' + esc(node.name || node.node_id) + '">' +
+            '<header><span class="tl-dot"></span><div class="tl-tile-title"><strong>' + esc(node.name || node.node_id) + '</strong>' +
+            '<small>' + esc(node.node_id) + ' · ' + esc(node.communication_type || "—") + '</small></div>' +
+            '<span class="tl-badge ' + (on ? "on" : "off") + '">' + (on ? "ONLINE" : "OFFLINE") + '</span></header>' +
+            '<ul class="tl-mini">' + rows + more + '</ul>' +
+            '<footer><span><b>' + st.params.length + '</b> params</span>' +
+            '<span class="' + (st.problems ? "warn" : "") + '"><b>' + st.problems + '</b> problems</span>' +
+            '<span class="tl-open">Open <i>→</i></span></footer></article>';
+    }
+
+    function nodeDetail(node) {
+        var st = nodeStats(node);
+        var on = online(node);
+        var shown = state.showHidden
+            ? st.params
+            : st.params.filter(function (p) { return p.display_enabled !== false; });
+        var cards = shown.map(sensorCard).join("") ||
+            '<div class="dashboard-node-empty">No enabled sensor parameters configured for this node.</div>';
+        var graphs = st.graphs.map(function (p) { return graphSvg(node.node_id, p); }).join("") ||
+            '<div class="dashboard-node-empty">No parameters have graph display enabled.</div>';
+        var tab = state.subtab === "graphs" ? "graphs" : "sensors";
+
+        var facts = [
+            ["Address", node.node_address],
+            ["MCU", [node.mcu_family, node.mcu_model].filter(Boolean).join(" / ")],
+            ["Firmware", node.firmware_version],
+            ["Hardware", node.hardware_revision],
+            ["Communication", node.communication_type],
+            ["Last seen", formatTime(node.last_seen)]
+        ].map(function (f) {
+            return '<div><dt>' + esc(f[0]) + '</dt><dd title="' + esc(f[1] || "—") + '">' + esc(f[1] || "—") + '</dd></div>';
+        }).join("");
+
+        return '<div class="tl-detail" data-node-name="' + esc(node.name || node.node_id) + '">' +
+            '<aside class="tl-side">' +
+                '<div class="tl-side-head"><span class="tl-dot ' + (on ? "on" : "") + '"></span><div><strong>' + esc(node.name || node.node_id) + '</strong>' +
+                '<small>' + esc(node.node_id) + '</small></div>' +
+                '<span class="tl-badge ' + (on ? "on" : "off") + '">' + (on ? "ONLINE" : "OFFLINE") + '</span></div>' +
+                '<div class="tl-kpis"><div><b>' + st.params.length + '</b><span>Params</span></div>' +
+                '<div class="' + (st.problems ? "warn" : "") + '"><b>' + st.problems + '</b><span>Problems</span></div>' +
+                '<div><b>' + st.graphs.length + '</b><span>Graphs</span></div></div>' +
+                '<dl class="tl-facts">' + facts + '</dl>' +
+                (state.showConfig ? '<div class="tl-config"><div class="tl-config-head">Node configuration</div><div class="dashboard-node-inspector-grid">' + nodeConfigFields(node) + '</div></div>' : "") +
+                '<button class="tl-back" type="button" data-view="all">← All nodes</button>' +
+            '</aside>' +
+            '<section class="tl-main">' +
+                '<div class="tl-subtabs" role="tablist">' +
+                    '<button type="button" role="tab" data-subtab="sensors" class="' + (tab === "sensors" ? "active" : "") + '">Sensors <em>' + shown.length + '</em></button>' +
+                    '<button type="button" role="tab" data-subtab="graphs" class="' + (tab === "graphs" ? "active" : "") + '">Graphs <em>' + st.graphs.length + '</em></button>' +
+                '</div>' +
+                (tab === "sensors"
+                    ? '<div class="dashboard-node-sensors">' + cards + '</div>'
+                    : '<div class="dashboard-node-graph-list">' + graphs + '</div>') +
+            '</section></div>';
+    }
+
     function renderNodes() {
         var container = document.getElementById("dashboard-node-list");
         if (!container) return;
@@ -459,51 +548,27 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        container.innerHTML = filtered.map(function (node) {
-            var params = (state.telemetry[node.node_id] || []).filter(function (p) {
-                return p && p.enabled !== false;
-            });
+        var view = state.view || "all";
+        var current = filtered.filter(function (n) { return n.node_id === view; })[0];
+        if (!current) view = "all";
 
-            var shown = state.showHidden
-                ? params
-                : params.filter(function (p) { return p.display_enabled !== false; });
+        var tabs = '<div class="tl-tabs" role="tablist">' +
+            '<button type="button" role="tab" data-view="all" class="' + (view === "all" ? "active" : "") + '">All nodes <em>' + filtered.length + '</em></button>' +
+            filtered.map(function (n) {
+                return '<button type="button" role="tab" data-view="' + esc(n.node_id) + '" class="' + (view === n.node_id ? "active" : "") + '">' +
+                    '<i class="tl-tab-dot ' + (online(n) ? "on" : "") + '"></i>' + esc(n.name || n.node_id) + '</button>';
+            }).join("") + '</div>';
 
-            var cards = shown.map(sensorCard).join("");
-            if (!cards) cards = '<div class="dashboard-node-empty">No enabled sensor parameters configured for this node.</div>';
-
-            var graphParams = params.filter(function (p) { return Boolean(p.graph_enabled); });
-            var graphs = graphParams.map(function (p) { return graphSvg(node.node_id, p); }).join("");
-
-            var nodeOnline = online(node);
-
-            return '<article class="dashboard-node" data-node-id="' + esc(node.node_id) + '">' +
-                '<header class="dashboard-node-head">' +
-                    '<div>' +
-                        '<div class="dashboard-node-title-row">' +
-                            '<span class="dashboard-node-status ' + (nodeOnline ? "online" : "") + '"></span>' +
-                            '<div class="dashboard-node-name" title="' + esc(node.name || node.node_id) + '">' + esc(node.name || node.node_id) + '</div>' +
-                        '</div>' +
-                        '<div class="dashboard-node-id">' + esc(node.node_id) + '</div>' +
-                    '</div>' +
-                    '<div class="dashboard-node-config">' +
-                        '<div class="dashboard-node-config-item"><span>Address</span><strong>' + esc(node.node_address || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>MCU</span><strong>' + esc([node.mcu_family,node.mcu_model].filter(Boolean).join(" / ") || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Firmware</span><strong>' + esc(node.firmware_version || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Hardware</span><strong>' + esc(node.hardware_revision || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Communication</span><strong>' + esc(node.communication_type || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Last Seen</span><strong>' + esc(formatTime(node.last_seen)) + '</strong></div>' +
-                    '</div>' +
-                    '<button class="dashboard-node-toggle" type="button" data-toggle-node="' + esc(node.node_id) + '">Collapse</button>' +
-                '</header>' +
-                '<div class="dashboard-node-body">' +
-                    (state.showConfig
-                        ? '<div class="dashboard-node-inspector"><div class="dashboard-node-inspector-head">Node Configuration</div><div class="dashboard-node-inspector-grid">' + nodeConfigFields(node) + '</div></div>'
-                        : "") +
-                    '<div class="dashboard-node-sensors">' + cards + '</div>' +
-                    (graphs ? '<div class="dashboard-node-graph-list">' + graphs + '</div>' : "") +
-                '</div>' +
-            '</article>';
-        }).join("");
+        var html = '<div class="tl">' + tabs +
+            (current
+                ? nodeDetail(current)
+                : '<div class="tl-grid">' + filtered.map(nodeTile).join("") + '</div>') +
+            '</div>';
+        if (container.__tlHtml === html) return;
+        container.__tlHtml = html;
+        container.classList.toggle("tl-animate", state.animate !== false);
+        state.animate = false;
+        container.innerHTML = html;
     }
 
     function renderFleet() {
@@ -902,6 +967,26 @@ document.addEventListener("DOMContentLoaded", function () {
             toast("Widget removed.", "info");
         });
 
+        (function () {
+            var box = document.getElementById("dashboard-node-list");
+            if (!box) return;
+            function go(e) {
+                var v = e.target.closest("[data-view]");
+                var t = e.target.closest("[data-subtab]");
+                var o = e.target.closest("[data-open-node]");
+                if (v) state.view = v.getAttribute("data-view");
+                else if (o) { state.view = o.getAttribute("data-open-node"); state.subtab = "sensors"; }
+                else if (t) state.subtab = t.getAttribute("data-subtab");
+                else return;
+                state.animate = true;
+                renderNodes();
+            }
+            box.addEventListener("click", go);
+            box.addEventListener("keydown", function (e) {
+                if ((e.key === "Enter" || e.key === " ") && e.target.closest("[data-open-node]")) { e.preventDefault(); go(e); }
+            });
+        })();
+
         document.getElementById("dashboard-node-list")?.addEventListener("click", function (e) {
             var button = e.target.closest("[data-toggle-node]");
             if (!button) return;
@@ -910,6 +995,7 @@ document.addEventListener("DOMContentLoaded", function () {
             var collapsed = body.style.display === "none";
             body.style.display = collapsed ? "" : "none";
             button.textContent = collapsed ? "Collapse" : "Expand";
+            state.collapsedNodes[button.getAttribute("data-toggle-node")] = !collapsed;
         });
 
         document.addEventListener("keydown", function (e) {

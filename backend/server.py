@@ -38,6 +38,10 @@ socketio = SocketIO(
     cors_allowed_origins="*"
 )
 
+# Ensure a fresh checkout has the existing schema before any API route reads it.
+# This creates missing tables only; it does not seed demo nodes or telemetry.
+database.initialize_database()
+
 # Local web-session security. Override GATEWAY_SECRET_KEY for a deployment.
 app.secret_key = os.environ.get(
     "GATEWAY_SECRET_KEY",
