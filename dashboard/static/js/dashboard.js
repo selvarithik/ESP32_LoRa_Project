@@ -12,12 +12,14 @@ document.addEventListener("DOMContentLoaded", function () {
         search: "",
         nodeFilter: "",
         statusFilter: "",
-        showConfig: true,
+        showConfig: false,
         showHidden: true,
         busy: false,
         graphBusy: false,
         refreshTimer: null,
-        graphTimer: null
+        graphTimer: null,
+        history: {},
+        snapshotPending: false
     };
 
     function esc(value) {
@@ -65,10 +67,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function online(node) {
         var s = String((node && node.status) || "").toLowerCase();
-        return s === "online" || s === "connected";
+        return (s === "online" || s === "connected") && Boolean(node.last_seen) && Date.now() - new Date(node.last_seen).getTime() < 60000;
     }
 
     function parameterStatus(p) {
+        if (!p || !p.timestamp) return "offline";
+        if (Date.now() - new Date(p.timestamp).getTime() > Number(SensorUI.config(p).stale_timeout || 10) * 1000) return "stale";
         var alarm = String((p && p.alarm_status) || "").toUpperCase();
         if (alarm === "HIGH" || alarm === "LOW") return "alarm";
         if (alarm === "SENSOR_ERROR") return "error";
@@ -82,6 +86,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function parameterStatusLabel(p) {
+        if (!p || !p.timestamp) return "NO DATA";
+        if (parameterStatus(p) === "stale") return "STALE";
         var alarm = String((p && p.alarm_status) || "").toUpperCase();
         if (alarm === "HIGH") return "HIGH ALARM";
         if (alarm === "LOW") return "LOW ALARM";
@@ -135,32 +141,6 @@ document.addEventListener("DOMContentLoaded", function () {
         select.value = current;
     }
 
-    async function loadNodes() {
-        var data = await getJson("/api/nodes");
-        state.nodes = normalizeNodes(data);
-        populateNodeFilter();
-    }
-
-    async function loadNodeTelemetry(node, includeGraphs) {
-        try {
-            var data = await getJson("/api/nodes/" + encodeURIComponent(node.node_id) + "/parameters/latest");
-            var parameters = normalizeParameters(data);
-            state.telemetry[node.node_id] = parameters;
-
-            if (includeGraphs) {
-                var graphParams = parameters.filter(function (p) {
-                    return p.enabled !== false && Boolean(p.graph_enabled);
-                });
-                await Promise.allSettled(graphParams.map(function (p) {
-                    return loadGraph(node.node_id, p);
-                }));
-            }
-        } catch (error) {
-            console.error("Dashboard telemetry error for " + node.node_id, error);
-            state.telemetry[node.node_id] = [];
-        }
-    }
-
     async function loadGraph(nodeId, parameter) {
         var key = nodeId + "::" + parameter.parameter_id;
 
@@ -178,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
             var historyResponse = await getJson(
                 "/api/nodes/" + encodeURIComponent(nodeId) +
                 "/telemetry/" + encodeURIComponent(parameter.parameter_id) +
-                "?limit=" + maxPoints
+                "?hours=1"
             );
 
             state.graphs[key] = {
@@ -189,54 +169,6 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             console.error("Dashboard graph error for " + nodeId + "/" + parameter.parameter_id, error);
             state.graphs[key] = { config: {}, data: [], error: error.message };
-        }
-    }
-
-    async function loadTelemetry(includeGraphs) {
-        await Promise.allSettled(state.nodes.map(function (node) {
-            return loadNodeTelemetry(node, includeGraphs);
-        }));
-    }
-
-    async function loadActivity() {
-        try {
-            var response = await getJson("/api/logs?limit=8");
-            var logs = Array.isArray(response) ? response : ((response && response.logs) || []);
-            renderActivity(logs);
-            if (logs[0] && logs[0].timestamp) {
-                text("dashboard-server-time", formatClock(logs[0].timestamp));
-            }
-        } catch (error) {
-            console.error("Dashboard activity error", error);
-            var box = document.getElementById("activity-list");
-            if (box) box.innerHTML = '<div class="dashboard-empty">Unable to load activity.</div>';
-        }
-    }
-
-    async function loadServerStatus() {
-        try {
-            var response = await getJson("/api/status");
-            var stateName = String(response.status || "unknown").toUpperCase();
-            text("dashboard-gateway-state", stateName);
-            text("dashboard-gateway-sub",
-                String(response.server || "Gateway server") +
-                " · " + String(response.nodes === undefined ? state.nodes.length : response.nodes) +
-                " configured nodes"
-            );
-
-            var dot = document.getElementById("dashboard-gateway-dot");
-            if (dot) {
-                if (String(response.status || "").toLowerCase() === "online") {
-                    dot.style.background = "var(--d-lime)";
-                    dot.style.boxShadow = "0 0 0 4px var(--d-lime-soft)";
-                } else {
-                    dot.style.background = "var(--d-red)";
-                    dot.style.boxShadow = "0 0 0 4px var(--d-red-soft)";
-                }
-            }
-        } catch (error) {
-            text("dashboard-gateway-state", "UNAVAILABLE");
-            text("dashboard-gateway-sub", "Server status endpoint unavailable.");
         }
     }
 
@@ -254,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!online(node) && node.enabled !== false) return true;
         return (state.telemetry[node.node_id] || []).some(function (p) {
             var k = parameterStatus(p);
-            return k === "alarm" || k === "error";
+            return k === "alarm" || k === "error" || k === "stale";
         });
     }
 
@@ -325,48 +257,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function sensorCard(p) {
-        var kind = parameterStatus(p);
-        var displayOff = p.display_enabled === false;
-        var value = p.value !== null && p.value !== undefined && p.value !== "" ? p.value : p.text_value;
-        var valueText = value === null || value === undefined || value === ""
-            ? "—"
-            : (isFinite(Number(value)) ? formatValue(value, p.decimal_places) : String(value));
+        var node = state.nodes.find(n => n.node_id === p._nodeId);
+        return SensorUI.card(p, node, state.graphs[p._nodeId + "::" + p.parameter_id]?.data || []);
+    }
 
-        var range = (p.min_value !== null && p.min_value !== undefined) ||
-                    (p.max_value !== null && p.max_value !== undefined)
-            ? String(p.min_value === null || p.min_value === undefined ? "—" : p.min_value) +
-              " … " +
-              String(p.max_value === null || p.max_value === undefined ? "—" : p.max_value)
-            : "—";
+    var widgetPresets = {
+        auto: ["Automatic", ""],
+        pressure: ["Pressure", "M4 17a9 9 0 1 1 16 0M12 13l4-5M6 17h12"],
+        flow: ["Flow rate", "M3 7h14l-3-3M17 7l-3 3M21 17H7l3-3M7 17l3 3"],
+        level: ["Tank level", "M5 3v18h14V3M5 13h14M8 16h8"],
+        soil: ["Soil moisture", "M3 20h18M12 20V9M12 14C4 14 4 5 4 5c8 0 8 9 8 9M12 10c0-7 8-7 8-7s0 7-8 7"],
+        ph: ["pH", "M9 3h6M10 3v7l-6 9v2h16v-2l-6-9V3M7 16h10"],
+        light: ["Light / illuminance", "M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0"],
+        gas: ["Gas / CO2", "M4 15h12a4 4 0 1 0-4-4M3 10h4a3 3 0 1 0-3-3M5 19h11"],
+        vibration: ["Vibration", "M2 12h3l3-7 4 14 4-14 3 7h3"],
+        rpm: ["Motor / RPM", "M12 10V3c7 0 9 6 2 9h7c0 7-6 9-9 2v7c-7 0-9-6-2-9H3c0-7 6-9 9-2"],
+        location: ["GPS / position", "M12 22s8-8 8-13a8 8 0 1 0-16 0c0 5 8 13 8 13M15 9a3 3 0 1 1-6 0 3 3 0 0 1 6 0"]
+    };
+    function telemetryIcon(p) {
+        var text = [p.parameter_id, p.parameter_name, p.parameter_type, p.unit].join(" ").toLowerCase();
+        var path = '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4m12-6h4m-4 6h4"/>';
+        if (/temp|celsius|heat/.test(text)) path = '<path d="M9 14.5V5a3 3 0 0 1 6 0v9.5a5 5 0 1 1-6 0Z"/><path d="M12 9v8"/><circle cx="12" cy="18" r="1"/>';
+        else if (/humid|moist|water|rh/.test(text)) path = '<path d="M12 3c-2 4-7 8-7 12a7 7 0 0 0 14 0c0-4-5-8-7-12Z"/><path d="M8 15a4 4 0 0 0 4 4"/>';
+        else if (/batt|charge/.test(text)) path = '<rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4M6 10v4m4-4v4m4-4v4"/>';
+        else if (/volt|power|current/.test(text)) path = '<path d="m13 2-9 12h7l-1 8 10-13h-8l1-7Z"/>';
+        else if (/rssi|signal|snr|radio/.test(text)) path = '<path d="M4 20v-3m5 3v-7m5 7V9m5 11V4"/>';
+        else if (/packet|count/.test(text)) path = '<path d="m12 3 9 5v9l-9 5-9-5V8l9-5Zm-9 5 9 5 9-5M12 13v9"/>';
+        var preset = p.widgetType || Object.keys(widgetPresets).find(key => key !== "auto" && new RegExp(key === "light" ? "light|lux" : key === "location" ? "gps|position|location" : key === "rpm" ? "rpm|motor|speed" : key === "gas" ? "gas|co2" : key).test(text));
+        if (preset && widgetPresets[preset]?.[1]) path = '<path d="' + widgetPresets[preset][1] + '"/>';
+        return '<svg viewBox="0 0 24 24" focusable="false">' + path + '</svg>';
+    }
 
-        var alarms = p.alarm_enabled
-            ? String(p.low_alarm === null || p.low_alarm === undefined ? "—" : p.low_alarm) +
-              " … " +
-              String(p.high_alarm === null || p.high_alarm === undefined ? "—" : p.high_alarm)
-            : "Disabled";
+    function sparklineSvg(p) {
+        var samples = state.history[p._nodeId + "::" + p.parameter_id] || [];
+        if (samples.length < 2) {
+            return '<div class="dashboard-sparkline is-empty" aria-hidden="true"><span></span></div>';
+        }
 
-        return '<article class="dashboard-sensor-card ' + kind + (displayOff ? " hidden-param" : "") + '">' +
-            '<div class="dashboard-sensor-top">' +
-                '<div class="dashboard-sensor-name" title="' + esc(p.parameter_name || p.parameter_id) + '">' + esc(p.parameter_name || p.parameter_id) + '</div>' +
-                '<div class="dashboard-sensor-badge">' + esc(displayOff ? "DISPLAY OFF" : (p.parameter_id || "PARAM")) + '</div>' +
-            '</div>' +
-            '<div class="dashboard-sensor-value">' + esc(valueText) + '<span>' + esc(p.unit || "") + '</span></div>' +
-            '<div class="dashboard-sensor-status ' + kind + '"><i></i>' + esc(parameterStatusLabel(p)) + '</div>' +
-            '<div class="dashboard-sensor-meta">' +
-                '<div><span>Sensor ID</span><strong>' + esc(p.sensor_id || "—") + '</strong></div>' +
-                '<div><span>Type</span><strong>' + esc(p.parameter_type || "—") + '</strong></div>' +
-                '<div><span>Data</span><strong>' + esc(p.data_type || "—") + '</strong></div>' +
-                '<div><span>Updated</span><strong>' + esc(formatTime(p.timestamp)) + '</strong></div>' +
-                '<div><span>Range</span><strong>' + esc(range) + '</strong></div>' +
-                '<div><span>Alarm</span><strong>' + esc(alarms) + '</strong></div>' +
-                '<div><span>Quality</span><strong>' + esc(p.quality || "—") + '</strong></div>' +
-                '<div><span>Alarm State</span><strong>' + esc(p.alarm_status || "—") + '</strong></div>' +
-                '<div><span>Precision</span><strong>' + esc(p.decimal_places === null || p.decimal_places === undefined ? "—" : p.decimal_places + " dp") + '</strong></div>' +
-                '<div><span>Graph</span><strong>' + esc(p.graph_enabled ? "ENABLED" : "OFF") + '</strong></div>' +
-                '<div><span>Display</span><strong>' + esc(p.display_enabled === false ? "OFF" : "ON") + '</strong></div>' +
-                '<div><span>Description</span><strong title="' + esc(p.description || "—") + '">' + esc(p.description || "—") + '</strong></div>' +
-            '</div>' +
-        '</article>';
+        var min = Math.min.apply(null, samples), max = Math.max.apply(null, samples);
+        var points = samples.map(function (value, i) {
+            return (i * 84 / (samples.length - 1)).toFixed(1) + "," + (max === min ? 21 : 36 - (value - min) / (max - min) * 30).toFixed(1);
+        });
+        return '<svg class="dashboard-sparkline" viewBox="0 0 84 42" aria-hidden="true" focusable="false">' +
+            '<polyline points="' + points.join(" ") + '"></polyline>' +
+            '</svg>';
     }
 
     function graphSvg(nodeId, p) {
@@ -429,9 +363,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }).join("");
 
         var labels =
-            '<text x="' + (left-7) + '" y="' + (top+4) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue(max, p.decimal_places)) + '</text>' +
-            '<text x="' + (left-7) + '" y="' + (top+ih/2+3) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue(avg, p.decimal_places)) + '</text>' +
-            '<text x="' + (left-7) + '" y="' + (top+ih+3) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue(min, p.decimal_places)) + '</text>';
+            '<text x="' + (left-7) + '" y="' + (top+4) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue(maxY, p.decimal_places)) + '</text>' +
+            '<text x="' + (left-7) + '" y="' + (top+ih/2+3) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue((minY + maxY) / 2, p.decimal_places)) + '</text>' +
+            '<text x="' + (left-7) + '" y="' + (top+ih+3) + '" text-anchor="end" fill="currentColor" font-size="8">' + esc(formatValue(minY, p.decimal_places)) + '</text>';
 
         return '<article class="dashboard-graph-card">' +
             '<div class="dashboard-graph-head"><div class="dashboard-graph-title">' +
@@ -439,7 +373,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 '<span>' + esc((cfg.time_range || "configured range")) + ' · ' + points.length + ' samples</span>' +
             '</div><div class="dashboard-graph-stat">' + esc(formatValue(points[points.length-1].value, p.decimal_places)) + ' ' + esc(p.unit || "") + '</div></div>' +
             '<svg class="dashboard-graph-svg" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + esc(p.parameter_name || p.parameter_id) + ' telemetry graph">' +
-                grid + labels +
+                grid + labels + points.map(function(pt) { var x = left + ((pt.time-firstT)/span)*iw; var y = top + (1-(pt.value-minY)/(maxY-minY))*ih; return '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3" fill="currentColor"><title>' + esc(formatClock(new Date(pt.time).toISOString()) + ": " + formatValue(pt.value, p.decimal_places) + " " + (p.unit || "")) + '</title></circle>'; }).join("") +
+                '<text x="' + left + '" y="' + (h-3) + '">' + esc(formatClock(new Date(firstT).toISOString())) + '</text><text x="' + (w-right) + '" y="' + (h-3) + '" text-anchor="end">' + esc(formatClock(new Date(lastT).toISOString())) + '</text>' +
                 '<path d="' + path + '" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' +
             '</svg>' +
             '<div class="dashboard-graph-foot"><span>MIN ' + esc(formatValue(min, p.decimal_places)) + '</span>' +
@@ -459,22 +394,30 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        container.innerHTML = filtered.map(function (node) {
+        gateway.patchHtml(container, filtered.map(function (node) {
             var params = (state.telemetry[node.node_id] || []).filter(function (p) {
                 return p && p.enabled !== false;
             });
 
-            var shown = state.showHidden
-                ? params
-                : params.filter(function (p) { return p.display_enabled !== false; });
+            var shown = params.filter(function (p) { return p.display_enabled !== false; }).sort((a,b) => (SensorUI.config(a).position || 0) - (SensorUI.config(b).position || 0));
 
             var cards = shown.map(sensorCard).join("");
             if (!cards) cards = '<div class="dashboard-node-empty">No enabled sensor parameters configured for this node.</div>';
 
-            var graphParams = params.filter(function (p) { return Boolean(p.graph_enabled); });
-            var graphs = graphParams.map(function (p) { return graphSvg(node.node_id, p); }).join("");
+
 
             var nodeOnline = online(node);
+            var problemCount = params.filter(function (p) {
+                var status = parameterStatus(p);
+                return status === "alarm" || status === "error";
+            }).length;
+            var packetCount = node.packet_count || node.packets || node.rx_count || "—";
+            var signalParam = params.find(function (p) {
+                return /rssi|signal|snr/i.test([p.parameter_id, p.parameter_name, p.parameter_type].join(" "));
+            });
+            var batteryParam = params.find(function (p) {
+                return /batt|volt|charge|power/i.test([p.parameter_id, p.parameter_name, p.parameter_type, p.unit].join(" "));
+            });
 
             return '<article class="dashboard-node" data-node-id="' + esc(node.node_id) + '">' +
                 '<header class="dashboard-node-head">' +
@@ -488,45 +431,43 @@ document.addEventListener("DOMContentLoaded", function () {
                     '<div class="dashboard-node-config">' +
                         '<div class="dashboard-node-config-item"><span>Address</span><strong>' + esc(node.node_address || "—") + '</strong></div>' +
                         '<div class="dashboard-node-config-item"><span>MCU</span><strong>' + esc([node.mcu_family,node.mcu_model].filter(Boolean).join(" / ") || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Firmware</span><strong>' + esc(node.firmware_version || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Hardware</span><strong>' + esc(node.hardware_revision || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Communication</span><strong>' + esc(node.communication_type || "—") + '</strong></div>' +
+                        '<div class="dashboard-node-config-item"><span>Packets</span><strong>' + esc(packetCount) + '</strong></div>' +
+                        '<div class="dashboard-node-config-item"><span>Battery</span><strong>' + esc(batteryParam ? formatValue(batteryParam.value, batteryParam.decimal_places) + " " + (batteryParam.unit || "") : "—") + '</strong></div>' +
+                        '<div class="dashboard-node-config-item"><span>Signal</span><strong>' + esc(signalParam ? formatValue(signalParam.value, signalParam.decimal_places) + " " + (signalParam.unit || "") : (node.communication_type || "—")) + '</strong></div>' +
                         '<div class="dashboard-node-config-item"><span>Last Seen</span><strong>' + esc(formatTime(node.last_seen)) + '</strong></div>' +
                     '</div>' +
-                    '<button class="dashboard-node-toggle" type="button" data-toggle-node="' + esc(node.node_id) + '">Collapse</button>' +
+                    '<div class="dashboard-node-state-pill ' + (nodeOnline ? "online" : "offline") + '"><span>' + esc(nodeOnline ? "ONLINE" : "OFFLINE") + '</span><strong>' + esc(problemCount ? problemCount + " alerts" : "Clear") + '</strong></div>' +
                 '</header>' +
                 '<div class="dashboard-node-body">' +
                     (state.showConfig
                         ? '<div class="dashboard-node-inspector"><div class="dashboard-node-inspector-head">Node Configuration</div><div class="dashboard-node-inspector-grid">' + nodeConfigFields(node) + '</div></div>'
                         : "") +
-                    '<div class="dashboard-node-sensors">' + cards + '</div>' +
-                    (graphs ? '<div class="dashboard-node-graph-list">' + graphs + '</div>' : "") +
+                    '<div class="dashboard-node-sensors sensor-live-grid">' + cards + '</div>' +
                 '</div>' +
             '</article>';
-        }).join("");
+        }).join(""));
     }
 
-    function renderFleet() {
-        var box = document.getElementById("dashboard-fleet-list");
-        if (!box) return;
-
-        var sorted = state.nodes.slice().sort(function (a,b) {
-            return Number(online(b)) - Number(online(a));
+    function findTelemetryCard(card) {
+        var nodeEl = card && card.closest(".dashboard-node");
+        if (!nodeEl) return null;
+        var nodeId = nodeEl.getAttribute("data-node-id");
+        var parameterId = card.dataset.id;
+        var node = state.nodes.find(function (item) { return String(item.node_id) === String(nodeId); });
+        var parameter = (state.telemetry[nodeId] || []).find(function (p) {
+            return String(p.parameter_id) === parameterId;
         });
+        return node && parameter ? { node: node, parameter: parameter } : null;
+    }
 
-        if (!sorted.length) {
-            box.innerHTML = '<div class="dashboard-empty">No nodes configured.</div>';
-            return;
-        }
-
-        box.innerHTML = sorted.slice(0, 12).map(function (node) {
-            return '<div class="dashboard-health-row">' +
-                '<span class="dashboard-health-dot ' + (online(node) ? "" : "offline") + '"></span>' +
-                '<div class="dashboard-row-main"><strong>' + esc(node.name || node.node_id) + '</strong>' +
-                '<span>' + esc(node.node_id) + ' · ' + esc(node.communication_type || "—") + '</span></div>' +
-                '<div class="dashboard-row-value">' + (online(node) ? "ONLINE" : "OFFLINE") + '</div>' +
-                '</div>';
-        }).join("");
+    async function openTelemetryDetail(card) {
+        var found = findTelemetryCard(card);
+        if (!found) return;
+        try {
+            var definitions = await getJson("/api/nodes/" + encodeURIComponent(found.node.node_id) + "/parameters");
+            SensorUI.open(found.node, found.parameter, () => (definitions.parameters || []).map(definition => Object.assign({}, definition,
+                (state.telemetry[found.node.node_id] || []).find(p => p.parameter_id === definition.parameter_id) || {})));
+        } catch (error) { toast(error.message, "error"); }
     }
 
     function renderProblems() {
@@ -547,7 +488,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             (state.telemetry[node.node_id] || []).forEach(function (p) {
                 var k = parameterStatus(p);
-                if (k === "alarm" || k === "error") {
+                if (k === "alarm" || k === "error" || k === "stale") {
                     problems.push({
                         kind: k,
                         title: (node.name || node.node_id) + " · " + (p.parameter_name || p.parameter_id),
@@ -559,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         if (!problems.length) {
-            box.innerHTML = '<div class="dashboard-empty">No active problems detected from live node/sensor state.</div>';
+            gateway.patchHtml(box, '<div class="dashboard-empty">No active problems.</div>');
             return;
         }
 
@@ -603,7 +544,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (p.enabled === false) return;
                 paramCount += 1;
                 var k = parameterStatus(p);
-                if (k === "alarm" || k === "error") problemCount += 1;
+                if (k === "alarm" || k === "error" || k === "stale") problemCount += 1;
             });
         });
 
@@ -612,49 +553,6 @@ document.addEventListener("DOMContentLoaded", function () {
         text("sensor-count", paramCount);
         text("alarm-count", problemCount);
 
-        var offlineCount = state.nodes.filter(function (n) {
-            return n.enabled !== false && !online(n);
-        }).length;
-        var disabledCount = state.nodes.filter(function (n) {
-            return n.enabled === false;
-        }).length;
-
-        text("fleet-online", onlineCount);
-        text("fleet-offline", offlineCount);
-        text("fleet-disabled", disabledCount);
-
-        /* Live visualization overview — derived from the same real counters. */
-        var totalNodes = state.nodes.length;
-        var availability = totalNodes ? Math.round((onlineCount / totalNodes) * 100) : 0;
-        var telemetryHealth = paramCount ? Math.max(0, Math.round(((paramCount - problemCount) / paramCount) * 100)) : 100;
-        var clearCount = Math.max(0, paramCount - problemCount);
-        var enabledNodes = Math.max(0, totalNodes - disabledCount);
-
-        text("dashboard-availability-pct", availability + "%");
-        text("dashboard-availability-online", onlineCount);
-        text("dashboard-availability-total", totalNodes);
-        text("dashboard-health-pct", telemetryHealth + "%");
-        text("dashboard-health-good", clearCount);
-        text("dashboard-health-problems", problemCount);
-        text("dashboard-node-state-label", onlineCount + " / " + totalNodes);
-        text("dashboard-state-online-count", onlineCount);
-        text("dashboard-state-offline-count", offlineCount);
-        text("dashboard-state-disabled-count", disabledCount);
-
-        var availabilityBar = document.getElementById("dashboard-availability-bar");
-        var healthBar = document.getElementById("dashboard-health-bar");
-        if (availabilityBar) availabilityBar.style.width = availability + "%";
-        if (healthBar) healthBar.style.width = telemetryHealth + "%";
-
-        var denominator = totalNodes || 1;
-        var onlineBar = document.getElementById("dashboard-state-online");
-        var offlineBar = document.getElementById("dashboard-state-offline");
-        var disabledBar = document.getElementById("dashboard-state-disabled");
-        if (onlineBar) onlineBar.style.width = (onlineCount / denominator * 100) + "%";
-        if (offlineBar) offlineBar.style.width = (offlineCount / denominator * 100) + "%";
-        if (disabledBar) disabledBar.style.width = (disabledCount / denominator * 100) + "%";
-
-        void enabledNodes;
     }
 
     function loadLayout() {
@@ -718,21 +616,21 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        box.innerHTML = state.customWidgets.map(function (widget) {
+        gateway.patchHtml(box, state.customWidgets.map(function (widget) {
             var found = allParameters().find(function (item) {
                 return item.node.node_id === widget.nodeId &&
                     (String(item.parameter.parameter_id) === String(widget.parameter) ||
                      String(item.parameter.parameter_name) === String(widget.parameter));
             });
             var p = found && found.parameter;
-            return '<article class="dashboard-custom-card">' +
-                '<header><div><strong>' + esc(widget.name || widget.parameter) + '</strong>' +
+            return '<article class="dashboard-custom-card" data-id="' + esc(widget.id) + '">' +
+                '<header><span class="widget-icon">' + telemetryIcon(Object.assign({}, p || {}, { widgetType: widget.widgetType })) + '</span><div><strong>' + esc(widget.name || widget.parameter) + '</strong>' +
                 '<div style="margin-top:3px;color:var(--d-dim);font-size:8px">' + esc(widget.nodeId) + '</div></div>' +
                 '<button type="button" data-delete-custom-widget="' + esc(widget.id) + '" aria-label="Delete widget">×</button></header>' +
                 '<div class="custom-value">' + esc(p && p.value !== null && p.value !== undefined ? formatValue(p.value,p.decimal_places) : "—") +
                 ' <span style="font-size:9px;color:var(--d-muted)">' + esc((p && p.unit) || "") + '</span></div>' +
                 '</article>';
-        }).join("");
+        }).join(""));
     }
 
     function loadCustomWidgets() {
@@ -750,63 +648,73 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function addCustomWidget() {
-        if (!state.nodes.length) {
-            toast("No nodes are configured.", "warning");
-            return;
-        }
-
-        var nodeId = window.prompt(
-            "Node ID:\n\n" + state.nodes.map(function (n) { return n.node_id + " — " + (n.name || ""); }).join("\n"),
-            state.nodes[0].node_id
-        );
-        if (!nodeId) return;
-
-        var sensors = state.telemetry[nodeId] || [];
-        if (!sensors.length) {
-            toast("That node has no enabled parameters.", "warning");
-            return;
-        }
-
-        var parameterId = window.prompt(
-            "Parameter ID:\n\n" + sensors.map(function (p) { return p.parameter_id + " — " + p.parameter_name; }).join("\n"),
-            sensors[0].parameter_id
-        );
-        if (!parameterId) return;
-
-        var parameter = sensors.find(function (p) { return String(p.parameter_id) === String(parameterId); });
-        if (!parameter) {
-            toast("Parameter not found.", "error");
-            return;
-        }
-
-        var name = window.prompt("Widget name:", parameter.parameter_name || parameter.parameter_id);
-        state.customWidgets.push({
-            id: "dashboard-widget-" + Date.now(),
-            name: name || parameter.parameter_name || parameter.parameter_id,
-            nodeId: nodeId,
-            parameter: parameterId
+        if (!state.nodes.length) { toast("No nodes configured.", "warning"); return; }
+        var overlay = document.createElement("div");
+        overlay.className = "modal-overlay";
+        overlay.innerHTML = '<form class="modal" id="add-widget-form"><h2>Add widget</h2>' +
+            '<label>Node<select class="input" name="node" required></select></label>' +
+            '<label>Parameter<select class="input" name="parameter" required></select></label>' +
+            '<label>Widget preset<select class="input" name="preset">' + Object.keys(widgetPresets).map(key => '<option value="' + key + '">' + widgetPresets[key][0] + '</option>').join("") + '</select></label>' +
+            '<label>Title<input class="input" name="title" maxlength="80"></label>' +
+            '<output class="widget-preview"></output><div class="modal-actions">' +
+            '<button type="button" class="btn btn-secondary" id="widget-cancel">Cancel</button>' +
+            '<button type="submit" class="btn btn-primary">Add widget</button></div></form>';
+        var form = overlay.querySelector("form");
+        var nodeSelect = form.elements.node;
+        var parameterSelect = form.elements.parameter;
+        state.nodes.forEach(function (node) {
+            nodeSelect.add(new Option(node.name || node.node_id, node.node_id));
         });
-        saveCustomWidgets();
-        renderCustomWidgets();
-        toast("Widget added.", "success");
+        function preview() {
+            var p = (state.telemetry[nodeSelect.value] || []).find(function (item) { return item.parameter_id === parameterSelect.value; });
+            form.elements.title.value = p ? (p.parameter_name || p.parameter_id) : "";
+            overlay.querySelector("output").textContent = p ? formatValue(p.value, p.decimal_places) + " " + (p.unit || "") : "No enabled parameters";
+            form.querySelector('[type="submit"]').disabled = !p;
+        }
+        function chooseNode() {
+            parameterSelect.replaceChildren();
+            (state.telemetry[nodeSelect.value] || []).forEach(function (p) {
+                parameterSelect.add(new Option(p.parameter_name || p.parameter_id, p.parameter_id));
+            });
+            preview();
+        }
+        nodeSelect.addEventListener("change", chooseNode);
+        parameterSelect.addEventListener("change", preview);
+        overlay.querySelector("#widget-cancel").addEventListener("click", function () { overlay.remove(); });
+        overlay.addEventListener("click", function (event) { if (event.target === overlay) overlay.remove(); });
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            state.customWidgets.push({ id: "widget-" + Date.now(), name: form.elements.title.value || parameterSelect.value, nodeId: nodeSelect.value, parameter: parameterSelect.value, widgetType: form.elements.preset.value });
+            saveCustomWidgets(); renderCustomWidgets(); overlay.remove(); toast("Widget added.", "success");
+        });
+        chooseNode();
+        document.body.appendChild(overlay);
     }
 
     async function refreshDashboard(showToastFlag, withGraphs) {
-        if (state.busy) return;
+        if (state.busy) { state.snapshotPending = true; return; }
         state.busy = true;
 
         var indicator = document.getElementById("dashboard-live-indicator");
         try {
-            await loadNodes();
-            await loadTelemetry(Boolean(withGraphs));
+            var snapshot = await getJson("/api/live/snapshot");
+            state.nodes = snapshot.nodes || [];
+            state.nodes.forEach(function (node) {
+                state.telemetry[node.node_id] = node.parameters || [];
+                state.telemetry[node.node_id].forEach(function (p) { p._nodeId = node.node_id; remember(p); });
+            });
+            populateNodeFilter();
+            if (withGraphs) await Promise.allSettled(state.nodes.flatMap(function (node) {
+                return (state.telemetry[node.node_id] || []).filter(function (p) { return p.display_enabled !== false; }).map(function (p) { return loadGraph(node.node_id, p); });
+            }));
             updateCounters();
             renderNodes();
-            renderFleet();
             renderProblems();
             renderCustomWidgets();
-            await Promise.allSettled([loadServerStatus(), loadActivity()]);
+            renderActivity(snapshot.logs || []);
             text("dashboard-last-refresh", formatClock(new Date().toISOString()));
-            if (indicator) indicator.style.opacity = "1";
+            if (indicator) { indicator.style.opacity = "1"; indicator.textContent = gateway.socket?.connected ? "Live" : "Polling"; }
+            /* Charts are integrated into sensor cards. */
             if (showToastFlag) toast("Dashboard refreshed.", "success");
         } catch (error) {
             console.error("Dashboard refresh error:", error);
@@ -816,30 +724,57 @@ document.addEventListener("DOMContentLoaded", function () {
             if (showToastFlag) toast("Dashboard data could not be loaded.", "error");
         } finally {
             state.busy = false;
-        }
-    }
-
-    async function refreshGraphs() {
-        if (state.graphBusy || document.hidden) return;
-        state.graphBusy = true;
-        try {
-            await loadTelemetry(true);
-            renderNodes();
-            renderCustomWidgets();
-        } finally {
-            state.graphBusy = false;
+            if (state.snapshotPending) { state.snapshotPending = false; refreshDashboard(false, false); }
         }
     }
 
     function startTimers() {
         stopTimers();
         state.refreshTimer = setInterval(function () {
-            refreshDashboard(false, false);
-        }, 2000);
+            if (!document.hidden && !gateway.socket?.connected) refreshDashboard(false, false);
+        }, 5000);
 
         state.graphTimer = setInterval(function () {
-            refreshGraphs();
-        }, 10000);
+            if (!document.hidden) { renderNodes(); renderProblems(); updateCounters(); }
+        }, 1000);
+    }
+
+    function remember(p) {
+        var key = p._nodeId + "::" + p.parameter_id;
+        var samples = state.history[key] || (state.history[key] = []);
+        if (p.timestamp && samples.timestamp !== p.timestamp && p.value !== null && Number.isFinite(Number(p.value))) {
+            samples.push(Number(p.value));
+            if (samples.length > 60) samples.shift();
+            samples.timestamp = p.timestamp;
+        }
+    }
+
+    var paintPending = false;
+    function applyTelemetry(update) {
+        if (document.hidden) return;
+        var node = state.nodes.find(function (item) { return item.node_id === update.node_id; });
+        if (!node) { refreshDashboard(false, false); return; }
+        var params = state.telemetry[update.node_id] || [];
+        (update.parameters || []).forEach(function (incoming) {
+            var p = params.find(function (item) { return item.parameter_id === incoming.parameter_id; });
+            if (!p) { p = { parameter_id: incoming.parameter_id }; params.push(p); }
+            if (p.timestamp && new Date(incoming.timestamp) <= new Date(p.timestamp)) return;
+            Object.assign(p, incoming, { _nodeId: update.node_id });
+            remember(p);
+            var graph = state.graphs[update.node_id + "::" + p.parameter_id];
+            if (graph) { graph.data.push({ value: p.value, timestamp: p.timestamp }); graph.data = graph.data.slice(-180); }
+        });
+        if (node.enabled) node.status = "online";
+        if (!node.last_seen || new Date(update.received_at) > new Date(node.last_seen)) node.last_seen = update.received_at;
+        state.telemetry[update.node_id] = params;
+        if (!paintPending) {
+            paintPending = true;
+            requestAnimationFrame(function () {
+                paintPending = false;
+                updateCounters(); renderNodes(); renderProblems(); renderCustomWidgets(); renderMainChart();
+                text("dashboard-last-refresh", formatClock(update.received_at));
+            });
+        }
     }
 
     function stopTimers() {
@@ -849,7 +784,53 @@ document.addEventListener("DOMContentLoaded", function () {
         state.graphTimer = null;
     }
 
+    var chartKeys = null;
+    try { chartKeys = JSON.parse(localStorage.getItem("gateway_chart_keys")); } catch (_) {}
+    if (!Array.isArray(chartKeys)) chartKeys = null;
+    function renderMainChart() {
+        var container = document.getElementById("telemetry-main-chart");
+        if (!container) return;
+        var parameters = allParameters();
+        if (chartKeys === null) chartKeys = parameters.filter(e => e.parameter.graph_enabled).map(e => e.node.node_id + "::" + e.parameter.parameter_id);
+        gateway.patchHtml(container, chartKeys.map(function(key) {
+            var found = parameters.find(e => e.node.node_id + "::" + e.parameter.parameter_id === key);
+            if (!found) return "";
+            return '<section class="chart-entry" data-id="' + esc(key) + '"><div class="chart-entry-toolbar"><span>' +
+                esc(found.node.name || found.node.node_id) + ' / ' + esc(found.parameter.unit || "") +
+                '</span><button class="btn btn-secondary" type="button" data-remove-chart="' + esc(key) + '" aria-label="Remove ' +
+                esc(found.parameter.parameter_name || found.parameter.parameter_id) + ' graph">Remove</button></div>' +
+                graphSvg(found.node.node_id, found.parameter) + '</section>';
+        }).join("") || '<div class="dashboard-empty">No graphs added.</div>');
+    }
+
+    function addChart() {
+        var overlay = document.createElement("div");
+        overlay.className = "modal-overlay";
+        overlay.innerHTML = '<form class="modal"><h2>Add graphs</h2><div class="graph-options"></div><div class="modal-actions"><button class="btn btn-secondary modal-close-btn" type="button">Cancel</button><button class="btn btn-primary">Add graphs</button></div></form>';
+        var available = allParameters().filter(e => !(chartKeys || []).includes(e.node.node_id + "::" + e.parameter.parameter_id));
+        overlay.querySelector(".graph-options").innerHTML = available.map((e,i) => '<label><input type="checkbox" name="graph" value="' + i + '"> ' + esc((e.node.name || e.node.node_id) + " / " + (e.parameter.parameter_name || e.parameter.parameter_id)) + '</label>').join("") || '<p>All configured parameters already have graphs.</p>';
+        overlay.querySelector(".modal-close-btn").onclick = () => overlay.remove();
+        overlay.querySelector("form").onsubmit = async event => {
+            event.preventDefault();
+            var selected = Array.from(overlay.querySelectorAll("input:checked")).map(input => available[Number(input.value)]);
+            chartKeys = chartKeys || [];
+            selected.forEach(e => chartKeys.push(e.node.node_id + "::" + e.parameter.parameter_id));
+            localStorage.setItem("gateway_chart_keys", JSON.stringify(chartKeys));
+            overlay.remove();
+            await Promise.allSettled(selected.map(e => loadGraph(e.node.node_id, e.parameter)));
+            renderMainChart();
+        };
+        document.body.appendChild(overlay);
+    }
+
     function bind() {
+        document.getElementById("add-telemetry-chart")?.addEventListener("click", () => window.location.assign("/sensors#sensor-management"));
+        document.getElementById("telemetry-main-chart")?.addEventListener("click", function(event) {
+            var button = event.target.closest("[data-remove-chart]");
+            if (!button) return;
+            chartKeys = chartKeys.filter(key => key !== button.dataset.removeChart);
+            localStorage.setItem("gateway_chart_keys", JSON.stringify(chartKeys)); renderMainChart();
+        });
         document.getElementById("dashboard-refresh")?.addEventListener("click", function () {
             refreshDashboard(true, true);
         });
@@ -876,6 +857,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         document.getElementById("dashboard-show-hidden")?.addEventListener("click", function (e) {
+            window.location.assign("/sensors#sensor-management");
             state.showHidden = !state.showHidden;
             e.currentTarget.classList.toggle("active", state.showHidden);
             renderNodes();
@@ -889,7 +871,7 @@ document.addEventListener("DOMContentLoaded", function () {
             closeDrawer();
         });
         document.getElementById("reset-widgets-btn")?.addEventListener("click", resetLayout);
-        document.getElementById("add-sensor-widget-inline")?.addEventListener("click", addCustomWidget);
+        document.getElementById("add-sensor-widget-inline")?.addEventListener("click", () => SensorUI.chooseWidgets(state.nodes, () => refreshDashboard(false, true)));
 
         document.getElementById("custom-sensor-widgets")?.addEventListener("click", function (e) {
             var button = e.target.closest("[data-delete-custom-widget]");
@@ -903,16 +885,34 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         document.getElementById("dashboard-node-list")?.addEventListener("click", function (e) {
-            var button = e.target.closest("[data-toggle-node]");
-            if (!button) return;
-            var body = button.closest(".dashboard-node")?.querySelector(".dashboard-node-body");
-            if (!body) return;
-            var collapsed = body.style.display === "none";
-            body.style.display = collapsed ? "" : "none";
-            button.textContent = collapsed ? "Collapse" : "Expand";
+            var remove = e.target.closest("[data-sensor-remove]");
+            if (remove) {
+                var found = findTelemetryCard(remove.closest(".dashboard-sensor-card"));
+                if (!found) return;
+                getJson("/api/nodes/" + encodeURIComponent(found.node.node_id) + "/parameters/" + encodeURIComponent(found.parameter.parameter_id), {
+                    method: "PUT", headers: {"Content-Type":"application/json","X-CSRF-Token":document.querySelector('meta[name="sensor-csrf"]')?.content || ""},
+                    body: JSON.stringify({display_enabled:false})
+                }).then(() => refreshDashboard(false,true)).catch(error => toast(error.message,"error"));
+                return;
+            }
+            var card = e.target.closest(".dashboard-sensor-card");
+            if (!card) return;
+            openTelemetryDetail(card);
+        });
+
+        document.getElementById("dashboard-node-list")?.addEventListener("keydown", function (e) {
+            if (e.target.closest("button,a,input,select")) return;
+            if (e.key !== "Enter" && e.key !== " ") return;
+            var card = e.target.closest(".dashboard-sensor-card");
+            if (!card) return;
+            e.preventDefault();
+            openTelemetryDetail(card);
         });
 
         document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") {
+                document.querySelector(".dashboard-telemetry-modal")?.remove();
+            }
             if (e.key === "Escape") closeDrawer();
         });
 
@@ -920,7 +920,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (document.hidden) {
                 stopTimers();
             } else {
-                refreshDashboard(false, true).then(startTimers);
+                if (!socket || socket.connected) refreshDashboard(false, true);
+    else setTimeout(function () { if (!state.nodes.length && !state.busy) refreshDashboard(false, true); }, 1200);
+    startTimers();
             }
         });
     }
@@ -928,5 +930,10 @@ document.addEventListener("DOMContentLoaded", function () {
     bind();
     loadLayout();
     loadCustomWidgets();
+    var socket = gateway.socket;
+    socket?.on("telemetry_update", applyTelemetry);
+    socket?.on("connect", function () { refreshDashboard(false, true); text("dashboard-live-indicator", "Live"); });
+    socket?.on("disconnect", function () { text("dashboard-live-indicator", "Reconnecting"); });
     refreshDashboard(false, true).then(startTimers);
+    window.addEventListener("pagehide", stopTimers);
 });

@@ -229,6 +229,7 @@ gateway.send = async function (
             "Accept": "application/json"
         }
     };
+    options.headers["X-CSRF-Token"] = document.querySelector('meta[name="sensor-csrf"]')?.content || "";
 
 
     if (
@@ -734,32 +735,27 @@ gateway.initAppearanceEditor = function () {
     /* Compatibility hook retained for older callers. */
 };
 
+gateway.setTheme = function (theme, persist = false) {
+    const active = theme === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", active);
+    if (persist) { try { localStorage.setItem("gateway_theme", active); } catch (_) {} }
+    document.dispatchEvent(new CustomEvent("gateway:themechange", { detail: { theme: active } }));
+};
+
 gateway.initTheme = function () {
-    const root = document.documentElement;
-
-    root.setAttribute("data-theme", "light");
-    root.removeAttribute("data-accent");
-    root.removeAttribute("data-palette");
-
-    localStorage.removeItem("gateway_theme");
-    localStorage.removeItem("gateway_accent");
-    localStorage.removeItem("gateway_palette");
-
-    document.dispatchEvent(
-        new CustomEvent("gateway:themechange", {
-            detail: { theme: "light", palette: "gateway-triad" }
-        })
-    );
+    let stored;
+    try { stored = localStorage.getItem("gateway_theme"); } catch (_) {}
+    gateway.setTheme(stored === "dark" || stored === "light" ? stored :
+        (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 };
 
 gateway.toggleTheme = function () {
-    gateway.initTheme();
+    gateway.setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
 };
 
 gateway.applyPalette = function () {
     const root = document.documentElement;
 
-    root.setAttribute("data-theme", "light");
     root.removeAttribute("data-accent");
     root.removeAttribute("data-palette");
 
@@ -782,6 +778,8 @@ gateway.initPalette = function () {
    ============================================================ */
 
 gateway.initConnectionHealth = function () {
+    // Transport state is managed by the shared socket, not arbitrary HTTP responses.
+    if (gateway.socket) return;
 
     const pill =
         document.getElementById(
@@ -928,13 +926,91 @@ gateway.highlightActiveNav = function () {
 };
 
 gateway.initGlobalSearch = function () {
+    const modal = document.getElementById("global-search-modal");
     const input = document.getElementById("global-nav-search");
+    const results = document.getElementById("global-search-results");
+    const openButton = document.getElementById("global-nav-search-button");
     if (!input) return;
 
     const searchable = Array.from(document.querySelectorAll(".nav-item[data-path]"));
 
+    const pageItems = () => searchable.map(link => ({
+        title: (link.querySelector("span") || link).textContent.trim(),
+        href: link.getAttribute("href"),
+        path: link.getAttribute("data-path") || "",
+        label: link.getAttribute("data-search-label") || link.textContent
+    }));
+
+    const render = (query) => {
+        if (!results) return;
+        const q = String(query || "").trim().toLowerCase();
+        const items = pageItems().filter(item => {
+            return !q || [item.title, item.path, item.label].join(" ").toLowerCase().includes(q);
+        });
+
+        if (!items.length) {
+            results.innerHTML = '<div class="search-result"><span>No page found</span><small>Use an existing dashboard route</small></div>';
+            return;
+        }
+
+        results.innerHTML = items.map((item, index) => `
+            <button class="search-result ${index === 0 ? "active" : ""}" type="button" data-search-href="${gateway.escape(item.href)}">
+                <span>${gateway.escape(item.title)}</span>
+                <small>${gateway.escape(item.path)}</small>
+            </button>
+        `).join("");
+    };
+
+    const openSearch = () => {
+        if (!modal) return;
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+        render(input.value);
+        setTimeout(() => {
+            input.focus();
+            input.select();
+        }, 30);
+    };
+
+    const closeSearch = () => {
+        if (!modal) return;
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+    };
+
+    openButton?.addEventListener("click", openSearch);
+    document.querySelectorAll("[data-close-search]").forEach(element => {
+        element.addEventListener("click", closeSearch);
+    });
+
+    input.addEventListener("input", () => render(input.value));
+
     input.addEventListener("keydown", (event) => {
+        const all = Array.from(results?.querySelectorAll(".search-result[data-search-href]") || []);
+        const active = results?.querySelector(".search-result.active");
+        const index = all.indexOf(active);
+
+        if (event.key === "Escape") {
+            closeSearch();
+            return;
+        }
+
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            if (!all.length) return;
+            all.forEach(item => item.classList.remove("active"));
+            const step = event.key === "ArrowDown" ? 1 : -1;
+            all[(index + step + all.length) % all.length].classList.add("active");
+            return;
+        }
+
         if (event.key !== "Enter") return;
+        event.preventDefault();
+
+        if (active && active.dataset.searchHref) {
+            window.location.href = active.dataset.searchHref;
+            return;
+        }
 
         const q = input.value.trim().toLowerCase();
         if (!q) return;
@@ -946,6 +1022,22 @@ gateway.initGlobalSearch = function () {
         }
 
         gateway.toast?.(`No page found for "${input.value.trim()}"`, "info");
+    });
+
+    results?.addEventListener("click", event => {
+        const target = event.target.closest("[data-search-href]");
+        if (target) window.location.href = target.dataset.searchHref;
+    });
+
+    document.addEventListener("keydown", event => {
+        const mac = navigator.platform && navigator.platform.toLowerCase().includes("mac");
+        if ((mac ? event.metaKey : event.ctrlKey) && event.key.toLowerCase() === "k") {
+            event.preventDefault();
+            openSearch();
+        }
+        if (event.key === "Escape" && modal?.classList.contains("open")) {
+            closeSearch();
+        }
     });
 };
 
@@ -1010,43 +1102,3 @@ document.addEventListener("DOMContentLoaded", () => {
     gateway.initConnectionHealth();
     gateway.startClock();
 });
-
-
-/* ============================================================
-   Sidebar collapse — persistent desktop preference
-   ============================================================ */
-(function initSidebarCollapse() {
-    function setup() {
-        const body = document.body;
-        const button = document.getElementById("sidebar-collapse-btn");
-        if (!body || !button || button.dataset.bound === "1") return;
-        button.dataset.bound = "1";
-
-        const key = "selvarithik-sidebar-collapsed";
-        const apply = (collapsed) => {
-            body.classList.toggle("sidebar-collapsed", collapsed);
-            button.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
-            button.setAttribute("title", collapsed ? "Expand sidebar" : "Collapse sidebar");
-        };
-
-        let collapsed = false;
-        try {
-            collapsed = localStorage.getItem(key) === "1";
-        } catch (_) {}
-        apply(collapsed);
-
-        button.addEventListener("click", () => {
-            collapsed = !body.classList.contains("sidebar-collapsed");
-            apply(collapsed);
-            try {
-                localStorage.setItem(key, collapsed ? "1" : "0");
-            } catch (_) {}
-        });
-    }
-
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", setup, { once: true });
-    } else {
-        setup();
-    }
-})();

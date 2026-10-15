@@ -10,6 +10,10 @@ Gateway health and system-wide status
 {% endblock %}
 
 {% block content %}
+<nav class="system-tabs" aria-label="System views">
+<a href="/system" >Settings</a>
+<a href="/system-overview" aria-current="page">Health</a>
+</nav>
 
 <div class="page-view page-view-overview">
 
@@ -86,5 +90,6 @@ Gateway health and system-wide status
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/system-overview.js') }}?v=14"></script>
+<script src="{{ url_for('static', filename='js/system-overview.js') }}?v=14">
+</script>
 {% endblock %}

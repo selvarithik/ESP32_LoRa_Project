@@ -5,6 +5,10 @@
 {% block page_subtitle %}Gateway system configuration and maintenance{% endblock %}
 
 {% block content %}
+<nav class="system-tabs" aria-label="System views">
+<a href="/system" aria-current="page">Settings</a>
+<a href="/system-overview" >Health</a>
+</nav>
 
 <div class="page-view page-view-system">
 
@@ -24,11 +28,16 @@
             <h3>Device Information</h3>
             <p>Gateway/node identity and hardware information.</p>
             <div class="settings-fields">
-                <label>Node Name<input id="system-node-name" class="input" name="name"></label>
-                <label>Node ID<input id="system-node-id" class="input" name="node_id" readonly></label>
-                <label>Node Address<input id="system-address" class="input" name="node_address"></label>
-                <label>MCU<input id="system-mcu" class="input" readonly></label>
-                <label>Hardware Revision<input id="system-hardware" class="input" name="hardware_revision"></label>
+                <label>Node Name<input id="system-node-name" class="input" name="name">
+</label>
+                <label>Node ID<input id="system-node-id" class="input" name="node_id" readonly>
+</label>
+                <label>Node Address<input id="system-address" class="input" name="node_address">
+</label>
+                <label>MCU<input id="system-mcu" class="input" readonly>
+</label>
+                <label>Hardware Revision<input id="system-hardware" class="input" name="hardware_revision">
+</label>
             </div>
         </div>
     </section>
@@ -39,7 +48,8 @@
             <h3>Firmware</h3>
             <p>Current firmware information.</p>
             <div class="settings-fields">
-                <label>Firmware Version<input id="system-firmware" class="input" name="firmware_version"></label>
+                <label>Firmware Version<input id="system-firmware" class="input" name="firmware_version">
+</label>
                 <div class="settings-readonly">OTA update is handled by the gateway firmware layer.</div>
             </div>
         </div>
@@ -51,9 +61,14 @@
             <h3>Network & Time Defaults</h3>
             <p>Common node configuration values.</p>
             <div class="settings-fields">
-                <label>Timezone<input id="system-timezone" class="input" name="timezone"></label>
-                <label class="switch-row"><span>Time Sync</span><input id="system-time-sync" type="checkbox" name="time_sync"></label>
-                <label>Watchdog Timeout (s)<input id="system-watchdog" class="input" type="number" min="1" name="watchdog"></label>
+                <label>Timezone<input id="system-timezone" class="input" name="timezone">
+</label>
+                <label class="switch-row">
+<span>Time Sync</span>
+<input id="system-time-sync" type="checkbox" name="time_sync">
+</label>
+                <label>Watchdog Timeout (s)<input id="system-watchdog" class="input" type="number" min="1" name="watchdog">
+</label>
             </div>
         </div>
     </section>
@@ -77,12 +92,14 @@
 
 </form>
 
-<div id="system-modal-root"></div>
+<div id="system-modal-root">
+</div>
 
 </div>
 
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/system.js') }}?v=14"></script>
+<script src="{{ url_for('static', filename='js/system.js') }}?v=14">
+</script>
 {% endblock %}

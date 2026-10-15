@@ -4,12 +4,16 @@ from flask_socketio import SocketIO, emit
 from datetime import datetime
 from pathlib import Path
 import os
+import json
+import secrets
 
 import node_manager
 import config_manager
 import auth_manager
+import account_settings
 import telemetry_manager
 import sensor_manager
+import sensor_widgets
 import database
 import firmware_manager
 import ota_manager
@@ -37,16 +41,24 @@ socketio = SocketIO(
     app,
     cors_allowed_origins="*"
 )
+app.register_blueprint(account_settings.bp)
 
 # Ensure a fresh checkout has the existing schema before any API route reads it.
 # This creates missing tables only; it does not seed demo nodes or telemetry.
 database.initialize_database()
+sensor_widgets.migrate()
+app.register_blueprint(sensor_widgets.bp)
 
 # Local web-session security. Override GATEWAY_SECRET_KEY for a deployment.
-app.secret_key = os.environ.get(
-    "GATEWAY_SECRET_KEY",
-    "selvarithik-lora-gateway-development-secret-change-me"
-)
+secret_path = Path(__file__).resolve().parent.parent / "data" / "session.key"
+secret_path.parent.mkdir(parents=True, exist_ok=True)
+try:
+    with secret_path.open("x", encoding="utf-8") as secret_file:
+        secret_file.write(secrets.token_hex(32))
+except FileExistsError:
+    pass
+app.secret_key = os.environ.get("GATEWAY_SECRET_KEY") or secret_path.read_text(encoding="utf-8")
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax")
 
 # Browser pages require a signed session. These paths stay public for the
 # login page, static assets, and embedded-node ingress/feedback.
@@ -1313,11 +1325,170 @@ def get_logs():
 def status():
 
     return jsonify({
-        "server": "SELVARITHIK'S A&D LORA GATEWAY",
+        "server": "SELVARITHIK LORA GATEWAY",
         "status": "online",
         "time": datetime.now().isoformat(),
         "nodes": len(node_manager.get_all_nodes())
     })
+
+
+def _recent_logs(limit=8):
+    connection = database.get_connection()
+    rows = connection.execute(
+        """
+        SELECT id, timestamp, severity, source, message, node_id
+        FROM logs
+        ORDER BY timestamp DESC
+        LIMIT ?
+        """,
+        (int(limit),)
+    ).fetchall()
+    connection.close()
+    return [dict(row) for row in rows]
+
+
+def _parameter_update_payload(node_id, parameters, timestamp=None):
+    timestamp = timestamp or datetime.now().isoformat()
+    latest = telemetry_manager.get_latest_values(node_id)
+    parameter_meta = {
+        parameter.get("parameter_id"): parameter
+        for parameter in latest
+    }
+    result = []
+
+    for parameter_id, meta in parameter_meta.items():
+        source_field = sensor_widgets.config(meta)["source_field"]
+        if parameter_id in (parameters or {}) or source_field in (parameters or {}):
+            result.append(dict(meta))
+
+    return {
+        "node_id": node_id,
+        "received_at": timestamp,
+        "parameters": result
+    }
+
+
+def _emit_telemetry_update(payload):
+    try:
+        socketio.emit("telemetry_update", payload)
+    except Exception as error:
+        print("Telemetry update emit error:", error)
+
+
+def _build_alerts(nodes_data):
+    alerts = []
+    for node in nodes_data:
+        if str(node.get("status", "")).lower() not in ("online", "connected", "active"):
+            alerts.append({
+                "kind": "node_offline",
+                "node_id": node.get("node_id"),
+                "severity": "warning",
+                "message": f"{node.get('name') or node.get('node_id')} is offline"
+            })
+        for parameter in node.get("parameters", []):
+            if parameter.get("alarm_status") in ("HIGH", "LOW", "SENSOR_ERROR"):
+                alerts.append({
+                    "kind": "parameter_alarm",
+                    "node_id": node.get("node_id"),
+                    "parameter_id": parameter.get("parameter_id"),
+                    "severity": "alarm",
+                    "message": f"{parameter.get('parameter_name') or parameter.get('parameter_id')} {parameter.get('alarm_status')}"
+                })
+    return alerts
+
+
+@app.route("/api/live/snapshot", methods=["GET"])
+def api_live_snapshot():
+    node_manager.check_offline_nodes()
+    nodes_data = []
+    for node in node_manager.get_all_nodes():
+        node_copy = dict(node)
+        node_copy["parameters"] = telemetry_manager.get_latest_values(
+            node_copy["node_id"]
+        )
+        nodes_data.append(node_copy)
+
+    return jsonify({
+        "success": True,
+        "server_time": datetime.now().isoformat(),
+        "nodes": nodes_data,
+        "alerts": _build_alerts(nodes_data),
+        "logs": _recent_logs(8)
+    })
+
+
+@app.route("/api/ui/dashboards", methods=["GET"])
+def api_get_ui_dashboards():
+    connection = database.get_connection()
+    rows = connection.execute(
+        "SELECT id, name, layout_json, updated_at FROM ui_dashboards ORDER BY updated_at DESC"
+    ).fetchall()
+    connection.close()
+    return jsonify({
+        "success": True,
+        "dashboards": [
+            {
+                "id": row["id"],
+                "name": row["name"],
+                "layout": json.loads(row["layout_json"] or "{}"),
+                "updated_at": row["updated_at"]
+            }
+            for row in rows
+        ]
+    })
+
+
+@app.route("/api/ui/dashboards/<dashboard_id>", methods=["GET"])
+def api_get_ui_dashboard(dashboard_id):
+    connection = database.get_connection()
+    row = connection.execute(
+        "SELECT id, name, layout_json, updated_at FROM ui_dashboards WHERE id = ?",
+        (dashboard_id,)
+    ).fetchone()
+    connection.close()
+    if row is None:
+        return jsonify({"success": False, "error": "Dashboard not found"}), 404
+    return jsonify({
+        "success": True,
+        "dashboard": {
+            "id": row["id"],
+            "name": row["name"],
+            "layout": json.loads(row["layout_json"] or "{}"),
+            "updated_at": row["updated_at"]
+        }
+    })
+
+
+@app.route("/api/ui/dashboards/<dashboard_id>", methods=["PUT"])
+def api_put_ui_dashboard(dashboard_id):
+    data = request.get_json() or {}
+    name = data.get("name") or "Dashboard"
+    layout = data.get("layout") or {}
+    updated_at = datetime.now().isoformat()
+    connection = database.get_connection()
+    connection.execute(
+        """
+        INSERT INTO ui_dashboards (id, name, layout_json, updated_at)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+            name = excluded.name,
+            layout_json = excluded.layout_json,
+            updated_at = excluded.updated_at
+        """,
+        (dashboard_id, name, json.dumps(layout), updated_at)
+    )
+    connection.commit()
+    connection.close()
+    return jsonify({"success": True, "id": dashboard_id, "updated_at": updated_at})
+
+
+@app.route("/api/ui/dashboards/<dashboard_id>", methods=["DELETE"])
+def api_delete_ui_dashboard(dashboard_id):
+    connection = database.get_connection()
+    connection.execute("DELETE FROM ui_dashboards WHERE id = ?", (dashboard_id,))
+    connection.commit()
+    connection.close()
+    return jsonify({"success": True})
 
 
 # ============================================================
@@ -1650,17 +1821,19 @@ def api_get_node_config(node_id):
 )
 def api_save_node_config(node_id):
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"success": False, "error": "Expected a JSON object"}), 400
 
     config = data.get(
         "config",
         {}
     )
 
-    success = config_manager.save_node_config(
-        node_id,
-        config
-    )
+    try:
+        success = config_manager.save_node_config(node_id, config)
+    except ValueError as error:
+        return jsonify({"success": False, "error": str(error)}), 400
 
     if not success:
 
@@ -1875,7 +2048,8 @@ def api_add_parameter(node_id):
 
             high_alarm=data.get(
                 "high_alarm"
-            )
+            ),
+            widget_config=data.get("widget_config", "{}")
 
         )
 
@@ -2149,7 +2323,9 @@ def api_save_graph(
 )
 def api_save_telemetry():
 
-    data = request.get_json() or {}
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"success": False, "error": "Expected a JSON object"}), 400
 
 
     node_id = data.get("node_id")
@@ -2173,12 +2349,42 @@ def api_save_telemetry():
             "timestamp"
         )
 
+    if not isinstance(parameters, dict):
+        return jsonify({"success": False, "error": "parameters must be an object"}), 400
+    if not isinstance(node_id, str):
+        return jsonify({"success": False, "error": "node_id must be a string"}), 400
+    if timestamp is not None:
+        try:
+            datetime.fromisoformat(timestamp)
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "error": "Invalid timestamp"}), 400
 
     saved = telemetry_manager.save_parameters(
             node_id,
             parameters,
             timestamp
         )
+
+    received_at = timestamp or datetime.now().isoformat()
+
+    try:
+        node = node_manager.get_node(node_id)
+        if node and node.get("enabled"):
+            node_manager.update_node_status(
+                node_id,
+                "online",
+                max(received_at, node.get("last_seen") or received_at)
+            )
+    except Exception as error:
+        print("HTTP telemetry node status error:", error)
+
+    _emit_telemetry_update(
+        _parameter_update_payload(
+            node_id,
+            parameters,
+            received_at
+        )
+    )
 
 
     return jsonify({
@@ -2311,6 +2517,25 @@ def api_parameter_history(
         )
 
 
+    hours = request.args.get("hours", type=int)
+    if hours is not None:
+        if hours not in (1, 6, 24, 168):
+            return jsonify(success=False, error="Unsupported time range."), 400
+        from datetime import timedelta
+        cutoff = (datetime.now() - timedelta(hours=hours)).isoformat()
+        connection = database.get_connection()
+        try:
+            rows = connection.execute(
+                "SELECT id,node_id,parameter_id,timestamp,value,text_value,data_type,quality,status FROM telemetry_values WHERE node_id=? AND parameter_id=? AND julianday(timestamp)>=julianday(?) AND julianday(timestamp)<=julianday(?) ORDER BY timestamp DESC,id DESC LIMIT 10000",
+                (node_id,parameter_id,cutoff,datetime.now().isoformat())
+            ).fetchall()
+            stats = dict(connection.execute(
+                "SELECT COUNT(*) AS sample_count,MIN(value) AS minimum,AVG(value) AS average,MAX(value) AS maximum FROM telemetry_values WHERE node_id=? AND parameter_id=? AND julianday(timestamp)>=julianday(?) AND julianday(timestamp)<=julianday(?)",
+                (node_id,parameter_id,cutoff,datetime.now().isoformat())
+            ).fetchone())
+        finally:
+            connection.close()
+        return jsonify(success=True,node_id=node_id,parameter_id=parameter_id,data=[dict(row) for row in reversed(rows)],statistics=stats,truncated=stats["sample_count"]>10000,hours=hours)
     history = telemetry_manager.get_history(
             node_id,
             parameter_id,
@@ -3936,6 +4161,15 @@ def receive_telemetry(data):
         "node_update",
         data
     )
+
+    if parameter_values:
+        _emit_telemetry_update(
+            _parameter_update_payload(
+                node_id,
+                parameter_values,
+                received_at
+            )
+        )
 # ============================================================
 # SEND NODES TO DASHBOARD
 # ============================================================
@@ -3968,12 +4202,20 @@ def send_nodes():
 # MAIN
 # ============================================================
 
+def server_time_heartbeat():
+    while True:
+        socketio.emit(
+            "server_time",
+            {"server_time": datetime.now().isoformat()}
+        )
+        socketio.sleep(5)
+
 if __name__ == "__main__":
 
     print("=" * 60)
 
     print(
-        "SELVARITHIK'S A&D LORA GATEWAY"
+        "SELVARITHIK LORA GATEWAY"
     )
 
     print(
@@ -3989,7 +4231,7 @@ if __name__ == "__main__":
     )
 
     print("=" * 60)
-
+    socketio.start_background_task(server_time_heartbeat)
 
     socketio.run(
         app,

@@ -191,37 +191,17 @@ ESP32_LoRa_Project/
 +-- dashboard/
 |   +-- static/
 |   |   +-- css/
-|   |   |   +-- chat.css
-|   |   |   +-- command_center.css
-|   |   |   +-- communication.css
-|   |   |   +-- firmware.css
-|   |   |   +-- style.css
-|   |   |
-|   |   +-- js/
-|   |       +-- app.js
-|   |       +-- chat.js
-|   |       +-- command_center.js
-|   |       +-- communication.js
-|   |       +-- dashboard.js
-|   |       +-- firmware.js
-|   |       +-- logs.js
-|   |       +-- nodes.js
-|   |       +-- sensors.js
-|   |       +-- system-overview.js
-|   |       +-- system.js
+|   |   |   +-- dashboard.css
+|   |   +-- js/ (app, dashboard, page scripts, realtime, dom, accessibility)
+|   |   +-- img/ (logo SVGs)
+|   |   +-- vendor/ (local Socket.IO client and license)
+|   |
+|   +-- templates/ (base.html and existing page templates)
 |   |
 |   +-- templates/
-|       +-- base.html
-|       +-- chat.html
-|       +-- command_center.html
-|       +-- communication.html
-|       +-- firmware.html
-|       +-- index.html
-|       +-- logs.html
-|       +-- nodes.html
-|       +-- sensors.html
-|       +-- system-overview.html
-|       +-- system.html
+|       +-- layouts/
+|       +-- partials/
+|       +-- pages/
 |
 +-- protocol/
 |   +-- messages.py
@@ -229,6 +209,33 @@ ESP32_LoRa_Project/
 +-- simulator/
     +-- node_001.py
     +-- node_002.py
+    +-- http_node.py
+
+Frontend notes
+--------------
+
+Run the dashboard with `python backend/server.py`, then open
+`http://127.0.0.1:5000/`. Socket.IO live updates are hydrated from
+`GET /api/live/snapshot` and then patched from `telemetry_update`,
+`node_update`, and `server_time` events. The HTTP telemetry simulator can be
+started with `python simulator/http_node.py`.
+
+Sensor widget presets and icons live in dashboard/static/js/dashboard.js.
+Extend widgetPresets and telemetryIcon to add a preset. Presets bind to real
+configured parameters; they do not generate readings. Add/remove graphs are
+saved in this browser under gateway_chart_keys.
+
+To add a page, extend dashboard/templates/base.html, add a page script under
+dashboard/static/js/, and use shared dashboard/static/css/dashboard.css.
+Point the Flask route at that template. No frontend build step is required.
+
+Validation uses temporary data, not the production database:
+    python tests/test_gateway.py
+    python tests/gateway_fixture.py
+    node tests/ui_smoke.cjs
+    node tests/ui_interactions.cjs
+Browser tests use Playwright and installed Edge; PLAYWRIGHT_MODULE can override
+the module location. Stop the fixture server after testing.
 
 
 5. BACKEND MODULES

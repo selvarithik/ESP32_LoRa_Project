@@ -130,10 +130,27 @@ def save_parameters(
         timestamp = datetime.now().isoformat()
 
 
+    from sensor_manager import get_parameters
+    from sensor_widgets import config
+    mapped = dict(parameters)
+    for parameter in get_parameters(node_id):
+        if not parameter.get("enabled"):
+            mapped.pop(parameter["parameter_id"], None)
+            continue
+        cfg = config(parameter)
+        source = cfg["source_field"]
+        if source in parameters:
+            value = parameters[source]
+            if parameter["data_type"] in ("FLOAT","DOUBLE","INT","UINT","UINT32"):
+                try:
+                    value = float(value) * cfg["scale"] + cfg["offset"]
+                except (TypeError, ValueError):
+                    continue
+            mapped[parameter["parameter_id"]] = value
     saved = 0
 
 
-    for parameter_id, value in parameters.items():
+    for parameter_id, value in mapped.items():
 
         if save_value(
             node_id,
@@ -310,6 +327,9 @@ def get_latest_values(node_id):
             p.alarm_enabled,
             p.low_alarm,
             p.high_alarm,
+            p.sensor_id,
+            p.description,
+            p.widget_config,
             t.timestamp,
             t.value,
             t.text_value,
@@ -320,10 +340,12 @@ def get_latest_values(node_id):
             ON t.node_id = p.node_id
             AND t.parameter_id = p.parameter_id
             AND t.id = (
-                SELECT MAX(t2.id)
+                SELECT t2.id
                 FROM telemetry_values t2
                 WHERE t2.node_id = p.node_id
                 AND t2.parameter_id = p.parameter_id
+                ORDER BY t2.timestamp DESC, t2.id DESC
+                LIMIT 1
             )
         WHERE p.node_id = ?
         AND p.enabled = 1
@@ -340,6 +362,8 @@ def get_latest_values(node_id):
     for row in rows:
 
         item = dict(row)
+        from sensor_widgets import config
+        item["widget_config"] = config(item)
 
         item["enabled"] = bool(item["enabled"])
         item["display_enabled"] = bool(item["display_enabled"])

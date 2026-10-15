@@ -245,6 +245,42 @@ const CommunicationCenter = (() => {
        LOAD MESH
     ======================================================== */
 
+    function renderTopology(mesh, nodes) {
+        const svg = element("mesh-topology-svg");
+        if (!svg) return;
+        svg.replaceChildren();
+        const ns = "http://www.w3.org/2000/svg";
+        function shape(tag, attributes, text) {
+            const el = document.createElementNS(ns, tag);
+            Object.entries(attributes).forEach(([key, value]) => el.setAttribute(key, value));
+            if (text !== undefined) el.textContent = text;
+            svg.appendChild(el);
+            return el;
+        }
+        if (!nodes.length) { shape("text", { x: 450, y: 210, "text-anchor": "middle", fill: "currentColor" }, "No mesh nodes configured"); return; }
+        const positions = new Map(nodes.map((node, index) => {
+            const angle = index * Math.PI * 2 / nodes.length;
+            return [node.node_id, { x: 450 + 300 * Math.cos(angle), y: 210 + 145 * Math.sin(angle), node }];
+        }));
+        const drawn = new Set();
+        Object.entries(mesh.neighbors || {}).forEach(([source, neighbors]) => {
+            Object.entries(neighbors || {}).forEach(([target, link]) => {
+                const a = positions.get(source), b = positions.get(target);
+                const key = [source, target].sort().join("::");
+                if (!a || !b || drawn.has(key)) return;
+                drawn.add(key);
+                const line = shape("line", { x1: a.x, y1: a.y, x2: b.x, y2: b.y, stroke: "var(--m-blue)", "stroke-width": 2 });
+                const title = document.createElementNS(ns, "title");
+                title.textContent = source + " - " + target + " / RSSI " + (link.rssi ?? "unknown");
+                line.appendChild(title);
+            });
+        });
+        positions.forEach(({x, y, node}) => {
+            shape("circle", { cx: x, cy: y, r: 23, fill: node.node_id === mesh.master_node_id ? "var(--m-orange)" : "var(--m-blue)" });
+            shape("text", { x, y: y + 43, "text-anchor": "middle", fill: "currentColor", "font-size": 14 }, node.name || node.node_id);
+        });
+    }
+
     async function loadMesh() {
 
         const tbody =
@@ -311,6 +347,7 @@ const CommunicationCenter = (() => {
 
 
 
+            renderTopology(mesh, nodes);
             tbody.innerHTML = "";
 
 

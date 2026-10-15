@@ -1,950 +1,225 @@
-/* ============================================================
-   COMMAND CENTER JAVASCRIPT — PHASE 3
-   Real-time command management, ACK & response analytics
-   ============================================================ */
-
+/* Node conversations adapt the existing command APIs and shared Socket.IO client. */
 "use strict";
-
-(() => {
-    // Application State
-    const state = {
-        nodes: [],
-        selectedNodeId: null,
-        activeCommand: null,
-        commandHistory: [],
-        selectedCommandId: null,
-        historyFilter: "ALL",
-        socket: null,
-        socketConnected: false,
-        pollingTimer: null
-    };
-
-    // DOM Elements Cache
-    const el = {};
-
-    /* ============================================================
-       INITIALIZATION
-       ============================================================ */
-    document.addEventListener("DOMContentLoaded", () => {
-        cacheDOMElements();
-        bindEvents();
-        initSocketIO();
-        loadNodes();
-        startPolling();
-    });
-
-    function cacheDOMElements() {
-        // Toolbar
-        el.topTargetBadge = document.getElementById("top-target-badge");
-        el.socketStatusPill = document.getElementById("socket-status-pill");
-        el.socketStatusText = document.getElementById("socket-status-text");
-        el.cmdRefreshBtn = document.getElementById("cmd-refresh-btn");
-
-        // Section 1: Nodes
-        el.nodeCountBadge = document.getElementById("node-count-badge");
-        el.nodeSearchInput = document.getElementById("node-search-input");
-        el.nodeListContainer = document.getElementById("node-list-container");
-
-        // Section 2: Device Status
-        el.deviceStatusIndicator = document.getElementById("device-status-indicator");
-        el.devNodeId = document.getElementById("dev-node-id");
-        el.devStatus = document.getElementById("dev-status");
-        el.devLastSeen = document.getElementById("dev-last-seen");
-        el.devMcu = document.getElementById("dev-mcu");
-        el.devHwRev = document.getElementById("dev-hw-rev");
-        el.devFw = document.getElementById("dev-fw");
-        el.devComm = document.getElementById("dev-comm");
-        el.devLastCmdState = document.getElementById("dev-last-cmd-state");
-
-        // Section 3: Banner
-        el.bannerAvatar = document.getElementById("banner-avatar");
-        el.bannerNodeName = document.getElementById("banner-node-name");
-        el.bannerNodeId = document.getElementById("banner-node-id");
-        el.bannerConnectionBadge = document.getElementById("banner-connection-badge");
-        el.bannerNodeDetails = document.getElementById("banner-node-details");
-        el.bannerActiveCmd = document.getElementById("banner-active-cmd");
-        el.bannerCmdState = document.getElementById("banner-cmd-state");
-        el.bannerLastResp = document.getElementById("banner-last-resp");
-
-        // Section 4: Server Command
-        el.cmdHeaderId = document.getElementById("cmd-header-id");
-        el.activeCmdStatePill = document.getElementById("active-cmd-state-pill");
-        el.btnCancelCmd = document.getElementById("btn-cancel-cmd");
-        el.btnRetryCmd = document.getElementById("btn-retry-cmd");
-        el.metaCmdType = document.getElementById("meta-cmd-type");
-        el.metaCmdTarget = document.getElementById("meta-cmd-target");
-        el.metaCmdPriority = document.getElementById("meta-cmd-priority");
-        el.metaCmdRetries = document.getElementById("meta-cmd-retries");
-        el.metaCmdCreated = document.getElementById("meta-cmd-created");
-        el.metaCmdTimeout = document.getElementById("meta-cmd-timeout");
-
-        // Section 5: Response & ACK
-        el.btnCopyResult = document.getElementById("btn-copy-result");
-        el.ackBadgeStatus = document.getElementById("ack-badge-status");
-        el.ackMessageText = document.getElementById("ack-message-text");
-        el.ackTimestampText = document.getElementById("ack-timestamp-text");
-        el.respBadgeStatus = document.getElementById("resp-badge-status");
-        el.respSummaryText = document.getElementById("resp-summary-text");
-        el.respTimestampText = document.getElementById("resp-timestamp-text");
-        el.cmdErrorBanner = document.getElementById("cmd-error-banner");
-        el.cmdErrorMessage = document.getElementById("cmd-error-message");
-        el.responseDataJson = document.getElementById("response-data-json");
-
-        // Section 6: History
-        el.historyTargetLabel = document.getElementById("history-target-label");
-        el.historyFilterSelect = document.getElementById("history-filter-select");
-        el.btnViewTimeline = document.getElementById("btn-view-timeline");
-        el.historyListContainer = document.getElementById("history-list-container");
-
-        // Section 7: Configuration
-        el.cmdTypeSelect = document.getElementById("cmd-type-select");
-        el.cmdPrioritySelect = document.getElementById("cmd-priority-select");
-        el.cmdTimeoutInput = document.getElementById("cmd-timeout-input");
-        el.cmdRetriesInput = document.getElementById("cmd-retries-input");
-
-        // Specific Params
-        el.paramPingMsg = document.getElementById("param-ping-msg");
-        el.paramScanBand = document.getElementById("param-scan-band");
-        el.paramScanLimit = document.getElementById("param-scan-limit");
-        el.paramWifiSsid = document.getElementById("param-wifi-ssid");
-        el.paramWifiPass = document.getElementById("param-wifi-pass");
-        el.paramWifiSave = document.getElementById("param-wifi-save");
-        el.paramRebootDelay = document.getElementById("param-reboot-delay");
-        el.paramRebootReason = document.getElementById("param-reboot-reason");
-        el.paramConfigSection = document.getElementById("param-config-section");
-        el.paramIntervalMs = document.getElementById("param-interval-ms");
-        el.paramCustomName = document.getElementById("param-custom-name");
-        el.paramCustomJson = document.getElementById("param-custom-json");
-
-        // Section 8: Send Button
-        el.btnSendCommand = document.getElementById("btn-send-command");
-        el.sendBtnSubtext = document.getElementById("send-btn-subtext");
-
-        // Timeline Modal
-        el.timelineModalOverlay = document.getElementById("timeline-modal-overlay");
-        el.modalCmdId = document.getElementById("modal-cmd-id");
-        el.btnCloseTimelineModal = document.getElementById("btn-close-timeline-modal");
-        el.timelineEventsList = document.getElementById("timeline-events-list");
-    }
-
-    /* ============================================================
-       EVENT BINDINGS
-       ============================================================ */
-    function bindEvents() {
-        // Refresh
-        el.cmdRefreshBtn?.addEventListener("click", () => {
-            loadNodes();
-            if (state.selectedNodeId) {
-                loadCommandHistory(state.selectedNodeId);
-            }
-            if (window.gateway?.toast) {
-                gateway.toast("Command Center refreshed", "info");
-            }
-        });
-
-        // Search Nodes
-        el.nodeSearchInput?.addEventListener("input", renderNodes);
-
-        // Command Type Change (switch dynamic form pane)
-        el.cmdTypeSelect?.addEventListener("change", (e) => {
-            switchParamPane(e.target.value);
-        });
-
-        // Send Command
-        el.btnSendCommand?.addEventListener("click", handleSendCommand);
-
-        // Cancel Command
-        el.btnCancelCmd?.addEventListener("click", handleCancelCommand);
-
-        // Retry Command
-        el.btnRetryCmd?.addEventListener("click", handleRetryCommand);
-
-        // Filter History
-        el.historyFilterSelect?.addEventListener("change", (e) => {
-            state.historyFilter = e.target.value;
-            renderHistory();
-        });
-
-        // Copy Result
-        el.btnCopyResult?.addEventListener("click", copyResultToClipboard);
-
-        // View Timeline
-        el.btnViewTimeline?.addEventListener("click", () => {
-            if (state.activeCommand?.command_id) {
-                openTimelineModal(state.activeCommand.command_id);
-            } else {
-                if (window.gateway?.toast) gateway.toast("Please select a command first", "warning");
-            }
-        });
-
-        // Close Timeline Modal
-        el.btnCloseTimelineModal?.addEventListener("click", closeTimelineModal);
-        el.timelineModalOverlay?.addEventListener("click", (e) => {
-            if (e.target === el.timelineModalOverlay) closeTimelineModal();
-        });
-    }
-
-    function switchParamPane(cmdType) {
-        document.querySelectorAll(".param-pane").forEach(pane => {
-            pane.classList.remove("active");
-        });
-        const activePane = document.getElementById(`pane-${cmdType}`);
-        if (activePane) {
-            activePane.classList.add("active");
-        } else {
-            // Default to custom or empty if not matched
-            document.getElementById("pane-CUSTOM")?.classList.add("active");
-        }
-    }
-
-    /* ============================================================
-       NODE MANAGEMENT & SELECTION (SECTION 1, 2, 3)
-       ============================================================ */
-    async function loadNodes() {
-        try {
-            const data = await gateway.get("/api/nodes");
-            state.nodes = Array.isArray(data) ? data : (data?.nodes || []);
-            renderNodes();
-
-            // Auto-select first node or preserve selection
-            if (state.nodes.length > 0) {
-                const exists = state.nodes.some(n => n.node_id === state.selectedNodeId);
-                if (!exists || !state.selectedNodeId) {
-                    selectNode(state.nodes[0].node_id);
-                } else {
-                    updateSelectedNodeUI();
-                }
-            } else {
-                state.selectedNodeId = null;
-                updateSelectedNodeUI();
-            }
-        } catch (err) {
-            console.error("Failed to load nodes:", err);
-            el.nodeListContainer.innerHTML = `<div class="cmd-empty-state"><p>Error loading nodes: ${escapeHtml(err.message)}</p></div>`;
-        }
-    }
-
-    function renderNodes() {
-        const query = (el.nodeSearchInput?.value || "").toLowerCase().trim();
-        const filtered = state.nodes.filter(node => {
-            const id = String(node.node_id || "").toLowerCase();
-            const name = String(node.name || "").toLowerCase();
-            return id.includes(query) || name.includes(query);
-        });
-
-        el.nodeCountBadge.textContent = `${filtered.length} Node${filtered.length === 1 ? '' : 's'}`;
-
-        if (filtered.length === 0) {
-            el.nodeListContainer.innerHTML = '<div class="cmd-empty-state"><p>No nodes available</p></div>';
-            return;
-        }
-
-        el.nodeListContainer.innerHTML = "";
-        filtered.forEach(node => {
-            const isSelected = node.node_id === state.selectedNodeId;
-            const isOnline = String(node.status || "").toLowerCase() === "online";
-            const lastSeen = node.last_seen ? formatTime(node.last_seen) : "Never";
-
-            const card = document.createElement("div");
-            card.className = `node-item-card ${isSelected ? 'selected' : ''}`;
-            card.setAttribute("data-node-id", node.node_id);
-            card.innerHTML = `
-                <div class="node-item-top">
-                    <span class="node-item-id">${escapeHtml(node.node_id)}</span>
-                    <span class="status-pill-${isOnline ? 'online' : 'offline'}">${isOnline ? 'ONLINE' : 'OFFLINE'}</span>
-                </div>
-                <div class="node-item-name">${escapeHtml(node.name || 'Unnamed Node')}</div>
-                <div class="node-item-meta">
-                    <span>FW: ${escapeHtml(node.firmware_version || 'v1.0.0')}</span>
-                    <span>${lastSeen}</span>
-                </div>
-            `;
-
-            card.addEventListener("click", () => selectNode(node.node_id));
-            el.nodeListContainer.appendChild(card);
-        });
-    }
-
-    function selectNode(nodeId) {
-        state.selectedNodeId = nodeId;
-
-        // Highlight selected node in list
-        document.querySelectorAll(".node-item-card").forEach(c => {
-            c.classList.toggle("selected", c.getAttribute("data-node-id") === nodeId);
-        });
-
-        updateSelectedNodeUI();
-        loadCommandHistory(nodeId);
-    }
-
-    function updateSelectedNodeUI() {
-        const node = state.nodes.find(n => n.node_id === state.selectedNodeId);
-
-        if (!node) {
-            el.topTargetBadge.textContent = "Target: None";
-            el.sendBtnSubtext.textContent = "Target: None";
-            el.btnSendCommand.disabled = true;
-
-            // Clear Device Status
-            el.deviceStatusIndicator.textContent = "—";
-            el.devNodeId.textContent = "—";
-            el.devStatus.textContent = "—";
-            el.devLastSeen.textContent = "—";
-            el.devMcu.textContent = "—";
-            el.devHwRev.textContent = "—";
-            el.devFw.textContent = "—";
-            el.devComm.textContent = "—";
-            el.devLastCmdState.textContent = "—";
-            el.devLastCmdState.className = "state-pill state-pill-sm state-idle";
-
-            // Clear Banner
-            el.bannerNodeName.textContent = "No Node Selected";
-            el.bannerNodeId.textContent = "NONE";
-            el.bannerConnectionBadge.textContent = "OFFLINE";
-            el.bannerConnectionBadge.className = "connection-badge";
-            el.bannerNodeDetails.textContent = "Select a node from the left panel to begin dispatching commands.";
-            el.bannerActiveCmd.textContent = "None";
-            el.bannerCmdState.textContent = "IDLE";
-            el.bannerCmdState.className = "state-pill state-pill-sm state-idle";
-            el.bannerLastResp.textContent = "N/A";
-            return;
-        }
-
-        const isOnline = String(node.status || "").toLowerCase() === "online";
-        const lastSeenStr = node.last_seen ? formatTime(node.last_seen) : "Never";
-
-        // Toolbar & Send
-        el.topTargetBadge.textContent = `Target: ${node.node_id}`;
-        el.sendBtnSubtext.textContent = `Target: ${node.node_id}`;
-        el.btnSendCommand.disabled = false;
-
-        // Section 2: Device Status & Info
-        el.deviceStatusIndicator.textContent = isOnline ? "ONLINE" : "OFFLINE";
-        el.deviceStatusIndicator.className = isOnline ? "status-pill-online" : "status-pill-offline";
-        el.devNodeId.textContent = node.node_id;
-        el.devStatus.textContent = isOnline ? "Connected" : "Offline";
-        el.devLastSeen.textContent = lastSeenStr;
-        el.devMcu.textContent = `${node.mcu_family || 'ESP32'} ${node.mcu_model ? '(' + node.mcu_model + ')' : ''}`;
-        el.devHwRev.textContent = node.hardware_revision || "REV-A";
-        el.devFw.textContent = node.firmware_version || "1.0.0";
-        el.devComm.textContent = node.communication_type || "LoRa";
-
-        // Section 3: Banner
-        el.bannerNodeName.textContent = node.name || node.node_id;
-        el.bannerNodeId.textContent = node.node_id;
-        el.bannerConnectionBadge.textContent = isOnline ? "ONLINE" : "OFFLINE";
-        el.bannerConnectionBadge.className = `connection-badge ${isOnline ? 'online' : ''}`;
-        el.bannerNodeDetails.textContent = `${node.mcu_family || 'ESP32'} • ${node.communication_type || 'LoRa'} • FW ${node.firmware_version || '1.0.0'} • Last Seen: ${lastSeenStr}`;
-
-        el.historyTargetLabel.textContent = node.node_id;
-    }
-
-    /* ============================================================
-       COMMAND HISTORY & DETAILS (SECTION 4, 5, 6)
-       ============================================================ */
-    async function loadCommandHistory(nodeId) {
-        if (!nodeId) return;
-
-        try {
-            const data = await gateway.get(`/api/commands/node/${nodeId}?limit=100`);
-            state.commandHistory = Array.isArray(data?.commands) ? data.commands : [];
-            renderHistory();
-
-            if (state.commandHistory.length > 0) {
-                // If current selected command is in the list, keep it; else select most recent
-                const found = state.commandHistory.find(c => c.command_id === state.selectedCommandId);
-                selectCommand(found || state.commandHistory[0]);
-            } else {
-                state.activeCommand = null;
-                state.selectedCommandId = null;
-                resetCommandDetails();
-            }
-        } catch (err) {
-            console.error("Failed to load command history:", err);
-            el.historyListContainer.innerHTML = `<div class="cmd-empty-state"><p>Error loading history: ${escapeHtml(err.message)}</p></div>`;
-        }
-    }
-
-    function renderHistory() {
-        const filter = state.historyFilter;
-        const filtered = state.commandHistory.filter(cmd => {
-            if (filter === "ALL") return true;
-            if (filter === "COMPLETED") return cmd.state === "COMPLETED";
-            if (filter === "FAILED") return cmd.state === "FAILED";
-            if (filter === "TIMEOUT") return cmd.state === "TIMEOUT";
-            if (filter === "ACTIVE") return ["QUEUED", "SENT", "WAITING_ACK", "ACK_RECEIVED", "EXECUTING"].includes(cmd.state);
-            return true;
-        });
-
-        if (filtered.length === 0) {
-            el.historyListContainer.innerHTML = '<div class="cmd-empty-state"><p>No command history for this filter</p></div>';
-            return;
-        }
-
-        el.historyListContainer.innerHTML = "";
-        filtered.forEach(cmd => {
-            const isSelected = cmd.command_id === state.selectedCommandId;
-            const created = cmd.created_at ? formatTime(cmd.created_at) : "—";
-            const stateClass = `state-${String(cmd.state || '').toLowerCase()}`;
-
-            const card = document.createElement("div");
-            card.className = `history-item-card ${isSelected ? 'active' : ''}`;
-            card.setAttribute("data-cmd-id", cmd.command_id);
-            card.innerHTML = `
-                <div class="history-item-head">
-                    <span class="history-cmd-id">${escapeHtml(cmd.command_id)}</span>
-                    <span class="state-pill state-pill-sm ${stateClass}">${escapeHtml(cmd.state)}</span>
-                </div>
-                <div class="history-item-head">
-                    <span class="history-item-type">${escapeHtml(cmd.command_type)}</span>
-                    <span class="history-item-time">${created}</span>
-                </div>
-            `;
-
-            card.addEventListener("click", () => selectCommand(cmd));
-            el.historyListContainer.appendChild(card);
-        });
-    }
-
-    function selectCommand(cmd) {
-        if (!cmd) return;
-        state.activeCommand = cmd;
-        state.selectedCommandId = cmd.command_id;
-
-        // Highlight in history list
-        document.querySelectorAll(".history-item-card").forEach(c => {
-            c.classList.toggle("active", c.getAttribute("data-cmd-id") === cmd.command_id);
-        });
-
-        renderCommandDetails(cmd);
-        renderResponseDetails(cmd);
-        updateBannerCommandState(cmd);
-    }
-
-    function renderCommandDetails(cmd) {
-        const stateStr = cmd.state || "QUEUED";
-        const stateClass = `state-${stateStr.toLowerCase()}`;
-
-        el.cmdHeaderId.textContent = `ID: ${cmd.command_id}`;
-        el.activeCmdStatePill.textContent = stateStr;
-        el.activeCmdStatePill.className = `state-pill ${stateClass}`;
-
-        // Action Buttons Enablement
-        const isTerminal = ["COMPLETED", "FAILED", "TIMEOUT", "CANCELLED"].includes(stateStr);
-        el.btnCancelCmd.disabled = isTerminal;
-        el.btnRetryCmd.disabled = !["TIMEOUT", "FAILED"].includes(stateStr) || (cmd.retry_count >= cmd.max_retries);
-
-        // Metadata
-        el.metaCmdType.textContent = cmd.command_type || "—";
-        el.metaCmdTarget.textContent = cmd.node_id || "—";
-        el.metaCmdPriority.textContent = `Priority ${cmd.priority || 1}`;
-        el.metaCmdRetries.textContent = `${cmd.retry_count || 0} / ${cmd.max_retries || 3}`;
-        el.metaCmdCreated.textContent = cmd.created_at ? formatTime(cmd.created_at) : "—";
-        el.metaCmdTimeout.textContent = cmd.timeout_at ? formatTime(cmd.timeout_at) : "—";
-
-        // Update Stepper
-        updateLifecycleStepper(stateStr);
-    }
-
-    function updateLifecycleStepper(currentState) {
-        const steps = ["QUEUED", "SENT", "WAITING_ACK", "ACK_RECEIVED", "EXECUTING", "COMPLETED"];
-        const stateIndexMap = {
-            "QUEUED": 0,
-            "SENT": 1,
-            "WAITING_ACK": 2,
-            "ACK_RECEIVED": 3,
-            "EXECUTING": 4,
-            "COMPLETED": 5,
-            "TIMEOUT": 2,
-            "FAILED": 4,
-            "CANCELLED": 0
-        };
-
-        const targetIdx = stateIndexMap[currentState] ?? 0;
-
-        steps.forEach((stepName, idx) => {
-            const stepEl = document.getElementById(`step-${stepName.toLowerCase().replace('_', '-')}`);
-            if (!stepEl) return;
-
-            stepEl.classList.remove("active", "completed");
-
-            if (currentState === "COMPLETED" || idx < targetIdx) {
-                stepEl.classList.add("completed");
-            } else if (idx === targetIdx) {
-                stepEl.classList.add("active");
-            }
-        });
-
-        // Update connecting lines
-        for (let i = 1; i <= 5; i++) {
-            const line = document.getElementById(`line-${i}`);
-            if (line) {
-                line.classList.toggle("active", i <= targetIdx);
-            }
-        }
-    }
-
-    function renderResponseDetails(cmd) {
-        // ACK Status
-        const ackAt = cmd.ack_at ? formatTime(cmd.ack_at) : "—";
-        const hasAck = !!cmd.ack_at || ["ACK_RECEIVED", "EXECUTING", "COMPLETED"].includes(cmd.state);
-        const ackStatus = cmd.ack_status || (hasAck ? "RECEIVED" : "WAITING");
-
-        el.ackBadgeStatus.textContent = ackStatus;
-        el.ackBadgeStatus.className = `ack-badge ${hasAck ? 'ok' : ''}`;
-        el.ackMessageText.textContent = cmd.ack_message || (hasAck ? "Command acknowledged by device" : "Waiting for device ACK...");
-        el.ackTimestampText.textContent = hasAck ? `ACK Time: ${ackAt}` : "—";
-
-        // Response Status
-        const respAt = cmd.response_at || cmd.completed_at;
-        const isSuccess = cmd.state === "COMPLETED";
-        const isFailed = cmd.state === "FAILED";
-        const isTimeout = cmd.state === "TIMEOUT";
-
-        if (isSuccess) {
-            el.respBadgeStatus.textContent = "SUCCESS";
-            el.respBadgeStatus.className = "resp-badge ok";
-            el.respSummaryText.textContent = "Command executed successfully";
-            el.respTimestampText.textContent = `Completed: ${respAt ? formatTime(respAt) : '—'}`;
-        } else if (isFailed) {
-            el.respBadgeStatus.textContent = "FAILED";
-            el.respBadgeStatus.className = "resp-badge fail";
-            el.respSummaryText.textContent = cmd.error || "Execution failed";
-            el.respTimestampText.textContent = `Failed: ${respAt ? formatTime(respAt) : '—'}`;
-        } else if (isTimeout) {
-            el.respBadgeStatus.textContent = "TIMEOUT";
-            el.respBadgeStatus.className = "resp-badge fail";
-            el.respSummaryText.textContent = "Command timed out while waiting for node response";
-            el.respTimestampText.textContent = `Timeout: ${cmd.timeout_at ? formatTime(cmd.timeout_at) : '—'}`;
-        } else {
-            el.respBadgeStatus.textContent = "WAITING";
-            el.respBadgeStatus.className = "resp-badge";
-            el.respSummaryText.textContent = "Waiting for node response...";
-            el.respTimestampText.textContent = "—";
-        }
-
-        // Error Banner
-        if (cmd.error) {
-            el.cmdErrorBanner.style.display = "block";
-            el.cmdErrorMessage.textContent = cmd.error;
-        } else {
-            el.cmdErrorBanner.style.display = "none";
-        }
-
-        // Result Data Viewer
-        if (cmd.result !== null && cmd.result !== undefined && Object.keys(cmd.result).length > 0) {
-            try {
-                el.responseDataJson.textContent = typeof cmd.result === "object" ?
-                    JSON.stringify(cmd.result, null, 2) : String(cmd.result);
-            } catch {
-                el.responseDataJson.textContent = String(cmd.result);
-            }
-        } else if (isSuccess) {
-            el.responseDataJson.textContent = JSON.stringify({ status: "SUCCESS", message: "Command executed without return payload" }, null, 2);
-        } else {
-            el.responseDataJson.textContent = "Waiting for node response...";
-        }
-    }
-
-    function updateBannerCommandState(cmd) {
-        if (!cmd) return;
-        el.bannerActiveCmd.textContent = cmd.command_id;
-        el.bannerCmdState.textContent = cmd.state;
-        el.bannerCmdState.className = `state-pill state-pill-sm state-${String(cmd.state).toLowerCase()}`;
-        el.bannerLastResp.textContent = cmd.state === "COMPLETED" ? "SUCCESS" : (cmd.error ? "FAILED" : "PENDING");
-
-        // Also update Section 2 last command state
-        el.devLastCmdState.textContent = `${cmd.command_type}: ${cmd.state}`;
-        el.devLastCmdState.className = `state-pill state-pill-sm state-${String(cmd.state).toLowerCase()}`;
-    }
-
-    function resetCommandDetails() {
-        el.cmdHeaderId.textContent = "No active command";
-        el.activeCmdStatePill.textContent = "IDLE";
-        el.activeCmdStatePill.className = "state-pill state-idle";
-        el.btnCancelCmd.disabled = true;
-        el.btnRetryCmd.disabled = true;
-
-        el.metaCmdType.textContent = "—";
-        el.metaCmdTarget.textContent = "—";
-        el.metaCmdPriority.textContent = "—";
-        el.metaCmdRetries.textContent = "—";
-        el.metaCmdCreated.textContent = "—";
-        el.metaCmdTimeout.textContent = "—";
-
-        updateLifecycleStepper("QUEUED");
-        document.querySelectorAll(".step-node").forEach(s => s.classList.remove("active", "completed"));
-
-        el.ackBadgeStatus.textContent = "WAITING";
-        el.ackBadgeStatus.className = "ack-badge";
-        el.ackMessageText.textContent = "Waiting for device ACK...";
-        el.ackTimestampText.textContent = "—";
-
-        el.respBadgeStatus.textContent = "WAITING";
-        el.respBadgeStatus.className = "resp-badge";
-        el.respSummaryText.textContent = "Waiting for command completion...";
-        el.respTimestampText.textContent = "—";
-
-        el.cmdErrorBanner.style.display = "none";
-        el.responseDataJson.textContent = "Waiting for node response...";
-
-        el.bannerActiveCmd.textContent = "None";
-        el.bannerCmdState.textContent = "IDLE";
-        el.bannerCmdState.className = "state-pill state-pill-sm state-idle";
-        el.bannerLastResp.textContent = "N/A";
-    }
-
-    /* ============================================================
-       COMMAND DISPATCH (SECTION 7 & 8)
-       ============================================================ */
-    async function handleSendCommand() {
-        if (!state.selectedNodeId) {
-            if (window.gateway?.toast) gateway.toast("Please select a target node first", "warning");
-            return;
-        }
-
-        const cmdType = el.cmdTypeSelect.value;
-        const priority = parseInt(el.cmdPrioritySelect.value) || 1;
-        const timeoutSeconds = parseInt(el.cmdTimeoutInput.value) || 30;
-        const maxRetries = parseInt(el.cmdRetriesInput.value) || 3;
-
-        let payload = {};
-        let finalCommandType = cmdType;
-
-        try {
-            if (cmdType === "STATUS") {
-                payload = {};
-            } else if (cmdType === "PING") {
-                payload = { echo: el.paramPingMsg.value.trim() || "PING" };
-            } else if (cmdType === "WIFI_SCAN") {
-                payload = {
-                    band: el.paramScanBand.value,
-                    limit: parseInt(el.paramScanLimit.value) || 20
-                };
-            } else if (cmdType === "WIFI_CONNECT") {
-                const ssid = el.paramWifiSsid.value.trim();
-                if (!ssid) {
-                    if (window.gateway?.toast) gateway.toast("Wi-Fi SSID is required", "warning");
-                    el.paramWifiSsid.focus();
-                    return;
-                }
-                payload = {
-                    ssid: ssid,
-                    password: el.paramWifiPass.value,
-                    save: el.paramWifiSave.value === "true"
-                };
-            } else if (cmdType === "RESTART") {
-                payload = {
-                    delay_seconds: parseInt(el.paramRebootDelay.value) || 1,
-                    reason: el.paramRebootReason.value.trim() || "Operator reboot"
-                };
-            } else if (cmdType === "GET_CONFIG") {
-                payload = { section: el.paramConfigSection.value.trim() || "all" };
-            } else if (cmdType === "SET_INTERVAL") {
-                const interval = parseInt(el.paramIntervalMs.value);
-                if (!interval || interval < 500) {
-                    if (window.gateway?.toast) gateway.toast("Interval must be at least 500 ms", "warning");
-                    return;
-                }
-                payload = { interval_ms: interval };
-            } else if (cmdType === "CUSTOM") {
-                const customName = el.paramCustomName.value.trim();
-                if (!customName) {
-                    if (window.gateway?.toast) gateway.toast("Custom command name is required", "warning");
-                    el.paramCustomName.focus();
-                    return;
-                }
-                finalCommandType = customName;
-
-                const customJsonText = el.paramCustomJson.value.trim();
-                if (customJsonText) {
-                    try {
-                        payload = JSON.parse(customJsonText);
-                    } catch (err) {
-                        if (window.gateway?.toast) gateway.toast(`Invalid custom JSON payload: ${err.message}`, "error");
-                        return;
-                    }
-                }
-            }
-        } catch (err) {
-            console.error("Payload building error:", err);
-            return;
-        }
-
-        // Prepare request body
-        const reqBody = {
-            node_id: state.selectedNodeId,
-            command_type: finalCommandType,
-            payload: payload,
-            priority: priority,
-            timeout_seconds: timeoutSeconds,
-            max_retries: maxRetries
-        };
-
-        // UI Loading state
-        el.btnSendCommand.disabled = true;
-        const originalText = el.btnSendCommand.querySelector(".btn-text").textContent;
-        el.btnSendCommand.querySelector(".btn-text").textContent = "DISPATCHING...";
-
-        try {
-            const res = await gateway.post("/api/commands", reqBody);
-            const cmd = res?.command;
-
-            if (cmd) {
-                if (window.gateway?.toast) {
-                    gateway.toast(`Command ${cmd.command_id} dispatched (QUEUED)`, "success");
-                }
-
-                // Add to history and select
-                state.commandHistory.unshift(cmd);
-                renderHistory();
-                selectCommand(cmd);
-            }
-        } catch (err) {
-            console.error("Send command failed:", err);
-            if (window.gateway?.toast) {
-                gateway.toast(err.message || "Failed to dispatch command", "error");
-            }
-        } finally {
-            el.btnSendCommand.disabled = false;
-            el.btnSendCommand.querySelector(".btn-text").textContent = originalText;
-        }
-    }
-
-    /* ============================================================
-       CANCEL & RETRY ACTIONS
-       ============================================================ */
-    async function handleCancelCommand() {
-        if (!state.activeCommand) return;
-        const cid = state.activeCommand.command_id;
-
-        try {
-            const res = await gateway.post(`/api/commands/${cid}/cancel`, { reason: "Cancelled via Command Center" });
-            if (res?.command) {
-                updateCommandInState(res.command);
-                if (window.gateway?.toast) gateway.toast(`Command ${cid} cancelled`, "info");
-            }
-        } catch (err) {
-            console.error("Cancel failed:", err);
-            if (window.gateway?.toast) gateway.toast(err.message, "error");
-        }
-    }
-
-    async function handleRetryCommand() {
-        if (!state.activeCommand) return;
-        const cid = state.activeCommand.command_id;
-
-        try {
-            const res = await gateway.post(`/api/commands/${cid}/retry`, {});
-            if (res?.command) {
-                updateCommandInState(res.command);
-                if (window.gateway?.toast) gateway.toast(`Command ${cid} reset for retry (QUEUED)`, "success");
-            }
-        } catch (err) {
-            console.error("Retry failed:", err);
-            if (window.gateway?.toast) gateway.toast(err.message, "error");
-        }
-    }
-
-    /* ============================================================
-       TIMELINE MODAL (EVENT AUDITING)
-       ============================================================ */
-    async function openTimelineModal(commandId) {
-        el.modalCmdId.textContent = commandId;
-        el.timelineModalOverlay.style.display = "flex";
-        el.timelineEventsList.innerHTML = '<div class="cmd-empty-state"><p>Loading timeline events...</p></div>';
-
-        try {
-            const data = await gateway.get(`/api/commands/${commandId}/events`);
-            const events = Array.isArray(data?.events) ? data.events : [];
-
-            if (events.length === 0) {
-                el.timelineEventsList.innerHTML = '<div class="cmd-empty-state"><p>No events recorded for this command.</p></div>';
-                return;
-            }
-
-            el.timelineEventsList.innerHTML = "";
-            events.forEach(evt => {
-                const time = evt.created_at ? formatTime(evt.created_at) : "—";
-                const statePill = `<span class="state-pill state-pill-sm state-${String(evt.state).toLowerCase()}">${escapeHtml(evt.state)}</span>`;
-
-                let detailsHtml = "";
-                if (evt.details) {
-                    const detailsStr = typeof evt.details === "object" ? JSON.stringify(evt.details) : String(evt.details);
-                    detailsHtml = `<div class="timeline-event-details"><code>${escapeHtml(detailsStr)}</code></div>`;
-                }
-                if (evt.error) {
-                    detailsHtml += `<div class="timeline-event-details" style="color: var(--red);"><strong>Error:</strong> ${escapeHtml(evt.error)}</div>`;
-                }
-
-                const item = document.createElement("div");
-                item.className = "timeline-event-item";
-                item.innerHTML = `
-                    <div class="timeline-event-head">
-                        <span class="timeline-event-type">${escapeHtml(evt.event_type)}</span>
-                        ${statePill}
-                        <span class="timeline-event-time">${time}</span>
-                    </div>
-                    ${detailsHtml}
-                `;
-                el.timelineEventsList.appendChild(item);
-            });
-        } catch (err) {
-            console.error("Failed to load timeline events:", err);
-            el.timelineEventsList.innerHTML = `<div class="cmd-empty-state"><p>Error: ${escapeHtml(err.message)}</p></div>`;
-        }
-    }
-
-    function closeTimelineModal() {
-        el.timelineModalOverlay.style.display = "none";
-    }
-
-    /* ============================================================
-       SOCKET.IO REAL-TIME INTEGRATION
-       ============================================================ */
-    function initSocketIO() {
-        try {
-            if (typeof io !== "function") {
-                console.warn("Socket.IO client library not found; falling back to polling.");
-                updateSocketStatus(false);
-                return;
-            }
-
-            state.socket = io({
-                reconnection: true,
-                reconnectionDelay: 2000,
-                reconnectionAttempts: 10
-            });
-
-            state.socket.on("connect", () => {
-                updateSocketStatus(true);
-                // Sync latest data upon reconnect
-                loadNodes();
-                if (state.selectedNodeId) {
-                    loadCommandHistory(state.selectedNodeId);
-                }
-            });
-
-            state.socket.on("disconnect", () => {
-                updateSocketStatus(false);
-            });
-
-            // Listen to command_update events from backend
-            state.socket.on("command_update", (payload) => {
-                handleSocketCommandUpdate(payload);
-            });
-
-            // Listen to node updates
-            state.socket.on("node_update", (nodePayload) => {
-                if (nodePayload?.node_id) {
-                    const idx = state.nodes.findIndex(n => n.node_id === nodePayload.node_id);
-                    if (idx !== -1) {
-                        state.nodes[idx] = { ...state.nodes[idx], ...nodePayload };
-                        renderNodes();
-                        if (state.selectedNodeId === nodePayload.node_id) {
-                            updateSelectedNodeUI();
-                        }
-                    }
-                }
-            });
-
-        } catch (err) {
-            console.error("Socket.IO setup error:", err);
-            updateSocketStatus(false);
-        }
-    }
-
-    function updateSocketStatus(connected) {
-        state.socketConnected = connected;
-        if (connected) {
-            el.socketStatusPill.className = "socket-status-pill connected";
-            el.socketStatusText.textContent = "Live Socket";
-        } else {
-            el.socketStatusPill.className = "socket-status-pill disconnected";
-            el.socketStatusText.textContent = "Offline (Polling)";
-        }
-    }
-
-    function handleSocketCommandUpdate(payload) {
-        const cmd = payload?.command || payload;
-        if (!cmd || !cmd.command_id) return;
-
-        // If belongs to currently selected node, update state
-        if (cmd.node_id === state.selectedNodeId) {
-            updateCommandInState(cmd);
-        }
-    }
-
-    function updateCommandInState(updatedCmd) {
-        const idx = state.commandHistory.findIndex(c => c.command_id === updatedCmd.command_id);
-        if (idx !== -1) {
-            state.commandHistory[idx] = { ...state.commandHistory[idx], ...updatedCmd };
-        } else {
-            state.commandHistory.unshift(updatedCmd);
-        }
-
-        renderHistory();
-
-        // If currently inspected command updated, refresh its view
-        if (state.selectedCommandId === updatedCmd.command_id) {
-            selectCommand(updatedCmd);
-        }
-    }
-
-    function startPolling() {
-        if (state.pollingTimer) clearInterval(state.pollingTimer);
-        state.pollingTimer = setInterval(() => {
-            if (state.selectedNodeId) {
-                // Background poll history to ensure synchronization
-                loadCommandHistory(state.selectedNodeId);
-            }
-        }, 8000);
-    }
-
-    /* ============================================================
-       UTILITY HELPERS
-       ============================================================ */
-    function formatTime(isoStr) {
-        if (!isoStr) return "—";
-        try {
-            const date = new Date(isoStr);
-            if (Number.isNaN(date.getTime())) return "—";
-            return new Intl.DateTimeFormat("en-IN", {
-                timeZone: "Asia/Kolkata",
-                month: "short",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false
-            }).format(date);
-        } catch {
-            return String(isoStr);
-        }
-    }
-
-    function escapeHtml(str) {
-        if (str === null || str === undefined) return "";
-        return String(str)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#39;");
-    }
-
-    function copyResultToClipboard() {
-        const text = el.responseDataJson.textContent;
-        if (!text || text.includes("Waiting for node response")) {
-            if (window.gateway?.toast) gateway.toast("No result data to copy", "info");
-            return;
-        }
-        navigator.clipboard.writeText(text).then(() => {
-            if (window.gateway?.toast) gateway.toast("Result payload copied to clipboard", "success");
-        }).catch(() => {
-            if (window.gateway?.toast) gateway.toast("Failed to copy to clipboard", "error");
-        });
-    }
-
-})();
+document.addEventListener("DOMContentLoaded", () => {
+ const root=document.getElementById("command-chat");if(!root)return;
+ const $=id=>document.getElementById(id),esc=v=>gateway.escape(String(v??""));
+ const nodesList=$("node-list-container"),conversation=$("command-conversation"),history=$("history-list-container"),notice=$("command-notice");
+ const terminal=new Set(["COMPLETED","FAILED","TIMEOUT","CANCELLED"]);
+ const caches=new Map(),socket=gateway.socket;
+ let nodes=[],selected=null,nodeFilter="all",sending=false,actionBusy=new Set(),timer=null,stopped=false,pollBusy=false;
+ const cache=id=>{if(!caches.has(id))caches.set(id,{commands:new Map(),events:new Map(),offset:0,more:true,busy:false,loaded:false,eventRequests:new Set(),forceBottom:false});return caches.get(id);};
+ const time=v=>v?gateway.time(v):"—";
+ const online=n=>n&&n.enabled!==false&&["online","connected"].includes(String(n.status).toLowerCase())&&n.last_seen&&Date.now()-new Date(n.last_seen).getTime()<60000;
+ const current=()=>nodes.find(n=>n.node_id===selected);
+ const entries=()=>selected?[...cache(selected).commands.values()]:[];
+ const active=()=>entries().filter(c=>!terminal.has(c.state)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
+ const nearBottom=()=>conversation.scrollHeight-conversation.clientHeight-conversation.scrollTop<90;
+ function feedback(text,error=true){notice.textContent=text;notice.style.color=error?"var(--m-red)":"var(--m-muted)";}
+ function safe(value){
+  if(Array.isArray(value))return value.map(safe);
+  if(value&&typeof value==="object")return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,/password|secret|token|credential/i.test(k)?"[redacted]":safe(v)]));
+  return value;
+ }
+ function json(value){return JSON.stringify(safe(value),null,2)??"";}
+ function chip(state){return '<span class="command-state '+esc(String(state||"unknown").toLowerCase())+'">'+esc(String(state||"Unknown").replaceAll("_"," "))+'</span>';}
+ async function loadNodes(){
+  try{
+   const data=await gateway.get("/api/nodes");if(stopped)return;
+   nodes=Array.isArray(data)?data:data.nodes||[];
+   if(selected&&!nodes.some(n=>n.node_id===selected))selected=null;
+   renderNodes();renderHeader();
+   if(!selected&&!nodes.length)render();
+   if(!selected&&nodes.length&&matchMedia("(min-width:701px)").matches)selectNode(nodes[0].node_id);
+  }catch(e){feedback("Unable to load nodes: "+e.message);}
+ }
+ function renderNodes(){
+  const q=$("node-search-input").value.toLowerCase().trim();
+  $("node-count-badge").textContent=nodes.length+" registered";
+  const filtered=nodes.filter(n=>(!q||[n.node_id,n.name].join(" ").toLowerCase().includes(q))&&(nodeFilter==="all"||nodeFilter==="online"&&online(n)||nodeFilter==="offline"&&!online(n)));
+  const html=filtered.map(n=>'<button type="button" class="command-node-item" data-id="'+esc(n.node_id)+'" data-node-id="'+esc(n.node_id)+'" aria-pressed="'+(selected===n.node_id)+'"><span class="command-node-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4m12-6h4m-4 6h4"/></svg></span><span class="command-node-info"><strong>'+esc(n.name||n.node_id)+'</strong><small>'+esc(n.node_id)+'</small><span class="command-node-state '+(online(n)?"online":"")+'"><i></i>'+ (online(n)?"Online":"Offline")+'</span><small>FW '+esc(n.firmware_version||"Unknown")+' · Seen '+esc(time(n.last_seen))+'</small></span></button>').join("");
+  gateway.patchHtml(nodesList,html||'<p class="command-empty">No registered nodes match this filter.</p>');
+ }
+ function renderHeader(){
+  const n=current();
+  $("banner-node-name").textContent=n?.name||n?.node_id||"Select a node";
+  $("banner-node-details").textContent=n?[n.node_id,n.mcu_family,n.communication_type,n.firmware_version?"FW "+n.firmware_version:"FW unknown"].filter(Boolean).join(" · "):"No node selected";
+  $("banner-connection-badge").textContent=n?(online(n)?"ONLINE":"OFFLINE")+" · Last seen: "+time(n.last_seen):"";
+  $("banner-connection-badge").style.color=online(n)?"var(--m-green)":"var(--m-muted)";
+  renderComposer();
+ }
+ function renderComposer(){
+  const n=current(),running=active();
+  $("btn-send-command").disabled=!n||n.enabled===false||sending||Boolean(running)||!cache(selected).loaded;
+  $("btn-send-command").querySelector("span").textContent=sending?"Sending…":"Send";
+  $("command-active-status").textContent=running?running.command_id+" · "+running.state.replaceAll("_"," "):n?(!online(n)?"Node offline · dispatch creates a queued command only after confirmation.":"No active command"):"Select a registered node";
+ }
+ function selectNode(id){
+  selected=id;root.classList.add("conversation-open");feedback("",false);
+  renderNodes();renderHeader();render(true);loadHistory(id,false,true);
+ }
+ async function loadEvents(cmd,force=false){
+  const c=cache(cmd.node_id),old=c.events.get(cmd.command_id);
+  const fingerprint=[cmd.state,cmd.updated_at,cmd.retry_count,cmd.ack_at,cmd.response_at].join("|");
+  if(c.eventRequests.has(cmd.command_id)||(!force&&old?.fingerprint===fingerprint))return;
+  c.eventRequests.add(cmd.command_id);
+  try{
+   const data=await gateway.get("/api/commands/"+encodeURIComponent(cmd.command_id)+"/events");
+   if(stopped)return;
+   const unique=new Map((data.events||[]).map(e=>[e.event_id||e.id,e]));
+   c.events.set(cmd.command_id,{fingerprint,items:[...unique.values()]});
+   if(selected===cmd.node_id)render();
+  }catch(e){if(selected===cmd.node_id)feedback("Audit events unavailable: "+e.message);}
+  finally{
+   c.eventRequests.delete(cmd.command_id);
+   const latest=c.commands.get(cmd.command_id),stored=c.events.get(cmd.command_id);
+   if(latest&&stored&&stored.fingerprint!==[latest.state,latest.updated_at,latest.retry_count,latest.ack_at,latest.response_at].join("|"))loadEvents(latest);
+  }
+ }
+ async function loadHistory(id,older=false,forceBottom=false){
+  const c=cache(id);if(c.busy)return;c.busy=true;
+  let succeeded=false;
+  const oldHeight=conversation.scrollHeight,oldTop=conversation.scrollTop;
+  try{
+   const data=await gateway.get("/api/commands?node_id="+encodeURIComponent(id)+"&limit=30&offset="+(older?c.offset:0));
+   if(stopped)return;
+   const commands=data.commands||[];
+   for(const cmd of commands){
+    const previous=c.commands.get(cmd.command_id);
+    if(previous?.updated_at&&cmd.updated_at&&new Date(previous.updated_at)>new Date(cmd.updated_at))continue;
+    c.commands.set(cmd.command_id,{...previous,...cmd});
+   }
+   if(older)c.offset+=commands.length;else if(!c.loaded)c.offset=commands.length;
+   if(older||!c.loaded)c.more=commands.length===30;
+   c.loaded=true;
+   succeeded=true;
+   if(selected===id){render(forceBottom);if(older)conversation.scrollTop=oldTop+conversation.scrollHeight-oldHeight;renderComposer();}
+   await Promise.allSettled(commands.map(cmd=>loadEvents(cmd)));
+  }catch(e){if(selected===id)feedback("Unable to load command history: "+e.message);}
+  finally{
+   c.busy=false;
+   if(selected===id){
+    $("command-older").disabled=false;
+    if(succeeded&&c.more&&conversation.scrollTop<12)queueMicrotask(()=>loadHistory(id,true));
+   }
+  }
+ }
+ function render(forceBottom=false){
+  if(!selected){history.innerHTML='<p class="command-empty">Select a node to view commands and responses.</p>';return;}
+  const c=cache(selected),follow=forceBottom||nearBottom(),top=conversation.scrollTop;
+  const anchor=[...history.querySelectorAll("[data-id]")].find(e=>e.getBoundingClientRect().bottom>conversation.getBoundingClientRect().top);
+  const anchorId=anchor?.dataset.id,anchorY=anchor?.getBoundingClientRect().top;
+  const opened=new Set([...history.querySelectorAll("details[open]")].map(e=>e.dataset.detail));
+  const filter=$("history-filter-select").value;
+  const commands=[...c.commands.values()].filter(cmd=>filter==="ALL"||filter==="ACTIVE"&&!terminal.has(cmd.state)||cmd.state===filter);
+  const rows=[];
+  for(const cmd of commands){
+   rows.push({kind:"command",key:cmd.command_id,at:cmd.created_at,cmd});
+   if(cmd.response_at)rows.push({kind:"response",key:cmd.command_id+"-response",at:cmd.response_at,cmd});
+   for(const event of c.events.get(cmd.command_id)?.items||[])rows.push({kind:"event",key:event.event_id||String(event.id),at:event.created_at,cmd,event});
+  }
+  rows.sort((a,b)=>new Date(a.at||0)-new Date(b.at||0)||a.key.localeCompare(b.key));
+  let lastDay="",html="";
+  for(const row of rows){
+   const cmd=row.cmd,cid=esc(cmd.command_id);
+   const day=row.at?new Date(row.at).toLocaleDateString():"Unknown date";
+   if(day!==lastDay){html+='<div class="command-day">'+esc(day)+'</div>';lastDay=day;}
+   if(row.kind==="event"){
+    const e=row.event;html+='<div class="command-system" data-id="'+esc(row.key)+'" data-command-event="'+esc(row.key)+'"><time>'+esc(time(e.created_at))+'</time>'+chip(e.state)+' · '+esc(e.event_type)+' · <code>'+cid+'</code>'+ (e.error?' · '+esc(e.error):'')+'</div>';continue;
+   }
+   if(row.kind==="response"){
+    const elapsed=cmd.sent_at&&cmd.response_at?new Date(cmd.response_at)-new Date(cmd.sent_at):null;
+    html+='<article class="command-message incoming" data-id="'+esc(row.key)+'" data-response-command="'+cid+'"><div class="command-bubble"><div class="command-bubble-head"><span>DEVICE RESPONSE</span>'+chip(cmd.state)+'</div><h3>'+esc(cmd.command_type)+'</h3><code>'+cid+'</code><dl><div><dt>ACK status</dt><dd>'+esc(cmd.ack_status||(cmd.ack_at?"Received":"Not recorded"))+'</dd></div><div><dt>Response status</dt><dd>'+esc(cmd.result?.status||cmd.state)+'</dd></div>'+(elapsed!==null&&elapsed>=0?'<div><dt>Response duration</dt><dd>'+esc((elapsed/1000).toFixed(3))+' s</dd></div>':'')+'</dl><details data-detail="'+cid+'-response" '+(opened.has(cmd.command_id+"-response")?"open":"")+'><summary>Response payload</summary><pre>'+esc(cmd.result==null?"No response payload recorded.":json(cmd.result))+'</pre></details><div class="command-message-actions"><button class="btn" type="button" data-copy="'+cid+'" '+(cmd.result==null?"disabled":"")+'>Copy JSON</button></div>'+(cmd.error?'<p class="command-message-error">'+esc(cmd.error)+'</p>':'')+'</div><time>'+esc(time(cmd.response_at))+'</time></article>';continue;
+   }
+   const isTerminal=terminal.has(cmd.state),retry=["FAILED","TIMEOUT"].includes(cmd.state)&&Number(cmd.retry_count)<Number(cmd.max_retries);
+   html+='<article class="command-message outgoing" data-id="'+cid+'" data-command-id="'+cid+'"><div class="command-bubble"><div class="command-bubble-head"><span>GATEWAY COMMAND</span>'+chip(cmd.state)+'</div><h3>'+esc(cmd.command_type)+'</h3><code>'+cid+'</code><dl>'+[["Target",cmd.node_id],["Priority",cmd.priority],["Timeout",cmd.timeout_seconds+" s"],["Retries",cmd.retry_count+" / "+cmd.max_retries],["Dispatch",cmd.sent_at?"Sent "+time(cmd.sent_at):"Not yet sent"],["ACK",cmd.ack_status||(cmd.ack_at?"Received":"Not recorded")],["Execution",cmd.state],["Created",time(cmd.created_at)]].map(([k,v])=>'<div><dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd></div>').join("")+'</dl><details data-detail="'+cid+'-payload" '+(opened.has(cmd.command_id+"-payload")?"open":"")+'><summary>Configured parameters</summary><pre>'+esc(json(cmd.payload||{}))+'</pre></details>'+(cmd.error?'<p class="command-message-error">'+esc(cmd.error)+'</p>':'')+'<div class="command-message-actions">'+(!isTerminal?'<button class="btn" type="button" data-action="cancel" data-command="'+cid+'" '+(actionBusy.has(cmd.command_id)?"disabled":"")+'>Cancel</button>':'')+(retry?'<button class="btn" type="button" data-action="retry" data-command="'+cid+'" '+(actionBusy.has(cmd.command_id)||Boolean(active())?"disabled":"")+'>Retry</button>':'')+'</div></div><time>'+esc(time(cmd.sent_at||cmd.created_at))+'</time></article>';
+  }
+  gateway.patchHtml(history,html||'<p class="command-empty">'+(c.loaded?"No command history for this filter.":"Loading command history…")+'</p>');
+  $("command-older").hidden=!c.more||!c.loaded;
+  if(follow)conversation.scrollTop=conversation.scrollHeight;
+  else{
+   conversation.scrollTop=top;
+   const retained=[...history.querySelectorAll("[data-id]")].find(e=>e.dataset.id===anchorId);
+   if(retained&&anchorY!=null)conversation.scrollTop+=retained.getBoundingClientRect().top-anchorY;
+  }
+  renderComposer();
+ }
+ function merge(cmd){
+  if(!cmd?.node_id||!cmd.command_id)return;
+  const c=cache(cmd.node_id);
+  const previous=c.commands.get(cmd.command_id);
+  if(previous?.updated_at&&cmd.updated_at&&new Date(previous.updated_at)>new Date(cmd.updated_at))return;
+  c.commands.set(cmd.command_id,{...previous,...cmd});
+  if(selected===cmd.node_id){render();renderComposer();}
+  loadEvents(c.commands.get(cmd.command_id));
+ }
+ function switchType(){
+  const type=$("cmd-type-select").value;
+  root.querySelectorAll(".param-pane").forEach(pane=>pane.classList.toggle("active",pane.id==="pane-"+type));
+  $("command-quick-input").hidden=type!=="PING";
+  if(type==="PING")$("command-quick-input").value=$("param-ping-msg").value;
+ }
+ function integer(id,min,max){
+  const input=$(id),value=Number(input.value);
+  if(!Number.isInteger(value)||value<min||value>max)throw Error(input.labels?.[0]?.textContent+" must be an integer between "+min+" and "+max+".");
+  return value;
+ }
+ async function send(){
+  if(sending||active())return;
+  const node=current();if(!node||node.enabled===false||!cache(selected).loaded)return;
+  const type=$("cmd-type-select").value;let commandType=type,payload={};
+  try{
+   const priority=integer("cmd-priority-select",1,10),timeout=integer("cmd-timeout-input",1,3600),retries=integer("cmd-retries-input",0,10);
+   if(type==="PING")payload={echo:$("command-quick-input").value.trim()||$("param-ping-msg").value.trim()||"PING"};
+   if(type==="WIFI_SCAN")payload={band:$("param-scan-band").value,limit:integer("param-scan-limit",1,50)};
+   if(type==="WIFI_CONNECT"){const ssid=$("param-wifi-ssid").value.trim();if(!ssid)throw Error("Wi-Fi SSID is required.");payload={ssid,password:$("param-wifi-pass").value,save:$("param-wifi-save").value==="true"};}
+   if(type==="RESTART")payload={delay_seconds:integer("param-reboot-delay",0,60),reason:$("param-reboot-reason").value.trim()||"Operator reboot"};
+   if(type==="GET_CONFIG")payload={section:$("param-config-section").value.trim()||"all"};
+   if(type==="SET_INTERVAL")payload={interval_ms:integer("param-interval-ms",500,3600000)};
+   if(type==="CUSTOM"){commandType=$("param-custom-name").value.trim();if(!/^[A-Za-z0-9_.-]{1,64}$/.test(commandType))throw Error("Enter a valid custom command name.");payload=JSON.parse($("param-custom-json").value.trim()||"{}");if(!payload||Array.isArray(payload)||typeof payload!=="object")throw Error("Custom payload must be a JSON object.");}
+   if(!online(node)&&!confirm("This node is offline. The existing backend will create a QUEUED command; delivery is not confirmed. Continue?"))return;
+   sending=true;renderComposer();feedback("",false);
+   const result=await gateway.post("/api/commands",{node_id:node.node_id,command_type:commandType,payload,priority,timeout_seconds:timeout,max_retries:retries});
+   merge(result.command);
+   if(selected===node.node_id){$("history-filter-select").value="ALL";render(true);}
+  }catch(e){feedback(e.message);}
+  finally{sending=false;renderComposer();}
+ }
+ async function commandAction(action,id){
+  const cmd=cache(selected).commands.get(id);if(!cmd||actionBusy.has(id))return;
+  if(action==="retry"&&active()){feedback("Wait for the active command before retrying.");return;}
+  actionBusy.add(id);render();
+  try{const response=await gateway.post("/api/commands/"+encodeURIComponent(id)+"/"+action,action==="cancel"?{reason:"Cancelled via Command Center"}:{});merge(response.command);}
+  catch(e){feedback(e.message);}
+  finally{actionBusy.delete(id);render();}
+ }
+ async function refresh(){await loadNodes();if(selected)await loadHistory(selected);}
+ nodesList.onclick=e=>{const button=e.target.closest("[data-node-id]");if(button)selectNode(button.dataset.nodeId);};
+ $("node-search-input").oninput=renderNodes;
+ root.querySelectorAll("[data-node-filter]").forEach(button=>button.onclick=()=>{nodeFilter=button.dataset.nodeFilter;root.querySelectorAll("[data-node-filter]").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));renderNodes();});
+ $("history-filter-select").onchange=()=>render(true);
+ $("cmd-refresh-btn").onclick=refresh;
+ $("command-latest").onclick=()=>{conversation.scrollTop=conversation.scrollHeight;};
+ $("command-back").onclick=()=>{root.classList.remove("conversation-open");$("node-search-input").focus();};
+ $("command-older").onclick=()=>{if(selected){$("command-older").disabled=true;loadHistory(selected,true);}};
+ conversation.addEventListener("scroll",()=>{if(selected&&conversation.scrollTop<12&&cache(selected).more&&cache(selected).loaded&&!cache(selected).busy)loadHistory(selected,true);},{passive:true});
+ $("cmd-type-select").onchange=switchType;
+ $("param-ping-msg").oninput=()=>{$("command-quick-input").value=$("param-ping-msg").value;};
+ $("command-quick-input").oninput=()=>{$("param-ping-msg").value=$("command-quick-input").value;};
+ $("command-quick-input").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();send();}};
+ $("command-config-toggle").onclick=()=>{const panel=$("command-configuration");panel.hidden=!panel.hidden;$("command-config-toggle").setAttribute("aria-expanded",String(!panel.hidden));};
+ $("btn-send-command").onclick=send;
+ history.onclick=async e=>{
+  const action=e.target.closest("[data-action]");if(action){commandAction(action.dataset.action,action.dataset.command);return;}
+  const copy=e.target.closest("[data-copy]");if(copy){try{const cmd=cache(selected).commands.get(copy.dataset.copy);await navigator.clipboard.writeText(json(cmd.result));feedback("Response JSON copied.",false);}catch(_){feedback("Clipboard unavailable. Expand and select the response payload to copy.");}}
+ };
+ const update=payload=>{const cmd=payload?.command||payload;if(cmd?.command_id&&cmd.node_id)merge(cmd);};
+ const nodeUpdate=payload=>{if(payload?.node_id){const index=nodes.findIndex(n=>n.node_id===payload.node_id);if(index>=0)nodes[index]={...nodes[index],...payload};else loadNodes();renderNodes();renderHeader();}};
+ const connection=()=>{$("socket-status-text").textContent=socket?.connected?"Live command updates":"Polling command updates";};
+ const reconnect=()=>{connection();refresh();};
+ socket?.on("command_update",update);socket?.on("node_update",nodeUpdate);socket?.on("connect",reconnect);socket?.on("disconnect",connection);
+ timer=setInterval(async()=>{if(document.hidden||pollBusy)return;pollBusy=true;try{await loadNodes();if(!socket?.connected&&selected)await loadHistory(selected);}finally{pollBusy=false;}},8000);
+ const visible=()=>{if(!document.hidden)refresh();};document.addEventListener("visibilitychange",visible);
+ window.addEventListener("pagehide",()=>{stopped=true;clearInterval(timer);socket?.off("command_update",update);socket?.off("node_update",nodeUpdate);socket?.off("connect",reconnect);socket?.off("disconnect",connection);document.removeEventListener("visibilitychange",visible);},{once:true});
+ connection();switchType();loadNodes();
+});
 

@@ -43,6 +43,14 @@ def initialize_database():
 
     cursor = connection.cursor()
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS node_configs (
+            node_id TEXT PRIMARY KEY,
+            config_json TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        )
+    """)
+
     # ========================================================
     # PRIVATE CHAT CONVERSATIONS
     # ========================================================
@@ -142,6 +150,25 @@ def initialize_database():
 
         ON chat_messages (
             message_id
+        )
+    """)
+
+    # ========================================================
+    # UI DASHBOARDS
+    # Server-side persistence for the rebuilt dashboard layout.
+    # ========================================================
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS ui_dashboards (
+
+            id TEXT PRIMARY KEY,
+
+            name TEXT NOT NULL,
+
+            layout_json TEXT NOT NULL,
+
+            updated_at TEXT NOT NULL
+
         )
     """)
 

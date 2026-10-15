@@ -1,0 +1,82 @@
+const {chromium}=require("C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright");
+const assert=require("node:assert/strict");
+(async()=>{
+ const browser=await chromium.launch({channel:"msedge",headless:true});
+ try{
+ const page=await browser.newPage({viewport:{width:1600,height:1100}});
+ const errors=[];page.on("pageerror",e=>errors.push(e.message));
+ const base="http://127.0.0.1:5057";
+ for(let attempt=0;attempt<40;attempt++){
+  try{const ready=await page.request.get(base+"/api/status",{timeout:1000});if(ready.ok())break;}catch(_){}
+  if(attempt===39)throw Error("Disposable gateway fixture did not start.");
+  await new Promise(resolve=>setTimeout(resolve,250));
+ }
+ await page.goto(base+"/accounts");
+ await page.locator("#account-sign-in [name=username]").fill("admin");
+ await page.locator("#account-sign-in [name=password]").fill("admin");
+ await page.locator("#account-sign-in button").click();
+ await page.locator("#account-workspace").waitFor({state:"visible"});
+ await page.goto(base+"/sensors");
+ await page.locator("#sensor-add").waitFor({state:"visible"});
+ await page.waitForFunction(()=>!document.getElementById("sensor-add").disabled);
+ await page.locator("#sensor-add").click();
+ const form=page.locator(".sensor-editor");
+ await form.locator("[name=parameter_name]").fill("Workshop pressure");
+ await form.locator("[name=parameter_id]").fill("PRESS_TEST");
+ await form.locator("[name=sensor_id]").fill("PRESS_TEST");
+ await form.locator("[name=parameter_type]").fill("Pressure");
+ await form.locator("[name=unit]").fill("hPa");
+ await form.locator("[name=color]").fill("#0d9488");
+ await form.locator("#sensor-wizard-next").click();
+ await form.locator("#sensor-wizard-next").click();
+ await form.locator("[name=source_field]").fill("raw_pressure");
+ await form.locator("#sensor-wizard-next").click();
+ await form.locator("[name=display_enabled]").check();
+ await form.locator("#sensor-wizard-next").click();
+ await form.locator("#sensor-wizard-save").click();
+ await form.waitFor({state:"detached"});
+ await page.waitForFunction(()=>document.getElementById("sensor-management-rows").textContent.includes("Workshop pressure"));
+ const publish=await page.request.post(base+"/api/telemetry",{data:{node_id:"TEST_001",parameters:{raw_pressure:1010.2}}});assert.equal(publish.status(),200);
+ await page.request.post(base+"/api/telemetry",{data:{node_id:"TEST_001",parameters:{raw_pressure:1011.3}}});
+ await page.goto(base+"/");
+ await page.locator('.sensor-live-card[data-id="PRESS_TEST"]').waitFor();
+ await page.locator('.sensor-live-card[data-id="PRESS_TEST"] .sensor-chart-trigger').click();
+ await page.locator(".sensor-readings").waitFor();
+ assert.equal(await page.locator("#sensor-detail-select").inputValue(),"PRESS_TEST");
+ assert.ok((await page.locator(".sensor-detail-dialog .sensor-axis").textContent()).includes("hPa"));
+ assert.ok((await page.locator(".sensor-statistics").textContent()).includes("1010.20"));
+ await page.locator("[data-sensor-hours='6']").click();
+ await page.locator(".sensor-readings").waitFor();
+ await page.locator("#sensor-detail-select").selectOption("rssi");
+ await page.locator(".sensor-readings").waitFor();
+ assert.ok((await page.locator(".sensor-detail-dialog .sensor-axis").textContent()).includes("dBm"));
+ await page.locator(".sensor-readings summary").click();
+ assert.ok((await page.locator(".sensor-readings table").textContent()).includes("-89"));
+ await page.keyboard.press("Escape");
+ await page.locator(".sensor-detail-overlay").waitFor({state:"detached"});
+ assert.notEqual(await page.evaluate(()=>document.body.style.overflow),"hidden");
+ await page.locator('.sensor-live-card[data-id="PRESS_TEST"] .sensor-chart-trigger').click();
+ await page.locator(".sensor-readings").waitFor();
+ await page.locator(".sensor-detail-overlay").click({position:{x:3,y:3}});
+ await page.locator(".sensor-detail-overlay").waitFor({state:"detached"});
+ await page.locator('.sensor-live-card[data-id="PRESS_TEST"] [data-sensor-remove]').click();
+ await page.locator('.sensor-live-card[data-id="PRESS_TEST"]').waitFor({state:"detached"});
+ await page.locator("#add-sensor-widget-inline").click();
+ await page.getByRole("button",{name:"Workshop pressure · Workshop 1 · Add",exact:true}).click();
+ await page.locator('.sensor-live-card[data-id="PRESS_TEST"]').waitFor();
+ await page.keyboard.press("Escape");
+ for(const width of [1600,390]){
+  await page.setViewportSize({width,height:1000});
+  for(const theme of ["light","dark"]){
+   await page.evaluate(t=>gateway.setTheme(t,true),theme);
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+   await page.locator('.sensor-live-card[data-id="PRESS_TEST"] .sensor-chart-trigger').click();
+   await page.locator(".sensor-readings").waitFor();
+   assert.equal(await page.locator(".sensor-detail-dialog").evaluate(e=>e.scrollWidth>e.clientWidth),false);
+   await page.keyboard.press("Escape");
+  }
+ }
+ assert.deepEqual(errors,[]);
+ console.log("PASS: wizard save, real source mapping, card selection, unit axes, ranges, statistics, negative RSSI, Escape/backdrop, removal/re-add, desktop/mobile and both themes; no JavaScript errors.");
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exit(1);});

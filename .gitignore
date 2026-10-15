@@ -9,3 +9,6 @@ data/*.sqlite
 data/*.sqlite3
 
 data/
+_rejected_ui_rebuild/
+tests/artifacts/
+tests/*-before.png

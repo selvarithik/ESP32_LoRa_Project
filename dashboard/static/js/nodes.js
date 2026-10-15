@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let nodes = [];
     let editingNodeId = null;
+    let activeFilter = "all";
 
 
     /* ============================================================
@@ -30,6 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
        ============================================================ */
 
     function bindEvents() {
+        document.querySelectorAll("[data-node-filter]").forEach(button => {
+            button.addEventListener("click", () => {
+                activeFilter = button.dataset.nodeFilter;
+                document.querySelectorAll("[data-node-filter]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+                renderNodes();
+            });
+        });
 
         document
             .getElementById("add-node")
@@ -238,7 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 `.toLowerCase();
 
 
-                return text.includes(search);
+                const status = !isNodeEnabled(node) ? "disabled" : getNodeStatus(node);
+                return text.includes(search) && (activeFilter === "all" || status === activeFilter);
 
             });
 

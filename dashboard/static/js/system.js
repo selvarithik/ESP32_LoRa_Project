@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     init();
 
     async function init() {
+        setFormDisabled(true);
         bindEvents();
         await loadNodes();
     }
@@ -48,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             currentNode = nodes[0].node_id;
             nodeSelect.value = currentNode;
-            setFormDisabled(false);
             await loadSystem();
         } catch (error) {
             console.error("System node loading error:", error);
@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function loadSystem() {
+        setFormDisabled(true);
         if (!currentNode) return;
         const node = nodes.find(item => item.node_id === currentNode);
         if (!node) return;
@@ -78,8 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("System configuration load error:", error);
             setValue("system-timezone", "Asia/Kolkata");
             setChecked("system-time-sync", true);
-            setValue("system-watchdog", 60);
+            gateway.toast("Configuration unavailable. Reload before editing.", "error");
+            return;
         }
+        setFormDisabled(false);
     }
 
     async function saveSystem() {

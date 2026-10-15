@@ -1155,6 +1155,16 @@
             "[CHAT] Ready. Users:",
             state.users
         );
+        gateway.socket?.on("chat_message", async payload => {
+            if (document.hidden) return;
+            const message = payload.message || payload;
+            if ([message.sender_node_id, message.receiver_node_id].includes(state.activeUserId)) await loadMessages();
+            await loadUsers();
+        });
+        gateway.socket?.on("connect", () => {
+            loadUsers();
+            if (state.activeUserId) loadMessages();
+        });
     }
 
 

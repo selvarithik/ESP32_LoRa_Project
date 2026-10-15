@@ -1,0 +1,125 @@
+/* Geometric accent treatment is confined to the shared header. */
+/* Scroll states are appended after the expanded responsive rules. */
+.geometric-header{isolation:isolate;overflow:hidden;min-height:76px;background:#ff0000;border-bottom:1px solid #ffffff40;padding:0 24px;gap:20px;flex-wrap:nowrap}
+.geometric-header::before,.geometric-header::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none}
+.geometric-header::before{background:#c90000;opacity:.38;clip-path:polygon(0 0,45% 0,39% 100%,0 100%,0 0,66% 0,73% 100%,88% 100%,81% 0)}
+.geometric-header::after{background:#ff2525;opacity:.38;clip-path:polygon(48% 0,51% 0,45% 100%,42% 100%,48% 0,88% 0,91% 0,85% 100%,82% 100%)}
+.geometric-header>.topbar-left,.geometric-header>.topbar-right{position:relative;z-index:1;display:flex;align-items:center;gap:18px;min-width:0;width:auto}
+.geometric-header .topbar-left{flex:1 1 auto;flex-wrap:nowrap}
+.geometric-header .topbar-right{flex:0 0 auto;margin:0}
+.geometric-header .header-company-logo{flex:0 0 auto;margin:0;background:transparent;color:#fff}
+.geometric-header .aerospace-wordmark{width:300px;height:34px}
+.header-page-group{display:flex;align-items:center;gap:14px;min-width:0;min-height:44px;padding-left:24px;border-left:1px solid #ffffff99}
+.header-page-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border:1px solid #ffffff99;border-radius:8px}
+.header-page-icon svg{width:24px;height:24px;stroke:#fff;stroke-width:1.8}
+.geometric-header .header-page-copy{min-width:0;display:grid;gap:3px}
+.geometric-header #page-title{display:block;border:0;padding:0;min-height:0;color:#fff;font-size:18px;line-height:1.2;white-space:normal;overflow-wrap:anywhere}
+.geometric-header #header-page-subtitle{display:block;color:#fff;font-size:11px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:270px}
+.geometric-header .topbar-search{width:42px;height:42px;background:#c9000033;color:#fff;border:1px solid #ffffff99;border-radius:8px}
+.geometric-header .topbar-search svg{width:23px;height:23px}
+.geometric-header .theme-toggle{height:42px;background:#c9000033;color:#fff;border:1px solid #ffffff99;border-radius:12px;gap:6px;padding:6px 8px}
+.geometric-header .theme-toggle svg{width:19px;height:19px;stroke-width:2}
+.geometric-header .theme-toggle i{background:#a80000;border-color:#ffffff99}
+.geometric-header .theme-toggle i::after{background:#fff}
+.geometric-header .header-clock{position:relative;display:grid;grid-template-columns:24px auto;column-gap:10px;padding-left:14px;border-left:1px solid #ffffff80;min-width:136px;text-align:left;line-height:1.25;font-size:11px;font-variant-numeric:tabular-nums;color:#fff}
+.header-calendar-icon{grid-row:1/3;width:24px;height:24px;align-self:center}
+.geometric-header .header-clock strong{font:700 16px/1.3 ui-monospace,monospace;margin-top:2px;white-space:nowrap}
+.geometric-header .header-clock #date{display:block;white-space:nowrap}
+.geometric-header .topbar-status-v6{background:#c9000033;border:1px solid #ffffffaa;border-radius:24px;padding:10px 14px;color:#fff;font-size:12px;min-width:84px;justify-content:center}
+.geometric-header .topbar-search:hover,.geometric-header .theme-toggle:hover{background:#c9000080}
+.geometric-header :is(button,a):focus-visible{outline-color:#fff;outline-offset:3px}
+@media(min-width:1100px) and (max-width:1499px){
+ .geometric-header{padding-inline:16px;gap:14px}
+ .geometric-header>.topbar-left,.geometric-header>.topbar-right{gap:12px}
+ .geometric-header .aerospace-wordmark{width:250px;height:30px}
+ .header-page-group{padding-left:16px;gap:10px}
+ .header-page-icon{width:36px;height:36px;flex-basis:36px}
+ .geometric-header #page-title{font-size:16px}
+ .geometric-header #header-page-subtitle{max-width:180px;font-size:10px}
+ .geometric-header .header-clock{min-width:128px;column-gap:8px}
+}
+@media(max-width:1099px){
+ .geometric-header{flex-wrap:wrap;padding:12px 16px;gap:12px}
+ .geometric-header>.topbar-left{flex:1 1 100%;width:100%;gap:14px}
+ .geometric-header>.topbar-right{margin-left:auto;gap:14px;justify-content:flex-end}
+ .geometric-header .aerospace-wordmark{width:260px;height:30px}
+ .geometric-header #header-page-subtitle{max-width:250px}
+}
+@media(max-width:600px){
+ .geometric-header{padding:10px 12px;gap:10px}
+ .geometric-header::before,.geometric-header::after{display:none}
+ .geometric-header>.topbar-left{flex-wrap:wrap;gap:10px}
+ .geometric-header .aerospace-wordmark{width:220px;height:28px}
+ .geometric-header .header-page-group{flex:1 1 100%;border:0;padding-left:0;gap:10px}
+ .geometric-header #page-title{font-size:16px}
+ .geometric-header #header-page-subtitle{font-size:10px;max-width:280px}
+ .geometric-header>.topbar-right{width:100%;justify-content:space-between;gap:6px}
+ .geometric-header .topbar-search{width:36px;height:38px;padding:6px}
+ .geometric-header .theme-toggle{height:38px;padding:5px;gap:4px}
+ .geometric-header .theme-toggle svg{width:17px;height:17px}
+ .geometric-header .header-clock{min-width:104px;padding-left:6px;grid-template-columns:16px auto;column-gap:5px;font-size:10px}
+ .geometric-header .header-calendar-icon{width:16px;height:18px}
+ .geometric-header .header-clock strong{font-size:13px}
+ .geometric-header .topbar-status-v6{padding:8px 10px;min-width:65px;font-size:10px}
+}
+
+/* A sticky, non-interactive footprint prevents content reflow during collapse. */
+.header-scroll-shell{position:sticky;top:0;z-index:800;height:var(--expanded-header-size,76px);flex-shrink:0;pointer-events:none;overflow-anchor:none}
+.header-scroll-shell>.geometric-header{position:absolute;inset:0 0 auto;pointer-events:auto;width:100%;transition:min-height .25s ease,padding .25s ease,gap .25s ease}
+.geometric-header .aerospace-wordmark,.geometric-header .header-page-icon,.geometric-header .topbar-search,.geometric-header .theme-toggle,.geometric-header .topbar-status-v6{transition:width .25s ease,height .25s ease,padding .25s ease}
+.geometric-header .header-page-group{transition:min-height .25s ease,padding .25s ease,gap .25s ease}
+.geometric-header #page-title{transition:font-size .25s ease}
+.geometric-header #header-page-subtitle{max-height:32px;opacity:1;transition:max-height .25s ease,opacity .18s ease}
+.geometric-header::before,.geometric-header::after{transition:opacity .25s ease}
+.geometric-header.is-compact{min-height:42px;height:42px;padding:0 18px;gap:12px;flex-wrap:nowrap}
+.geometric-header.is-compact::before,.geometric-header.is-compact::after{opacity:.1}
+.geometric-header.is-compact>.topbar-left{flex:1 1 auto;width:auto;flex-wrap:nowrap;gap:14px}
+.geometric-header.is-compact>.topbar-right{width:auto;flex:0 0 auto;margin:0;gap:12px}
+.geometric-header.is-compact .aerospace-wordmark{width:230px;height:26px}
+.geometric-header.is-compact .header-page-group{min-height:30px;padding-left:16px;gap:10px}
+.geometric-header.is-compact .header-page-icon{width:28px;height:28px;flex-basis:28px;border-radius:6px}
+.geometric-header.is-compact .header-page-icon svg{width:19px;height:19px}
+.geometric-header.is-compact #page-title{font-size:15px}
+.geometric-header.is-compact #header-page-subtitle{max-height:0;opacity:0;visibility:hidden}
+.geometric-header.is-compact .header-page-copy{gap:0}
+.geometric-header.is-compact .topbar-search{width:32px;height:32px;padding:5px}
+.geometric-header.is-compact .topbar-search svg{width:20px;height:20px}
+.geometric-header.is-compact .theme-toggle{height:32px;padding:4px 6px;gap:4px}
+.geometric-header.is-compact .theme-toggle svg{width:16px;height:16px}
+.geometric-header.is-compact .header-clock{display:block;min-width:90px;padding-left:10px}
+.geometric-header.is-compact .header-clock #date,.geometric-header.is-compact .header-calendar-icon{display:none}
+.geometric-header.is-compact .header-clock strong{font-size:13px;margin:0}
+.geometric-header.is-compact .topbar-status-v6{height:32px;min-width:76px;padding:5px 10px;font-size:11px}
+html:has(.header-scroll-shell){scroll-padding-top:80px}
+html:has(.geometric-header.is-compact){scroll-padding-top:46px}
+@media(max-width:1099px){
+ .header-scroll-shell{height:var(--expanded-header-size,123px)}
+ .geometric-header.is-compact{padding-inline:12px;gap:10px}
+ .geometric-header.is-compact .aerospace-wordmark{width:170px;height:24px}
+ .geometric-header.is-compact>.topbar-left,.geometric-header.is-compact>.topbar-right{gap:8px}
+ .geometric-header.is-compact .header-page-group{padding-left:10px;gap:7px}
+ .geometric-header.is-compact #page-title{font-size:13px}
+}
+@media(max-width:900px){.geometric-header.is-compact .header-clock{display:none}}
+@media(max-width:600px){
+ .header-scroll-shell{height:var(--expanded-header-size,163px)}
+ .geometric-header.is-compact{padding-inline:8px;gap:7px}
+ .geometric-header.is-compact .aerospace-wordmark{width:96px;height:20px}
+ .geometric-header.is-compact>.topbar-left{gap:6px}
+ .geometric-header.is-compact>.topbar-right{gap:6px;justify-content:flex-end}
+ .geometric-header.is-compact .mobile-menu-btn-v6{width:24px;height:32px;flex-shrink:0}
+ .geometric-header.is-compact .mobile-menu-btn-v6 svg{width:20px;height:20px}
+ .geometric-header.is-compact .header-page-group{flex:1 1 auto;padding:0;border:0;gap:5px;min-width:0}
+ .geometric-header.is-compact .header-page-icon{width:20px;height:24px;flex-basis:20px;border:0}
+ .geometric-header.is-compact .header-page-icon svg{width:18px;height:18px}
+ .geometric-header.is-compact #page-title{font-size:10px;line-height:1.15}
+ .geometric-header.is-compact .topbar-search{width:28px;height:30px;padding:4px}
+ .geometric-header.is-compact .theme-toggle{width:38px;height:30px;padding:3px;justify-content:center}
+ .geometric-header.is-compact .theme-toggle>svg{display:none}
+ .geometric-header.is-compact .theme-toggle i{width:28px;height:20px}
+ .geometric-header.is-compact .theme-toggle i::after{width:12px;height:12px}
+ .geometric-header.is-compact .theme-toggle[aria-checked=true] i::after{transform:translateX(8px)}
+ .geometric-header.is-compact .topbar-status-v6{min-width:50px;padding-inline:6px;font-size:9px;gap:4px}
+ .geometric-header.is-compact .status-dot-v6{width:6px;height:6px}
+}
+@media(prefers-reduced-motion:reduce){.header-scroll-shell .geometric-header,.geometric-header *,.geometric-header::before,.geometric-header::after{transition:none!important}}

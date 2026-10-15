@@ -1,1 +1,78 @@
-{% extends "base.html" %}{% block title %}Sensors · SELVARITHIK'S A&D LoRa Gateway{% endblock %}{% block page_title %}Sensors{% endblock %}{% block page_subtitle %}Live parameters, quality and telemetry history{% endblock %}{% block content %}<div class="page-view page-view-sensors v3-page"><div class="v3-page-hero"><div><span class="v3-eyebrow">TELEMETRY WORKSPACE</span><h2>Sensor parameters</h2><p>Inspect live values, quality, status and history.</p></div><div class="v3-hero-actions"><select id="sensor-node" class="input v3-control"><option value="">Select Node</option></select><div class="v3-search-control">⌕<input id="sensor-search" class="input v3-control" placeholder="Search parameters…"></div></div></div><div class="v3-workbench-bar"><div class="v3-context-chip"><span>NODE</span><strong id="sensor-context-label">—</strong></div><div class="filter-chips"><button class="filter-chip active" data-filter="all">All</button><button class="filter-chip" data-filter="enabled">Enabled</button><button class="filter-chip" data-filter="alarm">Alarm</button><button class="filter-chip" data-filter="graph">Graph</button></div></div><section class="v3-panel"><header class="v3-panel-head"><div><span class="v3-eyebrow">PARAMETERS</span><h3>Live sensor table</h3></div><span class="v3-live-badge"><i></i> LIVE</span></header><div class="table-wrap v3-table-wrap"><table class="v3-table"><caption class="sr-only">Sensor parameters</caption><thead><tr><th scope="col">Parameter</th><th scope="col">Value</th><th scope="col">Unit</th><th scope="col">Quality</th><th scope="col">Status</th><th scope="col">Last Update</th><th scope="col">Action</th></tr></thead><tbody id="sensor-table"><tr><td colspan="7">Select a node.</td></tr></tbody></table></div></section></div><div class="drawer-overlay" id="sensor-overlay"></div><aside class="drawer v3-drawer" id="sensor-drawer"><div class="drawer-header"><h2 id="sensor-title">Sensor</h2><button id="sensor-close" type="button">×</button></div><div class="drawer-body" id="sensor-details">Loading…</div></aside>{% endblock %}{% block extra_js %}<script src="{{ url_for('static', filename='js/sensors.js') }}?v=15"></script>{% endblock %}
+{% extends "base.html" %}{% block title %}Sensors · SELVARITHIK A&amp;D{% endblock %}{% block page_title %}Sensor Management{% endblock %}{% block page_subtitle %}Live parameters, quality and telemetry history{% endblock %}{% block content %}<section id="sensor-management" aria-labelledby="sensor-management-title">
+<h2 id="sensor-management-title">Sensor Management</h2><p>Configure sensors, data sources and dashboard widgets.</p>
+<div class="management-counts" id="sensor-management-counts"></div>
+<p id="sensor-management-message" role="status" aria-live="polite"></p>
+<div class="management-toolbar">
+<button type="button" class="btn btn-primary" id="sensor-add">Add Sensor</button>
+<input class="input" id="sensor-management-search" type="search" placeholder="Search sensors or templates" aria-label="Search sensors and templates">
+<select class="input" id="sensor-management-category" aria-label="Category"><option value="">All categories</option><option value="core">Core</option><option value="environment">Environment</option><option value="network">Network</option><option value="custom">Custom</option></select>
+<select class="input" id="sensor-management-filter" aria-label="Sensor state"><option value="">All sensors</option><option value="enabled">Enabled</option><option value="visible">On dashboard</option><option value="unavailable">Unavailable or unconfigured</option></select>
+<select class="input" id="sensor-management-sort" aria-label="Sort sensors"><option value="position">Dashboard order</option><option value="name">Name</option><option value="node">Node</option></select>
+<a class="btn" href="/accounts">Account access</a>
+</div>
+<div class="table-wrap"><table><thead><tr><th>Sensor / ID</th><th>Node / Source</th><th>State</th><th>Latest reading</th><th>Actions</th></tr></thead><tbody id="sensor-management-rows"></tbody></table></div>
+<details><summary>Widget template catalog · 30 types</summary><p>Templates become sensors only after configuration. Actual hardware support is required.</p><div id="sensor-template-catalog" class="sensor-catalog"></div><p id="sensor-source-limitations"></p></details>
+</section><div class="page-view page-view-sensors v3-page">
+<div class="page-toolbar">
+<div class="v3-hero-actions">
+<select id="sensor-node" class="input v3-control">
+<option value="">Select Node</option>
+</select>
+<div class="v3-search-control">⌕<input id="sensor-search" class="input v3-control" placeholder="Search parameters…">
+</div>
+</div>
+</div>
+<div class="v3-workbench-bar">
+<div class="v3-context-chip">
+<span>NODE</span>
+<strong id="sensor-context-label">—</strong>
+</div>
+<div class="filter-chips">
+<button class="filter-chip active" data-filter="all">All</button>
+<button class="filter-chip" data-filter="enabled">Enabled</button>
+<button class="filter-chip" data-filter="alarm">Alarm</button>
+<button class="filter-chip" data-filter="graph">Graph</button>
+</div>
+</div>
+<section class="v3-panel">
+<header class="v3-panel-head">
+<div>
+<h3>Live sensor table</h3>
+</div>
+<span class="v3-live-badge">
+<i>
+</i> LIVE</span>
+</header>
+<div class="table-wrap v3-table-wrap">
+<table class="v3-table">
+<caption class="sr-only">Sensor parameters</caption>
+<thead>
+<tr>
+<th scope="col">Parameter</th>
+<th scope="col">Value</th>
+<th scope="col">Unit</th>
+<th scope="col">Quality</th>
+<th scope="col">Status</th>
+<th scope="col">Last Update</th>
+<th scope="col">Action</th>
+</tr>
+</thead>
+<tbody id="sensor-table">
+<tr>
+<td colspan="7">Select a node.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<div class="drawer-overlay" id="sensor-overlay">
+</div>
+<aside class="drawer v3-drawer" id="sensor-drawer">
+<div class="drawer-header">
+<h2 id="sensor-title">Sensor</h2>
+<button id="sensor-close" type="button">×</button>
+</div>
+<div class="drawer-body" id="sensor-details">Loading…</div>
+</aside>{% endblock %}{% block extra_js %}<link rel="stylesheet" href="{{ url_for('static', filename='css/sensor-widgets.css') }}"><script src="{{ url_for('static', filename='js/sensor-widgets.js') }}"></script><script src="{{ url_for('static', filename='js/sensor-management.js') }}" defer></script><script src="{{ url_for('static', filename='js/sensors.js') }}?v=15">
+</script>{% endblock %}

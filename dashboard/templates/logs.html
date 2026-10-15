@@ -15,10 +15,10 @@ System events, warnings and diagnostic records
 <div class="filter-bar">
 
     <input type="date"
-           id="log-date"
+           id="logs-date" aria-label="Log date"
            class="input">
 
-    <select id="log-severity"
+    <select id="logs-severity" aria-label="Log severity"
             class="input">
 
         <option value="">All Severity</option>
@@ -29,15 +29,17 @@ System events, warnings and diagnostic records
 
     </select>
 
-    <input id="log-search"
+    <input id="logs-search" aria-label="Search logs"
            class="input"
            placeholder="Search logs...">
 
     <button class="btn btn-secondary"
-            id="clear-log-filter">
+            id="logs-clear">
         Clear Filters
     </button>
 
+    <button class="btn btn-secondary" id="logs-refresh" type="button">Refresh</button>
+    <label class="switch-row"><input id="logs-auto-refresh" type="checkbox">Auto refresh</label>
 </div>
 
 

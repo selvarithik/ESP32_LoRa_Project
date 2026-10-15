@@ -1,25 +1,43 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard · SELVARITHIK'S A&D LoRa Gateway{% endblock %}
+{% block title %}Dashboard · SELVARITHIK A&amp;D{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
-{% block page_subtitle %}Live gateway state, configured node telemetry and sensor detail{% endblock %}
+{% block content_heading %}System Overview{% endblock %}
+{% block page_subtitle %}Real-time status of all gateway subsystems{% endblock %}
 
 {% block content %}
 <div class="dashboard-console" id="dashboard-console">
   <div class="dashboard-v4-wrap">
 
-    <section class="dashboard-v4-top" aria-labelledby="dashboard-heading">
-      <div>
-        <p class="dashboard-v4-kicker">Operations / Live Telemetry</p>
-        <h1 id="dashboard-heading"><span>Gateway</span> Operations</h1>
-        <p>All configured nodes and enabled sensor parameters, rendered from the live gateway configuration.</p>
+
+  <section class="dashboard-status-board" id="widget-stats" aria-label="Gateway and fleet summary">
+      <div class="dashboard-metric kpi-nodes" data-tip="Nodes configured on the gateway">
+
+        <div class="dashboard-metric-label">Nodes online</div>
+        <div class="dashboard-metric-value"><span id="online-nodes">0</span><small> / <span id="total-nodes">0</span></small></div>
+
       </div>
-      <div class="dashboard-v4-actions">
-        <span class="dashboard-live-chip" id="dashboard-live-indicator"><i></i> LIVE · 2S</span>
-        <button class="dashboard-action" id="dashboard-customize-btn" type="button">Customize</button>
-        <button class="dashboard-action primary" id="dashboard-refresh" type="button">Refresh</button>
+      <div class="dashboard-metric kpi-online" data-tip="Nodes reachable right now">
+
+        <div class="dashboard-metric-label">Last update</div>
+        <div class="dashboard-metric-value dashboard-time" id="dashboard-last-refresh">Waiting</div>
+
+      </div>
+      <div class="dashboard-metric kpi-params" data-tip="Enabled sensor parameters">
+
+        <div class="dashboard-metric-label">Active sensors</div>
+        <div class="dashboard-metric-value" id="sensor-count">—</div>
+
+      </div>
+      <div class="dashboard-metric kpi-problems" data-tip="Alarm or sensor-error parameters">
+
+        <div class="dashboard-metric-label">Problems</div>
+        <div class="dashboard-metric-value" id="alarm-count">—</div>
+
       </div>
     </section>
+
+
 
     <section class="dashboard-command" aria-label="Dashboard filters">
       <label class="dashboard-search-wrap" data-tip="Filter nodes and parameters">
@@ -31,6 +49,7 @@
       <select id="dashboard-node-filter" aria-label="Filter by node">
         <option value="">All nodes</option>
       </select>
+      <button class="dashboard-action" id="dashboard-refresh" type="button" aria-label="Refresh telemetry">Refresh</button>
       <select id="dashboard-status-filter" aria-label="Filter by node status">
         <option value="">All states</option>
         <option value="online">Online nodes</option>
@@ -39,111 +58,17 @@
       </select>
     </section>
 
-    <section class="dashboard-status-board" id="widget-stats" aria-label="Gateway and fleet summary">
-      <div class="dashboard-gateway-strip">
-        <div class="dashboard-gateway-topline">
-          <span class="dashboard-gateway-state-dot" id="dashboard-gateway-dot"></span>
-          <span class="dashboard-gateway-state" id="dashboard-gateway-state">CONNECTING</span>
-        </div>
-        <h2 class="dashboard-gateway-title">SELVARITHIK'S A&D LoRa Gateway</h2>
-        <p class="dashboard-gateway-sub" id="dashboard-gateway-sub">Reading live server status…</p>
-        <div class="dashboard-gateway-meta">
-          <div class="dashboard-meta-item"><span>Server time</span><strong id="dashboard-server-time">—</strong></div>
-          <div class="dashboard-meta-item"><span>Last refresh</span><strong id="dashboard-last-refresh">—</strong></div>
-          <div class="dashboard-meta-item"><span>Source</span><strong>LIVE API</strong></div>
-        </div>
-      </div>
-      <div class="dashboard-metric kpi-nodes" data-tip="Nodes configured on the gateway">
-        <span class="dashboard-metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/><path d="M10 7h4M7 10v4M17 14v-4M14 17h-4"/></svg></span>
-        <div class="dashboard-metric-label">Total Nodes</div>
-        <div class="dashboard-metric-value" id="total-nodes">—</div>
-        <div class="dashboard-metric-caption">Configured</div>
-      </div>
-      <div class="dashboard-metric kpi-online" data-tip="Nodes reachable right now">
-        <span class="dashboard-metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0M8.2 15.6a5.5 5.5 0 0 1 7.6 0"/><circle cx="12" cy="18.6" r="1.2"/></svg></span>
-        <div class="dashboard-metric-label">Online</div>
-        <div class="dashboard-metric-value" id="online-nodes">—</div>
-        <div class="dashboard-metric-caption">Reachable now</div>
-      </div>
-      <div class="dashboard-metric kpi-params" data-tip="Enabled sensor parameters">
-        <span class="dashboard-metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V9M10 18V5M16 18v-8M22 18v-6M3 18h20"/></svg></span>
-        <div class="dashboard-metric-label">Parameters</div>
-        <div class="dashboard-metric-value" id="sensor-count">—</div>
-        <div class="dashboard-metric-caption">Enabled configuration</div>
-      </div>
-      <div class="dashboard-metric kpi-problems" data-tip="Alarm or sensor-error parameters">
-        <span class="dashboard-metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 3 19h18z"/><path d="M12 10v4M12 17h.01"/></svg></span>
-        <div class="dashboard-metric-label">Problems</div>
-        <div class="dashboard-metric-value" id="alarm-count">—</div>
-        <div class="dashboard-metric-caption">Alarm / sensor error</div>
-      </div>
-    </section>
-
-    <section class="dashboard-visual-overview" aria-label="Live data overview">
-      <div class="dashboard-visual-intro">
-        <div>
-          <span class="dashboard-visual-kicker">LIVE DATA OVERVIEW</span>
-          <h2>Fleet &amp; Telemetry Health</h2>
-          <p>Derived only from the configured nodes and live telemetry already shown below.</p>
-        </div>
-        <span class="dashboard-visual-source">LIVE API</span>
-      </div>
-
-      <div class="dashboard-visual-grid">
-        <article class="dashboard-visual-card">
-          <div class="dashboard-visual-card-head">
-            <span>Fleet availability</span>
-            <strong id="dashboard-availability-pct">0%</strong>
-          </div>
-          <div class="dashboard-visual-bar"><i id="dashboard-availability-bar" style="width:0%"></i></div>
-          <div class="dashboard-visual-foot">
-            <span><b id="dashboard-availability-online">0</b> online</span>
-            <span><b id="dashboard-availability-total">0</b> configured</span>
-          </div>
-        </article>
-
-        <article class="dashboard-visual-card">
-          <div class="dashboard-visual-card-head">
-            <span>Telemetry health</span>
-            <strong id="dashboard-health-pct">100%</strong>
-          </div>
-          <div class="dashboard-visual-bar dashboard-visual-health"><i id="dashboard-health-bar" style="width:100%"></i></div>
-          <div class="dashboard-visual-foot">
-            <span><b id="dashboard-health-good">0</b> clear</span>
-            <span><b id="dashboard-health-problems">0</b> problems</span>
-          </div>
-        </article>
-
-        <article class="dashboard-visual-card dashboard-visual-node-state">
-          <div class="dashboard-visual-card-head">
-            <span>Node state</span>
-            <strong id="dashboard-node-state-label">0 / 0</strong>
-          </div>
-          <div class="dashboard-state-segments">
-            <i class="online" id="dashboard-state-online" style="width:0%"></i>
-            <i class="offline" id="dashboard-state-offline" style="width:0%"></i>
-            <i class="disabled" id="dashboard-state-disabled" style="width:0%"></i>
-          </div>
-          <div class="dashboard-visual-foot">
-            <span><b id="dashboard-state-online-count">0</b> online</span>
-            <span><b id="dashboard-state-offline-count">0</b> offline</span>
-            <span><b id="dashboard-state-disabled-count">0</b> disabled</span>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <div class="dashboard-main-grid">
+     <div class="dashboard-main-grid">
       <main>
         <section class="dashboard-section" id="widget-sensors">
           <header class="dashboard-section-head">
             <div>
-              <h2>Live Telemetry / All Nodes</h2>
-              <p>Node configuration, every enabled parameter, live value, quality and alarm state. Graphs are shown for parameters with graph display enabled.</p>
+              <h2>Live Telemetry / All Nodes</h2><p>ESP32 IoT Gateway · Sensor Monitoring</p>
+
             </div>
             <div class="dashboard-section-tools">
-              <button class="dashboard-mini-tool active" id="dashboard-show-config" type="button">Config</button>
-              <button class="dashboard-mini-tool active" id="dashboard-show-hidden" type="button">Display-off params</button>
+              <span class="dashboard-live-chip" id="dashboard-live-indicator">Connecting</span><button class="dashboard-mini-tool" id="dashboard-show-config" type="button">Node details</button>
+              <button class="dashboard-mini-tool active" id="dashboard-show-hidden" type="button">Manage widgets</button>
             </div>
           </header>
           <div id="dashboard-node-list" class="dashboard-node-list">
@@ -151,14 +76,15 @@
           </div>
         </section>
 
+
         <section class="dashboard-section" id="widget-custom-sensors">
           <header class="dashboard-section-head">
             <div>
-              <h2>Operator Workspace</h2>
-              <p>Optional browser-local shortcuts for frequently watched parameters.</p>
+              <h2>My widgets</h2>
+
             </div>
             <div class="dashboard-section-tools">
-              <button class="dashboard-mini-tool" id="add-sensor-widget-inline" type="button">+ Add widget</button>
+              <button class="dashboard-mini-tool" id="dashboard-customize-btn" type="button">Layout</button><button class="dashboard-action primary" id="add-sensor-widget-inline" type="button">+ Add widget</button>
             </div>
           </header>
           <div id="custom-sensor-widgets" class="dashboard-custom-grid">
@@ -168,24 +94,10 @@
       </main>
 
       <aside class="dashboard-right-stack">
-        <section class="dashboard-section" id="widget-fleet">
-          <header class="dashboard-section-head">
-            <div><h2>Fleet Pulse</h2><p>Current configured node availability.</p></div>
-          </header>
-          <div id="dashboard-fleet-list" class="dashboard-health-list">
-            <div class="dashboard-empty">Loading…</div>
-          </div>
-          <div class="dashboard-summary-grid">
-            <div class="dashboard-summary-cell"><span>Online</span><strong id="fleet-online">—</strong></div>
-            <div class="dashboard-summary-cell"><span>Offline</span><strong id="fleet-offline">—</strong></div>
-            <div class="dashboard-summary-cell"><span>Disabled</span><strong id="fleet-disabled">—</strong></div>
-          </div>
-          <div class="dashboard-section-footer"><a class="dashboard-link" href="/nodes">Open Node Management →</a></div>
-        </section>
 
         <section class="dashboard-section" id="widget-alerts">
           <header class="dashboard-section-head">
-            <div><h2>Active Problems</h2><p>Derived from current node and telemetry state.</p></div>
+            <div><h2>Problems</h2></div>
           </header>
           <div id="dashboard-alert-list" class="dashboard-alert-list">
             <div class="dashboard-empty">No active problems.</div>
@@ -195,7 +107,7 @@
 
         <section class="dashboard-section" id="widget-activity">
           <header class="dashboard-section-head">
-            <div><h2>Recent Activity</h2><p>Latest gateway log records.</p></div>
+            <div><h2>Recent logs</h2></div>
           </header>
           <div id="activity-list" class="dashboard-event-list">
             <div class="dashboard-empty">Loading activity…</div>
@@ -213,11 +125,10 @@
       <button class="dashboard-drawer-close" id="close-widget-drawer" type="button" aria-label="Close">×</button>
     </div>
     <div class="dashboard-drawer-body" id="widgetToggleList">
-      <p>Control secondary dashboard sections. The live node telemetry workspace stays primary.</p>
-      <div class="dashboard-drawer-row"><span>Fleet Pulse</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-fleet" checked><span></span></label></div>
-      <div class="dashboard-drawer-row"><span>Active Problems</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-alerts" checked><span></span></label></div>
-      <div class="dashboard-drawer-row"><span>Recent Activity</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-activity" checked><span></span></label></div>
-      <div class="dashboard-drawer-row"><span>Operator Workspace</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-custom-sensors" checked><span></span></label></div>
+
+      <div class="dashboard-drawer-row"><span>Problems</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-alerts" checked><span></span></label></div>
+      <div class="dashboard-drawer-row"><span>Recent logs</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-activity" checked><span></span></label></div>
+      <div class="dashboard-drawer-row"><span>My widgets</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-custom-sensors" checked><span></span></label></div>
     </div>
     <div class="dashboard-drawer-footer">
       <button class="dashboard-action" id="reset-widgets-btn" type="button">Reset</button>
@@ -227,11 +138,8 @@
 </div>
 {% endblock %}
 
-{% block extra_css_after %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-modern.css') }}?v=1">
-{% endblock %}
-
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=20"></script>
-<script src="{{ url_for('static', filename='js/dashboard-modern.js') }}?v=1" defer></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sensor-widgets.css') }}">
+<script src="{{ url_for('static', filename='js/sensor-widgets.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=21"></script>
 {% endblock %}

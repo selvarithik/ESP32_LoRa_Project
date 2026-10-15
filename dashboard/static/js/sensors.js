@@ -23,8 +23,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (refreshTimer) clearInterval(refreshTimer);
         refreshTimer = setInterval(() => {
-            if (selectedNode) loadSensors();
-        }, 3000);
+            if (selectedNode && !document.hidden && !gateway.socket?.connected) loadSensors();
+        }, 5000);
+        gateway.socket?.on("telemetry_update", receiveTelemetry);
+        gateway.socket?.on("connect", loadSensors);
+        document.addEventListener("visibilitychange", () => { if (!document.hidden) loadSensors(); });
+        window.addEventListener("pagehide", () => { clearInterval(refreshTimer); gateway.socket?.off("telemetry_update", receiveTelemetry); gateway.socket?.off("connect", loadSensors); });
     }
 
 
@@ -208,77 +212,33 @@ document.addEventListener("DOMContentLoaded", () => {
        LOAD SENSOR PARAMETERS
     ========================================= */
 
+    let loadSequence = 0;
     async function loadSensors() {
-
-        if (!selectedNode) {
-
-            table.innerHTML =
-                emptyRow(
-                    "Select a node to view sensor parameters."
-                );
-
-            return;
-        }
-
-
-        table.innerHTML = `
-            <tr>
-                <td colspan="7"
-                    class="loading">
-                    Loading sensor parameters...
-                </td>
-            </tr>
-        `;
-
-
+        const node = selectedNode;
+        const sequence = ++loadSequence;
+        if (!node) { sensors = []; renderSensors(); return; }
         try {
-
-            const response =
-                await gateway.get(
-                    `/api/nodes/${encodeURIComponent(
-                        selectedNode
-                    )}/parameters`
-                );
-
-
-            sensors =
-                response.parameters || [];
-
-
+            const config = await gateway.get("/api/nodes/" + encodeURIComponent(node) + "/parameters");
+            const latest = await gateway.get("/api/nodes/" + encodeURIComponent(node) + "/parameters/latest");
+            if (sequence !== loadSequence || node !== selectedNode) return;
+            const readings = latest.parameters || [];
+            sensors = (config.parameters || []).map(p => Object.assign({}, p, readings.find(v => v.parameter_id === p.parameter_id) || {}));
             renderSensors();
-
-
         } catch (error) {
-
-            console.error(
-                "Sensor loading error:",
-                error
-            );
-
-
-            table.innerHTML =
-                errorRow();
-
-
-            document
-                .getElementById(
-                    "sensor-retry"
-                )
-                ?.addEventListener(
-                    "click",
-                    loadSensors
-                );
-
-
-            gateway.toast(
-                "Unable to load sensor parameters",
-                "error"
-            );
-
+            if (sequence !== loadSequence) return;
+            if (!sensors.length) table.innerHTML = errorRow();
+            gateway.toast("Unable to load sensor parameters", "error");
         }
-
     }
 
+    function receiveTelemetry(update) {
+        if (document.hidden || update.node_id !== selectedNode) return;
+        (update.parameters || []).forEach(incoming => {
+            const sensor = sensors.find(p => p.parameter_id === incoming.parameter_id);
+            if (sensor && (!sensor.timestamp || new Date(incoming.timestamp) > new Date(sensor.timestamp))) Object.assign(sensor, incoming);
+        });
+        renderSensors();
+    }
 
     /* =========================================
        FILTER + SEARCH
@@ -361,7 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        table.innerHTML =
+        gateway.patchHtml(table,
             filtered.map(sensor => {
 
                 const status =
@@ -378,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 return `
-                    <tr>
+                    <tr data-id="${gateway.escape(sensor.parameter_id)}">
 
                         <td>
 
@@ -485,7 +445,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td>
 
                             <button
-                                class="icon-btn sensor-view"
+                                class="btn btn-secondary sensor-view"
                                 data-id="${
                                     gateway.escape(
                                         sensor.parameter_id
@@ -501,10 +461,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </tr>
                 `;
 
-            }).join("");
-
-
-        bindViewButtons();
+            }).join(""));
 
     }
 
@@ -513,37 +470,13 @@ document.addEventListener("DOMContentLoaded", () => {
        VIEW SENSOR
     ========================================= */
 
-    function bindViewButtons() {
-
-        document
-            .querySelectorAll(".sensor-view")
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const sensor =
-                            sensors.find(
-                                item =>
-                                    item.parameter_id ===
-                                    button.dataset.id
-                            );
-
-
-                        if (sensor) {
-                            openSensorDrawer(
-                                sensor
-                            );
-                        }
-
-                    }
-                );
-
-            });
-
-    }
-
+    table.addEventListener("click", event => {
+        if (event.target.closest("#sensor-retry")) { loadSensors(); return; }
+        const button = event.target.closest(".sensor-view");
+        if (!button) return;
+        const sensor = sensors.find(item => item.parameter_id === button.dataset.id);
+        if (sensor) openSensorDrawer(sensor);
+    });
 
     function openSensorDrawer(sensor) {
 

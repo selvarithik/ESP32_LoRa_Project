@@ -269,7 +269,8 @@ def add_parameter(
     max_value=None,
     alarm_enabled=False,
     low_alarm=None,
-    high_alarm=None
+    high_alarm=None,
+    widget_config="{}"
 ):
 
     if not node_exists(node_id):
@@ -287,67 +288,71 @@ def add_parameter(
     cursor = connection.cursor()
 
 
-    cursor.execute(
-        """
-        INSERT INTO sensor_parameters (
+    try:
+        cursor.execute(
+            """
+            INSERT INTO sensor_parameters (
 
-            node_id,
-            parameter_id,
-            sensor_id,
-            parameter_name,
-            parameter_type,
-            data_type,
-            unit,
-            description,
-            enabled,
-            display_enabled,
-            graph_enabled,
-            decimal_places,
-            min_value,
-            max_value,
-            alarm_enabled,
-            low_alarm,
-            high_alarm,
-            created_at,
-            updated_at
+                node_id,
+                parameter_id,
+                sensor_id,
+                parameter_name,
+                parameter_type,
+                data_type,
+                unit,
+                description,
+                enabled,
+                display_enabled,
+                graph_enabled,
+                decimal_places,
+                min_value,
+                max_value,
+                alarm_enabled,
+                low_alarm,
+                high_alarm,
+                created_at,
+                updated_at,
+                widget_config
 
+            )
+
+            VALUES (
+
+                ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+
+            )
+            """,
+
+            (
+                node_id,
+                parameter_id,
+                sensor_id,
+                parameter_name,
+                parameter_type,
+                data_type,
+                unit,
+                description,
+                int(enabled),
+                int(display_enabled),
+                int(graph_enabled),
+                decimal_places,
+                min_value,
+                max_value,
+                int(alarm_enabled),
+                low_alarm,
+                high_alarm,
+                now,
+                now,
+                widget_config
+            )
         )
 
-        VALUES (
 
-            ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        connection.commit()
+    finally:
+        connection.close()
 
-        )
-        """,
-
-        (
-            node_id,
-            parameter_id,
-            sensor_id,
-            parameter_name,
-            parameter_type,
-            data_type,
-            unit,
-            description,
-            int(enabled),
-            int(display_enabled),
-            int(graph_enabled),
-            decimal_places,
-            min_value,
-            max_value,
-            int(alarm_enabled),
-            low_alarm,
-            high_alarm,
-            now,
-            now
-        )
-    )
-
-
-    connection.commit()
-
-    connection.close()
 
 
     # Create default graph configuration
@@ -393,7 +398,8 @@ def update_parameter(
         "max_value",
         "alarm_enabled",
         "low_alarm",
-        "high_alarm"
+        "high_alarm",
+        "widget_config"
 
     ]
 
