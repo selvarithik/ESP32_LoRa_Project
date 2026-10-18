@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card mqtt-settings"><h2>MQTT configuration</h2>
+<link rel="stylesheet" href="/static/css/account-access.css">
+<p>Changes are staged. The active broker stays available during testing. Provision passwords locally on the Gateway computer.</p>
+<p id="mqtt-feedback" role="status" aria-live="polite"></p>
+<pre id="mqtt-runtime"></pre><p id="mqtt-comparison"></p>
+<p id="mqtt-profile-summary"></p>
+<form id="mqtt-form"><div id="mqtt-fields"></div><button type="submit">Save candidate</button></form>
+<label>Enrolled Master ID <input id="mqtt-master" maxlength="48"></label>
+<button id="mqtt-test" type="button">Test candidate</button>
+<button id="mqtt-confirm" type="button">Confirm tested switch</button>
+<button id="mqtt-cancel" type="button">Cancel candidate</button>
+<button id="mqtt-refresh" type="button">Refresh</button>
+<pre id="mqtt-transaction"></pre>
+</section>
+<script src="{{ url_for('static', filename='js/mqtt.js') }}" defer></script>
+{% endblock %}

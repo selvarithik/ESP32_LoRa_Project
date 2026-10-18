@@ -1,0 +1,4 @@
+'use strict';
+const form=document.getElementById('login-form'),feedback=document.getElementById('feedback'),button=document.getElementById('signin'),password=document.getElementById('password');
+document.getElementById('visibility').onclick=function(){const visible=password.type==='password';password.type=visible?'text':'password';this.textContent=visible?'Hide password':'Show password';this.setAttribute('aria-pressed',String(visible));};
+form.onsubmit=async event=>{event.preventDefault();button.disabled=true;feedback.textContent='Signing in…';try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':form.dataset.csrf},body:JSON.stringify(Object.fromEntries(new FormData(form)))});const d=await r.json();if(!r.ok)throw Error(d.error||'Sign-in failed');password.value='';location.assign(d.redirect==='/accounts'?'/accounts':'/');}catch(error){feedback.textContent=error.message;}finally{button.disabled=false;}};

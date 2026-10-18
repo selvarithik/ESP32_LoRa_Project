@@ -1,3 +1,18 @@
+# ESP32 LoRa Gateway — current integration
+
+The current MQTT, login/account and commissioning changes are described in
+[the implementation and acceptance report](docs/FINAL_ACCESS_REPORT.md),
+[commissioning instructions](docs/COMMISSIONING.md) and
+[the EMQX authorization audit](docs/EMQX_AUTHORIZATION_AUDIT.md).
+The canonical [configuration contract](CONFIG_CONTRACT.md) is shared with
+[the ESP32 firmware](https://github.com/selvarithik/ESP32_LoRa_ESP32_Firmware).
+Broker authentication and authorization prerequisites remain explicit pending
+acceptance items; publishing this source does not establish production readiness.
+Local databases, credentials and private deployment settings are excluded from Git.
+
+The detailed README below describes its named historical snapshot; consult the
+current reports above for the newer implementation and verification status.
+
 SELVARITHIK'S LORA GATEWAY
 FULL PROJECT README / TECHNICAL DOCUMENTATION
 ============================================================

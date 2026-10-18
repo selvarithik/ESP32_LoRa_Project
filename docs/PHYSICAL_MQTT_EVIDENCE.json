@@ -1,0 +1,11 @@
+{
+  "usb_clock_seeded": false,
+  "connack": true,
+  "physical_compare": true,
+  "physical_packets_persisted": 1,
+  "chat_state": "DELIVERED",
+  "errors": [],
+  "scope": "Physical ESP32 + live TLS broker + isolated Gateway database",
+  "physical_digest_match": true,
+  "passed": true
+}

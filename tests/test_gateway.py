@@ -51,7 +51,7 @@ class GatewayTests(unittest.TestCase):
         self.assertEqual(self.client.get('/api/nodes/missing/config').status_code, 404)
 
     def test_http_and_socket_telemetry(self):
-        socket = server.socketio.test_client(server.app)
+        socket = server.socketio.test_client(server.app, flask_test_client=self.client)
         now = datetime.now().isoformat()
         self.post('/api/telemetry', {'node_id': 'TEST_001', 'timestamp': now, 'parameters': {'temperature': 32.5}})
         events = socket.get_received()
@@ -77,7 +77,7 @@ class GatewayTests(unittest.TestCase):
                 self.post('/api/telemetry', data, 400)
 
     def test_command_types_and_lifecycle(self):
-        socket = server.socketio.test_client(server.app)
+        socket = server.socketio.test_client(server.app, flask_test_client=self.client)
         for kind in ['STATUS', 'PING', 'WIFI_SCAN', 'WIFI_CONNECT', 'RESTART', 'GET_CONFIG', 'SET_INTERVAL', 'CUSTOM']:
             cmd = self.post('/api/commands', {'node_id': 'TEST_001', 'command_type': kind, 'payload': {'message': 'test', 'ssid': 'test', 'password': 'test', 'interval_ms': 2000}}, 201)['command']
             cid = cmd['command_id']
@@ -106,8 +106,8 @@ class GatewayTests(unittest.TestCase):
         self.assertTrue(messages)
         mid = messages[-1]['message_id']
         self.get('/api/chat/messages/' + mid)
-        self.post('/api/chat/messages/' + mid + '/delivered', {})
-        self.post('/api/chat/messages/' + mid + '/seen', {'receiver_id': 'TEST_001'})
+        self.post('/api/chat/messages/' + mid + '/delivered', {}, code=400)
+        self.post('/api/chat/messages/' + mid + '/seen', {'receiver_id': 'TEST_001'}, code=400)
 
     def test_mesh_settings(self):
         for node in ['TEST_001', 'TEST_002']:

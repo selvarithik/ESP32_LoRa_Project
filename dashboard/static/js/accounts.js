@@ -8,7 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
  async function api(url, method = "GET", body) {
    const response = await fetch(url, {method, headers: {"Content-Type":"application/json", "X-CSRF-Token":csrf}, body: body ? JSON.stringify(body) : undefined});
    const data = await response.json();
+   if(response.status===401){location.assign('/login');throw new Error('Sign in again.');}
    if (!response.ok) throw new Error(data.error || "Account request failed.");
+   if(data.reauthenticate){location.assign('/login');return data;}
    if (data.csrf) csrf = data.csrf;
    return data;
  }
@@ -19,7 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
    editor.elements.username.value = record?.username || "";
    editor.elements.role.value = record?.role || "user";
    editor.elements.role.disabled = actor.role !== "creator";
-   editor.elements.password.required = !record;
+   editor.elements.password.required = !record || !!actor.must_change;
+   editor.elements.confirm_password.required = !record || !!actor.must_change;
    document.getElementById("account-current-label").hidden = !record || record.id !== actor.id;
    document.getElementById("account-editor-title").textContent = record ? "Edit account" : "Create account";
    editor.elements.name.focus();
@@ -28,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
    const data = await api("/api/accounts"); actor = data.user; records = data.accounts;
    signIn.hidden = true; document.getElementById("account-workspace").hidden = false;
    document.getElementById("account-identity").textContent = actor.name + " · " + actor.username;
+   document.getElementById('account-role').textContent='Account type: '+actor.role+(actor.must_change?' · Temporary password: replace it now.':' · Password configured');
    document.getElementById("account-new").hidden = actor.role === "user";
    const rows = document.getElementById("account-rows"); rows.replaceChildren();
    for (const record of records) {
@@ -45,9 +49,11 @@ document.addEventListener("DOMContentLoaded", () => {
      }
      rows.append(row);
    }
+   if(actor.must_change){document.getElementById('account-new').hidden=true;openEditor(actor);}
  }
  signIn.onsubmit = async event => {event.preventDefault(); try {await api("/api/accounts/sign-in","POST",Object.fromEntries(new FormData(signIn))); signIn.reset(); await load(); message.textContent="Signed in.";} catch(e) {message.textContent=e.message;}};
- editor.onsubmit = async event => {event.preventDefault(); const data = Object.fromEntries(new FormData(editor)); if (editor.elements.role.disabled) data.role = editing?.role || "user"; try {await api(editing ? "/api/accounts/"+editing.id : "/api/accounts",editing ? "PATCH" : "POST",data); editor.reset(); editor.hidden=true; await load(); message.textContent="Account saved.";} catch(e) {message.textContent=e.message;}};
+ editor.onsubmit = async event => {event.preventDefault(); const data = Object.fromEntries(new FormData(editor)); if(data.password!==data.confirm_password){message.textContent='Password confirmation differs.';return;}delete data.confirm_password;if (editor.elements.role.disabled) data.role = editing?.role || "user"; const submit=editor.querySelector('[type=submit]')||editor.querySelector('button');submit.disabled=true;try {const result=await api(editing ? "/api/accounts/"+editing.id : "/api/accounts",editing ? "PATCH" : "POST",data);if(result.reauthenticate)return;editor.reset(); editor.hidden=true; await load(); message.textContent="Account saved.";} catch(e) {message.textContent=e.message;}finally{submit.disabled=false;}};
+ document.getElementById('account-show-password').onclick=function(){const show=this.getAttribute('aria-pressed')!=='true';for(const name of ['password','confirm_password','current_password'])editor.elements[name].type=show?'text':'password';this.setAttribute('aria-pressed',String(show));this.textContent=show?'Hide passwords':'Show passwords';};
  document.getElementById("account-new").onclick = () => openEditor(null);
  document.getElementById("account-cancel").onclick = () => {editor.reset();editor.hidden=true;};
  load().catch(e => {message.textContent=e.message;});

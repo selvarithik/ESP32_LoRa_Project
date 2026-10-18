@@ -200,6 +200,7 @@ def get_all_nodes():
     for row in rows:
 
         node = dict(row)
+        node.pop("device_token_hash", None)
 
 
         try:
@@ -247,6 +248,7 @@ def get_node(node_id):
 
 
     node = dict(row)
+    node.pop("device_token_hash", None)
 
 
     try:
@@ -372,7 +374,9 @@ def check_offline_nodes(
             name,
             status,
             last_seen,
-            enabled
+            enabled,
+            heartbeat_seconds,
+            device_enrolled
         FROM nodes
         WHERE enabled = 1
     """)
@@ -416,7 +420,8 @@ def check_offline_nodes(
             now - last_seen).total_seconds()
 
 
-        if elapsed > timeout_seconds:
+        threshold = (node.get("heartbeat_seconds") or 30) * 3 if node.get("device_enrolled") else timeout_seconds
+        if elapsed > threshold:
 
             cursor.execute("""
                 UPDATE nodes

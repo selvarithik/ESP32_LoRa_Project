@@ -1,0 +1,14 @@
+{
+  "port": "COM8",
+  "chip": "ESP32-D0WDQ6 revision 1.0",
+  "flash_encryption_enabled": false,
+  "secure_boot_v1_enabled": false,
+  "secure_boot_v2_enabled": false,
+  "fuse_changes_performed": false,
+  "inspection": "espefuse summary of security flags only; no key blocks read",
+  "pbkdf2_public_vector_passed": true,
+  "pbkdf2_100000_round_elapsed_ms": 11720,
+  "anonymous_broker_login_denied": true,
+  "distinct_paho_clients_concurrent": true,
+  "full_acl_isolation_verified": false
+}

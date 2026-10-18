@@ -1,0 +1,41 @@
+{
+  "accounts_preserved": true,
+  "protected_files_unchanged": {
+    "data/mqtt-secrets.bin": true,
+    "data/session.key": true,
+    "data/gateway.db": true
+  },
+  "public_http": {
+    "/": {
+      "status": 302,
+      "location": "/login"
+    },
+    "/mqtt": {
+      "status": 302,
+      "location": "/login"
+    },
+    "/accounts": {
+      "status": 302,
+      "location": "/login"
+    },
+    "/chat": {
+      "status": 302,
+      "location": "/login"
+    },
+    "/api/mqtt": {
+      "status": 401,
+      "location": null
+    },
+    "/login": {
+      "status": 200,
+      "login_page": true
+    }
+  },
+  "mqtt_worker": "ACL_CONFIRMATION_REQUIRED",
+  "must_change_column": true,
+  "verified_account_backups": 1,
+  "passed": true,
+  "file_check_scope": "Original file lengths and .NET UTC modification ticks; account rows checked separately",
+  "gateway_table_counts_preserved": true,
+  "mqtt_identifiers_and_revisions_preserved": true
+}

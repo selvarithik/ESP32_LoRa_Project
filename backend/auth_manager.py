@@ -1,6 +1,7 @@
 """Authentication helpers for the SELVARITHIK'S LoRa Gateway web app.
 
-The local gateway boots with the documented development credentials:
+Deprecated read-only legacy helper; server sessions use account_settings.
+No credential file is automatically created or repaired. Historical defaults:
     user id: admin
     password: admin
 
@@ -28,44 +29,17 @@ DEFAULT_PASSWORD = os.environ.get("GATEWAY_ADMIN_PASSWORD", "admin")
 
 
 def _read() -> dict:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-
+    # Read-only legacy migration support. Never recreate or repair credentials.
     if not AUTH_FILE.exists():
-        data = {
-            "username": DEFAULT_USER,
-            "password_hash": generate_password_hash(DEFAULT_PASSWORD),
-        }
-        AUTH_FILE.write_text(
-            json.dumps(data, indent=2),
-            encoding="utf-8",
-        )
-        return data
-
-    try:
-        data = json.loads(AUTH_FILE.read_text(encoding="utf-8"))
-        if not data.get("username") or not data.get("password_hash"):
-            raise ValueError("Invalid authentication settings")
-        return data
-    except Exception:
-        # Repair a corrupted local auth file instead of making the gateway
-        # impossible to enter.
-        data = {
-            "username": DEFAULT_USER,
-            "password_hash": generate_password_hash(DEFAULT_PASSWORD),
-        }
-        AUTH_FILE.write_text(
-            json.dumps(data, indent=2),
-            encoding="utf-8",
-        )
-        return data
+        raise RuntimeError("Legacy authentication is unavailable; use Account Settings/local recovery.")
+    data = json.loads(AUTH_FILE.read_text(encoding="utf-8"))
+    if not data.get("username") or not data.get("password_hash"):
+        raise RuntimeError("Legacy authentication data is invalid; explicit recovery required.")
+    return data
 
 
 def authenticate(username: str, password: str) -> bool:
-    data = _read()
-    return (
-        username == data["username"]
-        and check_password_hash(data["password_hash"], password)
-    )
+    raise RuntimeError("Legacy authentication is retired; use canonical Account Settings sessions.")
 
 
 def get_username() -> str:
@@ -73,23 +47,7 @@ def get_username() -> str:
 
 
 def set_credentials(username: str, password: str) -> None:
-    username = (username or "").strip()
-    if not username:
-        raise ValueError("User ID is required")
-    if len(password or "") < 4:
-        raise ValueError("Password must contain at least 4 characters")
-
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    AUTH_FILE.write_text(
-        json.dumps(
-            {
-                "username": username,
-                "password_hash": generate_password_hash(password),
-            },
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
+    raise RuntimeError("Legacy credential writes are disabled; use canonical Account Settings/local recovery.")
 
 
 def is_default_credentials() -> bool:

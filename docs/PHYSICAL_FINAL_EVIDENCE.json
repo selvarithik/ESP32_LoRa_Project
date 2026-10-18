@@ -1,0 +1,16 @@
+{
+  "station_ip": "192.168.1.100",
+  "shared_revision": 1,
+  "mqtt_state": "connected",
+  "pending": false,
+  "free_8bit_heap": 84000,
+  "largest_8bit_block": 55284,
+  "unauthenticated_routes": {
+    "/": 401,
+    "/mqtt": 401,
+    "/api/status": 401,
+    "/api/config": 401,
+    "/api/mqtt": 401
+  },
+  "passed": true
+}

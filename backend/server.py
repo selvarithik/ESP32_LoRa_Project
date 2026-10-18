@@ -3,13 +3,15 @@ from flask_socketio import SocketIO, emit
 
 from datetime import datetime
 from pathlib import Path
+from flask.sessions import SecureCookieSessionInterface
 import os
 import json
 import secrets
+import hashlib
+import account_sessions
 
 import node_manager
 import config_manager
-import auth_manager
 import account_settings
 import telemetry_manager
 import sensor_manager
@@ -18,6 +20,7 @@ import database
 import firmware_manager
 import ota_manager
 import command_manager
+import device_api
 from communication_manager import communication_manager
 from mesh_manager import mesh_manager
 from routing_manager import routing_manager
@@ -39,15 +42,72 @@ app = Flask(
 
 socketio = SocketIO(
     app,
-    cors_allowed_origins="*"
+    cors_allowed_origins=None
 )
 app.register_blueprint(account_settings.bp)
+socket_sessions={}
+def disconnect_revoked_session(key):
+    def disconnect():
+        for sid,value in list(socket_sessions.items()):
+            if value==key:socketio.server.disconnect(sid,namespace='/')
+    socketio.start_background_task(disconnect)
+account_sessions.invalidator=disconnect_revoked_session
 
 # Ensure a fresh checkout has the existing schema before any API route reads it.
 # This creates missing tables only; it does not seed demo nodes or telemetry.
 database.initialize_database()
 sensor_widgets.migrate()
 app.register_blueprint(sensor_widgets.bp)
+device_api.install(app, lambda event, payload: socketio.emit(event, payload))
+import mqtt_api
+mqtt_api.install(app)
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
+
+@app.before_request
+def protect_gateway_api():
+    if request.path in ("/api/auth/login", "/api/accounts/sign-in") and request.method == "POST":
+        if not device_api.rate_limit("login:" + (request.remote_addr or "unknown"), 10):
+            return jsonify(error="Too many sign-in attempts; retry in one minute."), 429
+    if request.path.startswith("/api/") and not request.path.startswith("/api/firmware/") and (request.content_length or 0) > 65536:
+        return jsonify(error="Payload too large"), 413
+    if request.path.startswith(('/static/','/api/v1/device/')) or request.path in ('/login','/api/auth/login','/api/accounts/sign-in','/api/auth/status'):
+        return
+    db = account_settings.connect()
+    try:
+        actor = account_settings.current(db)
+        if not actor:
+            if request.path.startswith('/api/'):return jsonify(error='Sign in required.'),401
+            return redirect('/login')
+        if actor['must_change'] and request.path not in ('/accounts','/logout','/api/accounts','/api/accounts/'+str(actor['id']),'/api/auth/logout'):
+            if request.path.startswith('/api/'):return jsonify(error='PASSWORD_CHANGE_REQUIRED'),403
+            return redirect('/accounts')
+        if request.path.startswith('/api/accounts') or request.path.startswith('/api/auth/'):
+            return
+        if request.method not in ("GET", "HEAD", "OPTIONS"):
+            if actor["role"] not in ("administrator", "creator"):
+                return jsonify(error="Administrator access required."), 403
+            if not secrets.compare_digest(request.headers.get("X-CSRF-Token", ""), session.get("account_csrf", secrets.token_hex(32))):
+                return jsonify(error="Invalid CSRF token."), 403
+    finally:
+        db.close()
+
+@socketio.on("connect")
+def authorize_socket(auth=None):
+    db = account_settings.connect()
+    try:
+        actor=account_settings.current(db)
+        if actor is None or actor['must_change']:return False
+        socket_sessions[request.sid]=hashlib.sha256(session['account_sid'].encode()).hexdigest()
+        return True
+    finally:
+        db.close()
+
+@socketio.on('disconnect')
+def forget_socket(reason=None):socket_sessions.pop(request.sid,None)
+
+@app.errorhandler(413)
+def oversized_request(error):
+    return jsonify(error="Payload too large"), 413
 
 # Local web-session security. Override GATEWAY_SECRET_KEY for a deployment.
 secret_path = Path(__file__).resolve().parent.parent / "data" / "session.key"
@@ -59,6 +119,9 @@ except FileExistsError:
     pass
 app.secret_key = os.environ.get("GATEWAY_SECRET_KEY") or secret_path.read_text(encoding="utf-8")
 app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax")
+class TransportCookieSession(SecureCookieSessionInterface):
+    def get_cookie_secure(self,app):return request.is_secure or super().get_cookie_secure(app)
+app.session_interface=TransportCookieSession()
 
 # Browser pages require a signed session. These paths stay public for the
 # login page, static assets, and embedded-node ingress/feedback.
@@ -83,9 +146,8 @@ PUBLIC_COMMAND_SUFFIXES = (
     "/state",
 )
 
-# Web login/authentication is intentionally disabled for this gateway UI.
-# All dashboard pages and API routes are directly accessible.
-# Keep the application on a trusted/local network when running without auth.
+# Dashboard APIs require an Account Settings session and CSRF for mutations.
+# Embedded devices use the separately authenticated versioned device bridge.
 
 
 
@@ -147,55 +209,43 @@ nodes = {}
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # Legacy route retained for compatibility; web login is disabled.
-    return redirect(url_for("dashboard"))
+    session.setdefault('account_csrf',secrets.token_hex(32))
+    return render_template('login.html',account_csrf=session['account_csrf'])
 
 
 @app.route("/logout", methods=["GET"])
 def logout():
-    # Legacy route retained for compatibility; there is no web session to log out.
-    session.clear()
-    return redirect(url_for("dashboard"))
+    # A GET must not change session state.
+    return render_template('logout.html',account_csrf=session.get('account_csrf',''))
 
 
 @app.route("/api/auth/login", methods=["POST"])
 def api_auth_login():
-    payload = request.get_json(silent=True) or request.form.to_dict()
-    username = (payload.get("username") or "").strip()
-    password = payload.get("password") or ""
-
-    if not auth_manager.authenticate(username, password):
-        return jsonify({
-            "success": False,
-            "error": "Invalid user ID or password."
-        }), 401
-
-    session.clear()
-    session["gateway_authenticated"] = True
-    session["gateway_username"] = auth_manager.get_username()
-    session.permanent = True
-
-    return jsonify({
-        "success": True,
-        "username": session["gateway_username"]
-    })
+    if request.mimetype != "application/json":
+        return jsonify(error="application/json required"), 415
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify(error="JSON object required"), 400
+    return account_settings.sign_in()
 
 
 @app.route("/api/auth/logout", methods=["POST"])
 def api_auth_logout():
-    session.clear()
+    if not secrets.compare_digest(request.headers.get("X-CSRF-Token", ""), session.get("account_csrf", secrets.token_hex(32))):
+        return jsonify(error="Invalid CSRF token"), 403
+    account_settings.logout()
     return jsonify({"success": True})
 
 
 @app.route("/api/auth/status", methods=["GET"])
 def api_auth_status():
-    return jsonify({
-        "success": True,
-        "authenticated": True,
-        "username": "admin",
-        "default_credentials": False,
-        "login_disabled": True
-    })
+    db = account_settings.connect()
+    try:
+        actor = account_settings.current(db)
+        return jsonify(success=True, authenticated=actor is not None,
+                       username=actor["username"] if actor else None, login_disabled=False)
+    finally:
+        db.close()
 
 
 # ============================================================
@@ -3777,6 +3827,13 @@ def api_chat_mark_seen(
 
 @socketio.on("telemetry")
 def receive_telemetry(data):
+    db = account_settings.connect()
+    try:
+        actor = account_settings.current(db)
+        if not actor or actor["role"] not in ("creator", "administrator"):
+            return
+    finally:
+        db.close()
 
     # ========================================================
     # BASIC VALIDATION
@@ -4208,9 +4265,15 @@ def server_time_heartbeat():
             "server_time",
             {"server_time": datetime.now().isoformat()}
         )
-        socketio.sleep(5)
+        for _ in range(5):
+            account_sessions.expire()
+            socketio.sleep(1)
 
 if __name__ == "__main__":
+    account_settings.connect().close()
+    import mqtt_adapter
+    mqtt_client = mqtt_adapter.start_from_environment()
+    print('MQTT permanent worker:',mqtt_client.state,'reason:',mqtt_client.last_error or 'none',flush=True)
 
     print("=" * 60)
 
@@ -4235,8 +4298,8 @@ if __name__ == "__main__":
 
     socketio.run(
         app,
-        host="127.0.0.1",
+        host=os.environ.get("GATEWAY_BIND", "127.0.0.1"),
         port=5000,
-        debug=True,
+        debug=False,
         allow_unsafe_werkzeug=True
     )

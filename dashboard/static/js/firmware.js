@@ -90,7 +90,8 @@
     async function requestJson(url, options = {}) {
         const response = await fetch(url, {
             credentials: "same-origin",
-            ...options
+            ...options,
+            headers: {"X-CSRF-Token": document.querySelector('meta[name="sensor-csrf"]')?.content || "", ...(options.headers || {})}
         });
 
         const contentType = response.headers.get("Content-Type") || "";

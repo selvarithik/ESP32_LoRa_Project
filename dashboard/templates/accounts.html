@@ -3,14 +3,17 @@
 {% block page_subtitle %}Profile, passwords and account access{% endblock %}
 {% block content %}
 <div id="accounts-app" data-csrf="{{ account_csrf }}">
+<link rel="stylesheet" href="/static/css/account-access.css">
+{% if signed_account and signed_account.must_change %}<p role="alert">Replace the temporary password before using the Gateway.</p>{% endif %}
 <p id="account-message" role="status" aria-live="polite"></p>
-<form id="account-sign-in" class="account-form">
+<form id="account-sign-in" class="account-form" hidden>
 <h2>Sign in</h2>
 <label>User ID<input class="input" name="username" autocomplete="username" required></label>
 <label>Password<input class="input" name="password" type="password" autocomplete="current-password" required></label>
 <button class="btn btn-primary">Sign in</button>
 </form>
-<section id="account-workspace" hidden>
+<section id="account-workspace" class="account-workspace" hidden>
+<h2>My Profile</h2><p id="account-role"></p><p>Your password is never returned. Changing account details signs out existing sessions.</p>
 <div class="page-toolbar"><h2 id="account-identity"></h2><button class="btn" id="account-new" type="button">Create account</button><a class="btn" href="/logout">Logout</a></div>
 <div class="table-wrap"><table><thead><tr><th>Name</th><th>User ID</th><th>Account type</th><th>Actions</th></tr></thead><tbody id="account-rows"></tbody></table></div>
 <form id="account-editor" class="account-form" hidden>
@@ -20,6 +23,8 @@
 <label>Account type<select class="input" name="role"><option value="user">User</option><option value="administrator">Administrator</option><option value="creator">Creator</option></select></label>
 <label id="account-current-label">Current password<input class="input" name="current_password" type="password" autocomplete="current-password"></label>
 <label>New password<input class="input" name="password" type="password" minlength="10" maxlength="128" autocomplete="new-password"></label>
+<label>Confirm new password<input class="input" name="confirm_password" type="password" maxlength="128" autocomplete="new-password"></label>
+<button class="btn" id="account-show-password" type="button" aria-pressed="false">Show passwords</button>
 <div class="page-toolbar"><button class="btn btn-primary">Save</button><button class="btn" id="account-cancel" type="button">Cancel</button></div>
 </form>
 </section>

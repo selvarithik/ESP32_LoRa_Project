@@ -1,17 +1,7 @@
-"""
-Private Chat Manager
+"""Private Chat persistence and authorized canonical MQTT device delivery.
 
-IMPORTANT:
-Private Chat is an application/database feature.
-
-It does NOT use:
-- communication_manager
-- LoRa packets
-- mesh routing
-- ESP32 <-> ESP32 M2M communication
-
-The gateway is the chat operator.
-Registered node names come from Node Management.
+The database stores history; physical delivery requires a recipient acknowledgement.
+E220/mesh recipient transport remains unavailable until hardware integration exists.
 """
 
 from __future__ import annotations
@@ -260,9 +250,8 @@ def send_message(
 
     cursor = connection.cursor()
 
-    # DELIVERED means the gateway accepted and stored it.
-    # No LoRa/M2M packet is created.
-    status =    STATUS_DELIVERED
+    # New records distinguish local persistence from transport and recipient receipt.
+    status = "QUEUED"
 
     cursor.execute(
         """
@@ -290,8 +279,8 @@ def send_message(
             message_text,
             status,
             now,
-            now,
-            now
+            None,
+            None
         )
     )
 
@@ -309,9 +298,15 @@ def send_message(
         )
     )
 
+    cursor.execute("UPDATE chat_messages SET delivery_semantics='MQTT' WHERE message_id=?",(message_id,))
     connection.commit()
     connection.close()
 
+    import mqtt_api
+    try:
+        mqtt_api.service().queue_chat(get_message(message_id))
+    except ValueError:
+        mqtt_api.service().chat_state(message_id,"FAILED")
     return {
         "success": True,
         "message":
@@ -357,6 +352,9 @@ def mark_delivered(message_id):
         raise ValueError(
             "Message not found"
         )
+
+    if message["status"] not in (STATUS_DELIVERED,STATUS_SEEN):
+        raise ValueError("Device acknowledgement required")
 
     if message["status"] == STATUS_SEEN:
         return {
@@ -420,6 +418,9 @@ def mark_seen(
         raise ValueError(
             "Receiver does not own this message"
         )
+
+    if message["receiver_node_id"] != GATEWAY_ID:
+        raise ValueError("Device read confirmation required")
 
     now = _now()
 

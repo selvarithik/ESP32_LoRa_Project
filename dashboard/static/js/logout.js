@@ -1,0 +1,1 @@
+document.getElementById('logout').onclick=async function(){this.disabled=true;try{const r=await fetch('/api/auth/logout',{method:'POST',headers:{'X-CSRF-Token':this.dataset.csrf}});if(!r.ok)throw Error('Sign-out failed. Reload and try again.');location.assign('/login');}catch(e){document.getElementById('feedback').textContent=e.message;this.disabled=false;}};

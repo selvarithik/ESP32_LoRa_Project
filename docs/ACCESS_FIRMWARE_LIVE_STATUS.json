@@ -1,0 +1,6 @@
+{
+  "status": "NOT_TESTED",
+  "reason": "COM8 open failed: Windows error 31, attached device not functioning",
+  "new_firmware_deployed": false,
+  "last_verified_ip": "192.168.1.105"
+}

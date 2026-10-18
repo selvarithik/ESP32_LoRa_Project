@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "test": "untrusted_ca",
+      "state": "FAILED",
+      "reason": "TLS_FAILED",
+      "active_preserved": true,
+      "passed": true
+    },
+    {
+      "test": "wrong_credentials",
+      "state": "FAILED",
+      "reason": "AUTH_FAILED",
+      "active_preserved": true,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

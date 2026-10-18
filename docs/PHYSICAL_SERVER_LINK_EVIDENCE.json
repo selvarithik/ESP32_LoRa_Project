@@ -1,0 +1,13 @@
+{
+  "scope": "Physical ESP32, live verified-TLS broker, actual Gateway DB; bounded diagnostic only",
+  "server_http_reachable": true,
+  "connack": true,
+  "suback": true,
+  "physical_packets_persisted": 2,
+  "persistence_puback": true,
+  "shared_digest_match": true,
+  "errors": [],
+  "permanent_worker": "ACL_CONFIRMATION_REQUIRED",
+  "actual_database_status_present": true,
+  "passed": true
+}

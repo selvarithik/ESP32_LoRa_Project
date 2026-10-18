@@ -1,0 +1,28 @@
+{
+  "ready_to_confirm": true,
+  "old_profile_preserved": true,
+  "cancelled": true,
+  "errors": [],
+  "coordinator_state": "READY_TO_CONFIRM",
+  "physical_state": "READY_TO_CONFIRM",
+  "candidate_runtime": {
+    "running": true,
+    "connected": true,
+    "subscribed": true,
+    "puback": true,
+    "peer_probe": true,
+    "tls_error": 0,
+    "failure_code": 0
+  },
+  "proofs": {
+    "connack": true,
+    "peer_probe": true,
+    "peer_ready": true,
+    "puback": true,
+    "suback": true,
+    "tls": true
+  },
+  "free_heap": 59408,
+  "minimum_free_heap": 48268,
+  "passed": true
+}

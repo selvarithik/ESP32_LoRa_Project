@@ -1,6 +1,8 @@
 """Isolated sample gateway. Never uses the real data directory."""
 import sys
 import tempfile
+import os
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,12 +20,28 @@ server.app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 
 def seed():
+    # Each suite starts from an independent logical fixture, even in one discovery process.
+    assert Path(database.DATABASE).resolve().is_relative_to(Path(TEMP.name).resolve())
+    fixture_db = database.get_connection()
+    try:
+        for row in fixture_db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchall():
+            fixture_db.execute('DELETE FROM "' + row[0].replace('"', '""') + '"')
+        fixture_db.commit()
+    finally:
+        fixture_db.close()
+    import mqtt_api
+    if mqtt_api._service:
+        mqtt_api._service.stop()
+        mqtt_api._service=None
+    server.nodes.clear()
     client = server.app.test_client()
-    auth_db = account_settings.connect()
+    with patch.dict(os.environ, {"GATEWAY_ADMIN_PASSWORD": "fixture-only-admin-123"}):
+        auth_db = account_settings.connect()
     actor = auth_db.execute("SELECT * FROM accounts LIMIT 1").fetchone()
     auth_db.close()
     with client.session_transaction() as session:
-        session.update(account_id=actor["id"],account_version=actor["version"],account_csrf="fixture-csrf")
+        account_settings.establish(actor,session)
+        session['account_csrf']='fixture-csrf'
     client.environ_base["HTTP_X_CSRF_TOKEN"] = "fixture-csrf"
     for index in range(1, 4):
         node_id = f"TEST_{index:03}"
@@ -50,4 +68,4 @@ def seed():
 
 if __name__ == "__main__":
     seed()
-    server.socketio.run(server.app, host="127.0.0.1", port=5057, debug=False, allow_unsafe_werkzeug=True)
+    server.socketio.run(server.app, host="127.0.0.1", port=int(os.environ.get('GATEWAY_TEST_PORT','5057')), debug=False, allow_unsafe_werkzeug=True)

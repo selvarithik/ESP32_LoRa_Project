@@ -1,0 +1,116 @@
+{
+  "station_ip": "192.168.1.100",
+  "password_reset": true,
+  "tests": [
+    {
+      "name": "authenticated /",
+      "expected": 200,
+      "actual": 200,
+      "passed": true,
+      "elapsed_s": 11.89
+    },
+    {
+      "name": "authenticated /mqtt",
+      "expected": 200,
+      "actual": 200,
+      "passed": true,
+      "elapsed_s": 0.05
+    },
+    {
+      "name": "authenticated /api/status",
+      "expected": 200,
+      "actual": 200,
+      "passed": true,
+      "elapsed_s": 0.06
+    },
+    {
+      "name": "authenticated /api/config",
+      "expected": 200,
+      "actual": 200,
+      "passed": true,
+      "elapsed_s": 0.03
+    },
+    {
+      "name": "authenticated /api/mqtt",
+      "expected": 200,
+      "actual": 200,
+      "passed": true,
+      "elapsed_s": 0.05
+    },
+    {
+      "name": "unauthenticated status rejected",
+      "expected": 401,
+      "actual": 401,
+      "passed": true,
+      "elapsed_s": 0.03
+    },
+    {
+      "name": "mutation header required",
+      "expected": 403,
+      "actual": 403,
+      "passed": true,
+      "elapsed_s": 0.03
+    },
+    {
+      "name": "malformed config rejected",
+      "expected": 400,
+      "actual": 400,
+      "passed": true,
+      "elapsed_s": 0.03
+    },
+    {
+      "name": "invalid role rejected",
+      "expected": 400,
+      "actual": 400,
+      "passed": true,
+      "elapsed_s": 0.03
+    },
+    {
+      "name": "Wi-Fi secret HTTP rejected",
+      "expected": 403,
+      "actual": 403,
+      "passed": true,
+      "elapsed_s": 0.03
+    },
+    {
+      "name": "MQTT bypass rejected",
+      "expected": 409,
+      "actual": 409,
+      "passed": true,
+      "elapsed_s": 0.03
+    },
+    {
+      "name": "oversized config rejected",
+      "expected": 413,
+      "actual": 413,
+      "passed": true,
+      "elapsed_s": 0.06
+    },
+    {
+      "name": "malformed MQTT rejected",
+      "expected": 400,
+      "actual": 400,
+      "passed": true,
+      "elapsed_s": 0.03
+    },
+    {
+      "name": "stale revision rejected",
+      "expected": 409,
+      "actual": 409,
+      "passed": true,
+      "elapsed_s": 0.03
+    },
+    {
+      "name": "duplicate JSON fields rejected",
+      "expected": 400,
+      "actual": 400,
+      "passed": true,
+      "elapsed_s": 0.03
+    }
+  ],
+  "temporary_password": true,
+  "free_heap": 124604,
+  "minimum_free_heap": 48268,
+  "largest_free_block": 55284,
+  "uptime_ms": 338995
+}

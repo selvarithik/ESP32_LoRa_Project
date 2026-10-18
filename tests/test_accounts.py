@@ -1,10 +1,13 @@
 import sys, tempfile, unittest
+import os
+from unittest.mock import patch
 from pathlib import Path
 from flask import Flask
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"backend"))
 import account_settings as a
 
 class AccountsTest(unittest.TestCase):
+ @patch.dict(os.environ, {"GATEWAY_ADMIN_PASSWORD": "test-initial-admin-123"})
  def test_lifecycle(self):
   with tempfile.TemporaryDirectory() as d:
    old=a.DB
@@ -16,7 +19,7 @@ class AccountsTest(unittest.TestCase):
     with c.session_transaction() as s: s["account_csrf"]="token"
     h={"X-CSRF-Token":"token"}
     self.assertEqual(c.post("/api/accounts/sign-in",json={"username":"admin","password":"bad"},headers=h).status_code,401)
-    data=c.post("/api/accounts/sign-in",json={"username":"admin","password":"admin"},headers=h).get_json()
+    data=c.post("/api/accounts/sign-in",json={"username":"admin","password":"test-initial-admin-123"},headers=h).get_json()
     h={"X-CSRF-Token":data["csrf"]}
     self.assertEqual(c.post("/api/accounts",json={}).status_code,403)
     payload={"username":"testuser","name":"Test User","role":"user","password":"long-password-123"}

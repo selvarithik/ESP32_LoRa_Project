@@ -9,7 +9,7 @@
 <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" sizes="32x32">
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-192.png') }}" sizes="192x192">
 <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Orbitron:wght@800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/fonts/fonts.css') }}">
 <script>try { document.documentElement.dataset.theme = localStorage.getItem("gateway_theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (_) {}</script>
 <title>{% block title %}SELVARITHIK A&amp;D{% endblock %}</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=20261015">

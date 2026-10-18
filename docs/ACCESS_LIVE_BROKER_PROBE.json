@@ -1,0 +1,12 @@
+{
+  "scope": "Bounded diagnostic using configured Gateway ID while permanent worker is ACL-blocked; no publishes or profile/secret changes",
+  "tls_verified": true,
+  "mqtt_authenticated": false,
+  "qos1_subscription_ready": false,
+  "error": "AUTH_FAILED",
+  "mqtt_reason_code": 134,
+  "mqtt_reason": "Bad user name or password",
+  "revision_preserved": true,
+  "passed": false,
+  "reason_code_namespace": "Paho VERSION2 normalized; configured protocol remains MQTT 3.1.1"
+}

@@ -1,0 +1,11 @@
+{
+  "ready": true,
+  "committed": true,
+  "same_profile_preserved": true,
+  "errors": [],
+  "scope": "Actual Gateway journal and physical ESP32; identical-profile commit only",
+  "master_state": "COMMITTED",
+  "master_shared_revision": 1,
+  "gateway_shared_revision": 1,
+  "passed": true
+}

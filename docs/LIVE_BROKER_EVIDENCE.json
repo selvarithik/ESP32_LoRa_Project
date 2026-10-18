@@ -1,0 +1,5 @@
+{
+  "tls_verified": true,
+  "connack": true,
+  "suback_qos1": true
+}

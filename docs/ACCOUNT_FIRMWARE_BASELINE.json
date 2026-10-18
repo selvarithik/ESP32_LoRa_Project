@@ -1,0 +1,9 @@
+{
+  "device_id": "ESP32-10777D842178",
+  "station_ip": "192.168.1.105",
+  "mqtt_revision": 53,
+  "shared_revision": 1,
+  "active_fingerprint": "2c327b3f89115315111e80b0461e5b6c8ee21d499452ca08eed8447a05af7ee3",
+  "client_id": "ESP32-10777D842178",
+  "pending": false
+}

@@ -763,14 +763,10 @@
                     const statusClass =
                         status.toLowerCase();
 
-                    const statusText =
-                        status === "SEEN"
-                            ? "✓✓"
-                            : (
-                                status === "DELIVERED"
-                                    ? "✓✓"
-                                    : "✓"
-                            );
+                    const statusText = message.delivery_semantics === 'LEGACY_LOCAL_STORAGE'
+                        ? 'Saved locally (legacy)'
+                        : ({QUEUED:'Queued',PUBLISHED:'Published',BROKER_ACCEPTED:'Broker acknowledged',STORED:'Recipient stored',DELIVERED:'Delivered',READ:'Read',SEEN:'Read',FAILED:'Failed',EXPIRED:'Expired',UNKNOWN:'Delivery unknown'}[status] || status);
+
 
                     return `
                         <div

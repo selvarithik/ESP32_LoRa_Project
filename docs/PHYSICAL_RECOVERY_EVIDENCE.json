@@ -1,0 +1,8 @@
+{
+  "fault": "EN reset requested 10 ms after staging dispatch; exact flash-write overlap unverified",
+  "active_preserved": true,
+  "journal_state_after_reset": "ROLLED_BACK",
+  "power_cut_tested": false,
+  "cleaned": true,
+  "passed": true
+}

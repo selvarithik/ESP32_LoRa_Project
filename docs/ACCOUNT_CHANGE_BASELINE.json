@@ -1,0 +1,37 @@
+{
+  "gateway.db": {
+    "nodes": 3,
+    "sensors": 0,
+    "telemetry": 0,
+    "sensor_parameters": 7,
+    "sensor_graphs": 7,
+    "telemetry_values": 41,
+    "logs": 121,
+    "chat_conversations": 1,
+    "chat_messages": 5,
+    "firmware_releases": 1,
+    "device_firmware": 1,
+    "firmware_update_jobs": 1,
+    "firmware_update_events": 19,
+    "commands": 107,
+    "command_events": 249,
+    "ui_dashboards": 0,
+    "node_configs": 0,
+    "feature_migrations": 1,
+    "device_receipts": 2,
+    "mqtt_configuration": 1,
+    "mqtt_receipts": 10,
+    "mqtt_chat_outbox": 0
+  },
+  "accounts.sqlite3": {
+    "accounts": 1
+  },
+  "accounts": [
+    {
+      "id": 1,
+      "username": "admin",
+      "role": "creator",
+      "version": 1
+    }
+  ]
+}

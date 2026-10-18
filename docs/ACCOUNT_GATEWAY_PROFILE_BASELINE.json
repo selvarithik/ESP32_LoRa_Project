@@ -1,0 +1,17 @@
+{
+  "revision": 6,
+  "shared_revision": 1,
+  "schema_version": 1,
+  "active": {
+    "profile_name": "ESP32_LORA_GATEWAY001",
+    "host": "n1161c10.ala.eu-central-1.emqxsl.com",
+    "port": 8883,
+    "mqtt_version": "3.1.1",
+    "tls": true,
+    "client_id": "SELVA_GATEWAY_SERVER_001",
+    "topic_prefix": "selvarithik/gateway",
+    "gateway_id": "GW001"
+  },
+  "transaction_state": "COMMITTED",
+  "pending": false
+}
