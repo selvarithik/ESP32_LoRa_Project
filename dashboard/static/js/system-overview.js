@@ -11,9 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function init() {
         await loadOverview();
-        if (timer) clearInterval(timer);
-        timer = setInterval(loadOverview, 5000);
-        window.addEventListener("beforeunload", () => clearInterval(timer), { once: true });
+        timer = gateway.watch(loadOverview, {immediate:false, events:["connect", "node_update"]});
     }
 
     async function loadOverview() {

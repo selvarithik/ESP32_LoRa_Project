@@ -12,21 +12,21 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fonts/fonts.css') }}">
 <script>try { document.documentElement.dataset.theme = localStorage.getItem("gateway_theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (_) {}</script>
 <title>{% block title %}SELVARITHIK A&amp;D{% endblock %}</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=20261015">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=20261019-status">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/geometric-header.css') }}?v=1">
 
 
-<script src="{{ url_for('static', filename='js/app.js') }}?v=20261015">
+<script src="{{ url_for('static', filename='js/app.js') }}?v=20261019-status">
 </script>
-<script src="{{ url_for('static', filename='js/dom.js') }}">
+<script src="{{ url_for('static', filename='js/dom.js') }}?v=20261019-status">
 </script>
 <script src="{{ url_for('static', filename='vendor/socket.io.min.js') }}" defer>
 </script>
-<script src="{{ url_for('static', filename='js/realtime.js') }}" defer>
+<script src="{{ url_for('static', filename='js/realtime.js') }}?v=20261019-status" defer>
 </script>
-<script src="{{ url_for('static', filename='js/accessibility.js') }}" defer>
+<script src="{{ url_for('static', filename='js/accessibility.js') }}?v=20261019-status" defer>
 </script>
-<script src="{{ url_for('static', filename='js/header-scroll.js') }}?v=1" defer></script>
+<script src="{{ url_for('static', filename='js/header-scroll.js') }}?v=20261019-status" defer></script>
 {% block extra_js %}{% endblock %}
 </head>
 

@@ -1,0 +1,20 @@
+{
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\backend\\chat_manager.py": "0993abfde834ab9f69b0249019081a9632204a97a41b5ce2be0f446cbcb0db36",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\backend\\firmware_manager.py": "7becd954572b0de97a9b97cb8cf94f87d7061facc049bf8c98ac2132e39a75b3",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\backend\\ota_manager.py": "df07747f960b504877228c57eae8e3d94283b09c91e0225739e7a4f8d0617331",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\static\\css\\command-center-chat.css": "8b350dbbadf2f1c994423a28563f5b85f7bc1d41876524259465b7f90b558ff6",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\static\\js\\chat.js": "13ddf36a03b367ddcc9107b2fcbcc86af7c852b0fd838d40c98c1fcfabd9bb55",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\static\\js\\firmware.js": "42a69f0ee237e7ae37ec9a546e47ecf72ed06244711911ac30729394f69c1b3a",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\templates\\chat.html": "9633455f2806d7a275133879510fb5f67836ef8a74be1d6214bbe87065a8da35",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\templates\\firmware.html": "875e74feae9a80905597ae261da5a1cef77c7b422bcd462cc5614ae73c91e4d7",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\docs\\COMMAND_CHAT_IMPLEMENTATION.md": "5002b406db3106f224b1237c45c4d10b72129512e833297564093e43d44b371f",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\tests\\command_chat.cjs": "22a19c0556dcaa955eae86f4556fd71e6cebebb3ddac60a946ec2dc4cf59320f",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\tests\\artifacts\\chat-1440.png": "d6886aa9caa774b44b74f6258e999a71ab89a43cb148a0dd7655cb8d3c317cbc",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\tests\\artifacts\\chat-375.png": "00918ab8b41ad2c09adfed0061637806ddf3eeed4875020fac17d252c7fe9eea",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\tests\\artifacts\\chat-768.png": "a150a441ae3ada0f228215766619fb217d8c3209c01b45595b2f720773c09eac",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\static\\css\\pages\\chat.css": "a69dcb630d90a52b9e2a80fd5987861dc55a9ee0a8fdb8f8fe1fc00d63a6c2c8",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\static\\js\\pages\\chat.js": "93095e4db0cbaca91791c35a157bd168c9776f36b9125732cbf59a78ad7e816b",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\static\\js\\pages\\firmware.js": "93095e4db0cbaca91791c35a157bd168c9776f36b9125732cbf59a78ad7e816b",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\templates\\pages\\chat.html": "37d8016416b111a8b96f8458c96da3626de467324065305641158d36189e04fd",
+  "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\templates\\pages\\firmware.html": "7008ca7c60e599b6c5597e5ef4b99a66cdb608a200f2072c15cf04256e727d2c"
+}

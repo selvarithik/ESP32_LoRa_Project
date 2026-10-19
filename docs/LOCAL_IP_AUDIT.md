@@ -1,0 +1,13 @@
+> Historical snapshot: BLE references below describe earlier revisions only. BLE is excluded and removed from active features as of 2026-10-19; see BLE_SENSOR_REPORT.md.
+
+# Local IP implementation audit — 2026-10-19
+
+Before implementation: Master uplinks use TransportManager's worker, HTTP POST /api/v1/device/exchange with a bearer token, or canonical MQTT when connected. HTTP replies return one pending command. Nodes use HTTP Basic /api/v1/packets to their configured Master. NetworkService owns a bounded pending queue and command dispatch/cache. Direct Node-to-Gateway is absent. Master DHT telemetry is not emitted (only Node telemetry is emitted). The Gateway binds loopback by default and only authenticates enrolled Masters on the old device route.
+
+Existing packet: protocol_version=1, stable message_id, source/destination/origin/final destination, next_hop, type, TTL, UTC timestamp (zero before time sync), sequence, correlation ID and CRC-protected JSON-string payload. Maximum packet 4096 bytes, payload 2048. MQTT embeds this same packet, so it must not be replaced.
+
+Gaps: bearer/Basic credentials cross ordinary HTTP, no signed response or replay challenge, no direct-node policy, no listener lifecycle/config/status page, Internet-time-dependent MQTT startup can compete with local commissioning, no authenticated offline clock, and incomplete transport diagnostics. Ethernet/BLE/E220 drivers are unavailable; no external Ethernet module is identified. Wi-Fi is usable on the known ESP32-D0WDQ6/4 MB board. DHT11 is confirmed as a three-pin module at 3.3 V, GPIO4 DATA, common ground.
+
+Planned changes: append local-IP contract 1.0.2 without altering MQTT wire schema/topics; add nonce/HMAC request and response authentication over bounded HTTP/TCP framing, reuse existing packet ingestion and command services, add direct Node permissions and routing, persist listener settings, expose status in an existing-style page accessible from System (no sidebar redesign), and add packet/framing/auth/reconnect tests. Firmware changes cover configuration fields/validation/UI, worker routing, local authenticated handlers, status and commissioning. Gateway changes cover a local-IP service/API/configuration page and targeted device-adapter reuse. Existing MQTT profile, stores and identities stay intact; no MQTT acceptance tests in this phase.
+
+Phase A implementation precedes Phase B builds/tests and physical acceptance. No Ethernet or LoRa result may be inferred from software tests. Local HTTP messages are authenticated and integrity protected, but telemetry is not confidential; use a trusted private LAN or configured verified HTTPS. No new credential is sent over HTTP.

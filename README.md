@@ -1,3 +1,5 @@
+Current local-IP implementation and physical acceptance: [LOCAL_IP_REPORT.md](docs/LOCAL_IP_REPORT.md). MQTT broker acceptance remains separate and pending ACL confirmation.
+
 # ESP32 LoRa Gateway — current integration
 
 The current MQTT, login/account and commissioning changes are described in
@@ -314,7 +316,6 @@ Supported communication values include:
     IP/TCP
     Wi-Fi
     ESP-NOW
-    BLE
 
 Node records contain, among other fields:
 
@@ -562,7 +563,6 @@ The module comments identify planned/compatible transports as:
     Wi-Fi
     Ethernet
     USB
-    BLE
 
 Its responsibilities are:
 
@@ -630,7 +630,6 @@ Gateway connection types allowed by source:
     Wi-Fi
     Ethernet
     USB
-    BLE
 
 Default mesh settings:
 
@@ -2395,7 +2394,6 @@ with the local ESP32 webpage deciding which role is active.
 
 The target firmware is responsible for identity, E220 control, packet handling,
 reliable communication, mesh routing, application data, sensors, commands,
-heartbeat/status, Gateway communication, local configuration, BLE, Wi-Fi,
 Ethernet support, OTA, diagnostics, logging and security.
 
 Reference source plan: the supplied workflow states that every ESP32 runs the
@@ -2457,7 +2455,6 @@ The target embedded firmware is logically organized around:
     Gateway / MQTT Engine
     Wi-Fi Engine
     Ethernet Adapter
-    BLE Commissioning Service
     Local Web Configuration
     OTA / Recovery Engine
     Diagnostics / Logging
@@ -2499,7 +2496,6 @@ NETWORK PLANE
     E220 LoRa
     Wi-Fi
     Ethernet
-    BLE
     MQTT / LAN / Internet
 
 The purpose of this separation is to prevent application logic from becoming
@@ -2530,7 +2526,6 @@ Target startup sequence from the supplied workflow:
     Initialize sensors
        |
        v
-    Initialize Wi-Fi / Ethernet / BLE
        |
        v
     Initialize E220
@@ -2930,7 +2925,6 @@ Possible status information includes:
     Mesh state
     Wi-Fi state
     Ethernet state
-    BLE state
     MQTT / Gateway state
     Sensor state
     Error / fault information
@@ -3019,17 +3013,6 @@ The application layer should not change merely because the network path is:
 or:
     Ethernet
 
-41.22 BLE target behavior
--------------------------
-BLE is planned primarily for local commissioning and diagnostics:
-
-    Initial setup
-    Device identification
-    Local diagnostics
-    Short-range commissioning
-
-The local Web UI remains the main configuration interface in the supplied plan.
-
 41.23 Local ESP32 webpage target
 --------------------------------
 The local ESP32 webpage is a commissioning and configuration control center,
@@ -3046,7 +3029,6 @@ Main planned sections:
     SENSORS
     NETWORK
     GATEWAY / MQTT
-    BLE
     ETHERNET
     STATUS
     DIAGNOSTICS
@@ -3423,7 +3405,6 @@ PART 3 - GATEWAY & PRODUCTION
     Gateway responses
     Node/Master management
     Wi-Fi / Ethernet
-    BLE configuration
     Diagnostics / logs
     Security foundation
 
@@ -3535,7 +3516,6 @@ Before treating the system as remotely manageable:
     Command ACK/response reaches Gateway
     Node status reaches Gateway
     Remote configuration path works
-    BLE commissioning works
     Logs/diagnostics are visible
     Authentication/authorization foundation is applied
     MQTT security is configured where used
@@ -3604,7 +3584,6 @@ physical side of the design, including:
     Real sensor acquisition
     Embedded command execution
     Real Gateway/MQTT client
-    BLE commissioning
     Embedded OTA / boot validation / rollback
     Embedded security mechanisms
 
@@ -3765,7 +3744,6 @@ The embedded device itself follows:
        |      |      |      |
     MASTER/   |   Wi-Fi    Config
       NODE    |   Ethernet  Status
-              |   BLE       OTA
               |
           MESH ENGINE
               |
@@ -3833,3 +3811,7 @@ END OF UPDATED README
 
 END OF README
 ============================================================
+
+Current sensor/BLE scope and physical acceptance: [BLE_SENSOR_REPORT.md](docs/BLE_SENSOR_REPORT.md). DHT11/INA219 and MQ135 raw telemetry are verified; MQ135 uses the owner-confirmed 10k/10k AO divider and remains uncalibrated.
+
+Latest Master LED/TM1637 and enabled MQ135 raw telemetry: [connection indicators](docs/CONNECTION_INDICATORS.md).

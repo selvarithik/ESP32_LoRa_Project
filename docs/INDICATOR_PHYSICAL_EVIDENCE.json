@@ -1,0 +1,188 @@
+{
+  "scope": "Physical ESP32 runtime metadata and real Gateway database; driver write attempts do not prove visual output",
+  "device_id": "ESP32-10777D842178",
+  "station_ip": "192.168.1.100",
+  "role": "MASTER",
+  "indicators": {
+    "server_connected": true,
+    "basis": "AUTHENTICATED_GATEWAY_RECEIPT",
+    "receipt_timeout_seconds": 15,
+    "led_enabled": true,
+    "led_gpio": 2,
+    "led_on_requested": true,
+    "led_active_high": true,
+    "display_acknowledged": true,
+    "display_ack_failures": 0,
+    "display_idle_clk_high": true,
+    "display_idle_dio_high": true,
+    "connection_count_since_boot": 1,
+    "connected_duration_seconds": 35,
+    "display_enabled": true,
+    "display_state": "ACKNOWLEDGED_VISUAL_UNVERIFIED",
+    "display_clk_gpio": 18,
+    "display_dio_gpio": 19,
+    "display_text": "00:35",
+    "physical_visual_verified": false,
+    "gateway_ack_age_seconds": 1
+  },
+  "observed_display_texts": [
+    " -61",
+    " -62",
+    " -68",
+    "00:26",
+    "00:28",
+    "00:35",
+    "n001"
+  ],
+  "runtime_checks_passed": true,
+  "visual_confirmation": "OWNER_CONFIRMED_BLUE_LED_AND_ALL_THREE_TM1637_SCREENS_VISIBLE",
+  "sensor_measurements": [
+    {
+      "parameter_id": "bus_voltage",
+      "value": 3.28,
+      "timestamp": "2026-10-19T17:36:31.846652",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "current",
+      "value": 0.0042,
+      "timestamp": "2026-10-19T17:36:31.846652",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "humidity",
+      "value": 75.0,
+      "timestamp": "2026-10-19T17:36:31.614109",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "mq135_adc_raw",
+      "value": 1206.0,
+      "timestamp": "2026-10-19T17:36:32.087913",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "mq135_pin_mv",
+      "value": 1145.0,
+      "timestamp": "2026-10-19T17:36:32.087913",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "power",
+      "value": 0.013776,
+      "timestamp": "2026-10-19T17:36:31.846652",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "shunt_voltage",
+      "value": 0.42,
+      "timestamp": "2026-10-19T17:36:31.846652",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "temperature",
+      "value": 26.7,
+      "timestamp": "2026-10-19T17:36:31.614109",
+      "source": "local-ip"
+    }
+  ],
+  "mqtt_revision": 53,
+  "mqtt_active_fingerprint_preserved": true,
+  "display_verified_working": true,
+  "display_ack_verified": true,
+  "application_upload": {
+    "port": "COM8",
+    "baud": 230400,
+    "offset": "0x10000",
+    "image_bytes": 1241088,
+    "sha256": "c3d31c3f1f70eb2eda3f9976cf409a09d7ce1fd971a5a0418a89757713bbee66",
+    "flash_hash_verified": true,
+    "partition_table_written": false,
+    "nvs_or_filesystem_erased": false
+  },
+  "build": {
+    "flash_capacity": 4194304,
+    "partitions": [
+      {
+        "name": "nvs",
+        "type": 1,
+        "subtype": 2,
+        "offset": 36864,
+        "size": 20480
+      },
+      {
+        "name": "otadata",
+        "type": 1,
+        "subtype": 0,
+        "offset": 57344,
+        "size": 8192
+      },
+      {
+        "name": "app0",
+        "type": 0,
+        "subtype": 16,
+        "offset": 65536,
+        "size": 1310720
+      },
+      {
+        "name": "app1",
+        "type": 0,
+        "subtype": 17,
+        "offset": 1376256,
+        "size": 1310720
+      },
+      {
+        "name": "spiffs",
+        "type": 1,
+        "subtype": 130,
+        "offset": 2686976,
+        "size": 1441792
+      },
+      {
+        "name": "coredump",
+        "type": 1,
+        "subtype": 3,
+        "offset": 4128768,
+        "size": 65536
+      }
+    ],
+    "application_capacity": 1310720,
+    "program_bytes": 1234377,
+    "image_bytes": 1241088,
+    "image_headroom": 69632,
+    "program_headroom": 76343,
+    "static_ram_bytes": 60236,
+    "second_ota_slot": true,
+    "filesystem_bytes": 1441792,
+    "physical_upload_performed": false,
+    "passed": true
+  },
+  "latest_diagnostic_upload": "SUCCESS_AFTER_USB_RECONNECTION; earlier COM8 failures wrote nothing",
+  "mq135": {
+    "enabled": true,
+    "divider": "Owner confirmed AO->10k->GPIO34 and GPIO34->10k->GND",
+    "sample": {
+      "sensor_type": "MQ135",
+      "sensor_id": "ESP32-10777D842178-MQ135",
+      "valid": true,
+      "simulated": false,
+      "status": "WARMING_UP_RAW_ONLY",
+      "sampled_uptime_ms": 112137,
+      "sampling_interval_seconds": 2,
+      "parameters": {
+        "mq135_adc_raw": 1100,
+        "mq135_pin_mv": 1057
+      },
+      "units": {
+        "mq135_adc_raw": "count",
+        "mq135_pin_mv": "mV"
+      },
+      "calibrated": false,
+      "warmup_remaining_seconds": 86287,
+      "voltage_divider_verification_required": true
+    },
+    "calibration": "PENDING; raw readings only"
+  },
+  "contract_sha256": "8f11faed34414765241d4fdc5c941d484b8741432ecc0110486beef2bb9ceb91",
+  "hardware_offline_test": "PENDING: host expiry/link-loss tests passed; no deliberate router/server outage"
+}

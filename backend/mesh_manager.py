@@ -139,7 +139,6 @@ class MeshManager:
             "Wi-Fi",
             "Ethernet",
             "USB",
-            "BLE"
         }
 
         if connection_type not in allowed:

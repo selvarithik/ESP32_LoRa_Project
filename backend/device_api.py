@@ -18,13 +18,16 @@ import database
 import node_manager
 import sensor_manager
 import telemetry_manager
+import sensor_telemetry
+import device_control_contract as control
+import mqtt_contract as json_contract
 
 bp = Blueprint("device_api", __name__)
 LOCK = threading.RLock()
 MAX_FRAME = 4096
 MAX_PAYLOAD = 2048
 TYPES = {"HELLO", "HEARTBEAT", "STATUS", "TELEMETRY", "COMMAND", "ACK", "RESPONSE", "CONFIG_GET", "CONFIG_UPDATE", "EVENT", "ALARM", "DIAGNOSTIC"}
-SAFE_COMMANDS = {"PING", "GET_STATUS", "STATUS", "GET_TELEMETRY", "GET_CONFIG", "DIAGNOSTICS", "SET_TELEMETRY_INTERVAL", "SET_HEARTBEAT_INTERVAL", "CONFIG_UPDATE"}
+SAFE_COMMANDS = control.COMMANDS
 ID = re.compile(r"^[A-Za-z0-9_.:-]{1,48}$")
 _emit = lambda event, payload: None
 _limits = OrderedDict()
@@ -73,7 +76,8 @@ def json_body(maximum=MAX_FRAME):
     raw = request.get_data(cache=True)
     if len(raw) > maximum:
         return None, (jsonify(error="Payload too large"), 413)
-    value = request.get_json(silent=True)
+    try:value=json_contract.loads(raw,maximum)
+    except json_contract.ContractError:return None,(jsonify(error="Invalid JSON object"),400)
     if not isinstance(value, dict):
         return None, (jsonify(error="JSON object required"), 400)
     return value, None
@@ -108,7 +112,9 @@ def authenticate_master():
 def validate_packet(packet):
     if not isinstance(packet, dict) or len(json.dumps(packet, separators=(",", ":"), ensure_ascii=False).encode()) > MAX_FRAME:
         raise ValueError("Oversized or invalid packet")
-    for field in ("message_id", "source", "destination", "origin_id", "final_destination_id"):
+    fields={"protocol_version","message_id","source","destination","origin_id","final_destination_id","next_hop","type","ttl","timestamp","sequence_number","correlation_id","payload","payload_length","payload_crc32"}
+    if set(packet)!=fields:raise ValueError("Invalid packet fields")
+    for field in ("message_id", "source", "destination", "origin_id", "final_destination_id", "next_hop"):
         safe_id(packet.get(field))
     if packet.get("origin_id") != packet["source"] or packet["final_destination_id"] != packet["destination"]:
         raise ValueError("Inconsistent packet identity")
@@ -140,6 +146,7 @@ def public_node(row):
     data = dict(row)
     data.pop("device_token_hash", None)
     data["latest_status"] = json.loads(data.get("latest_status") or "{}")
+    data["simulated"] = data["latest_status"].get("simulated") is True
     age = (datetime.now() - datetime.fromisoformat(data["last_seen"])).total_seconds() if data.get("last_seen") else None
     hb = data.get("heartbeat_seconds") or 30
     data["health"] = "UNKNOWN" if age is None else "ONLINE" if age <= hb * 2 else "STALE" if age <= hb * 3 else "OFFLINE"
@@ -150,7 +157,7 @@ def public_node(row):
 def redact(value):
     if isinstance(value, dict):
         return {key: redact(item) for key, item in value.items()
-                if not any(word in key.lower() for word in ("password", "token_hash", "gateway_token", "mesh_key", "setup_password", "private_key"))}
+                if not any(word in key.lower() for word in ("password", "token", "secret", "credential", "mesh_key", "private_key", "password_hash"))}
     if isinstance(value, list):
         return [redact(item) for item in value]
     return value
@@ -206,7 +213,7 @@ def enroll(identity, name, role, master_id="", address=""):
                     sensor_manager.add_parameter(identity, pid, pid.title(), pid.upper(), "FLOAT", unit=unit, sensor_id=identity + "-DHT11-" + pid, graph_enabled=True)
     return token
 
-def ingest(master_id, frame):
+def ingest(master_id, frame, transport='wifi'):
     body = validate_packet(frame)
     source = frame["source"]
     if frame["destination"] != "GATEWAY" or frame["type"] in {"COMMAND", "CONFIG_UPDATE", "CONFIG_GET"}:
@@ -235,16 +242,11 @@ def ingest(master_id, frame):
                     raise ValueError("Invalid status intervals/revision")
                 db.execute("UPDATE nodes SET latest_status=?,heartbeat_seconds=?,configuration_revision=?,firmware_version=? WHERE node_id=?", (json.dumps(redact(body)), hb, revision, str(body.get("firmware_version", ""))[:64], source))
             elif kind == "TELEMETRY":
-                values = body.get("parameters")
-                if type(body.get("valid")) is not bool or not isinstance(values, dict) or set(values) - {"temperature", "humidity"}:
-                    raise ValueError("Invalid telemetry schema")
-                if not body["valid"] and values:
-                    raise ValueError("Invalid samples must not contain readings")
-                if body["valid"] and set(values) != {"temperature", "humidity"}:
-                    raise ValueError("Both DHT11 measurements required")
-                for key, value in values.items():
-                    if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value <= (50 if key == "temperature" else 100):
-                        raise ValueError("Invalid DHT11 measurement")
+                sensor_kind, values = sensor_telemetry.validate(body)
+                for pid in values:
+                    unit = sensor_telemetry.SPECS[sensor_kind][pid][2]
+                    if not sensor_manager.get_parameter(source,pid):
+                        sensor_manager.add_parameter(source,pid,pid.replace('_',' ').title(),pid.upper(),'FLOAT',unit=unit,sensor_id=source+'-'+sensor_kind+'-'+pid,graph_enabled=True,decimal_places=sensor_telemetry.PRECISION.get(pid,2))
                 # Same parameter table and widget transforms as the existing telemetry path.
                 import sensor_widgets
                 for parameter in sensor_manager.get_parameters(source):
@@ -252,7 +254,7 @@ def ingest(master_id, frame):
                     field = cfg["source_field"]
                     if parameter["enabled"] and field in values:
                         value = values[field] * cfg["scale"] + cfg["offset"]
-                        db.execute("INSERT INTO telemetry_values(node_id,parameter_id,timestamp,value,data_type,quality,status,source) VALUES(?,?,?,?,?,'GOOD','NORMAL','wifi')", (source, parameter["parameter_id"], now, value, parameter["data_type"]))
+                        db.execute("INSERT INTO telemetry_values(node_id,parameter_id,timestamp,value,data_type,quality,status,source) VALUES(?,?,?,?,?,'GOOD','NORMAL',?)", (source, parameter["parameter_id"], now, value, parameter["data_type"],transport))
                 event = ("telemetry_update", {"node_id": source, "parameters": values, "timestamp": now})
             elif kind in {"ACK", "RESPONSE"}:
                 cid = body.get("command_id")
@@ -270,7 +272,13 @@ def ingest(master_id, frame):
                     if kind == "RESPONSE":
                         if body.get("status") not in {"SUCCESS", "FAILED"}:
                             raise ValueError("Invalid response status")
-                        command_manager.process_command_response(cid, source, status=body["status"], data=body.get("data"))
+                        command_manager.process_command_response(cid, source, status=body["status"], data=redact(body.get("data")))
+                    if kind=="RESPONSE" and body.get("status")=="SUCCESS" and isinstance(body.get("data"),dict):
+                        result=body['data']
+                        if type(result.get('configuration_revision')) is int:
+                            db.execute('UPDATE nodes SET configuration_revision=? WHERE node_id=?',(result['configuration_revision'],source))
+                        if cmd['command_type']=='CONFIG_UPDATE' and isinstance(cmd.get('payload'),dict) and 'device_name' in cmd['payload'] and result.get('saved') is True:
+                            db.execute('UPDATE nodes SET name=? WHERE node_id=?',(cmd['payload']['device_name'],source))
                     event = ("command_update", command_manager.get_command(cid))
             elif kind in {"EVENT", "ALARM", "DIAGNOSTIC"}:
                 db.execute("INSERT INTO logs(timestamp,severity,source,message,node_id) VALUES(?,?,?,?,?)", (now, "error" if kind == "ALARM" else "info", kind, json.dumps(redact(body))[:2048], source))
@@ -286,16 +294,27 @@ def ingest(master_id, frame):
         finally:
             db.close()
     if event:
+        if event[0] == 'telemetry_update':
+            # Emit the persisted, transformed parameter records used by every UI path.
+            # Raw device parameters are a mapping and are not the browser event schema.
+            latest = telemetry_manager.get_latest_values(source)
+            fields = event[1]['parameters']
+            event = ('telemetry_update', {
+                'node_id': source, 'received_at': now,
+                'parameters': [p for p in latest if sensor_widgets.config(p)['source_field'] in fields]
+            })
         _emit(*event)
     return {"accepted": True, "duplicate": False}
 
-def pending_commands(master_id):
+def pending_commands(master_id, device_id=None):
     db = connect()
     try:
         rows = db.execute("SELECT c.* FROM commands c JOIN nodes n ON c.node_id=n.node_id WHERE n.master_id=? AND n.device_enrolled=1 AND n.enabled=1 AND c.state NOT IN ('COMPLETED','FAILED','CANCELLED','TIMEOUT') ORDER BY c.priority DESC,c.created_at LIMIT 12", (master_id,)).fetchall()
     finally:
         db.close()
     for row in rows:
+        if device_id is not None and row['node_id'] != device_id:
+            continue
         cmd = command_manager.get_command(row["command_id"])
         if datetime.fromisoformat(cmd["timeout_at"]) < datetime.now():
             command_manager.update_command_state(cmd["command_id"], "TIMEOUT", error="Device delivery/execution deadline exceeded")
@@ -364,14 +383,16 @@ def rotate(identity):
 @require_admin
 def commands():
     if request.method == "GET":
-        return jsonify(commands=command_manager.list_commands(limit=100))
+        return jsonify(commands=[control.state(c) for c in command_manager.list_commands(limit=100)])
     body, error = json_body()
     if error:
         return error
     try:
+        if set(body)-{'node_id','command_type','payload','timeout_seconds','command_id'}:raise ValueError('UNSUPPORTED_REQUEST_FIELD')
+        timeout=body.get('timeout_seconds',60)
+        if type(timeout) is not int or not 1<=timeout<=300:raise ValueError('TIMEOUT_MUST_BE_INTEGER_1_TO_300')
         kind = body.get("command_type")
-        if kind not in SAFE_COMMANDS:
-            raise ValueError("Unsupported Part 1 command")
+        control.validate_command(kind,body.get("payload",{}))
         db = connect()
         try:
             if not db.execute("SELECT 1 FROM nodes WHERE node_id=? AND device_enrolled=1 AND enabled=1", (body.get("node_id"),)).fetchone():
@@ -386,7 +407,7 @@ def commands():
                 return jsonify(command=old, duplicate=True), 200
         cmd = command_manager.create_command(body.get("node_id"), kind, body.get("payload", {}), timeout_seconds=body.get("timeout_seconds", 60), command_id=body.get("command_id"))
         _emit("command_update", cmd)
-        return jsonify(command=cmd), 201
+        return jsonify(command=control.state(cmd)), 201
     except (ValueError, TypeError) as exc:
         return jsonify(error=str(exc)), 400
 
@@ -411,13 +432,8 @@ def configuration(identity):
                        retrieval='Submit GET_CONFIG through /api/v1/commands for a fresh device response')
     data,error=json_body()
     if error:return error
-    if not data or set(data)-{'telemetry_seconds','heartbeat_seconds','enabled'}:
-        return jsonify(error='Only interval and enabled changes are supported remotely'),400
-    for field, value in data.items():
-        if field=='enabled':
-            if type(value) is not bool:return jsonify(error='enabled must be boolean'),400
-        elif type(value) is not int or not (2 if field=='telemetry_seconds' else 5)<=value<=3600:
-            return jsonify(error='Interval out of range'),400
+    try:control.validate_command('CONFIG_UPDATE',data)
+    except (ValueError,TypeError) as error:return jsonify(error=str(error)),400
     cmd=command_manager.create_command(identity,'CONFIG_UPDATE',data,timeout_seconds=60)
     _emit('command_update',cmd)
     return jsonify(command=cmd,delivery='POLLING_OR_MQTT'),202

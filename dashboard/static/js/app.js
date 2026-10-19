@@ -16,6 +16,41 @@ const gateway = window.gateway;
 
 gateway.apiBase = "";
 
+/* Periodic reconciliation is required even when a socket remains connected.
+   Pause hidden pages, coalesce events, and restart after browser back/forward cache. */
+gateway.watch = function (refresh, options = {}) {
+    let timer = null, running = false, stopped = false;
+    const interval = options.interval || 5000;
+    async function run() {
+        if (stopped || document.hidden || running || (options.enabled && !options.enabled())) return;
+        running = true;
+        try { await refresh(); }
+        catch (error) { console.error("Background refresh failed:", error); }
+        finally { running = false; }
+    }
+    const start = () => { if (!timer && !stopped) timer = setInterval(run, interval); };
+    const pause = () => { clearInterval(timer); timer = null; };
+    const visible = () => { if (document.hidden) pause(); else { start(); run(); } };
+    const hide = () => pause();
+    const show = event => { if (event.persisted) { start(); run(); } };
+    document.addEventListener("visibilitychange", visible);
+    window.addEventListener("pagehide", hide);
+    window.addEventListener("pageshow", show);
+    const events = options.events || [];
+    events.forEach(event => gateway.socket?.on(event, run));
+    start();
+    if (options.immediate !== false) run();
+    return () => {
+        stopped = true; pause();
+        document.removeEventListener("visibilitychange", visible);
+        window.removeEventListener("pagehide", hide);
+        window.removeEventListener("pageshow", show);
+        events.forEach(event => gateway.socket?.off(event, run));
+    };
+};
+
+
+
 gateway.timeZone = "Asia/Kolkata";
 
 
@@ -225,6 +260,8 @@ gateway.send = async function (
 
     const options = {
         method: normalizedMethod,
+        cache: "no-store",
+        signal: AbortSignal.timeout(12000),
         headers: {
             "Accept": "application/json"
         }
@@ -284,7 +321,7 @@ gateway.send = async function (
     ) {
 
         throw new Error(
-            data.error ||
+            (typeof data.error === "object" ? data.error.code || data.error.message : data.error) ||
             data.message ||
             "Server request failed"
         );
@@ -390,7 +427,7 @@ function getErrorMessage(
     if (data) {
 
         return (
-            data.error ||
+            (typeof data.error === "object" ? data.error.code || data.error.message : data.error) ||
             data.message ||
             getStatusMessage(response.status)
         );

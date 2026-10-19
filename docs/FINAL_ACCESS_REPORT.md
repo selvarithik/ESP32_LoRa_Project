@@ -1,3 +1,7 @@
+> Historical snapshot: BLE references below describe earlier revisions only. BLE is excluded and removed from active features as of 2026-10-19; see BLE_SENSOR_REPORT.md.
+
+Historical report: newer local-IP implementation, application-only deployment and physical evidence are in [LOCAL_IP_REPORT.md](LOCAL_IP_REPORT.md).
+
 # Login, accounts, setup and MQTT acceptance — 2026-10-19
 
 ## Current outcome

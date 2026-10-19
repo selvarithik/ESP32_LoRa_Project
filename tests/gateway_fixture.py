@@ -30,6 +30,9 @@ def seed():
     finally:
         fixture_db.close()
     import mqtt_api
+    import local_ip
+    local_ip.service.stop()
+    local_ip.service.migrate()
     if mqtt_api._service:
         mqtt_api._service.stop()
         mqtt_api._service=None

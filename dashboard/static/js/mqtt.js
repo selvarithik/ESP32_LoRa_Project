@@ -8,7 +8,7 @@
  async function api(path, data) {
    const headers = {'Content-Type':'application/json'};
    headers['X-CSRF-Token'] = document.querySelector('meta[name="sensor-csrf"]')?.content || document.querySelector('meta[name="csrf-token"]')?.content || '';
-   const response = await fetch(path, {method:data ? 'POST':'GET', headers, body:data ? JSON.stringify(data):undefined});
+   const response = await fetch(path, {method:data ? 'POST':'GET', headers, cache:'no-store', signal:AbortSignal.timeout(12000), body:data ? JSON.stringify(data):undefined});
    const body = await response.json();
    if(response.status===401){location.assign('/login');throw new Error('Sign in required');}
    if (!response.ok){const error=new Error(body.error?.code || 'REQUEST_FAILED');error.field=body.error?.field;throw error;}
@@ -53,4 +53,5 @@
  $('mqtt-cancel').onclick=()=>action('cancel',{transaction_id:state.transaction.transaction_id});
  $('mqtt-refresh').onclick=()=>load(true).then(()=>$('mqtt-feedback').textContent='Status refreshed; unsaved values retained. No connection or configuration operation started.').catch(e=>$('mqtt-feedback').textContent=e.message);
  load().catch(e=>$('mqtt-feedback').textContent=e.message);
+ gateway.watch(()=>load(true),{immediate:false,enabled:()=>!busy&&!$('mqtt-form').contains(document.activeElement)});
 })();

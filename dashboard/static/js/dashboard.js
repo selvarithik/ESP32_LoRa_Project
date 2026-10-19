@@ -66,8 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function online(node) {
-        var s = String((node && node.status) || "").toLowerCase();
-        return (s === "online" || s === "connected") && Boolean(node.last_seen) && Date.now() - new Date(node.last_seen).getTime() < 60000;
+        return SensorUI.connection(node).online;
     }
 
     function parameterStatus(p) {
@@ -110,7 +109,8 @@ document.addEventListener("DOMContentLoaded", function () {
     async function getJson(url, options) {
         var response = await fetch(url, Object.assign({
             credentials: "same-origin",
-            cache: "no-store"
+            cache: "no-store",
+            signal: AbortSignal.timeout(12000)
         }, options || {}));
 
         var type = response.headers.get("content-type") || "";
@@ -128,6 +128,9 @@ document.addEventListener("DOMContentLoaded", function () {
         var select = document.getElementById("dashboard-node-filter");
         if (!select) return;
 
+        var signature = JSON.stringify(state.nodes.map(n => [n.node_id, n.name]));
+        if (select.dataset.options === signature) return;
+        select.dataset.options = signature;
         var current = state.nodeFilter;
         select.innerHTML = '<option value="">All nodes</option>';
 
@@ -406,7 +409,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-            var nodeOnline = online(node);
+            var reported={};try{reported=typeof node.latest_status==="string"?JSON.parse(node.latest_status):node.latest_status||{};}catch(_){}
+            var connection = SensorUI.connection(node);
+            var nodeOnline = connection.online;
             var problemCount = params.filter(function (p) {
                 var status = parameterStatus(p);
                 return status === "alarm" || status === "error";
@@ -423,22 +428,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 '<header class="dashboard-node-head">' +
                     '<div>' +
                         '<div class="dashboard-node-title-row">' +
-                            '<span class="dashboard-node-status ' + (nodeOnline ? "online" : "") + '"></span>' +
+                            '<span class="dashboard-node-status ' + (nodeOnline ? "online" : "offline") + '"></span>' +
                             '<div class="dashboard-node-name" title="' + esc(node.name || node.node_id) + '">' + esc(node.name || node.node_id) + '</div>' +
                         '</div>' +
-                        '<div class="dashboard-node-id">' + esc(node.node_id) + '</div>' +
+                        '<div class="dashboard-node-id">' + esc(node.node_id) + (node.simulated ? ' · SIMULATED' : '') + '</div>' +
                     '</div>' +
                     '<div class="dashboard-node-config">' +
                         '<div class="dashboard-node-config-item"><span>Address</span><strong>' + esc(node.node_address || "—") + '</strong></div>' +
+                        '<div class="dashboard-node-config-item"><span>Role / Master</span><strong>' + esc((node.device_role || reported.role || 'Unknown') + (node.master_id && node.master_id !== node.node_id ? ' / ' + node.master_id : '')) + '</strong></div>' +
+                        '<div class="dashboard-node-config-item"><span>Transmission interval</span><strong>' + esc(reported.telemetry_seconds ? reported.telemetry_seconds + ' s' : 'Not reported') + '</strong></div>' +
                         '<div class="dashboard-node-config-item"><span>MCU</span><strong>' + esc([node.mcu_family,node.mcu_model].filter(Boolean).join(" / ") || "—") + '</strong></div>' +
                         '<div class="dashboard-node-config-item"><span>Packets</span><strong>' + esc(packetCount) + '</strong></div>' +
                         '<div class="dashboard-node-config-item"><span>Battery</span><strong>' + esc(batteryParam ? formatValue(batteryParam.value, batteryParam.decimal_places) + " " + (batteryParam.unit || "") : "—") + '</strong></div>' +
                         '<div class="dashboard-node-config-item"><span>Signal</span><strong>' + esc(signalParam ? formatValue(signalParam.value, signalParam.decimal_places) + " " + (signalParam.unit || "") : (node.communication_type || "—")) + '</strong></div>' +
                         '<div class="dashboard-node-config-item"><span>Last Seen</span><strong>' + esc(formatTime(node.last_seen)) + '</strong></div>' +
                     '</div>' +
-                    '<div class="dashboard-node-state-pill ' + (nodeOnline ? "online" : "offline") + '"><span>' + esc(nodeOnline ? "ONLINE" : "OFFLINE") + '</span><strong>' + esc(problemCount ? problemCount + " alerts" : "Clear") + '</strong></div>' +
+                    '<div class="dashboard-node-state-pill ' + (nodeOnline ? "online" : "offline") + '"><span>' + esc(nodeOnline ? "ONLINE" : "OFFLINE") + '</span><strong>' + esc(nodeOnline ? (problemCount ? problemCount + " alerts" : "Connected") : "Connection unavailable") + '</strong></div>' +
                 '</header>' +
+                (!nodeOnline ? '<p class="dashboard-node-error"><strong>Offline:</strong> ' + esc(connection.reason) + '</p>' : "") +
                 '<div class="dashboard-node-body">' +
+                    (Array.isArray(reported.sensors) ? '<div class="dashboard-sensor-health" aria-label="Reported sensor health">' + reported.sensors.map(function(sensor) { return '<p><strong>' + esc(sensor.sensor_type || 'Sensor') + '</strong>: ' + esc(String(sensor.status || 'UNKNOWN').replaceAll('_', ' ')) + (sensor.sensor_type === 'INA219' && !sensor.shunt_resistance_configured ? ' · current/power unavailable until shunt resistance is confirmed' : '') + (sensor.sensor_type === 'MQ135' ? ' · raw readings only; no gas concentration or safety classification' : '') + '</p>'; }).join('') + '</div>' : '') +
                     (state.showConfig
                         ? '<div class="dashboard-node-inspector"><div class="dashboard-node-inspector-head">Node Configuration</div><div class="dashboard-node-inspector-grid">' + nodeConfigFields(node) + '</div></div>'
                         : "") +
@@ -711,6 +720,7 @@ document.addEventListener("DOMContentLoaded", function () {
             renderNodes();
             renderProblems();
             renderCustomWidgets();
+            renderMainChart();
             renderActivity(snapshot.logs || []);
             text("dashboard-last-refresh", formatClock(new Date().toISOString()));
             if (indicator) { indicator.style.opacity = "1"; indicator.textContent = gateway.socket?.connected ? "Live" : "Polling"; }
@@ -719,8 +729,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             console.error("Dashboard refresh error:", error);
             var box = document.getElementById("dashboard-node-list");
-            if (box) box.innerHTML = '<div class="dashboard-node-empty">Unable to load dashboard data: ' + esc(error.message) + '</div>';
-            if (indicator) indicator.style.opacity = ".55";
+            if (box && !state.nodes.length) box.innerHTML = '<div class="dashboard-node-empty">Unable to load dashboard data: ' + esc(error.message) + '</div>';
+            if (indicator) { indicator.style.opacity = ".55"; indicator.textContent = "Refresh failed · retrying"; }
             if (showToastFlag) toast("Dashboard data could not be loaded.", "error");
         } finally {
             state.busy = false;
@@ -730,13 +740,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function startTimers() {
         stopTimers();
-        state.refreshTimer = setInterval(function () {
-            if (!document.hidden && !gateway.socket?.connected) refreshDashboard(false, false);
-        }, 5000);
-
-        state.graphTimer = setInterval(function () {
-            if (!document.hidden) { renderNodes(); renderProblems(); updateCounters(); }
-        }, 1000);
+        state.refreshTimer = gateway.watch(() => refreshDashboard(false, false), {immediate:false});
+        state.graphTimer = gateway.watch(() => { renderNodes(); renderProblems(); updateCounters(); }, {interval:1000, immediate:false});
     }
 
     function remember(p) {
@@ -747,11 +752,20 @@ document.addEventListener("DOMContentLoaded", function () {
             if (samples.length > 60) samples.shift();
             samples.timestamp = p.timestamp;
         }
+        if (p.timestamp && p.value !== null && Number.isFinite(Number(p.value))) {
+            var graph = state.graphs[key] || (state.graphs[key] = {config:{},data:[]});
+            var last = graph.data[graph.data.length - 1];
+            if (!last || new Date(p.timestamp) > new Date(last.timestamp)) {
+                graph.data.push({value:p.value,timestamp:p.timestamp});
+                graph.data = graph.data.slice(-180);
+            }
+        }
     }
 
     var paintPending = false;
     function applyTelemetry(update) {
         if (document.hidden) return;
+        if (!update || !Array.isArray(update.parameters)) { refreshDashboard(false, false); return; }
         var node = state.nodes.find(function (item) { return item.node_id === update.node_id; });
         if (!node) { refreshDashboard(false, false); return; }
         var params = state.telemetry[update.node_id] || [];
@@ -761,8 +775,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (p.timestamp && new Date(incoming.timestamp) <= new Date(p.timestamp)) return;
             Object.assign(p, incoming, { _nodeId: update.node_id });
             remember(p);
-            var graph = state.graphs[update.node_id + "::" + p.parameter_id];
-            if (graph) { graph.data.push({ value: p.value, timestamp: p.timestamp }); graph.data = graph.data.slice(-180); }
         });
         if (node.enabled) node.status = "online";
         if (!node.last_seen || new Date(update.received_at) > new Date(node.last_seen)) node.last_seen = update.received_at;
@@ -778,8 +790,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function stopTimers() {
-        if (state.refreshTimer) clearInterval(state.refreshTimer);
-        if (state.graphTimer) clearInterval(state.graphTimer);
+        if (state.refreshTimer) state.refreshTimer();
+        if (state.graphTimer) state.graphTimer();
         state.refreshTimer = null;
         state.graphTimer = null;
     }
@@ -916,15 +928,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (e.key === "Escape") closeDrawer();
         });
 
-        document.addEventListener("visibilitychange", function () {
-            if (document.hidden) {
-                stopTimers();
-            } else {
-                if (!socket || socket.connected) refreshDashboard(false, true);
-    else setTimeout(function () { if (!state.nodes.length && !state.busy) refreshDashboard(false, true); }, 1200);
-    startTimers();
-            }
-        });
+
     }
 
     bind();
@@ -935,5 +939,5 @@ document.addEventListener("DOMContentLoaded", function () {
     socket?.on("connect", function () { refreshDashboard(false, true); text("dashboard-live-indicator", "Live"); });
     socket?.on("disconnect", function () { text("dashboard-live-indicator", "Reconnecting"); });
     refreshDashboard(false, true).then(startTimers);
-    window.addEventListener("pagehide", stopTimers);
+
 });

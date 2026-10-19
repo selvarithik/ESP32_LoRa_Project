@@ -8,6 +8,8 @@
 <nav class="system-tabs" aria-label="System views">
 <a href="/system" aria-current="page">Settings</a>
 <a href="/system-overview" >Health</a>
+<a href="/device-controls">Master / Node controls</a>
+<a href="/local-ip">Local IP communication</a>
 </nav>
 
 <div class="page-view page-view-system">
@@ -100,6 +102,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/system.js') }}?v=14">
+<script src="{{ url_for('static', filename='js/system.js') }}?v=20261019-refresh">
 </script>
 {% endblock %}

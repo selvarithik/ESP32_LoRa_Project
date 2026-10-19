@@ -1,3 +1,5 @@
+> Historical snapshot: BLE references below describe earlier revisions only. BLE is excluded and removed from active features as of 2026-10-19; see BLE_SENSOR_REPORT.md.
+
 > Current access/source and deployment status: see [FINAL_ACCESS_REPORT.md](FINAL_ACCESS_REPORT.md), 2026-10-19. Current live MQTT authentication fails despite verified TLS; prior physical results below are historical diagnostics, not a connected permanent worker. New browser-session firmware is built but not uploaded.
 
 # MQTT implementation and acceptance report — 2026-10-18

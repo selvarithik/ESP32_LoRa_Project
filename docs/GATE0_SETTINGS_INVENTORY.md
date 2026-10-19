@@ -1,3 +1,5 @@
+> Historical snapshot: BLE references below describe earlier revisions only. BLE is excluded and removed from active features as of 2026-10-19; see BLE_SENSOR_REPORT.md.
+
 # Gate 0 settings inventory
 
 2026-10-17. Source inspection, not proof of device configuration. Secrets intentionally not read. Canonical target names are distinguished from actual legacy storage. Every DeviceConfig member is accounted for below or in the legacy broker mapping.

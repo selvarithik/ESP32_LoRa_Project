@@ -1,0 +1,300 @@
+{
+  "scope": "Tracked and nonignored firmware for both roles, Gateway, dashboard, manifests/config/docs. Private data/build caches/generated inventory excluded. Bundled SDK chip BT/HAL support remains, with no active BLE application feature.",
+  "references": [
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "CONFIG_CONTRACT.md",
+      "line": 608,
+      "classification": "SCOPE_EXCLUSION_NOTICE"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "CONFIG_CONTRACT.md",
+      "line": 609,
+      "classification": "SCOPE_EXCLUSION_NOTICE"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "README.md",
+      "line": 34,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 3,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 18,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 77,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 79,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/CONNECTION_INDICATORS.md",
+      "line": 23,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/FINAL_ACCESS_REPORT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/FINAL_ACCESS_REPORT.md",
+      "line": 30,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/GATE0_SETTINGS_INVENTORY.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/GATE0_SETTINGS_INVENTORY.md",
+      "line": 41,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/GATE0_SETTINGS_INVENTORY.md",
+      "line": 81,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/LOCAL_IP_AUDIT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/LOCAL_IP_AUDIT.md",
+      "line": 9,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/MQTT_IMPLEMENTATION_REPORT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/MQTT_IMPLEMENTATION_REPORT.md",
+      "line": 132,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/MQTT_IMPLEMENTATION_REPORT.md",
+      "line": 172,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/PART1_AUDIT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/PART1_AUDIT.md",
+      "line": 41,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/PART1_REPORT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/PART1_REPORT.md",
+      "line": 33,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/PART1_REPORT.md",
+      "line": 133,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/PART1_REPORT.md",
+      "line": 175,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/SOFTWARE_BASELINE.md",
+      "line": 19,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "docs/SOFTWARE_BASELINE.md",
+      "line": 24,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_ESP32_Firmware",
+      "file": "src/core/config_manager.cpp",
+      "line": 173,
+      "classification": "INERT_LEGACY_KEY_MIGRATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "CONFIG_CONTRACT.md",
+      "line": 608,
+      "classification": "SCOPE_EXCLUSION_NOTICE"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "CONFIG_CONTRACT.md",
+      "line": 609,
+      "classification": "SCOPE_EXCLUSION_NOTICE"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "README.md",
+      "line": 3815,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 3,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 18,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 77,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/BLE_SENSOR_REPORT.md",
+      "line": 79,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/CONNECTION_INDICATORS.md",
+      "line": 23,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/FINAL_ACCESS_REPORT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/FINAL_ACCESS_REPORT.md",
+      "line": 30,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/GATE0_SETTINGS_INVENTORY.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/GATE0_SETTINGS_INVENTORY.md",
+      "line": 41,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/GATE0_SETTINGS_INVENTORY.md",
+      "line": 81,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/LOCAL_IP_AUDIT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/LOCAL_IP_AUDIT.md",
+      "line": 9,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/MQTT_IMPLEMENTATION_REPORT.md",
+      "line": 1,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/MQTT_IMPLEMENTATION_REPORT.md",
+      "line": 132,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/MQTT_IMPLEMENTATION_REPORT.md",
+      "line": 172,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/SOFTWARE_BASELINE.md",
+      "line": 19,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    },
+    {
+      "project": "ESP32_LoRa_Project",
+      "file": "docs/SOFTWARE_BASELINE.md",
+      "line": 24,
+      "classification": "HISTORICAL_OR_REMOVAL_DOCUMENTATION"
+    }
+  ],
+  "active_or_unclassified": []
+}

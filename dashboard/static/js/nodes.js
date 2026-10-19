@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let nodes = [];
     let editingNodeId = null;
     let activeFilter = "all";
+    let loadingNodes = false;
+    const boundButtons = new WeakSet();
 
 
     /* ============================================================
@@ -23,6 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
         bindEvents();
 
         await loadNodes();
+        gateway.watch(() => {
+            if (document.querySelector(".node-more-wrap.open")) return;
+            return loadNodes({quiet:true});
+        }, {immediate:false, events:["connect", "node_update", "telemetry_update"]});
     }
 
 
@@ -113,9 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
        LOAD NODES
        ============================================================ */
 
-    async function loadNodes() {
-
-        gateway.showLoading(
+    async function loadNodes(options = {}) {
+        if (loadingNodes) return;
+        loadingNodes = true;
+        if (!nodes.length) gateway.showLoading(
             table,
             "Loading nodes..."
         );
@@ -144,18 +151,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 error
             );
 
-            gateway.showError(
+            if (!nodes.length) gateway.showError(
                 table,
                 error.message ||
                 "Unable to load nodes",
                 loadNodes
             );
 
-            gateway.toast(
-                "Unable to load nodes",
-                "error"
-            );
-        }
+            if (!options.quiet) gateway.toast("Unable to load nodes", "error");
+        } finally { loadingNodes = false; }
 
     }
 
@@ -294,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        table.innerHTML =
+        gateway.patchHtml(table,
             filtered.map(node => {
 
                 const status =
@@ -306,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 return `
 
-                    <tr>
+                    <tr data-id="${gateway.escape(node.node_id)}">
 
                         <td>
                             <strong>
@@ -454,7 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </tr>
                 `;
 
-            }).join("");
+            }).join(""));
 
 
         bindTableButtons();
@@ -470,6 +474,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document
             .querySelectorAll(".node-action-btn.view")
             .forEach(button => {
+                if (boundButtons.has(button)) return;
+                boundButtons.add(button);
 
                 button.addEventListener(
                     "click",
@@ -496,6 +502,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document
             .querySelectorAll(".node-action-btn.edit")
             .forEach(button => {
+                if (boundButtons.has(button)) return;
+                boundButtons.add(button);
 
                 button.addEventListener(
                     "click",
@@ -522,6 +530,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document
             .querySelectorAll(".node-action-btn.more")
             .forEach(button => {
+                if (boundButtons.has(button)) return;
+                boundButtons.add(button);
 
                 button.addEventListener(
                     "click",
@@ -563,6 +573,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document
             .querySelectorAll(".node-menu-item.toggle")
             .forEach(button => {
+                if (boundButtons.has(button)) return;
+                boundButtons.add(button);
 
                 button.addEventListener(
                     "click",
@@ -594,6 +606,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document
             .querySelectorAll(".node-menu-item.delete")
             .forEach(button => {
+                if (boundButtons.has(button)) return;
+                boundButtons.add(button);
 
                 button.addEventListener(
                     "click",

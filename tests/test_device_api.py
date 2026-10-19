@@ -119,7 +119,7 @@ class DeviceApiTests(unittest.TestCase):
         finally: db.close()
         api.pending_commands('ESP32-MASTER')
         self.assertEqual(command_manager.get_command(cmd['command_id'])['state'],'TIMEOUT')
-        self.assertEqual(self.admin.post('/api/v1/commands',json={'node_id':'ESP32-NODE','command_type':'RESTART'}).status_code,400)
+        self.assertEqual(self.admin.post('/api/v1/commands',json={'node_id':'ESP32-NODE','command_type':'FACTORY_RESET'}).status_code,400)
 
     def test_crc_golden_vector(self):
         import zlib

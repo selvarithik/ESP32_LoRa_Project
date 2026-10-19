@@ -1,0 +1,212 @@
+{
+  "scope": "Physical COM8 ESP32 + DHT11 + INA219 + signed LAN + actual Gateway SQLite; MQ135 disconnected; no MQTT connectivity claim",
+  "device_id": "ESP32-10777D842178",
+  "station_ip": "192.168.1.100",
+  "sensors": [
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": true,
+      "simulated": false,
+      "status": "OK",
+      "sampled_uptime_ms": 49110,
+      "sampling_interval_seconds": 2,
+      "parameters": {
+        "temperature": 26.2,
+        "humidity": 76
+      },
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "last_success_uptime_ms": 49110
+    },
+    {
+      "sensor_type": "INA219",
+      "sensor_id": "ESP32-10777D842178-INA219",
+      "valid": true,
+      "simulated": false,
+      "status": "OK",
+      "sampled_uptime_ms": 49110,
+      "sampling_interval_seconds": 2,
+      "parameters": {
+        "bus_voltage": 3.284,
+        "shunt_voltage": 0.42,
+        "current": 0.0042,
+        "power": 0.013793
+      },
+      "units": {
+        "bus_voltage": "V",
+        "shunt_voltage": "mV",
+        "current": "A",
+        "power": "W"
+      },
+      "current_calibrated": false,
+      "shunt_resistance_configured": true,
+      "shunt_milliohms": 100
+    },
+    {
+      "sensor_type": "MQ135",
+      "sensor_id": "ESP32-10777D842178-MQ135",
+      "valid": false,
+      "simulated": false,
+      "status": "NOT_CONFIGURED",
+      "sampled_uptime_ms": 0,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "mq135_adc_raw": "count",
+        "mq135_pin_mv": "mV"
+      },
+      "calibrated": false,
+      "warmup_remaining_seconds": 86349,
+      "voltage_divider_verification_required": true
+    }
+  ],
+  "commands": [
+    {
+      "command": "PING",
+      "command_id": "CMD-C4E3B15D6260",
+      "state": "COMPLETED",
+      "events": [
+        "QUEUED",
+        "ACK_RECEIVED",
+        "COMPLETED"
+      ]
+    },
+    {
+      "command": "GET_TELEMETRY",
+      "command_id": "CMD-7FD44F90343A",
+      "state": "COMPLETED",
+      "events": [
+        "QUEUED",
+        "ACK_RECEIVED",
+        "COMPLETED"
+      ]
+    }
+  ],
+  "gateway_device": {
+    "firmware_version": "1.1.0-software",
+    "configuration_revision": 4,
+    "latest_status": {
+      "device_id": "ESP32-10777D842178",
+      "device_name": "ESP32 LoRa Device",
+      "role": "MASTER",
+      "master_id": "ESP32-10777D842178",
+      "node_address": "1",
+      "firmware_version": "1.1.0-software",
+      "configuration_revision": 4,
+      "heartbeat_seconds": 30,
+      "uptime_s": 49,
+      "free_heap": 175332,
+      "wifi_connected": true,
+      "wifi_rssi": -70,
+      "gateway_reachable": true,
+      "transport": "HTTP",
+      "telemetry_seconds": 10,
+      "simulated": false,
+      "operating_state": "ACTIVE",
+      "reset_reason": "POWERON",
+      "internet_status": "UNKNOWN",
+      "sensor_status": "OK",
+      "sensors": [
+        {
+          "sensor_type": "DHT11",
+          "sensor_id": "ESP32-10777D842178-DHT11",
+          "valid": true,
+          "simulated": false,
+          "status": "OK",
+          "sampled_uptime_ms": 49110,
+          "sampling_interval_seconds": 2,
+          "last_success_uptime_ms": 49110
+        },
+        {
+          "sensor_type": "INA219",
+          "sensor_id": "ESP32-10777D842178-INA219",
+          "valid": true,
+          "simulated": false,
+          "status": "OK",
+          "sampled_uptime_ms": 49110,
+          "sampling_interval_seconds": 2,
+          "current_calibrated": false,
+          "shunt_resistance_configured": true,
+          "shunt_milliohms": 100
+        },
+        {
+          "sensor_type": "MQ135",
+          "sensor_id": "ESP32-10777D842178-MQ135",
+          "valid": false,
+          "simulated": false,
+          "status": "NOT_CONFIGURED",
+          "sampled_uptime_ms": 0,
+          "sampling_interval_seconds": 2,
+          "calibrated": false,
+          "warmup_remaining_seconds": 86351,
+          "voltage_divider_verification_required": true
+        }
+      ],
+      "last_sensor_sample_uptime_ms": 49110,
+      "last_transport_accept_uptime_ms": 49254,
+      "last_gateway_receipt_uptime_ms": 49254,
+      "sample_time_basis": "DEVICE_UPTIME_MS",
+      "enabled": true
+    },
+    "last_seen": "2026-10-19T17:07:34.085384"
+  },
+  "persisted_measurements": [
+    {
+      "parameter_id": "bus_voltage",
+      "value": 3.284,
+      "timestamp": "2026-10-19T17:07:33.824375",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "current",
+      "value": 0.0042,
+      "timestamp": "2026-10-19T17:07:33.824375",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "humidity",
+      "value": 76.0,
+      "timestamp": "2026-10-19T17:07:33.617568",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "power",
+      "value": 0.013793,
+      "timestamp": "2026-10-19T17:07:33.824375",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "shunt_voltage",
+      "value": 0.42,
+      "timestamp": "2026-10-19T17:07:33.824375",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "temperature",
+      "value": 26.2,
+      "timestamp": "2026-10-19T17:07:33.617568",
+      "source": "local-ip"
+    }
+  ],
+  "gateway_mqtt_revision": 6,
+  "gateway_mqtt_client_id": "SELVA_GATEWAY_SERVER_001",
+  "passed": true,
+  "mqtt_revision_preserved": true,
+  "mqtt_active_fingerprint_preserved": true,
+  "dashboard_confirmation": "Owner confirmed Current and Power are visible and updating after final upload and Gateway reload.",
+  "physical_upload": {
+    "port": "COM8",
+    "offset": "0x10000",
+    "image_bytes": 1235536,
+    "sha256": "1a2e2f56648df648115944128ee729877b958453f500d03270d6ef427d9b9e1b",
+    "flash_hash_verified": true,
+    "partition_written": false,
+    "nvs_erased": false,
+    "filesystem_written": false
+  },
+  "known_shunt": "Owner-confirmed R100, commissioned 100 milliohms",
+  "accuracy_calibration": "PENDING reference-meter/known-load comparison"
+}

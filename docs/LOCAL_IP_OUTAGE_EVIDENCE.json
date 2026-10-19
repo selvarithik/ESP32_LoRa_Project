@@ -1,0 +1,38 @@
+{
+  "scope": "PHYSICAL Gateway process outage; Wi-Fi association unchanged",
+  "pending_queue_reject_new_warnings": 11,
+  "local_ip": {
+    "enabled": true,
+    "credential_configured": true,
+    "interface": "WIFI",
+    "local_ip": "192.168.1.106",
+    "gateway_host": "192.168.1.108",
+    "gateway_port": 5001,
+    "routing_policy": "MASTER_ONLY",
+    "last_success_uptime_ms": 294858,
+    "last_error": -1,
+    "state": "CONNECTING",
+    "ethernet": "NOT_AVAILABLE",
+    "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+  },
+  "free_heap": 153380,
+  "sensor_task_continues": "GPIO4 sampling is a separate FreeRTOS task; post-restart readings checked separately",
+  "recovery": "PASS",
+  "observed_outage_seconds": 30,
+  "post_restart_local_ip": {
+    "enabled": true,
+    "credential_configured": true,
+    "interface": "WIFI",
+    "local_ip": "192.168.1.106",
+    "gateway_host": "192.168.1.108",
+    "gateway_port": 5001,
+    "routing_policy": "MASTER_ONLY",
+    "last_success_uptime_ms": 397270,
+    "last_error": 200,
+    "state": "CONNECTED",
+    "ethernet": "NOT_AVAILABLE",
+    "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+  },
+  "post_restart_measurement_count": 74,
+  "fresh_measurement_after_restart": true
+}

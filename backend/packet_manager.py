@@ -9,7 +9,6 @@ Transport independent:
 - Wi-Fi
 - Ethernet
 - USB
-- BLE
 
 The packet format is intentionally compact and simple.
 

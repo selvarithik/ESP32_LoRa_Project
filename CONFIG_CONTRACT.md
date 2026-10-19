@@ -1,8 +1,8 @@
 # Shared configuration contract
 
-Version: 1.0.1
+Version: 1.1.0
 Schema version: 1
-Date: 2026-10-17
+Date: 2026-10-19
 Authority: latest MASTER IMPLEMENTATION PROMPT, Sections 2, 5, 6, 8, 9, 12, 15 and 21.
 State: normative software contract; implementation and live acceptance are separate gates.
 Authoritative edit location: firmware repository CONFIG_CONTRACT.md. Copy entire UTF-8/no-BOM/LF file to Gateway, then verify SHA-256. Never independently edit the copy.
@@ -296,7 +296,6 @@ Do not modify partition layout to conceal application overflow; report build evi
 | wifi ssid | wifi_ssid | LOCAL | string | empty | 0..32 bytes | existing / grouped form; planned sections | device/config_v1 NVS; src/communication/wifi_manager.cpp, src/core/config_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
 | wifi password | wifi_password | SECRET | string | NONE; existing secret not inspected or exported | empty or 8..63 bytes; secret-preserving replacement | existing / grouped form; planned sections | device/config_v1 NVS; src/communication/wifi_manager.cpp, src/core/config_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
 | ethernet enabled | ethernet_enabled | LOCAL | boolean | false | true/false | existing / grouped form; planned sections | device/config_v1 NVS; src/core/config_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | disabled | PENDING: implementation and behavioral tests |
-| ble enabled | ble_enabled | LOCAL | boolean | false | true/false | existing / grouped form; planned sections | device/config_v1 NVS; src/core/config_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | disabled | PENDING: implementation and behavioral tests |
 | server host | server_host | LOCAL | string | "" | empty or DNS/IPv4 <=253, no scheme/path/loopback | existing / grouped form; planned sections | device/config_v1 NVS; src/core/config_manager.cpp, src/core/network_service.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
 | server port | server_port | LOCAL | integer | 5000 | 1..65535 | existing / grouped form; planned sections | device/config_v1 NVS; src/communication/transport_manager.cpp, src/core/config_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
 | server https | server_https | LOCAL | boolean | false | true/false | existing / grouped form; planned sections | device/config_v1 NVS; src/communication/transport_manager.cpp, src/core/config_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
@@ -336,7 +335,6 @@ Do not modify partition layout to conceal application overflow; report build evi
 | ethernet subnet | ethernet_subnet | LOCAL | string | empty | IPv4 required when DHCP disabled; reserved Ethernet not consumed | existing / grouped form; planned sections | device/config_v1 NVS; src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | disabled | PENDING: implementation and behavioral tests |
 | ethernet gateway | ethernet_gateway | LOCAL | string | empty | IPv4 required when DHCP disabled; reserved Ethernet not consumed | existing / grouped form; planned sections | device/config_v1 NVS; src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | disabled | PENDING: implementation and behavioral tests |
 | ethernet dns | ethernet_dns | LOCAL | string | empty | IPv4 required when DHCP disabled; reserved Ethernet not consumed | existing / grouped form; planned sections | device/config_v1 NVS; src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | disabled | PENDING: implementation and behavioral tests |
-| ble name | ble_name | LOCAL | string | "ESP32 commissioning" | 0..4096 UTF-8 bytes; legacy generic string bound | existing / grouped form; planned sections | device/config_v1 NVS; src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | disabled | PENDING: implementation and behavioral tests |
 | lora enabled | lora_enabled | SHARED | boolean | false | true/false | existing / grouped form; planned sections | device/config_v1 NVS; src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | disabled | PENDING: implementation and behavioral tests |
 | lora uart | lora_uart | SHARED | integer | 2 | 0..2, reserved | existing / grouped form; planned sections | device/config_v1 NVS; src/core/config_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | disabled | PENDING: implementation and behavioral tests |
 | lora address high | lora_address_high | SHARED | integer | 0 | 0..255 | existing / grouped form; planned sections | device/config_v1 NVS; src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | disabled | PENDING: implementation and behavioral tests |
@@ -423,3 +421,214 @@ Do not modify partition layout to conceal application overflow; report build evi
 
 Only a one-time migration reader may consume those legacy keys. New profile writes must use the 15 exact canonical names. mqtt_enabled stays outside the profile. Legacy HTTP API must reject direct active-broker writes with a staged-switch-required error.
 
+## Local IP extension 1 â€” contract 1.0.2 (2026-10-19)
+
+This additive section preserves all preceding MQTT profile keys, wire schema 1,
+approved topics and directions. Earlier inventory statements describe Gate 0.
+Local IP uses the SAME protocol_version=1 packet already inside MQTT data.packet.
+It does not replace the MQTT envelope or create alternate packet fields.
+
+| Setting | Canonical field | Class | Type | Default | Validation / use |
+|---|---|---|---|---|---|
+| local IP mode | local_ip_enabled | LOCAL | boolean | false | firmware NVS, ESP32 Gateway/network group; when true local IP is selected exclusively and stored MQTT profiles are not started or changed |
+| local peer credential | local_ip_token | SECRET | string | empty | 32..64 bytes, physical USB only, never GET/export/log; dedicated local-IP override, existing gateway_token fallback retained |
+| Node IP route | routing_policy | LOCAL | string | MASTER_ONLY | MASTER_ONLY, DIRECT_ONLY, DIRECT_PREFERRED; firmware NVS/UI/worker; Master always uses Gateway; DIRECT_PREFERRED falls back sequentially after failure |
+| listener enabled | local_ip.gateway.enabled | GATEWAY | boolean | false | Gateway local_ip_settings SQLite/UI; explicit owner enablement |
+| listener bind | local_ip.gateway.bind_address | GATEWAY | IPv4 string | 127.0.0.1 | assigned private unicast or loopback IPv4; never 0.0.0.0/public/multicast/link-local; bind failure restores previous running configuration |
+| listener port | local_ip.gateway.port | GATEWAY | integer | 5001 | 1024..65535; separate device-only listener; ESP32 uses existing server_host/server_port |
+| listener revision | local_ip.gateway.revision | GATEWAY | uint32 | 1 | expected_revision required on settings mutations; stale rejected; overflow rejected |
+| Node direct permission | local_ip.direct_allowed | GATEWAY | boolean | false | per enrolled Node, authenticated admin/creator + CSRF; separate Node credential required |
+
+Existing server_host, server_port, server_https, gateway_ca, master_host, gateway_token,
+mesh_key, wifi_dhcp/static IPv4, heartbeat_seconds, retry_count, command_timeout_ms,
+message_max_age_ms, dht_enabled/dht_pin and allowed_peers_csv retain their names.
+Changing public configuration persists then restarts safely. HTTP never provisions
+new credentials; physical USB does. Existing active MQTT profiles/revisions/secrets
+are retained. local_ip_enabled=false restores the previous transport selection.
+Ethernet configuration is reserved, driver NOT_AVAILABLE; no PHY is assumed.
+IP reachability through a mixed Wi-Fi/Ethernet LAN requires no packet changes.
+
+Transport framing: HTTP/1.1 over TCP, one JSON packet per POST body, explicit
+Content-Length 1..4096 bytes; Transfer-Encoding is rejected on new local exchanges.
+Stream reads may fragment/combine arbitrarily; the HTTP parser delimits the body.
+Firmware local peer ingress uses bounded raw chunks, rejects excess Content-Length
+before collecting the body, caps assembly at 4096, and bounds chunk waits to 100 ms.
+Gateway device-only listener handles one connection at a time, socket timeout 3 s,
+OS listen backlog, no unbounded worker-thread pool. Reply body <=6144 bytes.
+No NDJSON, unframed TCP JSON, MQTT topics or raw secrets on this listener.
+
+Packet keys exactly: protocol_version, message_id, source, destination, origin_id,
+final_destination_id, next_hop, type, ttl, timestamp, sequence_number, correlation_id,
+payload, payload_length, payload_crc32. ASCII IDs 1..48 [A-Za-z0-9_.:-], optional
+correlation_id empty or same ID grammar. protocol_version integer 1; TTL 1..15;
+other numeric fields unsigned 32-bit integers (not bool/float/string). payload is
+an encoded JSON object string <=2048 UTF-8 bytes; payload_length counts bytes;
+payload_crc32 is IEEE CRC32. origin_id=source, final_destination_id=destination.
+Reject duplicate JSON keys, nonfinite numbers, invalid UTF-8, nesting >8, unknown
+packet fields, bad CRC/length, unknown type and unauthorized assignments.
+Local Gateway receipt requires destination GATEWAY; commands use existing safe
+command registry only. The existing local-IP control loop creates non-action
+packets with timestamp=0 before authenticating a clock; the one-time challenge
+bounds transport freshness. Once UTC exists reject >30 s future or >300 s old.
+Actions and action results require a valid timestamp. Source queue expiry is
+message_max_age_ms (<=300000), including offline periods; IDs/payloads stay stable.
+The received packet is not re-created to change paths: direct/fallback use identical
+GATEWAY destination, next_hop and source/message ID. Gateway persistent receipts
+suppress equal duplicates across transports; changed content under an ID is rejected.
+
+Authentication: Gateway GET /api/v1/device/local-challenge; peer ESP32 GET
+/api/v1/local/challenge. Request header X-Device-ID identifies a provisioned peer.
+Reply nonce is 32 random lowercase hex, single-use, expires at 30 monotonic seconds;
+Gateway cache <=256, firmware <=8. Challenge includes unix_time and signature.
+Key K is SHA256(UTF8(local_ip_token, or existing gateway_token fallback, or mesh_key for peer links)), raw 32 bytes.
+HMAC-SHA256 input is UTF8(domain+'\n'+identity+'\n'+nonce+'\n') + exact body bytes.
+Challenge domain LOCALIP1-TIME signs the decimal unix_time bytes. Verified Gateway
+clock can initialize ESP32 UTC without NTP or Internet. Request domain LOCALIP1
+signs the exact POST packet body. POST paths /api/v1/device/local-exchange (Gateway)
+and /api/v1/local/exchange (peer ESP32); X-Local-Nonce and X-Local-Signature headers.
+Authenticated reply domain LOCALIP1-REPLY signs exact reply body with that nonce;
+header X-Local-Signature. Constant-time proof comparison. Never transmit K or token.
+Dedicated local_ip_credentials.key_hash stores SHA256(K), a one-way verifier.
+The MAC key is derived only from a device-specific DPAPI-protected local token file;
+missing/corrupted files fail closed. The legacy device_token_hash is never used
+as an automatic server-side fallback. Initial development K rows are migrated to
+SHA256(K) only after validating the existing protected file, without token rotation.
+Exclude verifiers and protected files from APIs/exports. Dedicated provisioning
+never changes legacy device_token_hash or MQTT credentials. Shared mesh keys authorize the enrolled
+trusted group, not mutually distrustful per-device identities. HMAC does not encrypt
+measurements; trusted private LAN or correctly configured HTTPS is required.
+
+Gateway authorizes enabled enrolled Masters and separately permitted Nodes with
+individual token hashes; direct Nodes may only source their own packets and fetch
+their own commands. Masters may relay only assigned Nodes. Unknown/revoked identities,
+bad proofs/nonces, nonce replay, malformed/expired packets and queue pressure fail
+closed with AUTH_FAILED/UNAUTHORIZED/INVALID_OR_EXPIRED_PACKET/QUEUE_FULL/STORAGE_FAILED.
+No success receipt before SQLite commit. Successful response includes schema_version=1,
+accepted=true, duplicate boolean, received_message_id, receipt=PERSISTED, commands
+(at most one existing packet). Peer firmware replies receipt=QUEUED only after its
+bounded queue accepts a frame; the existing later application ACK is a hop receipt,
+not proof of Gateway persistence. No exactly-once promise across ESP32 power loss.
+Master/Node firmware pending12, outgoing6, incoming6, results8; reject-new overflow;
+retry_count<=5, bounded exponential retry (1,2,4,8 timeout multiples), source expiry.
+Direct fallback never intentionally sends both paths concurrently, but an ambiguous
+network failure can cause a retry via Master; persistent Gateway dedup is authoritative.
+Command execution cache is RAM32; idempotent setters only. Gateway command journal
+survives restart; completion requires a correlated RESPONSE, not queued/SENT/ACK.
+
+GET /api/local-ip (admin/creator) exposes sanitized settings, counters and up to64
+connection summaries; POST with expected_revision changes listener settings. POST
+/api/local-ip/devices/<id> changes direct_allowed only. All mutations require CSRF.
+/local-ip page is reached from System without changing the main navigation/header.
+Listener stop clears nonces; reconnect needs a new challenge. Per-device last_seen,
+last_error, message ID and receiver persistence remain separate from UI display.
+
+Acceptance is recorded separately in docs/LOCAL_IP_REPORT.md. MQTT test execution
+is deferred until local acceptance is reported. Missing Ethernet hardware, second
+ESP32 and RF hardware are BLOCKED, never simulated physical PASS.
+
+
+## Offline software completion extension 2 (2026-10-19)
+
+Additive document version 1.1.0. MQTT schema 1, its fifteen profile fields and
+approved topic builder/registry are unchanged. Existing local-IP extension 1 is
+unchanged. This extension does not enable a physical radio or assert hardware tests.
+
+| Setting | Type | Range | Default | Units | Persistence / readers | Remote change / reboot |
+| wifi_dns2 | string | empty or unicast IPv4 | empty | address | device NVS; WiFi manager, device/Gateway controls | public config; reboot |
+| sleep_enabled | bool | true/false | false | none | device NVS; PowerManager, device/Gateway controls | SET_SLEEP_SCHEDULE; no reboot |
+| sleep_start_minute | uint16 | 0..1439 | 0 | local minute of day | device NVS; PowerManager, device/Gateway controls | SET_SLEEP_SCHEDULE; no reboot |
+| sleep_duration_seconds | uint32 | 60..86400 | 3600 | seconds | device NVS; PowerManager, device/Gateway controls | SET_SLEEP_SCHEDULE; no reboot |
+| sleep_days_mask | uint8 | 1..127 | 127 | Sunday bit0 through Saturday bit6 | device NVS; PowerManager, device/Gateway controls | SET_SLEEP_SCHEDULE; no reboot |
+| utc_offset_minutes | int | -720..840 | 330 | minutes east of UTC | device NVS; PowerManager, device/Gateway controls | SET_SLEEP_SCHEDULE; no reboot |
+
+Schedule is recurring fixed UTC offset, not an IANA/DST rule. A selected day's
+start plus duration defines a sleep window, including midnight crossings. Active
+period is the complement. Wake time is derived, never a duplicate independently
+writable field. Missing trusted UTC means CLOCK_REQUIRED and no scheduled sleep.
+During DRAINING no new nonessential telemetry is queued. Pending commands/transport
+work and an MQTT switch defer sleep. Deep sleep disables ordinary Wi-Fi; timer
+wake only. No promise of remote wake or radio power control without hardware.
+
+See COMMAND_PROTOCOL.md and TELEMETRY_SCHEMA.md for version-1 packet and lifecycle
+rules. Canonical external ACK state ACKNOWLEDGED maps the legacy SQLite state
+ACK_RECEIVED without rewriting existing event history. A restart command is only
+completed by a response produced after boot from its durable restart marker;
+receipt/intent is not restart success. No marker means no scheduled restart.
+
+New non-secret remote operations: GET_NETWORK, WIFI_SCAN, WIFI_RECONNECT,
+GET_RADIO_STATUS, RADIO_TEST,
+GET_POWER_STATUS, SET_SLEEP_SCHEDULE, RESTART. Device name updates use the existing
+device_name field, never device_id. Radio test fails DRIVER_UNAVAILABLE until a
+verified implementation is selected. Credentials remain
+physical USB/protected-store only. Network disabling is local-only because it can
+remove the only response path. Scanning and results are bounded and asynchronous.
+
+MQTT profile catalog: up to four named saved templates per participant. Catalog
+revision is independent of active MQTT revision. Saved password is write-only and
+never an HTTP field; reuse the active protected secret or physical commissioning.
+Selecting a saved template stages a candidate through the existing transaction;
+it never writes active configuration. Deleting requires exact profile_name and
+expected catalog_revision; deleting an active-named template is rejected. No topic
+fields are independently editable: approved topics remain derived by the canonical
+builder. Permanent worker start remains gated by ACL confirmation.
+
+
+Existing wifi_dhcp/wifi_ip/wifi_subnet/wifi_gateway/wifi_dns/wifi_dns2 may be changed
+through CONFIG_UPDATE with a revision check; they are non-secret. The firmware
+validates the complete candidate network, persists it and reports restart_required.
+The active link keeps its applied settings until explicit restart. Wi-Fi passwords,
+mesh keys and broker secrets are never command arguments. DHCP is the default;
+static settings require unicast host/gateway/DNS, contiguous nonzero mask and a
+shared subnet without network/broadcast host addresses. Configuration recovery
+keeps an invalid saved blob intact; owner commissioning repairs it explicitly.
+
+## Sensor extension and scope amendment (2026-10-19)
+
+MQTT profile/wire schema and topic registry remain unchanged. Dedicated sensor
+packets use sensor_type DHT11, INA219 or MQ135 and a parameters object. DHT11
+retains temperature (C, 0..50) and humidity (%RH, 0..100). INA219 requires
+bus_voltage (V, 0..26) and shunt_voltage (mV, strictly between -320 and 320);
+current (A, -320..320) and power (W, -8320..8320) appear together only when a
+confirmed shunt resistance is configured. These protocol bounds are not safe
+hardware load ratings. MQ135 exposes mq135_adc_raw (integer 0..4095) and
+mq135_pin_mv (integer 0..3300); no ppm, calibrated gas concentration or safety
+classification. Invalid sensor packets contain no parameter values. Each sensor
+has independent validity/status; successful DHT does not imply INA/MQ health.
+
+| Setting | Type | Range | Default | Used by |
+| --- | --- | --- | --- | --- |
+| ina219_enabled | boolean | true/false | true | ESP32 page/firmware; Gateway reported sensor status |
+| ina219_address | uint8 | 64..79 | 64 (0x40) | ESP32 page/firmware; fixed SDA21/SCL22 |
+| ina219_shunt_milliohms | uint16 | 0..1000; 0 unknown | 0 | ESP32 page/firmware; Gateway units derived from measurements |
+| mq135_enabled | boolean | true/false | false | ESP32 page/firmware; GPIO34 requires verified voltage divider |
+| mq135_warmup_seconds | uint32 | 60..604800 | 86400 | ESP32 page/firmware; conservative initial conditioning, not calibration |
+
+New sensor enable/address changes require restart. Unknown shunt resistance
+withholds current/power. Disabled MQ135 is never read. Wi-Fi and MQTT remain
+independent of these sensors. BLE is removed from active scope. Four retired
+BLE settings are ignored only on legacy NVS load, omitted from serialization
+and rejected on public mutations. Private Chat and OTA development are excluded.
+
+## Local connection indicators (2026-10-19)
+
+| Setting | Type | Range | Default | Used by |
+| --- | --- | --- | --- | --- |
+| server_led_enabled | boolean | true/false | true | ESP32 local page, firmware NVS; GPIO2 onboard LED; no duplicate Gateway setting writer |
+| server_led_active_high | boolean | true/false | true | ESP32 local page, firmware NVS; invert for active-low board variants |
+| tm1637_enabled | boolean | true/false | true | ESP32 local page, firmware NVS; MASTER only, CLK18/DIO19; current diagnostic wiring 3.3V; any 5V supply requires suitable logic-level shifting; NODE leaves pins untouched |
+
+These settings apply on restart and do not alter MQTT profiles or wire topics.
+The server indicator requires Wi-Fi plus an actual authenticated Gateway receipt
+within 15 seconds. Broker connection, association and hop acceptance alone do
+not qualify. The four-digit MASTER display cycles every 3 seconds through signed Wi-Fi RSSI
+(dBm) and current Gateway connection duration MM:SS (capped 99:59).
+Connection counts and sensor values are not shown; connection counts remain
+available in runtime diagnostics only.
+A connection establishment is a transition from no recent Gateway receipt to a
+fresh receipt; it is not a TCP socket, data packet or sensor reading count.
+No receipt / expired receipt alternates Conn and Cxxx (seconds waiting, capped
+999); no Wi-Fi shows noFI. The connection duration is not server process uptime.
+At startup, 8888 is a two-second segment self-test. Driver checks all TM1637
+byte acknowledgements and idle line levels; ACK never proves visual health.
+Display writes occur at most once/second, plus immediate state transitions.
+DHT and enabled radio pin conflicts are rejected rather than sharing GPIO18/19.

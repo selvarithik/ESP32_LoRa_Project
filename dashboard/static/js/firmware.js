@@ -606,12 +606,12 @@
         await refreshAll();
         console.log("[FIRMWARE] Ready", state);
 
-        window.setInterval(async () => {
+        gateway.watch(async () => {
             const hasActiveJobs = state.jobs.some(job => !TERMINAL_JOB_STATES.has(String(job.state || "").toUpperCase()));
             if (hasActiveJobs) {
                 await refreshAll();
             }
-        }, 3000);
+        }, {interval:3000, immediate:false});
     }
 
     document.addEventListener("DOMContentLoaded", initialize);

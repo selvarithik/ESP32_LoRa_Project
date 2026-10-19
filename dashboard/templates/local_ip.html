@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Local IP communication{% endblock %}
+{% block page_title %}Local IP communication{% endblock %}
+{% block page_subtitle %}Authenticated device exchanges on your private LAN{% endblock %}
+{% block content %}
+<section class="settings-card"><div class="settings-card-content">
+<h2>Device listener</h2><p>This listener serves device traffic only. MQTT, Internet access, OTA and private chat are not required. Messages have challenge/HMAC integrity protection; ordinary HTTP does not encrypt measurements. Credentials are provisioned locally and never shown here.</p>
+<form id="local-ip-form"><label class="switch-row">Enable listener<input type="checkbox" id="local-ip-enabled"></label>
+<div class="settings-fields"><label>Bind to this laptop's private IPv4 address<input class="input" id="local-ip-bind" required placeholder="Select the actual LAN adapter address"></label><label>TCP port<input class="input" id="local-ip-port" type="number" min="1024" max="65535" value="5001" required></label></div>
+<p>Loopback is the safe initial setting. Choose an address assigned to the intended adapter. Do not use 0.0.0.0, a public address or port forwarding.</p>
+<button class="btn btn-primary" type="submit">Save and apply</button><button class="btn btn-secondary" id="local-ip-refresh" type="button">Refresh status</button></form>
+<p id="local-ip-feedback" role="status" aria-live="polite"></p><pre id="local-ip-runtime" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre>
+<h3>Permitted devices</h3><p>Enroll devices through the existing device registry first. A direct Node additionally needs its own locally provisioned token. Permission does not create credentials or imply physical connectivity.</p><div id="local-ip-devices"></div>
+<h3>Connection diagnostics</h3><pre id="local-ip-connections" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre>
+</div></section>
+{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static',filename='js/local_ip.js') }}?v=20261019-refresh"></script>{% endblock %}

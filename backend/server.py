@@ -61,6 +61,12 @@ app.register_blueprint(sensor_widgets.bp)
 device_api.install(app, lambda event, payload: socketio.emit(event, payload))
 import mqtt_api
 mqtt_api.install(app)
+import local_ip
+local_ip.install(app)
+import device_controls
+device_controls.install(app)
+import mqtt_profiles
+mqtt_profiles.install(app)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
 @app.before_request
@@ -4271,6 +4277,7 @@ def server_time_heartbeat():
 
 if __name__ == "__main__":
     account_settings.connect().close()
+    local_ip.start_saved()
     import mqtt_adapter
     mqtt_client = mqtt_adapter.start_from_environment()
     print('MQTT permanent worker:',mqtt_client.state,'reason:',mqtt_client.last_error or 'none',flush=True)

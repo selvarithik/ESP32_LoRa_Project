@@ -1,0 +1,11 @@
+# Telemetry schema 1
+
+Existing Message TELEMETRY payload: sensor_id, sensor_type DHT11, valid boolean, status, sampled_uptime_ms, last_success_uptime_ms, sampling_interval_seconds2, parameters object. Valid DHT samples contain temperature0..50 C and humidity0..100 %RH, finite numbers; invalid samples contain no measurements. Acquisition interval remains2s; telemetry_seconds2..3600 controls transmission independently. Presets2,5,10,30,60 and validated custom2..3600. No blocking main-loop sensor reads. Two-second radio transmissions require verified radio airtime/capacity; unavailable radio does not become enabled by saving an interval.
+
+Gateway stores its receipt timestamp on normalized measurements. Device sample time remains uptime-based and is labelled as such, never silently treated as UTC. Device timestamp is Message.timestamp UTC when trusted. Transport delivery timestamp and MQTT PUBACK are separate from sample time. HTTP local PERSISTED means SQLite commit; peer QUEUED means hop queue acceptance. Last sensor values after loss stay labelled stored/stale. Online requires actual recent received packet/heartbeat. Names are display metadata; identity remains stable.
+
+Simulation fixtures/providers explicitly set simulated=true in status/telemetry metadata. Production physical readings have no simulated marker or false. UI must visibly label simulated devices. Invalid telemetry reports health without inserting fabricated numeric samples. MQTT envelope carries the existing packet and persistent receipt dedup prevents duplicate database inserts across HTTP/MQTT.
+
+Status metadata includes last_sensor_sample_uptime_ms, last_transport_accept_uptime_ms and last_gateway_receipt_uptime_ms. A Node using a Master may know only hop acceptance; absent end-to-end receipt remains zero/unknown, not inferred Gateway delivery. Gateway receipt timestamps are Gateway-local UTC basis as retained by the existing server, while device sample metadata is explicitly uptime-based.
+
+Sensor types INA219 and MQ135 are now accepted as independent packets. See CONFIG_CONTRACT sensor extension for exact fields, ranges and invalid-reading rules. Unknown INA219 shunt withholds current/power; MQ135 stays disabled until protected wiring is verified and never reports gas ppm.

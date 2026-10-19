@@ -1,0 +1,27 @@
+{
+  "scope": "Actual COM8 normal reboot and Gateway protected-key restart; no power-cut/NVS write interruption",
+  "device_id": "ESP32-10777D842178",
+  "station_ip": "192.168.1.106",
+  "local_ip": {
+    "enabled": true,
+    "credential_configured": true,
+    "interface": "WIFI",
+    "local_ip": "192.168.1.106",
+    "gateway_host": "192.168.1.108",
+    "gateway_port": 5001,
+    "routing_policy": "MASTER_ONLY",
+    "last_success_uptime_ms": 21735,
+    "last_error": 200,
+    "state": "CONNECTING",
+    "ethernet": "NOT_AVAILABLE",
+    "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+  },
+  "dht_enabled": true,
+  "dht_pin": 4,
+  "latest_measurement": "2026-10-19T12:25:47.891344",
+  "gateway_protected_credential_valid": true,
+  "database_contains_only_one_way_verifier": true,
+  "mqtt_profile_preserved": true,
+  "dashboard_readings_user_confirmed": true,
+  "passed": true
+}

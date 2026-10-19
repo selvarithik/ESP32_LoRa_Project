@@ -10,7 +10,6 @@ It provides the common communication layer for:
 - Wi-Fi
 - Ethernet
 - USB
-- BLE
 
 Current responsibility:
 - Create packets

@@ -21,14 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
         bindEvents();
         await loadNodes();
 
-        if (refreshTimer) clearInterval(refreshTimer);
-        refreshTimer = setInterval(() => {
-            if (selectedNode && !document.hidden && !gateway.socket?.connected) loadSensors();
-        }, 5000);
+        refreshTimer = gateway.watch(loadSensors, {immediate:false, events:["connect", "node_update"]});
         gateway.socket?.on("telemetry_update", receiveTelemetry);
-        gateway.socket?.on("connect", loadSensors);
-        document.addEventListener("visibilitychange", () => { if (!document.hidden) loadSensors(); });
-        window.addEventListener("pagehide", () => { clearInterval(refreshTimer); gateway.socket?.off("telemetry_update", receiveTelemetry); gateway.socket?.off("connect", loadSensors); });
     }
 
 
@@ -233,7 +227,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function receiveTelemetry(update) {
         if (document.hidden || update.node_id !== selectedNode) return;
-        (update.parameters || []).forEach(incoming => {
+        if (!Array.isArray(update.parameters)) { loadSensors(); return; }
+        update.parameters.forEach(incoming => {
             const sensor = sensors.find(p => p.parameter_id === incoming.parameter_id);
             if (sensor && (!sensor.timestamp || new Date(incoming.timestamp) > new Date(sensor.timestamp))) Object.assign(sensor, incoming);
         });

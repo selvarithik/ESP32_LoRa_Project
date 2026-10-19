@@ -24,9 +24,20 @@ window.SensorUI = (() => {
    return '<svg viewBox="0 0 24 24" aria-hidden="true">'+(paths[key]||paths.activity)+'</svg>';
  }
  function value(p,v=p.value ?? p.text_value) {if(v===null||v===undefined||v==="")return "N/A";return numeric(p)&&Number.isFinite(Number(v))?Number(v).toFixed(Math.max(0,Math.min(8,Number(p.decimal_places ?? 2)))):String(v);}
+ function connection(node) {
+   if(node?.enabled===false || node?.enabled===0)return {online:false,reason:"Node disabled in Gateway settings."};
+   if(!node?.last_seen)return {online:false,reason:"No heartbeat received from this node yet. Check node power and network."};
+   const seen=new Date(node.last_seen).getTime();
+   if(!Number.isFinite(seen))return {online:false,reason:"Last-seen timestamp is unavailable. Refresh Gateway status."};
+   const timeout=node.device_enrolled?Number(node.heartbeat_seconds||30)*3:60;
+   const age=Math.max(0,Math.floor((Date.now()-seen)/1000));
+   if(age>timeout)return {online:false,reason:"No heartbeat for "+age+" s (timeout "+timeout+" s). Check node power and network."};
+   if(!["online","connected","active"].includes(String(node.status).toLowerCase()))return {online:false,reason:"Gateway reports this node offline. Check node power and network."};
+   return {online:true,reason:"Heartbeat received within "+timeout+" s."};
+ }
  function status(p,node) {
+   if(node && !connection(node).online)return "Offline";
    if(!p.timestamp)return "Unavailable";
-   if(node?.enabled===false || ["offline","disconnected","disabled"].includes(String(node?.status).toLowerCase()))return "Offline";
    if(Date.now()-new Date(p.timestamp).getTime()>Number(cfg(p).stale_timeout||10)*1000)return "Stale";
    if(["HIGH","LOW","SENSOR_ERROR"].includes(p.alarm_status))return p.alarm_status.replace("_"," ");
    if(p.quality && p.quality!=="GOOD")return p.quality;
@@ -62,7 +73,7 @@ window.SensorUI = (() => {
  }
  function card(p,node,rows){
    const label=status(p,node);
-   return '<article class="dashboard-sensor-card sensor-live-card" data-id="'+esc(p.parameter_id)+'" style="--sensor-accent:'+color(p)+'"><header><span class="sensor-type-icon">'+icon(p)+'</span><div><h3>'+esc(p.parameter_name||p.parameter_id)+'</h3><small>'+esc(p.sensor_id||p.parameter_id)+'</small></div><span class="sensor-freshness '+(label==="Live"?"is-live":"")+'">'+esc(label)+'</span></header><div class="sensor-current"><strong>'+esc(value(p))+'</strong><span>'+esc(p.unit||"")+'</span></div><p class="sensor-updated">'+esc(p.timestamp?"Updated "+stamp(p.timestamp):"Waiting for telemetry")+'</p><button type="button" class="sensor-chart-trigger" aria-label="Expand '+esc(p.parameter_name||p.parameter_id)+' graph">'+chart(p,rows)+'<span class="sensor-chart-foot"><span>History · 1 hour</span><span>Click graph to expand ↗</span></span></button><button type="button" class="sensor-remove-widget" data-sensor-remove title="Remove widget from dashboard" aria-label="Remove widget from dashboard">Remove widget</button></article>';
+   return '<article class="dashboard-sensor-card sensor-live-card" data-id="'+esc(p.parameter_id)+'" style="--sensor-accent:'+color(p)+'"><header><span class="sensor-type-icon">'+icon(p)+'</span><div><h3>'+esc(p.parameter_name||p.parameter_id)+'</h3><small>'+esc(p.sensor_id||p.parameter_id)+'</small></div><span class="sensor-freshness '+(label==="Live"?"is-live":label==="Offline"?"is-offline":label==="Stale"?"is-stale":"")+'">'+esc(label)+'</span></header><div class="sensor-current"><strong>'+esc(value(p))+'</strong><span>'+esc(p.unit||"")+'</span></div><p class="sensor-updated">'+esc(p.timestamp?(label==="Offline"?"Last stored reading ":p.timestamp_basis==="GATEWAY_RECEIPT"?"Gateway received ":"Sample time ")+stamp(p.timestamp):"Waiting for telemetry")+'</p><button type="button" class="sensor-chart-trigger" aria-label="Expand '+esc(p.parameter_name||p.parameter_id)+' graph">'+chart(p,rows)+'<span class="sensor-chart-foot"><span>History · 1 hour</span><span>Click graph to expand ↗</span></span></button><button type="button" class="sensor-remove-widget" data-sensor-remove title="Remove widget from dashboard" aria-label="Remove widget from dashboard">Remove widget</button></article>';
  }
  let active=null;
  async function open(node,parameter,getParameters){
@@ -89,7 +100,7 @@ window.SensorUI = (() => {
      const data=await response.json();if(!response.ok)throw Error(data.error||"History unavailable");if(stopped||id!==requestId)return;
      const rows=data.data||[],stats=data.statistics||{},label=status(p,node);
      const ranges=[[1,"1 hour"],[6,"6 hours"],[24,"24 hours"],[168,"7 days"]].map(([n,t])=>'<button class="btn" type="button" data-sensor-hours="'+n+'" aria-pressed="'+(hours===n)+'">'+t+'</button>').join("");
-     box.innerHTML='<div class="sensor-selected-summary"><span class="sensor-type-icon">'+icon(p)+'</span><div><h3>'+esc(p.parameter_name||p.parameter_id)+'</h3><small>'+esc(p.sensor_id||p.parameter_id)+'</small><p>'+esc(p.description||"")+'</p></div><div class="sensor-current"><strong>'+esc(value(p))+'</strong><span>'+esc(p.unit||"")+'</span></div><span class="sensor-freshness '+(label==="Live"?"is-live":"")+'">'+esc(label)+'</span></div><div class="sensor-trend-head"><h3>Historical trend</h3><div class="sensor-range-controls">'+ranges+'</div></div>'+chart(p,rows,true)+(data.truncated?'<p>Chart and table show the latest 10,000 records. Statistics cover the full interval.</p>':'')+(numeric(p)?'<div class="sensor-statistics">'+[["Minimum","minimum"],["Average","average"],["Maximum","maximum"]].map(([title,key])=>'<div><small>'+title+'</small><strong>'+esc(stats[key]==null?"N/A":value(p,stats[key])+" "+(p.unit||""))+'</strong></div>').join("")+'</div>':'<p>'+rows.length+' recorded state or position updates in this interval.</p>')+'<details class="sensor-readings"><summary>Historical readings ('+rows.length+')</summary><div class="table-wrap"><table><thead><tr><th>Timestamp</th><th>Value'+(p.unit?' ('+esc(p.unit)+')':'')+'</th><th>Status</th></tr></thead><tbody>'+[...rows].reverse().slice(0,1000).map(x=>'<tr><td>'+esc(stamp(x.timestamp))+'</td><td>'+esc(value(p,x.value??x.text_value))+' '+esc(p.unit||"")+'</td><td>'+esc(x.status||x.quality||"N/A")+'</td></tr>').join("")+'</tbody></table></div>'+(!rows.length?'<p>No recorded readings in this time range.</p>':rows.length>1000?'<p>Latest 1,000 rows displayed.</p>':'')+'</details><footer class="sensor-last-update">Last update · '+esc(stamp(p.timestamp))+' · '+esc(label)+'</footer>';
+     box.innerHTML='<div class="sensor-selected-summary"><span class="sensor-type-icon">'+icon(p)+'</span><div><h3>'+esc(p.parameter_name||p.parameter_id)+'</h3><small>'+esc(p.sensor_id||p.parameter_id)+'</small><p>'+esc(p.description||"")+'</p></div><div class="sensor-current"><strong>'+esc(value(p))+'</strong><span>'+esc(p.unit||"")+'</span></div><span class="sensor-freshness '+(label==="Live"?"is-live":label==="Offline"?"is-offline":label==="Stale"?"is-stale":"")+'">'+esc(label)+'</span></div><div class="sensor-trend-head"><h3>Historical trend</h3><div class="sensor-range-controls">'+ranges+'</div></div>'+chart(p,rows,true)+(data.truncated?'<p>Chart and table show the latest 10,000 records. Statistics cover the full interval.</p>':'')+(numeric(p)?'<div class="sensor-statistics">'+[["Minimum","minimum"],["Average","average"],["Maximum","maximum"]].map(([title,key])=>'<div><small>'+title+'</small><strong>'+esc(stats[key]==null?"N/A":value(p,stats[key])+" "+(p.unit||""))+'</strong></div>').join("")+'</div>':'<p>'+rows.length+' recorded state or position updates in this interval.</p>')+'<details class="sensor-readings"><summary>Historical readings ('+rows.length+')</summary><div class="table-wrap"><table><thead><tr><th>Timestamp</th><th>Value'+(p.unit?' ('+esc(p.unit)+')':'')+'</th><th>Status</th></tr></thead><tbody>'+[...rows].reverse().slice(0,1000).map(x=>'<tr><td>'+esc(stamp(x.timestamp))+'</td><td>'+esc(value(p,x.value??x.text_value))+' '+esc(p.unit||"")+'</td><td>'+esc(x.status||x.quality||"N/A")+'</td></tr>').join("")+'</tbody></table></div>'+(!rows.length?'<p>No recorded readings in this time range.</p>':rows.length>1000?'<p>Latest 1,000 rows displayed.</p>':'')+'</details><footer class="sensor-last-update">Last update · '+esc(stamp(p.timestamp))+' · '+esc(label)+'</footer>';
     }catch(error){if(!stopped&&id===requestId)box.textContent=error.message;}
    }
    const timer=setInterval(()=>{if(!document.hidden&&!overlay.querySelector("details[open]")&&!overlay.querySelector("#sensor-detail-body").contains(document.activeElement)&&document.activeElement!==select)render();},10000);
@@ -120,5 +131,5 @@ window.SensorUI = (() => {
      search.oninput=render;category.onchange=render;render();search.focus();
    }catch(e){message.textContent=e.message;}
  }
- return {config:cfg,color,icon,value,status,chart,card,open,chooseWidgets};
+ return {config:cfg,color,icon,value,status,connection,chart,card,open,chooseWidgets};
 })();

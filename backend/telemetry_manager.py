@@ -334,7 +334,8 @@ def get_latest_values(node_id):
             t.value,
             t.text_value,
             t.quality,
-            t.status
+            t.status,
+            t.source
         FROM sensor_parameters p
         LEFT JOIN telemetry_values t
             ON t.node_id = p.node_id
@@ -362,6 +363,7 @@ def get_latest_values(node_id):
     for row in rows:
 
         item = dict(row)
+        item['timestamp_basis']='GATEWAY_RECEIPT' if item.get('source') in ('local-ip','mqtt','wifi','SIMULATED_LOCAL_IP') else 'REPORTED_SAMPLE_TIME'
         from sensor_widgets import config
         item["widget_config"] = config(item)
 

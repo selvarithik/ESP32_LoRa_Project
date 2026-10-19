@@ -76,7 +76,7 @@ const CommunicationCenter = (() => {
        LOAD STATUS
     ======================================================== */
 
-    async function loadStatus() {
+    async function loadStatus(updateSettings = true) {
 
         try {
 
@@ -143,7 +143,7 @@ const CommunicationCenter = (() => {
             );
 
 
-            loadSettingsForm(
+            if (updateSettings) loadSettingsForm(
                 settings
             );
 
@@ -1222,6 +1222,7 @@ async function loadLinks() {
         bindEvents();
 
         refresh();
+        gateway.watch(() => Promise.all([loadStatus(false), loadMesh()]), {immediate:false});
 
     }
 

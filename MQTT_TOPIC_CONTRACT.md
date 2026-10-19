@@ -1,0 +1,7 @@
+# MQTT topic contract — schema 1
+
+CONFIG_CONTRACT.md is canonical. Topics are topic_prefix + '/' + gateway_id + '/' + approved message type, built only by MqttContract::topic / mqtt_contract.topic. Telemetry=telemetry, commands=command, ACK/execution RESPONSE=command_ack, device heartbeat=status, diagnostics/events=events. Configuration coordinator uses config; discovery uses discovery. Existing unrelated registry entries are unchanged and out of this phase's scope.
+
+TLS certificate-chain and hostname verification always enabled, MQTT3.1.1, QoS1, unique stable participant client IDs. Profile catalog selection stages candidates; test/confirm/rollback still applies. Publishing/queue acceptance/PUBACK are not device execution. Permanent Gateway worker requires authorized ACL confirmation. Broker tests this phase must be disposable local TLS tests or injected client tests; no changes to hosted deployment ACLs/credentials.
+
+Runtime Connect/Pause is an authenticated revision-checked operation, separate from saving a profile. The Gateway connect request retains ACL_CONFIRMATION_REQUIRED until authorization is verified. The ESP32 local-IP-only mode must be explicitly disabled and restarted before MQTT runtime connect; no hidden hosted connection is started by a local-IP setup. Pausing preserves active profiles/credentials and does not prove pending application delivery. No secrets are sent through plaintext bearer/Basic-auth fallback by new firmware clients; local peer links use the signed local transport. Runtime enable state is not a new profile field.

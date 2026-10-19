@@ -24,7 +24,6 @@ SUPPORTED_COMMUNICATIONS = [
     "IP/TCP",
     "Wi-Fi",
     "ESP-NOW",
-    "BLE"
 ]
 
 
@@ -201,6 +200,8 @@ def get_all_nodes():
 
         node = dict(row)
         node.pop("device_token_hash", None)
+        try:node['simulated']=json.loads(node.get('latest_status') or '{}').get('simulated') is True
+        except (ValueError,TypeError):node['simulated']=False
 
 
         try:

@@ -24,3 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
     update();
 });
 window.addEventListener("pagehide", () => gateway.socket?.disconnect());
+
+// pagehide disconnects explicitly; reconnect when the browser restores this page.
+window.addEventListener("pageshow", event => { if (event.persisted) gateway.socket?.connect(); });

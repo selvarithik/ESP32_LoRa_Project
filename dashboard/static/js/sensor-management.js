@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
  const message=$("sensor-management-message"), csrf=()=>document.querySelector('meta[name="sensor-csrf"]')?.content||"";
  const identity=p=>p.node_id+"::"+p.parameter_id;
  async function api(url,method="GET",body){
-  const response=await fetch(url,{method,headers:{"Content-Type":"application/json","X-CSRF-Token":csrf()},body:body?JSON.stringify(body):undefined});
+  const response=await fetch(url,{method,cache:"no-store",signal:AbortSignal.timeout(12000),headers:{"Content-Type":"application/json","X-CSRF-Token":csrf()},body:body?JSON.stringify(body):undefined});
   const data=await response.json();if(!response.ok||data.success===false)throw Error(data.error||"Sensor request failed");return data;
  }
  const url=p=>"/api/nodes/"+encodeURIComponent(p.node_id)+"/parameters"+(p.parameter_id?"/"+encodeURIComponent(p.parameter_id):"");
@@ -27,11 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const writable=actor&&["administrator","creator"].includes(actor.role);
   $("sensor-add").disabled=!writable;
   $("sensor-management-counts").innerHTML=[["Total sensors",sensors.length],["Enabled",sensors.filter(p=>p.enabled).length],["Dashboard widgets",sensors.filter(p=>p.display_enabled&&p.enabled).length],["Unavailable / unconfigured",sensors.filter(p=>!p.timestamp||!SensorUI.config(p).source_field).length]].map(([label,n])=>'<span>'+label+' <strong>'+n+'</strong></span>').join("");
-  $("sensor-management-rows").innerHTML=filtered().map(p=>{
+  gateway.patchHtml($("sensor-management-rows"),filtered().map(p=>{
    const node=nodes.find(n=>n.node_id===p.node_id),c=SensorUI.config(p);
    const actions=[["details","Details"],["test","Test source"],...(writable?[["edit","Edit / Data source"],["visible",p.display_enabled?"Remove from Dashboard":"Add to Dashboard"],["enable",p.enabled?"Disable":"Enable"],["up","↑"],["down","↓"],["delete","Delete"]]:[])];
-   return '<tr data-sensor-key="'+esc(identity(p))+'"><td><strong>'+esc(p.parameter_name)+'</strong><br><small>'+esc(p.sensor_id||p.parameter_id)+'</small></td><td>'+esc(p.node_name||p.node_id)+'<br><small>'+esc(c.source||"node_telemetry")+" · "+esc(c.source_field||p.parameter_id)+'</small></td><td>'+esc(p.enabled?"Enabled":"Disabled")+'<br>'+esc(p.display_enabled?"Widget selected":"Widget hidden")+'<br>'+esc(SensorUI.status(p,node))+'</td><td>'+esc(SensorUI.value(p))+" "+esc(p.unit)+'</td><td>'+actions.map(([action,label])=>'<button class="btn" type="button" data-sensor-action="'+action+'" title="'+(action==="up"?"Move widget up":action==="down"?"Move widget down":esc(label))+'">'+label+'</button>').join("")+'</td></tr>';
-  }).join("")||'<tr><td colspan="5">No configured sensors match this selection.</td></tr>';
+   return '<tr data-id="'+esc(identity(p))+'" data-sensor-key="'+esc(identity(p))+'"><td><strong>'+esc(p.parameter_name)+'</strong><br><small>'+esc(p.sensor_id||p.parameter_id)+'</small></td><td>'+esc(p.node_name||p.node_id)+'<br><small>'+esc(c.source||"node_telemetry")+" · "+esc(c.source_field||p.parameter_id)+'</small></td><td>'+esc(p.enabled?"Enabled":"Disabled")+'<br>'+esc(p.display_enabled?"Widget selected":"Widget hidden")+'<br>'+esc(SensorUI.status(p,node))+'</td><td>'+esc(SensorUI.value(p))+" "+esc(p.unit)+'</td><td>'+actions.map(([action,label])=>'<button class="btn" type="button" data-sensor-action="'+action+'" title="'+(action==="up"?"Move widget up":action==="down"?"Move widget down":esc(label))+'">'+label+'</button>').join("")+'</td></tr>';
+  }).join("")||'<tr><td colspan="5">No configured sensors match this selection.</td></tr>');
   const q=$("sensor-management-search").value.toLowerCase(),category=$("sensor-management-category").value;
   $("sensor-template-catalog").innerHTML=templates.map((p,i)=>({p,i})).filter(({p})=>(!q||p.parameter_type.toLowerCase().includes(q))&&(!category||p.category===category)).map(({p,i})=>'<button type="button" class="sensor-template" data-template="'+i+'" '+(!writable?"disabled":"")+'>'+esc(p.parameter_type)+'<small>'+esc(p.parameter_id)+" · "+esc(p.unit)+'</small></button>').join("");
   $("sensor-source-limitations").textContent="Available: normalized node telemetry. Direct MQTT subscriptions, direct Modbus polling and direct gateway diagnostic sources are unavailable in this implementation.";
@@ -101,5 +101,5 @@ document.addEventListener("DOMContentLoaded", () => {
   form.onsubmit=async e=>{e.preventDefault();if(step!==4)return;const save=form.querySelector("#sensor-wizard-save");save.disabled=true;try{const data=payload(),nodeId=form.elements.node_id.value;await api("/api/nodes/"+encodeURIComponent(nodeId)+"/parameters"+(editing?"/"+encodeURIComponent(p.parameter_id):""),editing?"PUT":"POST",data);close();await load();message.textContent="Sensor saved.";}catch(e){error.textContent=e.message;}finally{save.disabled=false;}};
   document.body.append(overlay);document.body.style.overflow="hidden";document.addEventListener("keydown",key);show();form.elements.parameter_name.focus();
  }
- load().catch(notify);
+ gateway.watch(load, {events:["connect", "node_update", "telemetry_update"], enabled:()=>!busy&&!document.querySelector(".sensor-editor")});
 });

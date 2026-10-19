@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let autoRefresh = false;
     let refreshTimer = null;
+    let loading = false, loaded = false;
 
 
     init();
@@ -90,8 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================================= */
 
     async function loadLogs() {
-
-        gateway.showLoading(
+        if (loading) return;
+        loading = true;
+        if (!loaded) gateway.showLoading(
             table,
             "Loading logs..."
         );
@@ -184,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     : response.logs || [];
 
 
-            renderLogs(logs);
+            renderLogs(logs); loaded = true;
 
 
         } catch (error) {
@@ -210,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "error"
             );
 
-        }
+        } finally { loading = false; }
 
     }
 
@@ -432,9 +434,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (refreshTimer) {
 
-            clearInterval(
-                refreshTimer
-            );
+            refreshTimer();
 
             refreshTimer = null;
 
@@ -450,11 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
          * Refresh the data only.
          * Never reload the webpage.
          */
-        refreshTimer =
-            setInterval(
-                loadLogs,
-                5000
-            );
+        refreshTimer = gateway.watch(loadLogs, {immediate:false});
 
     }
 

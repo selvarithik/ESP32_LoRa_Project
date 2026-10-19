@@ -1,0 +1,67 @@
+{
+  "scope": "PHYSICAL ESP32 + GPIO4 DHT11 + signed HTTP over LAN + actual Gateway SQLite; no MQTT test",
+  "device_id": "ESP32-10777D842178",
+  "station_ip": "192.168.1.106",
+  "role": "MASTER",
+  "local_ip": {
+    "enabled": true,
+    "credential_configured": true,
+    "interface": "WIFI",
+    "local_ip": "192.168.1.106",
+    "gateway_host": "192.168.1.108",
+    "gateway_port": 5001,
+    "routing_policy": "MASTER_ONLY",
+    "last_success_uptime_ms": 230950,
+    "last_error": 200,
+    "state": "CONNECTED",
+    "ethernet": "NOT_AVAILABLE",
+    "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+  },
+  "dht_enabled": true,
+  "dht_pin": 4,
+  "mqtt_revision": 53,
+  "mqtt_shared_revision": 1,
+  "mqtt_client_id": "ESP32-10777D842178",
+  "mqtt_active_fingerprint": "2c327b3f89115315111e80b0461e5b6c8ee21d499452ca08eed8447a05af7ee3",
+  "commands": [
+    {
+      "command": "PING",
+      "command_id": "CMD-24F763056FF4",
+      "state": "COMPLETED",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "command": "GET_TELEMETRY",
+      "command_id": "CMD-717C89433AB5",
+      "state": "COMPLETED",
+      "result": {
+        "valid": true,
+        "status": "OK",
+        "parameters": {
+          "temperature": 25.8,
+          "humidity": 91
+        },
+        "sensor_type": "DHT11"
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "parameter_id": "humidity",
+      "timestamp": "2026-10-19T12:16:04.275984",
+      "value": 90.0,
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "temperature",
+      "timestamp": "2026-10-19T12:16:04.275984",
+      "value": 25.8,
+      "source": "local-ip"
+    }
+  ],
+  "gateway_mqtt_revision": 6,
+  "gateway_mqtt_client_id": "SELVA_GATEWAY_SERVER_001",
+  "passed": true
+}

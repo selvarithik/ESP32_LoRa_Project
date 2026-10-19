@@ -217,9 +217,9 @@ document.addEventListener("DOMContentLoaded", () => {
  const connection=()=>{$("socket-status-text").textContent=socket?.connected?"Live command updates":"Polling command updates";};
  const reconnect=()=>{connection();refresh();};
  socket?.on("command_update",update);socket?.on("node_update",nodeUpdate);socket?.on("connect",reconnect);socket?.on("disconnect",connection);
- timer=setInterval(async()=>{if(document.hidden||pollBusy)return;pollBusy=true;try{await loadNodes();if(!socket?.connected&&selected)await loadHistory(selected);}finally{pollBusy=false;}},8000);
+ timer=setInterval(async()=>{if(document.hidden||pollBusy)return;pollBusy=true;try{await loadNodes();if(selected)await loadHistory(selected);}finally{pollBusy=false;}},8000);
  const visible=()=>{if(!document.hidden)refresh();};document.addEventListener("visibilitychange",visible);
- window.addEventListener("pagehide",()=>{stopped=true;clearInterval(timer);socket?.off("command_update",update);socket?.off("node_update",nodeUpdate);socket?.off("connect",reconnect);socket?.off("disconnect",connection);document.removeEventListener("visibilitychange",visible);},{once:true});
+ window.addEventListener("pagehide",event=>{if(event.persisted)return;stopped=true;clearInterval(timer);socket?.off("command_update",update);socket?.off("node_update",nodeUpdate);socket?.off("connect",reconnect);socket?.off("disconnect",connection);document.removeEventListener("visibilitychange",visible);},{once:true});
  connection();switchType();loadNodes();
 });
 

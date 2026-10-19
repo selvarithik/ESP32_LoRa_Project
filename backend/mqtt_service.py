@@ -37,8 +37,8 @@ def client_for(profile, client_id=None):
 
 class Service:
     SUBSCRIPTIONS=('telemetry','status','command_ack','config','events','discovery','chat/message','chat/ack','chat/status')
-    def __init__(self,store,trust_acl=False):
-        self.store=store;self.trust_acl=trust_acl;self.client=None;self.profile=None
+    def __init__(self,store,trust_acl=False,client_factory=None):
+        self.store=store;self.trust_acl=trust_acl;self.client_factory=client_factory or client_for;self.client=None;self.profile=None
         self.incoming=queue.Queue(32);self.outgoing=queue.Queue(24);self.stop_event=threading.Event()
         self.lock=threading.RLock();self.lifecycle=threading.RLock();self.shutdown_requested=False;self.thread=None;self.pending={};self.peer={};self.last_compare=0
         self.state='disconnected';self.last_error=None;self.reconnect_count=0;self.dropped=0;self.pubacks=0
@@ -72,7 +72,7 @@ class Service:
             self.profile=self.store.profile()
             if not self.profile:return
             if not self.trust_acl:self.last_error='ACL_CONFIRMATION_REQUIRED';return
-            self.client=client_for(self.profile);self.stop_event.clear()
+            self.client=self.client_factory(self.profile);self.stop_event.clear()
             self.client.on_connect=self.on_connect;self.client.on_disconnect=self.on_disconnect
             self.client.on_message=self.on_message;self.client.on_publish=self.on_publish
             self.client.on_subscribe=self.on_subscribe
@@ -144,7 +144,7 @@ class Service:
             packet=data['packet'];source=packet.get('source');contract.require(source==d['device_id'] or (d['device_id']==d['master_id'] and self.authorized(d['master_id'],source)),code='UNAUTHORIZED')
             allowed={'telemetry':('TELEMETRY',),'status':('HELLO','HEARTBEAT','STATUS'),'discovery':('HELLO','HEARTBEAT','STATUS'),'command_ack':('ACK','RESPONSE'),'events':('EVENT','ALARM','DIAGNOSTIC')}
             contract.require(packet.get('type') in allowed[kind] and packet.get('destination')=='GATEWAY','packet')
-            device_api.ingest(d['master_id'],packet)
+            device_api.ingest(d['master_id'],packet,transport='mqtt')
             self.last_persisted_at=int(time.time())
             response=message(self.profile,d['master_id'],'config',{'op':'PERSISTED','received_message_id':packet['message_id'],'status':'PERSISTED'},correlation_id=d['message_id'])
             for command in device_api.pending_commands(d['master_id']):self.enqueue(message(self.profile,d['master_id'],'command',{'packet':command},message_id=command['message_id']))

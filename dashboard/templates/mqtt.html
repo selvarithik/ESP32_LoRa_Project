@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
+<section class="settings-card"><div class="settings-card-content"><h3>Saved MQTT profile templates</h3><select class="input" id="mqtt-saved-profile" aria-label="Saved profile"></select><div class="modal-actions"><button class="btn" id="mqtt-save-template">Save current draft</button><button class="btn" id="mqtt-select-template">Stage selected profile</button><button class="btn" id="mqtt-delete-template">Delete template</button></div><p>Selection stages a candidate. Use the existing test / confirm / rollback process below. Templates reuse the active protected credential; password input remains local commissioning only.</p><label>Type selected profile name to confirm deletion<input class="input" id="mqtt-delete-confirm"></label><p id="mqtt-catalog-feedback" role="status"></p></div></section>
+
 <section class="card mqtt-settings"><h2>MQTT configuration</h2>
 <link rel="stylesheet" href="/static/css/account-access.css">
 <p>Changes are staged. The active broker stays available during testing. Provision passwords locally on the Gateway computer.</p>
@@ -11,8 +13,8 @@
 <button id="mqtt-test" type="button">Test candidate</button>
 <button id="mqtt-confirm" type="button">Confirm tested switch</button>
 <button id="mqtt-cancel" type="button">Cancel candidate</button>
-<button id="mqtt-refresh" type="button">Refresh</button>
+<button id="mqtt-refresh" type="button">Refresh</button><button id="mqtt-connect-active" type="button">Connect active profile</button><button id="mqtt-disconnect-active" type="button">Pause MQTT connection</button>
 <pre id="mqtt-transaction"></pre>
 </section>
-<script src="{{ url_for('static', filename='js/mqtt.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/mqtt.js') }}?v=20261019-refresh" defer></script><script src="{{url_for('static',filename='js/mqtt-profiles.js')}}?v=1" defer></script>
 {% endblock %}

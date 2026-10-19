@@ -188,7 +188,8 @@
                         "Accept":
                             "application/json"
                     },
-                    cache: "no-store"
+                    cache: "no-store",
+                    signal: AbortSignal.timeout(12000)
                 }
             );
 
@@ -247,12 +248,12 @@
        LOAD USERS
        ======================================================== */
 
-    async function loadUsers() {
+    async function loadUsers(quiet = false) {
 
         const list =
             $("chatList");
 
-        if (list) {
+        if (list && !quiet) {
 
             list.innerHTML =
                 `
@@ -287,7 +288,7 @@
                 error
             );
 
-            if (list) {
+            if (list && !quiet) {
 
                 list.innerHTML =
                     `
@@ -621,16 +622,19 @@
        LOAD MESSAGES
        ======================================================== */
 
-    async function loadMessages() {
+    async function loadMessages(quiet = false) {
 
         if (!state.activeUserId) {
             return;
         }
 
-        const container =
-            $("chatMessages");
+        const target = state.activeUserId;
+        const previous = JSON.stringify(state.messages);
+        const container = $("chatMessages");
+        const scroll = container?.scrollTop || 0;
+        const atBottom = !container || container.scrollHeight-container.clientHeight-scroll < 48;
 
-        if (container) {
+        if (container && !quiet) {
 
             container.innerHTML =
                 `
@@ -663,6 +667,7 @@
                 );
 
 
+            if (target !== state.activeUserId) return;
             state.messages =
                 Array.isArray(
                     data.messages
@@ -671,7 +676,10 @@
                     : [];
 
 
-            renderMessages();
+            if (!quiet || previous !== JSON.stringify(state.messages)) {
+                renderMessages();
+                if (quiet && !atBottom && container) container.scrollTop = scroll;
+            }
 
             await markIncomingSeen();
 
@@ -683,7 +691,7 @@
                 error
             );
 
-            if (container) {
+            if (container && !quiet) {
 
                 container.innerHTML =
                     `
@@ -1158,9 +1166,13 @@
             await loadUsers();
         });
         gateway.socket?.on("connect", () => {
-            loadUsers();
-            if (state.activeUserId) loadMessages();
+            loadUsers(true);
+            if (state.activeUserId) loadMessages(true);
         });
+        gateway.watch(async () => {
+            await loadUsers(true);
+            if (state.activeUserId) await loadMessages(true);
+        }, {interval:8000, immediate:false});
     }
 
 
