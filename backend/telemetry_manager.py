@@ -1,4 +1,6 @@
 from datetime import datetime
+import json
+import math
 
 from database import get_connection
 
@@ -356,6 +358,12 @@ def get_latest_values(node_id):
     )
 
     rows = cursor.fetchall()
+    node_row = connection.execute('SELECT * FROM nodes WHERE node_id=?',(node_id,)).fetchone()
+    node = dict(node_row) if node_row else {}
+    try:reported = json.loads(node.get('latest_status') or '{}')
+    except (ValueError,TypeError):reported = {}
+    cadence = reported.get('telemetry_seconds') if isinstance(reported,dict) and node.get('device_enrolled') else None
+    if type(cadence) is not int or not 2<=cadence<=3600:cadence=None
     connection.close()
 
     result = []
@@ -366,6 +374,12 @@ def get_latest_values(node_id):
         item['timestamp_basis']='GATEWAY_RECEIPT' if item.get('source') in ('local-ip','mqtt','wifi','SIMULATED_LOCAL_IP') else 'REPORTED_SAMPLE_TIME'
         from sensor_widgets import config
         item["widget_config"] = config(item)
+        # Derived display grace only: never rewrite the saved widget settings.
+        configured=item['widget_config'].get('stale_timeout',10)
+        if type(configured) not in (int,float) or not math.isfinite(configured) or configured<1:configured=10
+        expected=cadence if item['widget_config'].get('source')=='node_telemetry' else None
+        item['expected_transmission_seconds']=expected
+        item['effective_stale_timeout_s']=max(configured,2*expected+5) if expected else configured
 
         item["enabled"] = bool(item["enabled"])
         item["display_enabled"] = bool(item["display_enabled"])

@@ -10,7 +10,7 @@ import mqtt_contract as contract
 
 gateway=Path(__file__).resolve().parents[1]
 firmware=gateway.parent/'ESP32_LoRa_ESP32_Firmware'
-expected='b9fa76a27e0e7f178f9621bc9070c6e842617514a82b8f839342d35387697c74'
+expected='4a6ac838e0fb437606e791d3bd21941cdfe64d560763f0f182e5b105fb5fedde'
 raw=(firmware/'CONFIG_CONTRACT.md').read_bytes()
 assert raw==(gateway/'CONFIG_CONTRACT.md').read_bytes()
 assert hashlib.sha256(raw).hexdigest()==expected

@@ -1,0 +1,8 @@
+{% from "partials/page-icons.html" import page_icon %}
+{% macro nav_link(item) -%}
+<a href="{{ item.path }}" class="{{ 'mobile-nav-link' if mobile_navigation else 'nav-item' }}" data-path="{{ item.path }}" data-search-label="{{ item.label }}" title="{{ item.label }}">{{ page_icon(item.path) }}<span>{{ item.label }}</span></a>
+{%- endmacro %}
+{% for item in gateway_navigation %}
+{% if item.children %}<section class="workspace-nav-group" aria-label="{{ item.label }}"><div class="workspace-nav-label" title="{{ item.label }}"><span>{{ item.label }}</span></div><div>{% for child in item.children %}{{ nav_link(child) }}{% endfor %}</div></section>
+{% else %}{{ nav_link(item) }}{% endif %}
+{% endfor %}

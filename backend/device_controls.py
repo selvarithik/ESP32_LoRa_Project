@@ -11,4 +11,4 @@ def install(app):
  @app.get('/api/device-controls')
  @device_api.require_admin
  def device_controls_catalog():
-  return jsonify(schema_version=1,commands=sorted(contract.COMMANDS),fields={k:dict(type=v[0],minimum=v[1],maximum=v[2]) for k,v in contract.FIELDS.items()},interval_presets=[2,5,10,30,60],nodes=[n for n in node_manager.get_all_nodes() if n.get('device_enrolled')],credentials='PHYSICAL_USB_ONLY',radio='DRIVER_UNAVAILABLE_UNTIL_HARDWARE_VERIFIED')
+  return jsonify(schema_version=1,commands=sorted(contract.COMMANDS),command_registry={name:contract.describe_command(name) for name in sorted(contract.COMMANDS)},fields={k:dict(type=v[0],minimum=v[1],maximum=v[2]) for k,v in contract.FIELDS.items()},interval_presets=[2,5,10,30,60],nodes=[n for n in node_manager.get_all_nodes() if n.get('device_enrolled')],credentials='PHYSICAL_USB_ONLY',radio='DRIVER_UNAVAILABLE_UNTIL_HARDWARE_VERIFIED')

@@ -1,0 +1,103 @@
+/* Approved V5, scoped to Command Center. No device configuration side effects. */
+body[data-page="/command-center"] #command-chat{height:calc(100dvh - 96px);min-height:400px;max-height:none;grid-template-columns:280px minmax(0,1fr);border-radius:12px}
+.command-chat{--command-failure:#FF0000}
+.command-chat #command-conversation{min-height:0;background:#F1EFEB;padding:14px 24px;scrollbar-width:thin}
+.command-chat-workspace>.param-hint{padding:6px 14px;margin:0;font-size:10px;line-height:1.4;border-bottom:1px solid var(--m-line)}
+.command-chat .command-message{width:442px;max-width:90%;margin-block:10px;gap:3px}
+.command-chat .command-bubble{padding:10px 14px;border:1px solid #BFCAD7;border-radius:9px;background:#fff;color:#16304B;overflow-wrap:anywhere}
+.command-chat .outgoing .command-bubble{background:#FFF7EB;border-color:#D7C7B0}
+.command-chat .command-bubble-head{margin-bottom:4px;gap:8px;font-size:10px;color:#586A7D}
+.command-chat .command-bubble h3{font-size:14px;line-height:1.3;margin:0 0 4px}
+.command-chat .command-bubble code{font-size:10px;color:#586A7D}
+.command-chat .command-bubble dl{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 14px;margin:8px 0;font-size:11px;line-height:1.35}
+.command-chat .command-bubble dl>div{min-width:0}
+.command-chat .command-bubble dt{font-size:10px;color:#586A7D}
+.command-chat .command-bubble dd{margin:2px 0 0;overflow-wrap:anywhere;line-height:1.35}
+.command-chat .command-bubble details{margin-top:4px;font-size:11px}
+.command-chat .command-bubble summary{padding:5px 0;cursor:pointer;color:#0066FF}
+.command-chat .command-bubble pre{max-height:240px;white-space:pre-wrap;overflow-wrap:anywhere;background:#F5F8FC;color:#16304B;font:11px/1.5 ui-monospace,monospace}
+.command-chat .command-state{font-size:10px;line-height:1.2;border-radius:5px;padding:3px 5px;background:#EDF2F8;color:#0066FF}
+.command-chat .command-state:is(.failed,.timeout,.rejected,.busy,.nack,.error){color:#FF0000;background:#FFE5E5}
+.command-chat .command-state:is(.completed,.accepted,.ack_received,.ok,.duplicate){color:#08734F;background:#E8F7F1}
+.command-chat .command-state:is(.queued,.sent,.waiting_ack,.pending,.executing){color:#885400;background:#FFF0D0}
+.command-chat .command-bubble dd .command-state{padding:0;background:transparent}
+.command-chat .command-message-error{color:#FF0000;border-left:2px solid #FF0000;padding:3px 7px;margin:5px 0;font-size:10px;line-height:1.4}
+.command-chat .command-message-actions{margin-top:4px;gap:6px;justify-content:flex-end}
+.command-chat .command-message-actions .btn{min-height:28px;padding:4px 10px;font-size:11px}
+.command-chat .command-card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px}
+.command-chat .command-message time{font-size:10px;color:#586A7D}
+.command-chat .command-ack{display:flex;align-items:center;gap:8px;width:fit-content;max-width:95%;padding:7px 12px;border:1px solid #C1CAD5;background:white;border-radius:8px;margin:10px 0;font-size:11px}
+.command-chat .command-ack time{font-size:10px;color:#586A7D;margin-left:18px}
+.command-chat .command-system{width:fit-content;max-width:90%;text-align:left;font-size:10px;margin:5px auto;color:var(--m-muted)}
+.command-chat .command-system summary{cursor:pointer}
+.command-chat .command-composer{display:flex;flex-direction:column;padding:10px 16px;position:relative}
+.command-chat .command-configuration{order:-2;margin:0 0 10px;padding:10px 0;max-height:36dvh;border-top:0;border-bottom:1px solid var(--m-line);overflow:auto}
+.command-chat #command-arguments-box{order:-1}
+.command-chat .command-config-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px}
+.command-chat .command-config-heading h3{font-size:14px;margin:0}
+.command-chat .command-compose-row{flex-wrap:nowrap;align-items:end}
+.command-chat .command-type-label{flex:1;min-width:0;flex-basis:auto}
+.command-chat .command-send{background:#0066FF;border-color:#0066FF}
+.command-chat .command-node-filters{gap:4px;flex-wrap:wrap}
+.command-chat .command-node-filters button{padding:5px 8px;min-height:30px}
+.command-chat button:focus-visible,.command-chat summary:focus-visible{outline:2px solid #0066FF;outline-offset:3px}
+.command-chat button:disabled{opacity:.5;cursor:not-allowed}
+[data-theme="dark"] .command-chat #command-conversation{background:#182333}
+[data-theme="dark"] .command-chat .command-bubble,[data-theme="dark"] .command-chat .command-ack{background:#233248;color:#EDF4FF;border-color:#52667D}
+[data-theme="dark"] .command-chat .outgoing .command-bubble{background:#332E27}
+[data-theme="dark"] .command-chat .command-bubble :is(dt,code),[data-theme="dark"] .command-chat time{color:#BAC9DC}
+@media(max-width:1000px){body[data-page="/command-center"] #command-chat{grid-template-columns:240px minmax(0,1fr)}.command-chat #command-conversation{padding:12px}}
+@media(max-width:700px){body[data-page="/command-center"] #command-chat{grid-template-columns:minmax(0,1fr);height:calc(100dvh - 80px);min-height:400px}.command-chat .command-message{max-width:96%;width:330px}.command-chat .command-bubble{padding:10px 12px}.command-chat .command-chat-toolbar{padding:5px 10px;gap:5px}.command-chat .command-chat-identity p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.command-chat .command-composer{padding:8px}.command-chat #command-config-toggle{font-size:0;flex:0 0 42px}.command-chat #command-config-toggle svg{width:20px;height:20px}.command-chat .command-send{min-width:70px;flex:0 0 auto}.command-chat .command-configuration{max-height:44dvh}.command-chat .config-row-main{grid-template-columns:repeat(2,minmax(0,1fr))}.command-chat .command-bubble dd{font-size:10px}.command-chat .command-bubble dl{gap:5px 10px}.command-chat .command-refresh{padding:6px}.command-chat-workspace>.param-hint{font-size:9px;padding:4px 10px}}
+
+.command-chat .incoming .command-message-actions{float:right;margin-top:-28px}.command-chat .incoming .command-card-footer,.command-chat .incoming .command-message-error{clear:both}
+
+/* Keep history readable; configuration floats above the composer, never shrinks it. */
+.command-chat .command-chat-header{padding:8px 14px;gap:10px}
+.command-chat .command-chat-identity{line-height:1.25}
+.command-chat .command-chat-identity h2{font-size:14px;line-height:1.25}
+.command-chat .command-chat-identity p{font-size:10px;line-height:1.25;margin:2px 0}
+.command-chat .command-chat-identity small{display:block;font-size:9px;line-height:1.25}
+.command-chat .command-chat-toolbar{padding:4px 12px;gap:8px}
+.command-chat .command-chat-toolbar .btn{min-height:28px;padding:4px 8px}
+.command-chat-workspace>.param-hint{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 12px;font-size:9px;flex-shrink:0}
+.command-chat .command-composer{padding:8px 12px}
+.command-chat .command-type-label>span{display:none}
+.command-chat .command-active-status{margin-bottom:5px;font-size:9px;line-height:1.25}
+.command-chat .command-configuration{position:absolute;left:8px;right:8px;bottom:100%;max-height:min(250px,45dvh);overflow:auto;padding:12px;margin:0;background:var(--m-surface);border:1px solid var(--m-line);border-radius:10px;z-index:30;box-shadow:0 -4px 18px #07305b18}
+.command-chat .config-row-main{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.command-chat .config-row-main label{font-size:10px;line-height:1.35;display:grid;gap:5px;margin:0}
+.command-chat .config-row-main :is(input,select){width:100%;min-width:0;box-sizing:border-box;border:1px solid var(--m-line);border-radius:6px;padding:6px 8px;font-family:inherit;font-size:12px;line-height:1.3;background:var(--m-surface);color:var(--m-text)}
+.command-chat .config-row-main .form-group{margin:0;min-width:0}
+.command-chat .command-system{font-size:9px;margin:2px auto;line-height:1.2}
+@media(max-width:700px){.command-chat .config-row-main{grid-template-columns:repeat(2,minmax(0,1fr))}.command-chat .command-configuration{max-height:38dvh}.command-chat .command-chat-identity p{max-width:220px}.command-chat .command-chat-toolbar #socket-status-text{font-size:9px}}
+
+/* Single compact node header; preserve filter/refresh/latest behavior. */
+.command-chat .command-chat-header{padding:7px 12px;gap:8px;flex-wrap:nowrap}
+.command-chat .command-chat-header .command-chat-toolbar{border:0;padding:0;gap:8px;flex:0 0 auto;background:transparent}
+.command-chat .command-chat-toolbar #socket-status-text,.command-chat .command-help-hidden{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;clip:rect(0,0,0,0)!important;overflow:hidden!important;white-space:nowrap!important;border:0!important}
+.command-chat .command-chat-toolbar label{font-size:10px;gap:5px;white-space:nowrap}
+.command-chat .command-chat-toolbar select{max-width:116px;min-height:28px;padding:3px 5px;border:1px solid var(--m-line);font-size:11px}
+.command-chat .command-chat-header>.command-refresh{min-height:28px;width:30px;padding:4px}
+.command-chat .command-composer{padding:7px 10px;background:var(--m-surface);border-top:2px solid #B9D2F6}
+.command-chat .command-active-status[data-state=ready],.command-chat .command-active-status[data-state=unselected]{display:none}
+.command-chat .command-active-status[data-state=offline]{color:#885400;font-size:10px;line-height:1.3;margin-bottom:5px}
+.command-chat .command-compose-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:center}
+.command-chat.ping-compose .command-compose-row{grid-template-columns:minmax(130px,.9fr) minmax(100px,1fr) auto auto}
+.command-chat .command-compose-row .command-quick-input{margin:0;min-width:0;width:100%;height:34px;min-height:34px;padding:6px 9px;font-size:12px}
+.command-chat .command-compose-row .cmd-select{height:34px;min-height:34px;padding:5px 8px;background:#F0F6FF;border:1px solid #91B9F5;font-size:12px;color:#07305B}
+.command-chat #command-config-toggle{min-height:34px;background:#E5EFFF;color:#004BBB;border:1px solid #6C9FED;font-size:12px;font-weight:700;padding:6px 10px}
+.command-chat #command-config-toggle[aria-expanded=true]{background:#0066FF;color:#fff;border-color:#0066FF}
+.command-chat .command-send{min-height:34px;height:34px;font-weight:700;padding:6px 12px}
+.command-chat .outgoing .command-bubble{border:1px solid #C6AA7F;border-left:3px solid #B58A49;background:#FFF7EB}
+.command-chat .incoming .command-bubble{border:1px solid #A0B8D7;border-left:3px solid #0066FF;background:#fff}
+.command-chat .command-bubble-head{font-weight:700;letter-spacing:.03em;color:#344F6C}
+.command-chat .command-bubble h3{font-size:15px;color:#07305B}
+.command-chat .command-configuration{border:2px solid #91B9F5;box-shadow:0 -4px 18px #07305b24}
+.command-chat .command-config-heading{padding-bottom:8px;border-bottom:1px solid #C6DAFA}
+.command-chat .command-config-heading h3{color:var(--m-text);font-weight:700}
+[data-theme="dark"] .command-chat .command-compose-row .cmd-select{background:#20344F;color:#EDF4FF}
+[data-theme="dark"] .command-chat .command-bubble h3,[data-theme="dark"] .command-chat .command-bubble-head{color:#EDF4FF}
+[data-theme="dark"] .command-chat .outgoing .command-bubble{background:#332E27}
+[data-theme="dark"] .command-chat .incoming .command-bubble{background:#233248}
+@media(max-width:1000px){.command-chat .command-chat-header>.command-node-avatar{display:none}.command-chat .command-chat-identity p{max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.command-chat .command-chat-toolbar label{font-size:0}.command-chat .command-chat-toolbar select{font-size:10px;max-width:92px}}
+@media(max-width:700px){.command-chat .command-chat-header{gap:5px;padding:7px 8px;flex-wrap:wrap}.command-chat .command-chat-identity{flex:1 1 150px}.command-chat .command-chat-identity h2{font-size:12px}.command-chat .command-chat-header .command-chat-toolbar{margin-left:auto;gap:4px}.command-chat .command-chat-identity p{display:none}.command-chat .command-chat-toolbar .btn{font-size:10px;padding:4px;min-height:26px}.command-chat #command-config-toggle{font-size:11px;padding:5px 7px}.command-chat #command-config-toggle svg{width:15px;height:15px}.command-chat .command-send{min-width:62px;padding:5px 8px;font-size:11px}.command-chat.ping-compose .command-compose-row{grid-template-columns:minmax(0,1fr) auto auto}.command-chat.ping-compose .command-quick-input{grid-column:1 / -1;grid-row:2}.command-chat .command-composer{padding:6px 8px}.command-chat .command-chat-toolbar select{max-width:84px}}

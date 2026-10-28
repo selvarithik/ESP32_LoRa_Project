@@ -4,6 +4,7 @@ import hashlib
 import json
 import time
 import unittest
+from unittest.mock import patch
 from gateway_fixture import seed, server
 import database
 import device_api
@@ -17,6 +18,28 @@ class LocalIpTests(unittest.TestCase):
         self.service=local_ip.Service();self.service.migrate();self.peer=self.service.app.test_client()
         local_ip.save_credential('IP-MASTER',self.token)
     def tearDown(self):self.service.stop()
+    def test_saved_bind_failure_keeps_dashboard_and_settings_available(self):
+        with local_ip.connection() as db:
+            settings=self.service.settings();settings['enabled']=True
+            db.execute('UPDATE local_ip_settings SET document=? WHERE id=1',(json.dumps(settings),))
+        for failure in (OSError('address unavailable'),SystemExit(1)):
+            with self.subTest(failure=type(failure).__name__),patch.object(local_ip,'service',self.service),patch.object(local_ip,'make_server',side_effect=failure):
+                self.assertFalse(local_ip.start_saved())
+                self.assertEqual(self.service.state,'FAILED')
+                self.assertEqual(self.service.error,'BIND_FAILED')
+                self.assertIsNone(self.service.server)
+                self.assertEqual(self.service.settings(),settings)
+                response=self.client.get('/')
+                self.assertEqual(response.status_code,200)
+                self.assertIn(b'Open Local IP settings',response.data)
+    def test_saved_listener_disabled_and_unexpected_failure(self):
+        with patch.object(local_ip,'service',self.service),patch.object(self.service,'start') as start:
+            self.assertFalse(local_ip.start_saved());start.assert_not_called()
+            with local_ip.connection() as db:
+                settings=self.service.settings();settings['enabled']=True
+                db.execute('UPDATE local_ip_settings SET document=? WHERE id=1',(json.dumps(settings),))
+            start.side_effect=ValueError('UNEXPECTED_CONFIGURATION_ERROR')
+            with self.assertRaisesRegex(ValueError,'UNEXPECTED_CONFIGURATION_ERROR'):local_ip.start_saved()
     def frame(self,kind='TELEMETRY',source='IP-MASTER',body=None):
         if body is None:body={'valid':True,'parameters':{'temperature':25.5,'humidity':55.0}}
         return device_api.packet(kind,source,'GATEWAY',body)

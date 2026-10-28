@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% block title %}Network · SELVARITHIK A&amp;D{% endblock %}{% block page_title %}Communication{% endblock %}{% block page_subtitle %}LoRa mesh topology, packet health, routing and settings{% endblock %}{% block content %}<div class="page-view page-view-communication communication-page v3-page">
+{% extends "base.html" %}{% block title %}LoRa Mesh Monitor · SELVARITHIK A&amp;D{% endblock %}{% block page_title %}LoRa Mesh Monitor{% endblock %}{% block page_subtitle %}LoRa mesh topology, packet health, routing and settings{% endblock %}{% block content %}{% set operations_view = "mesh" %}{% include "partials/operations-overview.html" %}<p class="param-hint">The topology and controls below are saved Gateway mesh records. They are not proof of RF delivery. Packet-manager statistics are separate from physical radio counters. RSSI/SNR, packet loss and routes remain unknown unless queried and reported by firmware.</p><div class="page-view page-view-communication communication-page v3-page">
 <div class="page-toolbar">
 <div class="v3-hero-actions">
 <span class="v3-live-badge">
@@ -29,7 +29,7 @@
 <section class="v3-panel">
 <header class="v3-panel-head">
 <div>
-<h3>Live mesh</h3>
+<h3>Saved topology · unverified RF</h3>
 </div>
 </header>
 <div class="v3-topology-canvas">

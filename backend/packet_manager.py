@@ -2,7 +2,7 @@
 packet_manager.py
 
 Standard packet creation, validation, encoding and decoding
-for the SELVARITHIK'S LoRa Gateway communication system.
+for the Selvarithik LoRa Gateway communication system.
 
 Transport independent:
 - LoRa / E220

@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
  function update(){
   pending=0;
   const scroll=window.scrollY;
-  const next=compact?scroll>24:scroll>80;
+  const next=compact?scroll>24:scroll>64;
   if(next!==compact){
    compact=next;
    header.classList.toggle("is-compact",compact);

@@ -32,15 +32,19 @@ class SimulatedNode:
    kind=body['command'];args=body['arguments'];ok=True
    try:
     control.validate_command(kind,args)
+    kind=control.ALIASES.get(kind,kind)
     if 'expected_revision' in args and args['expected_revision']!=self.revision:raise ValueError('REVISION_CONFLICT')
     self.executions+=1
-    if kind in ('CONFIG_UPDATE','SET_SLEEP_SCHEDULE'):
+    if kind in ('CONFIG_UPDATE','SET_SLEEP_SCHEDULE','SET_DEVICE_NAME'):
      self.config.update({k:v for k,v in args.items() if k!='expected_revision'});self.revision+=1;result={'saved':True,'configuration_revision':self.revision,'restart_required':any(k.startswith('wifi_') for k in args)}
     elif kind in ('SET_TELEMETRY_INTERVAL','SET_HEARTBEAT_INTERVAL'):
      self.config['telemetry_seconds' if kind=='SET_TELEMETRY_INTERVAL' else 'heartbeat_seconds']=args['seconds'];self.revision+=1;result={'saved':True,'configuration_revision':self.revision}
     elif kind in ('PING',):result={'ok':True}
     elif kind in ('STATUS','GET_STATUS'):result=self.status()
     elif kind=='GET_CONFIG':result=dict(self.config,configuration_revision=self.revision,config_scope='RUNTIME')
+    elif kind=='GET_CAPABILITIES':result={'commands':sorted(control.COMMANDS),'lora_driver':'SIMULATED_ONLY','remote_cancellation':False}
+    elif kind=='GET_SENSOR_STATUS':result={'status':'SIMULATED','valid':self.sensor_valid}
+    elif kind in ('GET_MESH_STATUS','GET_NODE_STATUS','GET_ROUTE_INFO'):result={'physical_routes_available':False,'state':'SIMULATED_RADIO'}
     elif kind=='GET_TELEMETRY':result=self.telemetry()
     elif kind=='RESTART':result={'restarted':True,'reset_reason':'SIMULATED_SOFTWARE_RESET'}
     elif kind=='GET_POWER_STATUS':result=dict(self.config,state='SIMULATED_SLEEPING' if power_schedule.remaining(self.config,time.time()) else 'SIMULATED_ACTIVE',sleep_remaining_seconds=power_schedule.remaining(self.config,time.time()),remote_wake_supported=False)
@@ -49,7 +53,7 @@ class SimulatedNode:
     else:result={'state':'SIMULATED_DIAGNOSTICS'}
    except ValueError as error:ok=False;result={'error':str(error)}
    result['simulated']=True
-   cid=frame['message_id'];ack=device_api.packet('ACK',self.identity,'GATEWAY',{'command_id':cid,'status':'RECEIVED'},correlation_id=cid)
+   cid=frame['message_id'];ack=device_api.packet('ACK',self.identity,'GATEWAY',{'command_id':cid,'status':'ACCEPTED'},correlation_id=cid)
    response=device_api.packet('RESPONSE',self.identity,'GATEWAY',{'command_id':cid,'status':'SUCCESS' if ok else 'FAILED','data':result},correlation_id=cid)
    record={'request':request,'ack':ack,'response':response};self.cache[identity]=record
    while len(self.cache)>32:del self.cache[next(iter(self.cache))]
@@ -57,21 +61,25 @@ class SimulatedNode:
   return ([] if self.drop_ack else [record['ack']])+([] if self.drop_response else [record['response']])
 
 class SimulatedMaster:
- def __init__(self,identity,nodes,exchange):self.radio=SimulatedRadio();self.identity=identity;self.nodes={n.identity:n for n in nodes};self.exchange=exchange;self.forwarded=0;self.lost=0
+ def __init__(self,identity,nodes,exchange):self.radio=SimulatedRadio();self.identity=identity;self.nodes={n.identity:n for n in nodes};self.exchange=exchange;self.forwarded=0;self.lost=0;self.offers=[]
  def uplink(self,node,kind,body):
   frame=device_api.packet(kind,node.identity,'GATEWAY',body)
   if node.identity!=self.identity:frame=self.radio.transfer(frame,node.identity,self.identity)
-  return self.exchange(frame) if frame else {'accepted':False,'commands':[],'error':'SIMULATED_RADIO_LOSS'}
+  if not frame:return {'accepted':False,'commands':[],'error':'SIMULATED_RADIO_LOSS'}
+  reply=self.exchange(frame);self.offers.extend(reply.get('commands',[]));return reply
  def announce(self):
   for node in self.nodes.values():self.uplink(node,'HELLO',node.status())
  def tick(self):
   master=self.nodes[self.identity];reply=self.uplink(master,'STATUS',master.status())
-  for frame in reply.get('commands',[]):
+  for _ in range(12):
+   if not self.offers:break
+   frame=self.offers.pop(0)
    node=self.nodes.get(frame['destination'])
    if not node:continue
    if node.identity!=self.identity:frame=self.radio.transfer(frame,self.identity,node.identity)
    if frame is None:self.lost+=1;continue
    for response in node.receive(frame):
     if node.identity!=self.identity:response=self.radio.transfer(response,node.identity,self.identity)
-    if response is not None:self.exchange(response);self.forwarded+=1
+    if response is not None:
+     received=self.exchange(response);self.offers.extend(received.get('commands',[]));self.forwarded+=1
   return reply

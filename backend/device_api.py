@@ -14,6 +14,7 @@ from functools import wraps
 from flask import Blueprint, jsonify, request, session
 import account_settings
 import command_manager
+import device_identity
 import database
 import node_manager
 import sensor_manager
@@ -145,6 +146,8 @@ def packet(kind, source, destination, body, message_id=None, correlation_id=""):
 def public_node(row):
     data = dict(row)
     data.pop("device_token_hash", None)
+    try:data["hardware_mac"]=device_identity.hardware_mac(data["node_id"])
+    except ValueError:data["hardware_mac"]=None
     data["latest_status"] = json.loads(data.get("latest_status") or "{}")
     data["simulated"] = data["latest_status"].get("simulated") is True
     age = (datetime.now() - datetime.fromisoformat(data["last_seen"])).total_seconds() if data.get("last_seen") else None
@@ -195,6 +198,7 @@ def enroll(identity, name, role, master_id="", address=""):
                 raise ValueError("Enroll the Master first")
             if db.execute("SELECT 1 FROM nodes WHERE node_id=? AND device_enrolled=1", (identity,)).fetchone():
                 raise ValueError("Identity already enrolled; use the explicit credential rotation API")
+            device_identity.require_available_hardware(identity,db)
             if address and db.execute("SELECT 1 FROM nodes WHERE master_id=? AND node_address=? AND node_id!=? AND device_enrolled=1", (master_id, address, identity)).fetchone():
                 raise ValueError("Duplicate logical Node address")
         finally:
@@ -265,22 +269,37 @@ def ingest(master_id, frame, transport='wifi'):
                     # Commands initiated locally on the Master are not Gateway commands.
                     if not str(cid).startswith("MSG-"):
                         raise PermissionError("Command belongs to another device")
+                elif cmd["state"] in ("TIMEOUT","CANCELLED") and kind=="RESPONSE":
+                    db.commit()
+                    command_manager.record_command_event(cid,source,"LATE_RESPONSE",cmd["state"],details={"status":body.get("status"),"data":redact(body.get("data"))})
                 elif cmd["state"] not in command_manager.TERMINAL_STATES:
                     # Existing manager owns command state transitions and audit records.
                     db.commit()
-                    command_manager.process_command_ack(cid, source)
-                    if kind == "RESPONSE":
-                        if body.get("status") not in {"SUCCESS", "FAILED"}:
+                    if kind == "ACK":
+                        command_manager.process_command_ack(cid, source, status=body.get("status"), message=body.get("error_code"))
+                    else:
+                        if body.get("status") not in {"SUCCESS", "FAILED", "UNSUPPORTED"}:
                             raise ValueError("Invalid response status")
                         command_manager.process_command_response(cid, source, status=body["status"], data=redact(body.get("data")))
                     if kind=="RESPONSE" and body.get("status")=="SUCCESS" and isinstance(body.get("data"),dict):
                         result=body['data']
                         if type(result.get('configuration_revision')) is int:
                             db.execute('UPDATE nodes SET configuration_revision=? WHERE node_id=?',(result['configuration_revision'],source))
-                        if cmd['command_type']=='CONFIG_UPDATE' and isinstance(cmd.get('payload'),dict) and 'device_name' in cmd['payload'] and result.get('saved') is True:
+                        if cmd['command_type'] in ('CONFIG_UPDATE','SET_CONFIGURATION','SET_DEVICE_NAME') and isinstance(cmd.get('payload'),dict) and 'device_name' in cmd['payload'] and result.get('saved') is True:
                             db.execute('UPDATE nodes SET name=? WHERE node_id=?',(cmd['payload']['device_name'],source))
                     event = ("command_update", command_manager.get_command(cid))
             elif kind in {"EVENT", "ALARM", "DIAGNOSTIC"}:
+                if kind=='EVENT' and body.get('event')=='COMMAND_ROUTE_FAILED':
+                    if source!=master_id:raise PermissionError('Only the assigned Master may report routing failure')
+                    cid=safe_id(body.get('command_id'));cmd=command_manager.get_command(cid)
+                    target=db.execute('SELECT master_id FROM nodes WHERE node_id=?',(body.get('target_device_id'),)).fetchone()
+                    if not cmd or cmd['node_id']!=body.get('target_device_id') or not target or target['master_id']!=master_id:raise PermissionError('Routing failure does not belong to Master')
+                    if body.get('error_code') not in ('ROUTE_NOT_FOUND','HOP_LIMIT_EXCEEDED','ROUTE_QUEUE_FULL'):raise ValueError('INVALID_ROUTE_ERROR')
+                    db.commit()
+                    if cmd['state'] not in command_manager.TERMINAL_STATES:
+                        command_manager.update_command_state(cid,'FAILED',error=body['error_code'])
+                        command_manager.record_command_event(cid,cmd['node_id'],'ROUTE_FAILED','FAILED',error=body['error_code'])
+                        _emit('command_update',command_manager.get_command(cid))
                 db.execute("INSERT INTO logs(timestamp,severity,source,message,node_id) VALUES(?,?,?,?,?)", (now, "error" if kind == "ALARM" else "info", kind, json.dumps(redact(body))[:2048], source))
             else:
                 raise ValueError("Unsupported uplink packet")
@@ -309,16 +328,16 @@ def ingest(master_id, frame, transport='wifi'):
 def pending_commands(master_id, device_id=None):
     db = connect()
     try:
-        rows = db.execute("SELECT c.* FROM commands c JOIN nodes n ON c.node_id=n.node_id WHERE n.master_id=? AND n.device_enrolled=1 AND n.enabled=1 AND c.state NOT IN ('COMPLETED','FAILED','CANCELLED','TIMEOUT') ORDER BY c.priority DESC,c.created_at LIMIT 12", (master_id,)).fetchall()
+        rows = db.execute("SELECT c.* FROM commands c JOIN nodes n ON c.node_id=n.node_id WHERE n.master_id=? AND n.device_enrolled=1 AND n.enabled=1 AND c.state NOT IN ('COMPLETED','FAILED','CANCELLED','TIMEOUT') ORDER BY c.priority DESC,c.created_at LIMIT 64", (master_id,)).fetchall()
     finally:
         db.close()
     for row in rows:
         if device_id is not None and row['node_id'] != device_id:
             continue
         cmd = command_manager.get_command(row["command_id"])
-        if datetime.fromisoformat(cmd["timeout_at"]) < datetime.now():
-            command_manager.update_command_state(cmd["command_id"], "TIMEOUT", error="Device delivery/execution deadline exceeded")
+        if not command_manager.claim_device_dispatch(cmd["command_id"]):
             continue
+        cmd=command_manager.get_command(cmd["command_id"])
         args = cmd.get("payload") or {}
         kind = cmd["command_type"]
         if kind not in SAFE_COMMANDS:
@@ -388,9 +407,12 @@ def commands():
     if error:
         return error
     try:
-        if set(body)-{'node_id','command_type','payload','timeout_seconds','command_id'}:raise ValueError('UNSUPPORTED_REQUEST_FIELD')
+        if set(body)-{'node_id','command_type','payload','timeout_seconds','command_id','priority','max_retries','ack_timeout_seconds','response_timeout_seconds','expiry_seconds'}:raise ValueError('UNSUPPORTED_REQUEST_FIELD')
         timeout=body.get('timeout_seconds',60)
         if type(timeout) is not int or not 1<=timeout<=300:raise ValueError('TIMEOUT_MUST_BE_INTEGER_1_TO_300')
+        identity_db=connect()
+        try:body['node_id']=device_identity.resolve(body.get('node_id'),identity_db)
+        finally:identity_db.close()
         kind = body.get("command_type")
         control.validate_command(kind,body.get("payload",{}))
         db = connect()
@@ -405,7 +427,7 @@ def commands():
                 if old["node_id"] != body.get("node_id") or old["command_type"] != kind or old["payload"] != body.get("payload", {}):
                     return jsonify(error="Command ID reused with different content"), 409
                 return jsonify(command=old, duplicate=True), 200
-        cmd = command_manager.create_command(body.get("node_id"), kind, body.get("payload", {}), timeout_seconds=body.get("timeout_seconds", 60), command_id=body.get("command_id"))
+        cmd = command_manager.create_command(body.get("node_id"), kind, body.get("payload", {}), timeout_seconds=timeout, command_id=body.get("command_id"),priority=body.get('priority',1),max_retries=body.get('max_retries',3),ack_timeout_seconds=body.get('ack_timeout_seconds',5),response_timeout_seconds=body.get('response_timeout_seconds',timeout),expiry_seconds=body.get('expiry_seconds',300))
         _emit("command_update", cmd)
         return jsonify(command=control.state(cmd)), 201
     except (ValueError, TypeError) as exc:

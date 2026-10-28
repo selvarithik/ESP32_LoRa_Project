@@ -6,6 +6,7 @@
 {% block page_subtitle %}Real-time status of all gateway subsystems{% endblock %}
 
 {% block content %}
+{% set operations_view = "dashboard" %}{% include "partials/operations-overview.html" %}
 <div class="dashboard-console" id="dashboard-console">
   <div class="dashboard-v4-wrap">
 
@@ -67,7 +68,7 @@
 
             </div>
             <div class="dashboard-section-tools">
-              <span class="dashboard-live-chip" id="dashboard-live-indicator">Connecting</span><button class="dashboard-mini-tool" id="dashboard-show-config" type="button">Node details</button>
+              <span class="dashboard-live-chip" id="dashboard-live-indicator">Connecting</span>
               <button class="dashboard-mini-tool active" id="dashboard-show-hidden" type="button">Manage widgets</button>
             </div>
           </header>
@@ -104,16 +105,6 @@
           </div>
           <div class="dashboard-section-footer"><a class="dashboard-link" href="/sensors">Inspect Sensors →</a></div>
         </section>
-
-        <section class="dashboard-section" id="widget-activity">
-          <header class="dashboard-section-head">
-            <div><h2>Recent logs</h2></div>
-          </header>
-          <div id="activity-list" class="dashboard-event-list">
-            <div class="dashboard-empty">Loading activity…</div>
-          </div>
-          <div class="dashboard-section-footer"><a class="dashboard-link" href="/logs">Open Logs →</a></div>
-        </section>
       </aside>
     </div>
   </div>
@@ -127,7 +118,6 @@
     <div class="dashboard-drawer-body" id="widgetToggleList">
 
       <div class="dashboard-drawer-row"><span>Problems</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-alerts" checked><span></span></label></div>
-      <div class="dashboard-drawer-row"><span>Recent logs</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-activity" checked><span></span></label></div>
       <div class="dashboard-drawer-row"><span>My widgets</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-custom-sensors" checked><span></span></label></div>
     </div>
     <div class="dashboard-drawer-footer">
@@ -140,6 +130,6 @@
 
 {% block extra_js %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sensor-widgets.css') }}?v=20261019-status">
-<script src="{{ url_for('static', filename='js/sensor-widgets.js') }}?v=20261019-status"></script>
-<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=20261019-status"></script>
+<script src="{{ url_for('static', filename='js/sensor-widgets.js') }}?v=20261025-cadence"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=20261025-basicdetails"></script>
 {% endblock %}

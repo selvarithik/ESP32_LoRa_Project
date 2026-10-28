@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "activation": "NOT_ACTIVATED",
+  "live_broker_tests": "NOT_APPROVED_NOT_RUN",
+  "brokers": {
+    "EMQX": {
+      "host": "n1161c10.ala.eu-central-1.emqxsl.com",
+      "mqtt_tls_port": 8883,
+      "wss_port": 8084,
+      "wss_path": "/mqtt"
+    },
+    "HIVEMQ": {
+      "host": "3e56a5883e564276920c2d356aa34c94.s1.eu.hivemq.cloud",
+      "mqtt_tls_port": 8883,
+      "wss_port": 8884,
+      "wss_path": "/mqtt"
+    }
+  },
+  "certificates": {
+    "EMQX": {
+      "certificates": [
+        {
+          "subject": "CN=DigiCert Global Root G2,OU=www.digicert.com,O=DigiCert Inc,C=US",
+          "issuer": "CN=DigiCert Global Root G2,OU=www.digicert.com,O=DigiCert Inc,C=US",
+          "is_ca": true,
+          "not_after": "2038-01-15T12:00:00+00:00",
+          "sha256": "cb3ccbb76031e5e0138f8dd39a23f9de47ffc35e43c1144cea27d46a5ab1cb5f"
+        }
+      ],
+      "broker_chain_verified": false
+    },
+    "HIVEMQ": {
+      "certificates": [
+        {
+          "subject": "CN=ISRG Root X1,O=Internet Security Research Group,C=US",
+          "issuer": "CN=ISRG Root X1,O=Internet Security Research Group,C=US",
+          "is_ca": true,
+          "not_after": "2035-06-04T11:04:38+00:00",
+          "sha256": "96bcec06264976f37460779acf28c5a7cfe8a3c0aae11a8ffcee05c0bddf08c6"
+        }
+      ],
+      "broker_chain_verified": false
+    }
+  },
+  "profiles": [
+    {
+      "file": "emqx-master.json",
+      "side": "MASTER",
+      "password_state": "PROTECTED_LOCAL_PROVISIONING_REQUIRED",
+      "broker_chain_verified": false
+    },
+    {
+      "file": "emqx-gateway.json",
+      "side": "GATEWAY",
+      "password_state": "PROTECTED_LOCAL_PROVISIONING_REQUIRED",
+      "broker_chain_verified": false
+    },
+    {
+      "file": "hivemq-master.json",
+      "side": "MASTER",
+      "password_state": "PROTECTED_LOCAL_PROVISIONING_REQUIRED",
+      "broker_chain_verified": false
+    },
+    {
+      "file": "hivemq-gateway.json",
+      "side": "GATEWAY",
+      "password_state": "PROTECTED_LOCAL_PROVISIONING_REQUIRED",
+      "broker_chain_verified": false
+    }
+  ]
+}

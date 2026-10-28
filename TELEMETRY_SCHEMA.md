@@ -9,3 +9,16 @@ Simulation fixtures/providers explicitly set simulated=true in status/telemetry 
 Status metadata includes last_sensor_sample_uptime_ms, last_transport_accept_uptime_ms and last_gateway_receipt_uptime_ms. A Node using a Master may know only hop acceptance; absent end-to-end receipt remains zero/unknown, not inferred Gateway delivery. Gateway receipt timestamps are Gateway-local UTC basis as retained by the existing server, while device sample metadata is explicitly uptime-based.
 
 Sensor types INA219 and MQ135 are now accepted as independent packets. See CONFIG_CONTRACT sensor extension for exact fields, ranges and invalid-reading rules. Unknown INA219 shunt withholds current/power; MQ135 stays disabled until protected wiring is verified and never reports gas ppm.
+
+Status includes hardware_mac (actual eFuse station/base MAC), preserved routing device_id, device_name and canonical MASTER/NODE role.
+
+
+## Current explicit role builds, contract1.2.0
+Initial defaults enable DHT11/MQ135 in both builds and INA219 only on Master.
+Existing NVS flags/calibration remain unchanged. Slave always inhibits INA acquisition
+(SLAVE_INA219_INHIBITED), regardless of saved flag. Role mismatch inhibits acquisition.
+TM1637 is disconnected/inhibited in both builds, with no GPIO18/19 activity.
+MQ135 reports raw ADC and pin mV only, calibrated=false, UNCALIBRATED_RAW_ONLY.
+An unknown INA shunt withholds current/power. Failed/disabled sensors produce status
+without fake numeric samples. Existing Gateway sensor normalization/UI remains.
+New-build radio sensor delivery was not physically tested in Stage A.

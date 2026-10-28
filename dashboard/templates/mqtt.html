@@ -1,20 +1,37 @@
 {% extends "base.html" %}
+{% block title %}MQTT · SELVARITHIK A&amp;D{% endblock %}
+{% block page_title %}MQTT{% endblock %}
+{% block page_subtitle %}Profiles, verified TLS &amp; broker diagnostics{% endblock %}
+{% block extra_js %}
+<link rel="stylesheet" href="/static/css/approved-workspaces.css?v=20261027">
+<link rel="stylesheet" href="/static/css/mqtt-workspace.css?v=20261027">
+<script src="/static/js/mqtt.js?v=20261027-approved" defer></script>
+<script src="/static/js/mqtt-profiles.js?v=20261027-approved" defer></script>
+<script src="/static/js/mqtt-diagnostics.js?v=20261027-approved" defer></script>
+<script src="/static/js/mqtt-workspace.js?v=20261028" defer></script>
+{% endblock %}
 {% block content %}
-<section class="settings-card"><div class="settings-card-content"><h3>Saved MQTT profile templates</h3><select class="input" id="mqtt-saved-profile" aria-label="Saved profile"></select><div class="modal-actions"><button class="btn" id="mqtt-save-template">Save current draft</button><button class="btn" id="mqtt-select-template">Stage selected profile</button><button class="btn" id="mqtt-delete-template">Delete template</button></div><p>Selection stages a candidate. Use the existing test / confirm / rollback process below. Templates reuse the active protected credential; password input remains local commissioning only.</p><label>Type selected profile name to confirm deletion<input class="input" id="mqtt-delete-confirm"></label><p id="mqtt-catalog-feedback" role="status"></p></div></section>
-
-<section class="card mqtt-settings"><h2>MQTT configuration</h2>
-<link rel="stylesheet" href="/static/css/account-access.css">
-<p>Changes are staged. The active broker stays available during testing. Provision passwords locally on the Gateway computer.</p>
-<p id="mqtt-feedback" role="status" aria-live="polite"></p>
-<pre id="mqtt-runtime"></pre><p id="mqtt-comparison"></p>
-<p id="mqtt-profile-summary"></p>
-<form id="mqtt-form"><div id="mqtt-fields"></div><button type="submit">Save candidate</button></form>
-<label>Enrolled Master ID <input id="mqtt-master" maxlength="48"></label>
-<button id="mqtt-test" type="button">Test candidate</button>
-<button id="mqtt-confirm" type="button">Confirm tested switch</button>
-<button id="mqtt-cancel" type="button">Cancel candidate</button>
-<button id="mqtt-refresh" type="button">Refresh</button><button id="mqtt-connect-active" type="button">Connect active profile</button><button id="mqtt-disconnect-active" type="button">Pause MQTT connection</button>
-<pre id="mqtt-transaction"></pre>
+<div class="mqtt-workspace" id="mqtt-workspace">
+<header class="mqtt-workspace-heading"><div><h2 class="mqtt-workspace-title">MQTT workspace</h2><p>Canonical profiles · candidate → test → confirm / rollback</p></div><span id="mqtt-connection-state" class="mqtt-connection-state" role="status">Unknown</span></header>
+<nav class="mqtt-tabs" aria-label="MQTT workspace panels"><button type="button" data-mqtt-panel="profiles" aria-pressed="true">Profiles</button><button type="button" data-mqtt-panel="topics" aria-pressed="false">Topics</button><button type="button" data-mqtt-panel="messages" aria-pressed="false">Diagnostics</button></nav>
+<div class="mqtt-columns">
+<section class="mqtt-panel mqtt-profiles-panel" id="mqtt-panel-profiles" aria-label="Connection profiles">
+<h2>Connection profiles</h2><p id="mqtt-profile-summary" class="mqtt-profile-summary">Loading active profile…</p>
+<details class="mqtt-templates"><summary>Saved profile templates</summary><label>Saved profile<select id="mqtt-saved-profile"></select></label><div class="mqtt-actions"><button class="btn" id="mqtt-save-template">Save current draft</button><button class="btn" id="mqtt-select-template">Stage selected profile</button></div><details><summary>Delete a saved template</summary><label>Type selected profile name to confirm deletion<input id="mqtt-delete-confirm" autocomplete="off"></label><button class="btn" id="mqtt-delete-template">Delete template</button></details><p>Selection stages a candidate using the existing protected credential.</p></details>
+<p id="mqtt-catalog-feedback" role="status"></p><p id="mqtt-feedback" role="status" aria-live="polite"></p>
+<form id="mqtt-form"><div id="mqtt-fields"></div><p class="mqtt-security-note">TLS certificate and hostname verification required. Passwords stay write-only; provision them locally on the Gateway computer.</p><button type="submit" class="btn mqtt-primary">Save candidate</button></form>
+<div class="mqtt-actions"><button id="mqtt-connect-active" type="button" class="btn">Connect active</button><button id="mqtt-disconnect-active" type="button" class="btn">Pause</button></div>
+<details class="mqtt-switch"><summary>Candidate test &amp; switch</summary><p>Saving a draft does not activate it. Test, then explicitly confirm or cancel.</p><label>Enrolled Master ID<input id="mqtt-master" maxlength="48"></label><div class="mqtt-actions"><button id="mqtt-test" type="button" class="btn">Test candidate</button><button id="mqtt-confirm" type="button" class="btn">Confirm tested switch</button><button id="mqtt-cancel" type="button" class="btn">Cancel candidate</button></div><pre id="mqtt-transaction"></pre></details>
 </section>
-<script src="{{ url_for('static', filename='js/mqtt.js') }}?v=20261019-refresh" defer></script><script src="{{url_for('static',filename='js/mqtt-profiles.js')}}?v=1" defer></script>
+<section class="mqtt-panel mqtt-topics-panel" id="mqtt-panel-topics" aria-label="Canonical topic registry" hidden>
+<h2>Topic registry</h2><p>Configured contract types, not observed traffic.</p><label>Filter topics<input id="mqtt-topic-filter" type="search" placeholder="Search canonical types"></label><p class="mqtt-topic-root">Active prefix <strong id="mqtt-topic-prefix">Unknown</strong><span>Gateway <strong id="mqtt-topic-gateway">Unknown</strong></span></p><ul class="mqtt-topic-list">{% for kind in mqtt_topic_types %}<li data-topic-type="{{ kind }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H9l-5 4Z"/></svg><span>{{ kind }}</span></li>{% endfor %}</ul><p>Only contract-approved topics. Runtime subscriptions depend on the worker's verified permissions.</p><div class="mqtt-actions"><button class="btn" disabled>Subscribe</button><button class="btn" disabled>Unsubscribe</button></div><small>The permanent worker owns its verified subscriptions; use the live-feed topic filter to change what you watch without interrupting telemetry.</small>
+</section>
+<section class="mqtt-panel mqtt-diagnostics-panel" id="mqtt-panel-messages" aria-label="Messages and diagnostics" hidden>
+<header class="mqtt-panel-heading"><h2>Messages &amp; diagnostics</h2><button id="mqtt-refresh" type="button" class="btn">Refresh status</button></header>
+<div class="mqtt-badges"><span>QoS 1</span><span>Verified TLS</span><span>Retain off for probes</span></div>
+<p id="mqtt-comparison"></p><details class="mqtt-runtime-details"><summary>Permanent worker runtime</summary><pre id="mqtt-runtime">Loading runtime…</pre></details>
+<section class="mqtt-live-feed"><header class="mqtt-panel-heading"><h3>Live worker messages</h3><span id="mqtt-feed-state" role="status">Loading…</span></header><label>Watch approved topic<select id="mqtt-feed-topic"><option value="">All authorized topics</option></select></label><p>Observed by the permanent worker after validation/persistence. Headers and safe summaries only.</p><div class="mqtt-feed-scroll"><table><thead><tr><th>Received</th><th>Type / device</th><th>State</th></tr></thead><tbody id="mqtt-feed-rows"><tr><td colspan="3">Waiting for new validated traffic.</td></tr></tbody></table></div></section>
+<section class="mqtt-probe-section"><h3>Active-profile diagnostics</h3><p>Uses the active protected credentials. Each test is bounded and separate from physical Master delivery.</p><label for="mqtt-diagnostic-master">Enrolled Master<select id="mqtt-diagnostic-master"></select></label><div class="mqtt-actions"><button class="btn" data-mqtt-probe="tls">Test verified TLS</button><button class="btn" data-mqtt-probe="broker">Test authentication</button><button class="btn" data-mqtt-probe="roundtrip">Test QoS 1 round-trip</button></div><p id="mqtt-diagnostic-feedback" role="status"></p><details><summary>Diagnostic evidence</summary><pre id="mqtt-diagnostic-result">No diagnostic has run.</pre></details><small>Round-trip uses a canonical config PROBE. Permanent-worker operation remains subject to verified topic permissions.</small></section>
+<section class="mqtt-publish-placeholder"><h3>Publish canonical config PROBE</h3><p>Uses the enrolled Master above and the active profile. No saved settings change. Queue acceptance is separate from broker and device acknowledgement.</p><button class="btn" type="button" id="mqtt-explorer-probe">Publish PROBE</button><p id="mqtt-explorer-feedback" role="status"></p><small>Custom command payloads use Command Center. Arbitrary topics, credentials, retained traffic and non-contract payloads remain blocked.</small></section>
+</section></div></div>
 {% endblock %}

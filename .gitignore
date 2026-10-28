@@ -12,3 +12,6 @@ data/
 _rejected_ui_rebuild/
 tests/artifacts/
 tests/*-before.png
+
+# Root-level local database is runtime data, never source.
+/gateway.db

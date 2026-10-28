@@ -1,0 +1,35 @@
+/* Three-panel MQTT workspace, approved design; all mutations use existing handlers. */
+.mqtt-workspace{color:var(--m-text);--mqtt-border:var(--m-line,#D3E3FD)}
+.mqtt-workspace-heading,.mqtt-panel-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.mqtt-workspace .mqtt-workspace-title{font-size:20px;margin:0 0 5px}.mqtt-workspace h2{font-size:16px;margin:0 0 12px}.mqtt-workspace h3{font-size:14px;margin:0 0 8px}
+.mqtt-workspace p,.mqtt-workspace small{font-size:11px;line-height:1.6;color:var(--m-muted);overflow-wrap:anywhere}.mqtt-workspace p{margin:8px 0}
+.mqtt-columns{display:grid;grid-template-columns:minmax(290px,320px) minmax(220px,280px) minmax(300px,1fr);gap:14px;align-items:start}
+.mqtt-panel{background:var(--m-surface);border:1px solid var(--mqtt-border);border-radius:12px;padding:18px;min-width:0;overflow-wrap:anywhere}
+.mqtt-panel[hidden]{display:none}
+.mqtt-workspace label{display:grid;gap:6px;font-size:11px;color:var(--m-muted);margin:10px 0;min-width:0}
+.mqtt-workspace :is(input,select,textarea){box-sizing:border-box;width:100%;min-width:0;max-width:100%;background:var(--m-surface);color:var(--m-text);border:1px solid var(--mqtt-border);border-radius:6px;padding:9px 10px;font-family:inherit;font-size:12px;line-height:1.4}
+.mqtt-workspace input[type=checkbox]{width:18px;min-height:18px;accent-color:#0066FF}
+.mqtt-workspace textarea{resize:vertical;min-height:68px}
+.mqtt-workspace .btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;border:1px solid var(--mqtt-border);border-radius:7px;padding:7px 10px;background:var(--m-surface);color:var(--m-text);font-size:11px;box-shadow:none;white-space:normal}
+.mqtt-workspace .mqtt-primary{background:#0066FF;color:white;border-color:#0066FF;width:100%}
+.mqtt-workspace button:disabled{opacity:.5;cursor:not-allowed}
+.mqtt-workspace :is(button,input,select,textarea,summary):focus-visible{outline:2px solid #0066FF;outline-offset:3px}
+.mqtt-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.mqtt-actions>*{flex:1}
+.mqtt-profile-summary{border-left:3px solid #0066FF;background:var(--m-soft-blue);padding:10px;border-radius:6px}
+.mqtt-connection-state,.mqtt-badges span{font-size:11px;padding:6px 10px;border-radius:12px;background:var(--m-surface);border:1px solid var(--mqtt-border)}
+.mqtt-connection-state[data-state=connected]{color:#08734F;background:#E8F7F1}.mqtt-connection-state[data-state=failed]{color:#FF0000;background:#FFE5E5}
+.mqtt-connection-state[data-state=connecting]{color:#885400;background:#FFF0D0}
+.mqtt-badges{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px}
+.mqtt-workspace details{border-top:1px solid var(--mqtt-border);padding-top:10px;margin-top:12px}
+.mqtt-workspace summary{cursor:pointer;font-size:12px;color:var(--m-blue);padding:4px 0;list-style-position:inside}
+.mqtt-workspace pre{white-space:pre-wrap;overflow-wrap:anywhere;overflow:auto;max-height:300px;background:var(--m-surface-2);font:11px/1.5 ui-monospace,monospace;padding:10px;border-radius:6px}
+.mqtt-topic-root{display:grid;gap:5px}.mqtt-topic-root strong{display:block;color:var(--m-text);font-size:12px}.mqtt-topic-list{list-style:none;padding:0;margin:16px 0}
+.mqtt-topic-list li{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:6px;font-size:12px}.mqtt-topic-list li:hover{background:var(--m-soft-blue)}
+.mqtt-topic-list li[hidden]{display:none}.mqtt-topic-list svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;color:var(--m-blue)}
+.mqtt-live-placeholder{text-align:center;min-height:160px;padding:28px 12px;border-block:1px solid var(--mqtt-border);margin:18px 0}.mqtt-live-placeholder>svg{width:30px;height:30px;fill:none;stroke:var(--m-muted);stroke-width:1.5;margin-bottom:16px}
+.mqtt-publish-placeholder{border-top:1px solid var(--mqtt-border);padding-top:16px;margin-top:18px}.mqtt-publish-placeholder .btn{margin-top:8px}
+.mqtt-tabs{display:none}.mqtt-field-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mqtt-workspace .access-feedback{color:#FF0000}.mqtt-workspace .access-feedback:empty{display:none}
+@media(max-width:1250px){.mqtt-columns{grid-template-columns:minmax(280px,.9fr) minmax(320px,1.2fr)}.mqtt-topics-panel{grid-column:1;grid-row:2}.mqtt-diagnostics-panel{grid-column:2;grid-row:1 / span 2}}
+@media(max-width:760px){.mqtt-columns{display:block}.mqtt-panel[hidden]{display:none}.mqtt-tabs{display:flex;gap:6px;margin-bottom:12px;background:var(--m-surface);padding:6px;border:1px solid var(--mqtt-border);border-radius:8px}.mqtt-tabs button{flex:1;border:0;border-radius:6px;background:transparent;color:var(--m-muted);padding:9px;font-size:12px}.mqtt-tabs [aria-pressed=true]{background:var(--m-soft-blue);color:var(--m-blue)}.mqtt-workspace-heading{align-items:start}.mqtt-workspace .mqtt-workspace-title{font-size:18px}.mqtt-panel{padding:16px}.mqtt-workspace-heading p{font-size:10px}.mqtt-connection-state{max-width:140px}.mqtt-panel-heading{flex-wrap:wrap}}
+
+.mqtt-live-feed{margin:18px 0;border-block:1px solid var(--mqtt-border);padding:14px 0}.mqtt-feed-scroll{max-height:280px;overflow:auto}.mqtt-live-feed table{width:100%;border-collapse:collapse;font-size:11px}.mqtt-live-feed th,.mqtt-live-feed td{padding:8px;text-align:left;border-bottom:1px solid var(--mqtt-border);overflow-wrap:anywhere}.mqtt-live-feed td small{display:block}.mqtt-live-feed th{position:sticky;top:0;background:var(--m-surface)}

@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function parameterStatus(p) {
         if (!p || !p.timestamp) return "offline";
-        if (Date.now() - new Date(p.timestamp).getTime() > Number(SensorUI.config(p).stale_timeout || 10) * 1000) return "stale";
+        if (Date.now() - new Date(p.timestamp).getTime() > SensorUI.freshnessTimeout(p) * 1000) return "stale";
         var alarm = String((p && p.alarm_status) || "").toUpperCase();
         if (alarm === "HIGH" || alarm === "LOW") return "alarm";
         if (alarm === "SENSOR_ERROR") return "error";
@@ -416,14 +416,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 var status = parameterStatus(p);
                 return status === "alarm" || status === "error";
             }).length;
-            var packetCount = node.packet_count || node.packets || node.rx_count || "—";
-            var signalParam = params.find(function (p) {
-                return /rssi|signal|snr/i.test([p.parameter_id, p.parameter_name, p.parameter_type].join(" "));
-            });
-            var batteryParam = params.find(function (p) {
-                return /batt|volt|charge|power/i.test([p.parameter_id, p.parameter_name, p.parameter_type, p.unit].join(" "));
-            });
-
             return '<article class="dashboard-node" data-node-id="' + esc(node.node_id) + '">' +
                 '<header class="dashboard-node-head">' +
                     '<div>' +
@@ -433,21 +425,19 @@ document.addEventListener("DOMContentLoaded", function () {
                         '</div>' +
                         '<div class="dashboard-node-id">' + esc(node.node_id) + (node.simulated ? ' · SIMULATED' : '') + '</div>' +
                     '</div>' +
-                    '<div class="dashboard-node-config">' +
-                        '<div class="dashboard-node-config-item"><span>Address</span><strong>' + esc(node.node_address || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Role / Master</span><strong>' + esc((node.device_role || reported.role || 'Unknown') + (node.master_id && node.master_id !== node.node_id ? ' / ' + node.master_id : '')) + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Transmission interval</span><strong>' + esc(reported.telemetry_seconds ? reported.telemetry_seconds + ' s' : 'Not reported') + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>MCU</span><strong>' + esc([node.mcu_family,node.mcu_model].filter(Boolean).join(" / ") || "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Packets</span><strong>' + esc(packetCount) + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Battery</span><strong>' + esc(batteryParam ? formatValue(batteryParam.value, batteryParam.decimal_places) + " " + (batteryParam.unit || "") : "—") + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Signal</span><strong>' + esc(signalParam ? formatValue(signalParam.value, signalParam.decimal_places) + " " + (signalParam.unit || "") : (node.communication_type || "—")) + '</strong></div>' +
-                        '<div class="dashboard-node-config-item"><span>Last Seen</span><strong>' + esc(formatTime(node.last_seen)) + '</strong></div>' +
-                    '</div>' +
+                    '<button type="button" class="btn btn-secondary esp32-detail-button" data-esp32-details="' + esc(node.node_id) + '">ESP32 details</button>' +
                     '<div class="dashboard-node-state-pill ' + (nodeOnline ? "online" : "offline") + '"><span>' + esc(nodeOnline ? "ONLINE" : "OFFLINE") + '</span><strong>' + esc(nodeOnline ? (problemCount ? problemCount + " alerts" : "Connected") : "Connection unavailable") + '</strong></div>' +
+                    '<div class="dashboard-node-basics" aria-label="Basic ESP32 details">' +
+                        '<span><small>Role</small><strong>' + esc(node.device_role || reported.role || 'Unknown') + '</strong></span>' +
+                        '<span><small>MCU</small><strong>' + esc(node.mcu_model || node.mcu_family || 'Not reported') + '</strong></span>' +
+                        '<span><small>Transmit</small><strong>' + esc(reported.telemetry_seconds ? reported.telemetry_seconds + ' s' : 'Not reported') + '</strong></span>' +
+                        '<span><small>' + (nodeOnline ? 'Wi-Fi RSSI' : 'Last Wi-Fi RSSI') + '</small><strong>' + esc(typeof reported.wifi_rssi === 'number' ? reported.wifi_rssi + ' dBm' : 'Not reported') + '</strong></span>' +
+                        (node.master_id && node.master_id !== node.node_id ? '<span><small>Master</small><strong>' + esc(node.master_id) + '</strong></span>' : '') +
+                        '<span><small>Last seen</small><strong>' + esc(formatTime(node.last_seen)) + '</strong></span>' +
+                    '</div>' +
                 '</header>' +
                 (!nodeOnline ? '<p class="dashboard-node-error"><strong>Offline:</strong> ' + esc(connection.reason) + '</p>' : "") +
                 '<div class="dashboard-node-body">' +
-                    (Array.isArray(reported.sensors) ? '<div class="dashboard-sensor-health" aria-label="Reported sensor health">' + reported.sensors.map(function(sensor) { return '<p><strong>' + esc(sensor.sensor_type || 'Sensor') + '</strong>: ' + esc(String(sensor.status || 'UNKNOWN').replaceAll('_', ' ')) + (sensor.sensor_type === 'INA219' && !sensor.shunt_resistance_configured ? ' · current/power unavailable until shunt resistance is confirmed' : '') + (sensor.sensor_type === 'MQ135' ? ' · raw readings only; no gas concentration or safety classification' : '') + '</p>'; }).join('') + '</div>' : '') +
                     (state.showConfig
                         ? '<div class="dashboard-node-inspector"><div class="dashboard-node-inspector-head">Node Configuration</div><div class="dashboard-node-inspector-grid">' + nodeConfigFields(node) + '</div></div>'
                         : "") +
@@ -455,6 +445,47 @@ document.addEventListener("DOMContentLoaded", function () {
                 '</div>' +
             '</article>';
         }).join(""));
+    }
+
+    async function openEsp32Details(nodeId) {
+        var node = state.nodes.find(item => String(item.node_id) === String(nodeId));
+        if (!node) return;
+        document.querySelector('.esp32-details-dialog')?.remove();
+        var opener = document.activeElement;
+        var dialog = document.createElement('dialog');
+        dialog.className = 'esp32-details-dialog';
+        dialog.setAttribute('aria-labelledby', 'esp32-details-title');
+        dialog.innerHTML = '<header><h2 id="esp32-details-title">ESP32 details</h2><button class="btn btn-secondary" type="button" data-close-device>Close</button></header><p role="status">Loading device details…</p><dl class="esp32-details-grid"></dl>';
+        document.body.append(dialog);
+        dialog.querySelector('[data-close-device]').onclick = () => dialog.close();
+        dialog.addEventListener('click', event => { if (event.target === dialog) { var box=dialog.getBoundingClientRect(); if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)dialog.close(); } });
+        dialog.addEventListener('close', () => { dialog.remove(); if(opener?.isConnected)opener.focus(); }, {once:true});
+        dialog.showModal();
+        var observed = null;
+        try { var overview = await getJson('/api/operations/overview'); observed = overview.devices.find(item => item.node_id === nodeId); }
+        catch (_) { /* Retain the already loaded telemetry snapshot, clearly labelled below. */ }
+        if (!dialog.isConnected) return;
+        var reported = {}; try { reported = typeof node.latest_status === 'string' ? JSON.parse(node.latest_status) : node.latest_status || {}; } catch (_) {}
+        var x = observed?.reported || reported;
+        var network = observed?.diagnostics?.GET_NETWORK;
+        var connection = SensorUI.connection(node);
+        var fields = [
+            ['Device name', node.name || x.device_name || nodeId], ['Device ID', nodeId],
+            ['Connection', observed?.health || (connection.online ? 'ONLINE' : 'OFFLINE')],
+            ['Role', node.device_role || x.role || 'Unknown'], ['Master ID', node.master_id || 'Not assigned'],
+            ['Hardware MAC', x.hardware_mac || observed?.hardware_mac || node.hardware_mac || 'Not reported'],
+            ['Firmware', x.firmware_version || node.firmware_version || 'Not reported'],
+            ['MCU', [node.mcu_family,node.mcu_model].filter(Boolean).join(' / ') || 'Not reported'],
+            ['Address', node.node_address || 'Not reported'],
+            ['Transmission interval', reported.telemetry_seconds ? reported.telemetry_seconds + ' s' : 'Not reported'],
+            ['Last seen', formatTime(node.last_seen)],
+            ['Transport (last report)', x.transport || node.communication_type || 'Not reported'],
+            ['Last queried IP', network?.data?.station_ip || network?.data?.ip || 'Not queried'],
+            ['Network query time', network?.received_at || 'Not queried']
+        ];
+        (Array.isArray(reported.sensors) ? reported.sensors : []).forEach(sensor => fields.push([sensor.sensor_type || 'Sensor', String(sensor.status || 'UNKNOWN').replaceAll('_',' ') + (sensor.sensor_type === 'MQ135' ? ' · raw and uncalibrated' : '')]));
+        dialog.querySelector('[role="status"]').textContent = (observed ? 'Latest available Gateway observations.' : 'Telemetry snapshot; live device details could not be refreshed.') + (!connection.online ? ' Device offline; saved reports are historical.' : ' Queried values show their query time.');
+        dialog.querySelector('dl').innerHTML = fields.map(([name,value]) => '<div><dt>' + esc(name) + '</dt><dd>' + esc(value) + '</dd></div>').join('');
     }
 
     function findTelemetryCard(card) {
@@ -897,6 +928,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         document.getElementById("dashboard-node-list")?.addEventListener("click", function (e) {
+            var deviceDetails = e.target.closest('[data-esp32-details]');
+            if (deviceDetails) { openEsp32Details(deviceDetails.dataset.esp32Details); return; }
             var remove = e.target.closest("[data-sensor-remove]");
             if (remove) {
                 var found = findTelemetryCard(remove.closest(".dashboard-sensor-card"));

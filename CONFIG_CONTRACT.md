@@ -1,6 +1,6 @@
 # Shared configuration contract
 
-Version: 1.1.0
+Version: 1.2.0
 Schema version: 1
 Date: 2026-10-19
 Authority: latest MASTER IMPLEMENTATION PROMPT, Sections 2, 5, 6, 8, 9, 12, 15 and 21.
@@ -322,7 +322,7 @@ Do not modify partition layout to conceal application overflow; report build evi
 | telemetry seconds | telemetry_seconds | SHARED | integer | 10 | 2..3600 | existing / grouped form; planned sections | device/config_v1 NVS; src/core/config_manager.cpp, src/core/network_service.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | device_api.py nodes/latest_status boundary | partial | PENDING: implementation and behavioral tests |
 | command timeout ms | command_timeout_ms | SHARED | integer | 5000 | 1000..30000 | existing / grouped form; planned sections | device/config_v1 NVS; src/core/config_manager.cpp, src/core/network_service.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
 | message max age ms | message_max_age_ms | SHARED | integer | 60000 | command_timeout_ms..300000 | existing / grouped form; planned sections | device/config_v1 NVS; src/core/config_manager.cpp, src/core/network_service.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
-| dht enabled | dht_enabled | LOCAL | boolean | false | true/false | existing / grouped form; planned sections | device/config_v1 NVS; src/sensors/sensor_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
+| dht enabled | dht_enabled | LOCAL | boolean | role builds true; legacy false | true/false | existing / grouped form; planned sections | device/config_v1 NVS; src/sensors/sensor_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
 | dht pin | dht_pin | LOCAL | integer | 4 | 4,13,14,18,19,21,22,23,32,33 | existing / grouped form; planned sections | device/config_v1 NVS; src/core/config_manager.cpp, src/sensors/sensor_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
 | wifi dhcp | wifi_dhcp | LOCAL | boolean | true | true/false | existing / grouped form; planned sections | device/config_v1 NVS; src/communication/wifi_manager.cpp, src/core/config_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
 | wifi ip | wifi_ip | LOCAL | string | empty | IPv4 required when DHCP disabled; reserved Ethernet not consumed | existing / grouped form; planned sections | device/config_v1 NVS; src/communication/wifi_manager.cpp, src/core/config_manager.cpp, src/web/local_web_server.cpp | not exposed; planned status/settings as relevant | no matching firmware-setting writer; do not equate legacy mesh settings | partial | PENDING: implementation and behavioral tests |
@@ -597,10 +597,10 @@ has independent validity/status; successful DHT does not imply INA/MQ health.
 
 | Setting | Type | Range | Default | Used by |
 | --- | --- | --- | --- | --- |
-| ina219_enabled | boolean | true/false | true | ESP32 page/firmware; Gateway reported sensor status |
+| ina219_enabled | boolean | true/false | MASTER true; SLAVE false (hardware inhibited) | ESP32 page/firmware; Gateway reported sensor status |
 | ina219_address | uint8 | 64..79 | 64 (0x40) | ESP32 page/firmware; fixed SDA21/SCL22 |
 | ina219_shunt_milliohms | uint16 | 0..1000; 0 unknown | 0 | ESP32 page/firmware; Gateway units derived from measurements |
-| mq135_enabled | boolean | true/false | false | ESP32 page/firmware; GPIO34 requires verified voltage divider |
+| mq135_enabled | boolean | true/false | role builds true; legacy false | ESP32 page/firmware; GPIO34 requires verified voltage divider |
 | mq135_warmup_seconds | uint32 | 60..604800 | 86400 | ESP32 page/firmware; conservative initial conditioning, not calibration |
 
 New sensor enable/address changes require restart. Unknown shunt resistance
@@ -615,7 +615,7 @@ and rejected on public mutations. Private Chat and OTA development are excluded.
 | --- | --- | --- | --- | --- |
 | server_led_enabled | boolean | true/false | true | ESP32 local page, firmware NVS; GPIO2 onboard LED; no duplicate Gateway setting writer |
 | server_led_active_high | boolean | true/false | true | ESP32 local page, firmware NVS; invert for active-low board variants |
-| tm1637_enabled | boolean | true/false | true | ESP32 local page, firmware NVS; MASTER only, CLK18/DIO19; current diagnostic wiring 3.3V; any 5V supply requires suitable logic-level shifting; NODE leaves pins untouched |
+| tm1637_enabled | boolean | true/false | false; inhibited in current hardware profiles | ESP32 local page, firmware NVS; MASTER only, CLK18/DIO19; current diagnostic wiring 3.3V; any 5V supply requires suitable logic-level shifting; NODE leaves pins untouched |
 
 These settings apply on restart and do not alter MQTT profiles or wire topics.
 The server indicator requires Wi-Fi plus an actual authenticated Gateway receipt
@@ -632,3 +632,78 @@ At startup, 8888 is a two-second segment self-test. Driver checks all TM1637
 byte acknowledgements and idle line levels; ACK never proves visual health.
 Display writes occur at most once/second, plus immediate state transitions.
 DHT and enabled radio pin conflicts are rejected rather than sharing GPIO18/19.
+
+
+## Command Center extension 3 (configuration contract 1.1.1, wire schema 1)
+Existing packet fields and MQTT topic registry are unchanged. COMMAND payload is
+command_id, command, arguments. ACK statuses: ACCEPTED, REJECTED, BUSY,
+DUPLICATE; legacy RECEIVED remains receipt-only. RESPONSE: SUCCESS, FAILED or
+UNSUPPORTED, data and execution_duration_ms. A RESPONSE never manufactures ACK.
+GET_CONFIGURATION aliases GET_CONFIG; SET_CONFIGURATION aliases CONFIG_UPDATE;
+REBOOT aliases RESTART. Additional read commands: GET_CAPABILITIES, GET_SENSOR_STATUS,
+GET_MESH_STATUS, GET_NODE_STATUS, GET_ROUTE_INFO (unavailable routes are explicit).
+SET_DEVICE_NAME uses device_name and optional expected_revision. Config fields and
+ranges remain unchanged; secret updates require physical USB.
+Gateway-local command policy fields: ack_timeout_seconds integer 1..60 default 5,
+response_timeout_seconds integer 1..300 default timeout_seconds, expiry_seconds
+integer 1..300 default 300. max_retries 0..10 bounds retransmissions. Capacity is 64
+active commands. Durable SQLite scheduling survives Gateway restart. ACK stops ACK
+retries and starts response deadline. Timeout/expiry means unknown execution outcome.
+Retries preserve original command bytes and ID. Late results are audited as
+LATE_RESPONSE without converting TIMEOUT to success. Cancel stops dispatch only;
+remote cancellation is unsupported.
+Identity: uppercase colon-separated station/base eFuse MAC. Existing ESP32-XXXXXXXXXXXX
+IDs encode ESP.getEfuseMac() integer with reversed byte order. A reversible alias
+layer preserves all enrolled IDs, keys, routing and historical database records.
+SLAVE is a display alias for canonical NODE. Master/Slave builds select initial role
+only; saved roles prevail. Physical LoRa remains DRIVER_UNAVAILABLE pending hardware.
+
+Browser login extension: POST /api/auth/login/start validates anonymous session CSRF,
+limits attempts and starts one bounded worker. GET /api/auth/login/result is bound
+to the same session and CSRF; 202 means pending, 401 means invalid saved credentials,
+200 rotates the authenticated cookie only after verification. Credential generation
+changes invalidate a pending job. PBKDF2 iteration count remains 100000. Legacy
+/api/auth/login remains compatible. UI request and verification deadlines are 30 s;
+an abandoned completed job is reclaimed after 60 s. No password reset/default override.
+
+
+## Shared E220 hardware profile extension (contract 1.2.0; logical wire schema 1)
+Master/Slave images use the same source with mutually exclusive DEVICE_ROLE_MASTER
+and DEVICE_ROLE_SLAVE definitions. Runtime stored roles/identities are not rewritten;
+a build/stored-role mismatch disables radio/sampling until corrected by local provisioning.
+Both build defaults enable DHT11 GPIO4 and raw MQ135 ADC1 GPIO34 (divider mandatory).
+Master permits INA219 I2C SDA21/SCL22; Slave hard-disables INA219 even if NVS says enabled.
+TM1637 is inhibited in current hardware profiles even if legacy NVS enables it. Its saved
+option is preserved for a later explicitly reviewed build profile.
+E220-900T22D uses UART2 RX16/TX17, M0=25/M1=26/AUX27. Radio defaults disabled until
+physical commissioning. Enabling radio reads public registers 00..05 only at 9600 8N1
+in mode 3, then checks stored baud/address/channel/air rate/power/fixed/LBT/RSSI settings.
+No C0/C2 write or radio crypt-register read is performed. Mismatches inhibit RF and
+restore initial mode. Successful explicit radio enable selects normal mode, without
+rewriting module registers. AUX state, UART submission and RF completion are distinct.
+Application ACK/RESPONSE alone confirms target acceptance/execution.
+Logical packets and MQTT topics remain unchanged. HELLO implements discovery, COMMAND
+PING plus RESPONSE implements ping/pong, EVENT/ALARM carries errors. No duplicate types.
+Radio transport RV1 encodes the shared Message in a bounded MessagePack array, chunks
+it into addressed authenticated fragments, adds HMAC-SHA256/128 and COBS UART framing.
+Only initialized registered/allowed peers can issue application actions. Fragment headers
+carry immediate sender/next-hop station MACs, transfer ID, index/count/span/length and
+whole-message CRC32. HMAC is authentication; CRC only detects corruption. Two 3072-byte
+assemblies and 32 completed-transfer entries are bounded; assemblies/replay entries expire
+at 120 seconds. Peer/route age is governed by existing route_timeout_seconds. Relays must
+use explicitly observed routes, consume TTL, preserve source/command IDs and suppress
+forward duplicates. Physical multi-hop remains unverified until relay tests.
+The four provider/side MQTT templates are preparation files only; no active profile,
+revision, password, database or ACL changes occur. MQTT/WSS ports are documented separately;
+existing transport is native TLS MQTT 8883. No WebSocket code/path is activated.
+
+RV1 MessagePack array order is [protocol_version,type,ttl,timestamp,sequence_number,
+message_id,source,destination,next_hop,origin,correlation_id,payload_object,
+radio_hop_count,radio_max_hops]. Header/fragment integers are little-endian;
+MessagePack follows its standard byte order. Radio-only hop metadata does not add
+fields to the legacy 15-field JSON or MQTT payload. Each radio send increments hop
+count; relays consume TTL and reject loops, expired routes and exhausted hop budgets.
+Master/Slave builds initialize the optional MQTT client paused; only an explicitly
+requested connect can start the cloud task. Slave never initializes a cloud connection.
+This changes startup policy only, not stored profiles/revisions or the existing chat handlers.
+Read-only radio_probe on physical USB always restores original mode and never enables RF.

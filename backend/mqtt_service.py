@@ -26,6 +26,12 @@ def message(profile,master_id,kind,data,message_id=None,correlation_id=None):
     if correlation_id:result['correlation_id']=correlation_id
     return result
 
+def command_message(profile,master_id,packet):
+    """Retries keep one immutable wire envelope for the same command ID."""
+    result=message(profile,master_id,"command",{"packet":packet},message_id=packet["message_id"])
+    result["timestamp"]=packet["timestamp"];result["expires_at"]=packet["timestamp"]+300
+    return result
+
 def client_for(profile, client_id=None):
     contract.validate_profile(profile,True)
     client=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2,client_id=client_id or profile['client_id'],protocol=mqtt.MQTTv311,clean_session=True)
@@ -37,8 +43,16 @@ def client_for(profile, client_id=None):
 
 class Service:
     SUBSCRIPTIONS=('telemetry','status','command_ack','config','events','discovery','chat/message','chat/ack','chat/status')
-    def __init__(self,store,trust_acl=False,client_factory=None):
+    def __init__(self,store,trust_acl=False,client_factory=None,telemetry_only=False,acl_guard=None,commands_only=False):
+        from mqtt_explorer import Feed
+        self.explorer=Feed()
         self.store=store;self.trust_acl=trust_acl;self.client_factory=client_factory or client_for;self.client=None;self.profile=None
+        self.acl_guard=acl_guard
+        self.telemetry_only=telemetry_only
+        self.commands_only=commands_only
+        self.command_check=0
+        if telemetry_only:self.SUBSCRIPTIONS=("telemetry","status","config")
+        elif commands_only:self.SUBSCRIPTIONS=("telemetry","status","config","command_ack")
         self.incoming=queue.Queue(32);self.outgoing=queue.Queue(24);self.stop_event=threading.Event()
         self.lock=threading.RLock();self.lifecycle=threading.RLock();self.shutdown_requested=False;self.thread=None;self.pending={};self.peer={};self.last_compare=0
         self.state='disconnected';self.last_error=None;self.reconnect_count=0;self.dropped=0;self.pubacks=0
@@ -53,7 +67,7 @@ class Service:
             if self.profile and len(self.peer)==1:
                 _,(snap,received)=next(iter(self.peer.items()))
                 comparison=contract.compare(contract.snapshot(self.profile,state['shared_revision']),snap,received)
-            return {'state':self.state,'last_error':self.last_error,'reconnect_count':self.reconnect_count,
+            return {'mode':'TELEMETRY_ONLY' if self.telemetry_only else 'TELEMETRY_COMMANDS' if self.commands_only else 'FULL','state':self.state,'last_error':self.last_error,'reconnect_count':self.reconnect_count,
                     'queue_length':self.outgoing.qsize(),'incoming_queue_length':self.incoming.qsize(),
                     'dropped':self.dropped,'pubacks':self.pubacks,'comparison':comparison,
                     'subscription_state':'UNKNOWN' if self.state!='connected' else 'READY' if len(self.subscriptions_ready)==len(self.SUBSCRIPTIONS) else 'SUBSCRIPTION_PENDING',
@@ -61,7 +75,7 @@ class Service:
                     'last_database_persisted_at':self.last_persisted_at,'last_broker_puback_at':self.last_puback_at,
                     'tls_verification_required':True,'tls_state':'VERIFIED' if self.state=='connected' else 'UNKNOWN',
                     'authentication_state':'ACCEPTED' if self.state=='connected' else 'AUTH_FAILED' if self.last_error=='AUTH_FAILED' else 'UNKNOWN',
-                    'acl_status':'OPERATOR_ASSERTED' if self.trust_acl else 'UNVERIFIED'}
+                    'acl_status':'SCOPED_COMMANDS_VERIFIED' if self.trust_acl and self.commands_only and self.acl_guard else 'SCOPED_TELEMETRY_VERIFIED' if self.trust_acl and self.telemetry_only and self.acl_guard else 'OPERATOR_ASSERTED' if self.trust_acl else 'UNVERIFIED'}
     def start(self):
         with self.lifecycle:
             self.shutdown_requested=False
@@ -71,6 +85,7 @@ class Service:
             if self.thread and self.thread.is_alive():return
             self.profile=self.store.profile()
             if not self.profile:return
+            if self.acl_guard:self.trust_acl=bool(self.acl_guard())
             if not self.trust_acl:self.last_error='ACL_CONFIRMATION_REQUIRED';return
             self.client=self.client_factory(self.profile);self.stop_event.clear()
             self.client.on_connect=self.on_connect;self.client.on_disconnect=self.on_disconnect
@@ -118,8 +133,10 @@ class Service:
             self.pubacks+=1
             self.last_puback_at=int(time.time())
             message_id=self.pending.pop(mid,None)
-            if message_id:self.chat_state(message_id,'BROKER_ACCEPTED')
+            if message_id and not self.telemetry_only and not self.commands_only:self.chat_state(message_id,'BROKER_ACCEPTED')
     def enqueue(self,envelope):
+        if self.telemetry_only:contract.require(envelope.get("message_type")=="config",code="NOT_AVAILABLE")
+        elif self.commands_only:contract.require(envelope.get("message_type") in ("config","command"),code="NOT_AVAILABLE")
         try:self.outgoing.put_nowait(envelope);return 'QUEUED'
         except queue.Full:self.dropped+=1;raise contract.ContractError('QUEUE_FULL') from None
     @staticmethod
@@ -130,6 +147,7 @@ class Service:
         return bool(master and node)
     def handle(self,received_topic,raw,retain=False):
         d=contract.envelope(raw,received_topic,self.profile,retained=retain)
+        if self.telemetry_only or self.commands_only:contract.require(d['message_type'] in self.SUBSCRIPTIONS,code='NOT_AVAILABLE')
         if d['device_id']=='GATEWAY':return
         contract.require(self.authorized(d['master_id'],d['device_id']),code='UNAUTHORIZED')
         fingerprint=contract.digest(d);key=(d['master_id'],d['device_id'],d['message_id'])
@@ -147,7 +165,8 @@ class Service:
             device_api.ingest(d['master_id'],packet,transport='mqtt')
             self.last_persisted_at=int(time.time())
             response=message(self.profile,d['master_id'],'config',{'op':'PERSISTED','received_message_id':packet['message_id'],'status':'PERSISTED'},correlation_id=d['message_id'])
-            for command in device_api.pending_commands(d['master_id']):self.enqueue(message(self.profile,d['master_id'],'command',{'packet':command},message_id=command['message_id']))
+            if not self.telemetry_only and not self.commands_only:
+                for command in device_api.pending_commands(d['master_id']):self.enqueue(command_message(self.profile,d['master_id'],command))
         elif kind=='config':
             contract.require(d['device_id']==d['master_id'],code='UNAUTHORIZED')
             op=data['op']
@@ -191,6 +210,7 @@ class Service:
         with self.store.connect() as db:
             db.execute('INSERT INTO mqtt_receipts VALUES (?,?,?,?,?,?)',(*key,fingerprint,contract.canonical(response or {}),time.time()))
             db.execute('DELETE FROM mqtt_receipts WHERE rowid IN (SELECT rowid FROM mqtt_receipts ORDER BY received_at DESC LIMIT -1 OFFSET 4096)')
+        self.explorer.record(self.profile,d)
         if response:self.enqueue(response)
     @staticmethod
     def chat_state(message_id,state):
@@ -216,6 +236,14 @@ class Service:
             contract.require(count<24,code='QUEUE_FULL')
             db.execute('INSERT INTO mqtt_chat_outbox(message_id,envelope,expires_at,next_attempt,state) VALUES (?,?,?,?,?)',(row['message_id'],contract.canonical(d),d['expires_at'],0,'QUEUED'))
         return 'QUEUED'
+    def dispatch_commands(self):
+        if self.telemetry_only or self.state!="connected" or set(self.SUBSCRIPTIONS)-self.subscriptions_ready:return
+        with device_connection() as db:
+            masters=db.execute("SELECT node_id FROM nodes WHERE device_role='MASTER' AND enabled=1 AND device_enrolled=1 ORDER BY node_id LIMIT 32").fetchall()
+        for master in masters:
+            if self.outgoing.qsize()>=self.outgoing.maxsize-2:break
+            for packet in device_api.pending_commands(master["node_id"]):self.enqueue(command_message(self.profile,master["node_id"],packet))
+
     def run(self):
         delay=1
         while not self.stop_event.is_set():
@@ -234,8 +262,10 @@ class Service:
                 try:item=self.incoming.get_nowait()
                 except queue.Empty:item=None
                 if item:self.handle(*item)
-                if time.monotonic()-self.outbox_check>=1:
+                if not self.telemetry_only and not self.commands_only and time.monotonic()-self.outbox_check>=1:
                     self.outbox_check=time.monotonic();self.drain_chat()
+                if time.monotonic()-self.command_check>=1:
+                    self.command_check=time.monotonic();self.dispatch_commands()
                 transaction=self.store.read()['transaction']
                 if transaction['state'] in ('TESTING','READY_TO_CONFIRM','COMMITTING') and transaction.get('deadline',time.time()+1)<time.time():
                     self.store.recover()
@@ -244,12 +274,17 @@ class Service:
                 try:d=self.outgoing.get_nowait()
                 except queue.Empty:d=None
                 if d:
-                    if d.get('expires_at',0)<time.time():self.chat_state(d['message_id'],'EXPIRED');continue
+                    if d.get('expires_at',0)<time.time():
+                        if not self.telemetry_only and not self.commands_only:self.chat_state(d['message_id'],'EXPIRED')
+                        continue
                     with self.lock:
                         info=self.client.publish(contract.topic(self.profile,d['message_type']),contract.canonical(d),qos=1,retain=False)
                         if info.rc==mqtt.MQTT_ERR_SUCCESS:
-                            self.pending[info.mid]=d['message_id'];self.chat_state(d['message_id'],'PUBLISHED')
-                        else:self.chat_state(d['message_id'],'UNKNOWN');self.last_error='PUBLISH_FAILED'
+                            self.pending[info.mid]=d['message_id']
+                            if not self.telemetry_only and not self.commands_only:self.chat_state(d['message_id'],'PUBLISHED')
+                        else:
+                            if not self.telemetry_only and not self.commands_only:self.chat_state(d['message_id'],'UNKNOWN')
+                            self.last_error='PUBLISH_FAILED'
                 if time.monotonic()-self.last_compare>30:
                     self.last_compare=time.monotonic();state=self.store.read();snap=contract.snapshot(self.profile,state['shared_revision'])
                     with device_connection() as db:masters=db.execute("SELECT node_id FROM nodes WHERE device_role='MASTER' AND enabled=1 AND device_enrolled=1").fetchall()

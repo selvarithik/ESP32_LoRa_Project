@@ -1,0 +1,23 @@
+{% macro page_icon(key, class_name="nav-icon") -%}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+{% if key == "/" %}<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+{% elif key == "/nodes" %}<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9 2v5m6-5v5M9 17v5m6-5v5M2 9h5m-5 6h5m10-6h5m-5 6h5"/>
+{% elif key == "/sensors" %}<path d="M9 5a3 3 0 0 1 6 0v9a5 5 0 1 1-6 0Z"/><path d="M12 8v10m6-12h3m-3 4h2"/>
+{% elif key == "/communication" %}<circle cx="5" cy="12" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="m7 11 9-5m-9 7 9 5M19 8v8"/>
+{% elif key == "/mqtt" %}<rect x="8" y="8" width="8" height="8" rx="2"/><path d="M12 2v6m0 8v6M2 12h6m8 0h6M4 4l4 4m8 8 4 4M20 4l-4 4M8 16l-4 4"/>
+{% elif key == "/network" %}<path d="M3 8a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0m-9 4a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1"/>
+{% elif key == "/command-center" %}<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m6 9 3 3-3 3m7 0h5"/>
+{% elif key == "/diagnostics" %}<rect x="2" y="3" width="20" height="15" rx="2"/><path d="M5 11h3l2-4 3 8 2-4h4M8 22h8m-4-4v4"/>
+{% elif key == "/logs" %}<path d="M6 2h9l4 4v16H6Z"/><path d="M14 2v5h5M9 11h7m-7 4h7m-7 4h4"/>
+{% elif key == "/system-overview" %}<path d="M2 12h5l3-8 4 16 3-8h5"/>
+{% elif key == "/device-controls" %}<path d="M4 5h16M4 12h16M4 19h16"/><circle cx="8" cy="5" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="19" r="2"/>
+{% elif key == "/local-ip" %}<rect x="8" y="2" width="8" height="5" rx="1"/><path d="M12 7v6M5 13h14m-14 0v4m14-4v4"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/>
+{% elif key == "/system" %}<path d="m10 2-1 3-3 1-3-1-2 4 2 2v3l-2 2 2 4 3-1 3 1 1 3h4l1-3 3-1 3 1 2-4-2-2v-3l2-2-2-4-3 1-3-1-1-3Z" transform="translate(1 -1) scale(.92)"/><circle cx="12" cy="12" r="3"/>
+{% elif key == "/accounts" %}<circle cx="9" cy="7" r="4"/><path d="M2 22v-3a7 7 0 0 1 14 0v3M17 4a4 4 0 0 1 0 8m2 4a6 6 0 0 1 3 5"/>
+{% elif key == "/firmware" %}<path d="M5 3h10l4 4v14H5Z"/><path d="M14 3v5h5M12 18v-7m-3 3 3-3 3 3"/>
+{% elif key == "/chat" %}<path d="M3 4h18v13H9l-6 4Z"/><path d="M7 8h10m-10 5h7"/>
+{% elif key == "Communication" %}<path d="M5 6a10 10 0 0 0 0 12M19 6a10 10 0 0 1 0 12m-11-9a5 5 0 0 0 0 6m8-6a5 5 0 0 1 0 6"/><circle cx="12" cy="12" r="1.5"/>
+{% elif key == "System" %}<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4M5 7h5m-5 4h9"/>
+{% elif key == "Existing tools" %}<path d="M3 7h18v14H3Z"/><path d="M8 7V3h8v4M3 12h18m-11-2v4h4v-4"/>
+{% else %}<circle cx="12" cy="12" r="8"/><path d="M12 8v5m0 3v1"/>{% endif %}</svg>
+{%- endmacro %}

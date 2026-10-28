@@ -1,4 +1,4 @@
-"""Authentication helpers for the SELVARITHIK'S LoRa Gateway web app.
+"""Authentication helpers for the Selvarithik LoRa Gateway web app.
 
 Deprecated read-only legacy helper; server sessions use account_settings.
 No credential file is automatically created or repaired. Historical defaults:

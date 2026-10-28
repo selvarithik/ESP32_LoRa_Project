@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}Logs{% endblock %}
+{% block title %}Diagnostics · SELVARITHIK A&amp;D{% endblock %}
 
-{% block page_title %}Logs{% endblock %}
+{% block page_title %}Diagnostics{% endblock %}
 
 {% block page_subtitle %}
 System events, warnings and diagnostic records
 {% endblock %}
 
 {% block content %}
+{% set operations_view = "diagnostics" %}{% include "partials/operations-overview.html" %}
 
 <div class="page-view page-view-logs">
 

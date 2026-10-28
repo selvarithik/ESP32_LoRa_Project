@@ -1567,3 +1567,10 @@ html[data-theme="light"]{color-scheme:light}
 @keyframes node-heartbeat{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--m-green) 45%,transparent)}75%,100%{box-shadow:0 0 0 7px transparent}}
 @keyframes node-offline-ring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--m-red) 35%,transparent)}75%,100%{box-shadow:0 0 0 6px transparent}}
 @media(prefers-reduced-motion:reduce){.dashboard-node-status.online,.dashboard-node-status.offline{animation:none}}
+
+/* Compact System Overview statuses; keep counts readable inside narrow cards. */
+.page-view-overview .health-grid{align-items:stretch;gap:12px}
+.page-view-overview .health-card{min-width:0;padding:14px}
+.page-view-overview .health-card .health-label{font-size:12px;line-height:1.4}
+.page-view-overview .health-card strong{font-size:16px;line-height:1.5;margin:8px 0 0;white-space:normal;overflow-wrap:anywhere}
+.page-view-overview #overview-node-status{font-size:13px;line-height:1.6}

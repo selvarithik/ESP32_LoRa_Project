@@ -1,6 +1,6 @@
 {
   "scope": "Software unit/API tests; excludes Private Chat, OTA and physical tests",
-  "run": 87,
+  "run": 108,
   "failures": 0,
   "errors": 0,
   "skipped": 0,

@@ -12,8 +12,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fonts/fonts.css') }}">
 <script>try { document.documentElement.dataset.theme = localStorage.getItem("gateway_theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (_) {}</script>
 <title>{% block title %}SELVARITHIK A&amp;D{% endblock %}</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=20261019-status">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=20261025-compacthealth">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/geometric-header.css') }}?v=1">
+<link rel="stylesheet" href="/static/css/workspace-organization.css?v=20261025-basicdetails">
 
 
 <script src="{{ url_for('static', filename='js/app.js') }}?v=20261019-status">
@@ -26,7 +27,7 @@
 </script>
 <script src="{{ url_for('static', filename='js/accessibility.js') }}?v=20261019-status" defer>
 </script>
-<script src="{{ url_for('static', filename='js/header-scroll.js') }}?v=20261019-status" defer></script>
+<script src="{{ url_for('static', filename='js/header-scroll.js') }}?v=20261027-approved" defer></script>
 {% block extra_js %}{% endblock %}
 </head>
 
@@ -41,78 +42,7 @@
       <summary><span class="profile-avatar">SR<i></i></span><span class="profile-copy"><strong>{{ signed_account.name if signed_account else 'Selvarithik' }}</strong><small id="profile-account-id">{{ signed_account.username if signed_account else 'Sign in' }}</small></span><span aria-hidden="true" class="profile-chevron">⌄</span></summary>
       <div class="profile-menu"><a href="/accounts">Account settings</a><a href="/logout">Logout</a></div>
     </details>
-    <nav class="modern-nav">
-      <a href="/" class="nav-item" data-path="/" data-search-label="Dashboard telemetry gateway overview" title="Dashboard">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-<rect x="4" y="4" width="6" height="6" rx="1.4"/>
-<rect x="14" y="4" width="6" height="6" rx="1.4"/>
-<rect x="4" y="14" width="6" height="6" rx="1.4"/>
-<rect x="14" y="14" width="6" height="6" rx="1.4"/>
-</svg>
-<span>Dashboard</span>
-</a>
-      <a href="/nodes" class="nav-item" data-path="/nodes" data-search-label="Nodes device inventory status configuration" title="Nodes">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-<rect x="4" y="4" width="6" height="6" rx="1.5"/>
-<rect x="14" y="14" width="6" height="6" rx="1.5"/>
-<path d="M10 7h4M7 10v4M17 14v-4M14 17h-4"/>
-</svg>
-<span>Nodes</span>
-</a>
-      <a href="/sensors" class="nav-item" data-path="/sensors" data-search-label="Sensors parameters telemetry quality history" title="Sensors">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-<path d="M4 18V9M10 18V5M16 18v-8M22 18v-6M3 18h20"/>
-</svg>
-<span>Sensors</span>
-</a>
-      <a href="/command-center" class="nav-item" data-path="/command-center" data-search-label="Commands command center execution audit" title="Commands">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-<path d="M5 6h14M5 12h14M5 18h14"/>
-<circle cx="9" cy="6" r="1.5"/>
-<circle cx="15" cy="12" r="1.5"/>
-<circle cx="11" cy="18" r="1.5"/>
-</svg>
-<span>Commands</span>
-</a>
-      <a href="/communication" class="nav-item" data-path="/communication" data-search-label="Communication network LoRa mesh routes packets" title="Network">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-<circle cx="6" cy="12" r="2.5"/>
-<circle cx="18" cy="6" r="2.5"/>
-<circle cx="18" cy="18" r="2.5"/>
-<path d="m8.2 11 7.5-4M8.2 13l7.5 4"/>
-</svg>
-<span>Network</span>
-</a>
-      <a href="/firmware" class="nav-item" data-path="/firmware" data-search-label="Firmware OTA releases devices jobs" title="Firmware">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-<rect x="7" y="6" width="10" height="12" rx="2"/>
-<path d="M9 3v3M15 3v3M9 18v3M15 18v3M4 9h3M4 15h3M17 9h3M17 15h3"/>
-<path d="M10 10h4v4h-4z"/>
-</svg>
-<span>Firmware</span>
-</a>
-      <a href="/logs" class="nav-item" data-path="/logs" data-search-label="Logs events diagnostics records" title="Logs">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-<path d="M5 5h14M5 9h14M5 13h9M5 17h14"/>
-<circle cx="18" cy="13" r="2.5"/>
-</svg>
-<span>Logs</span>
-</a>
-      <a href="/system" class="nav-item" data-path="/system" data-search-label="System settings configuration reboot factory reset" title="System">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-<circle cx="12" cy="12" r="3"/>
-<path d="M12 2v3M12 19v3M4.9 4.9 7 7M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/>
-</svg>
-<span>System</span>
-</a>
-      <a href="/chat" class="nav-item" data-path="/chat" data-search-label="Private chat gateway node messages" title="Private Chat">
-<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-<path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v5A3.5 3.5 0 0 1 15.5 15H11l-4.5 4v-4.7A3.5 3.5 0 0 1 5 11.5z"/>
-<path d="M9 8h6M9 11h4"/>
-</svg>
-<span>Private Chat</span>
-</a>
-    </nav>
+    <nav class="modern-nav">{% set mobile_navigation = false %}{% include "partials/navigation-links.html" %}</nav>
     <div class="modern-sidebar-footer"><a class="sidebar-logout" href="/logout"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span>Logout</span></a></div>
   </aside>
   <div class="modern-workspace">
@@ -121,6 +51,8 @@
 <section class="page-content-v6">
 {% include "partials/page-heading.html" %}
 {% if request.path == "/" %}{% include "partials/gateway-banner.html" %}{% endif %}
+{% if config.LOCAL_TEST_SESSION %}<p class="param-hint" role="status">Local testing session is enabled on this computer. Normal login remains protected elsewhere.</p>{% endif %}
+{% if local_ip_bind_failed %}<p class="param-hint" role="alert">The device listener could not bind its saved LAN address or port. <a href="/local-ip">Open Local IP settings</a> and select this computer's current LAN address and an available port. Dashboard access remains available.</p>{% endif %}
 {% block content %}{% endblock %}
 </section>
 </main>
@@ -133,17 +65,7 @@
 </div>
 <button type="button" class="mobile-drawer-close-v6" aria-label="Close navigation">×</button>
 </div>
-    <nav class="mobile-nav-grid-v6" aria-label="Mobile navigation">
-<a href="/" class="mobile-nav-link" data-path="/">Dashboard</a>
-<a href="/nodes" class="mobile-nav-link" data-path="/nodes">Nodes</a>
-<a href="/sensors" class="mobile-nav-link" data-path="/sensors">Sensors</a>
-<a href="/command-center" class="mobile-nav-link" data-path="/command-center">Commands</a>
-<a href="/communication" class="mobile-nav-link" data-path="/communication">Network</a>
-<a href="/firmware" class="mobile-nav-link" data-path="/firmware">Firmware</a>
-<a href="/logs" class="mobile-nav-link" data-path="/logs">Logs</a>
-<a href="/system" class="mobile-nav-link" data-path="/system">System</a>
-<a href="/chat" class="mobile-nav-link" data-path="/chat">Private Chat</a>
-</nav>
+    <nav class="mobile-nav-grid-v6" aria-label="Mobile navigation">{% set mobile_navigation = true %}{% include "partials/navigation-links.html" %}</nav>
   </div>
 </div>
 <div id="toast-container">

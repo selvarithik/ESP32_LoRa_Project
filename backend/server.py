@@ -9,6 +9,7 @@ import json
 import secrets
 import hashlib
 import account_sessions
+import local_test_access
 
 import node_manager
 import config_manager
@@ -45,6 +46,7 @@ socketio = SocketIO(
     cors_allowed_origins=None
 )
 app.register_blueprint(account_settings.bp)
+local_test_access.install(app)
 socket_sessions={}
 def disconnect_revoked_session(key):
     def disconnect():
@@ -67,6 +69,10 @@ import device_controls
 device_controls.install(app)
 import mqtt_profiles
 mqtt_profiles.install(app)
+import mqtt_diagnostics
+mqtt_diagnostics.install(app)
+import workspace_views
+workspace_views.install(app)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
 @app.before_request
@@ -831,8 +837,26 @@ def command_error(error, status_code=400):
     }), status_code
 
 
+@app.before_request
+def protect_device_command_results():
+    if request.method=='POST' and request.path.startswith('/api/commands/'):
+        parts=request.path.split('/')
+        if len(parts)==5 and parts[-1] in ('state','ack','execute','response','timeout'):
+            cmd=command_manager.get_command(parts[-2])
+            if cmd:
+                db=database.get_connection()
+                try:row=db.execute('SELECT device_enrolled FROM nodes WHERE node_id=?',(cmd['node_id'],)).fetchone()
+                finally:db.close()
+                if row and row['device_enrolled']:return jsonify(error='AUTHENTICATED_DEVICE_RESULT_REQUIRED'),403
+
 @app.route("/api/commands", methods=["POST"])
 def api_create_command():
+    # Enrolled devices always use the validated real transport adapter.
+    data=request.get_json(silent=True) or {}
+    db=database.get_connection()
+    try:enrolled=db.execute('SELECT device_enrolled FROM nodes WHERE node_id=?',(data.get('node_id'),)).fetchone()
+    finally:db.close()
+    if enrolled and enrolled['device_enrolled']:return device_api.commands()
     try:
         data = request.get_json(silent=True) or request.form.to_dict() or {}
 
@@ -4272,6 +4296,7 @@ def server_time_heartbeat():
             {"server_time": datetime.now().isoformat()}
         )
         for _ in range(5):
+            for cmd in command_manager.check_timeouts():socketio.emit('command_update',cmd)
             account_sessions.expire()
             socketio.sleep(1)
 

@@ -8,6 +8,9 @@ import json
 import secrets
 import threading
 import time
+import logging
+import socket
+import errno
 from contextlib import contextmanager
 from flask import Flask, jsonify, render_template, request
 from werkzeug.serving import make_server, WSGIRequestHandler
@@ -86,6 +89,7 @@ class Service:
         self.thread = None
         self.state = 'STOPPED'
         self.error = None
+        self.bind_failure_reason = None
         self.nonces = OrderedDict()
         self.connections = OrderedDict()
         self.received = self.accepted = self.rejected = self.duplicates = 0
@@ -193,12 +197,18 @@ class Service:
     def start(self, settings=None):
         settings=settings or self.settings()
         if self.server:return
-        self.error=None
+        self.error=None;self.bind_failure_reason=None
         try:
+            # Diagnose the address/port before Werkzeug converts OSError to SystemExit.
+            with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as probe:
+                probe.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+                probe.bind((settings['bind_address'],settings['port']))
             self.server=make_server(settings['bind_address'],settings['port'],self.app,threaded=False,request_handler=BoundedHandler)
             self.thread=threading.Thread(target=self.server.serve_forever,name='local-ip-listener',daemon=True)
             self.thread.start();self.state='LISTENING'
-        except (OSError,SystemExit):
+        except (OSError,SystemExit) as error:
+            code=getattr(error,'winerror',None) or getattr(error,'errno',None)
+            self.bind_failure_reason='ADDRESS_NOT_ASSIGNED' if code in (errno.EADDRNOTAVAIL,10049) else 'PORT_IN_USE' if code in (errno.EADDRINUSE,10048) else 'BIND_REJECTED'
             self.server=None;self.state='FAILED';self.error='BIND_FAILED';raise ValueError('BIND_FAILED') from None
 
     def configure(self, data):
@@ -232,12 +242,14 @@ class Service:
                 row=dict(row);row['state']='CONNECTED' if now-row['last_seen']<=15 else 'STALE' if now-row['last_seen']<=90 else 'DISCONNECTED';connections.append(row)
             with connection() as db:
                 devices=[dict(r) for r in db.execute('SELECT n.node_id AS device_id,n.device_role AS role,n.master_id,n.enabled,coalesce(p.direct_allowed,0) AS direct_allowed FROM nodes n LEFT JOIN local_ip_permissions p ON p.device_id=n.node_id WHERE n.device_enrolled=1')]
-            return dict(settings=self.settings(),state=self.state,last_error=self.error,last_packet_error=self.last_packet_error,last_received_at=self.last_received_at,last_database_persisted_at=self.last_persisted_at,persistence_receipts=self.accepted,received=self.received,accepted=self.accepted,rejected=self.rejected,duplicates=self.duplicates,connections=connections,devices=devices,security='HMAC_SHA256_CHALLENGE_RESPONSE',confidentiality='TRUSTED_LAN_OR_VERIFIED_HTTPS_REQUIRED',listener_active=self.server is not None)
+            return dict(settings=self.settings(),state=self.state,last_error=self.error,bind_failure_reason=self.bind_failure_reason,last_packet_error=self.last_packet_error,last_received_at=self.last_received_at,last_database_persisted_at=self.last_persisted_at,persistence_receipts=self.accepted,received=self.received,accepted=self.accepted,rejected=self.rejected,duplicates=self.duplicates,connections=connections,devices=devices,security='HMAC_SHA256_CHALLENGE_RESPONSE',confidentiality='TRUSTED_LAN_OR_VERIFIED_HTTPS_REQUIRED',listener_active=self.server is not None)
 
 service=Service()
 
 def install(app):
     service.migrate()
+    @app.context_processor
+    def listener_notice():return {'local_ip_bind_failed':service.error=='BIND_FAILED'}
     @app.get('/local-ip',endpoint='local_ip_page')
     def page():return render_template('local_ip.html')
     @app.get('/api/local-ip',endpoint='local_ip_status')
@@ -263,4 +275,11 @@ def install(app):
     atexit.register(service.stop)
 
 def start_saved():
-    if service.settings()['enabled']:service.start()
+    if not service.settings()['enabled']:return False
+    try:
+        service.start()
+        return True
+    except ValueError as error:
+        if str(error)!='BIND_FAILED':raise
+        logging.getLogger(__name__).warning('Local-IP device listener could not bind its saved LAN address/port. Dashboard startup continues; open /local-ip to select an available local address/port. Saved settings were preserved.')
+        return False

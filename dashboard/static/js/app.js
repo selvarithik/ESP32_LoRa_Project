@@ -1,5 +1,5 @@
 /* ============================================================
-   SELVARITHIK'S LORA GATEWAY
+   Selvarithik LORA GATEWAY
    COMMON APPLICATION JAVASCRIPT
    ============================================================ */
 

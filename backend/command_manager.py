@@ -10,6 +10,9 @@ from __future__ import annotations
 import json
 import re
 import uuid
+import threading
+from functools import wraps
+from contextlib import contextmanager
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Union
 
@@ -41,8 +44,8 @@ TERMINAL_STATES = (
 )
 
 VALID_TRANSITIONS: Dict[str, tuple[str, ...]] = {
-    "QUEUED": ("SENT", "WAITING_ACK", "ACK_RECEIVED", "CANCELLED", "FAILED", "TIMEOUT"),
-    "SENT": ("WAITING_ACK", "ACK_RECEIVED", "CANCELLED", "FAILED", "TIMEOUT"),
+    "QUEUED": ("COMPLETED", "SENT", "WAITING_ACK", "ACK_RECEIVED", "CANCELLED", "FAILED", "TIMEOUT"),
+    "SENT": ("COMPLETED", "WAITING_ACK", "ACK_RECEIVED", "CANCELLED", "FAILED", "TIMEOUT"),
     "WAITING_ACK": ("ACK_RECEIVED", "TIMEOUT", "FAILED", "CANCELLED", "COMPLETED"),
     "ACK_RECEIVED": ("EXECUTING", "RESPONSE_RECEIVED", "COMPLETED", "FAILED", "CANCELLED", "TIMEOUT"),
     "EXECUTING": ("RESPONSE_RECEIVED", "COMPLETED", "FAILED", "CANCELLED", "TIMEOUT"),
@@ -343,9 +346,13 @@ def create_command(
     priority: int = DEFAULT_PRIORITY,
     max_retries: int = DEFAULT_MAX_RETRIES,
     timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
-    command_id: Optional[str] = None
+    command_id: Optional[str] = None,
+    ack_timeout_seconds: int = 5,
+    response_timeout_seconds: Optional[int] = None,
+    expiry_seconds: int = 300
 ) -> Dict[str, Any]:
     """Create a new command in the QUEUED state."""
+    if any(type(v) is not int for v in (priority,max_retries,timeout_seconds)):raise ValueError("INTEGER_COMMAND_POLICY_REQUIRED")
     node_id = validate_node_id(node_id)
     command_type = validate_command_type(command_type)
     payload_dict = validate_payload(payload)
@@ -358,8 +365,17 @@ def create_command(
     else:
         command_id = make_command_id()
 
+    for value,low,high in ((ack_timeout_seconds,1,60),(response_timeout_seconds if response_timeout_seconds is not None else timeout_seconds,1,300),(expiry_seconds,1,300)):
+        if type(value) is not int or not low<=value<=high:raise ValueError('INVALID_COMMAND_DEADLINE')
+    import device_control_contract as control
+    with command_db() as db:
+        target=db.execute('SELECT device_enrolled FROM nodes WHERE node_id=?',(node_id,)).fetchone()
+        enrolled=bool(target and target['device_enrolled'])
+        if enrolled:
+            control.validate_command(command_type,payload_dict)
+            if db.execute("SELECT count(*) FROM commands WHERE state NOT IN ('COMPLETED','FAILED','CANCELLED','TIMEOUT')").fetchone()[0]>=64:raise ValueError('COMMAND_QUEUE_FULL')
     now = datetime.now().isoformat()
-    timeout_at = _calculate_timeout_at(now, timeout_seconds)
+    timeout_at = _calculate_timeout_at(now, expiry_seconds if enrolled else timeout_seconds)
     payload_json = json.dumps(payload_dict)
 
     connection = get_connection()
@@ -416,6 +432,9 @@ def create_command(
             None,
             now
         ))
+        if enrolled:
+            ensure_delivery_schema(connection)
+            connection.execute('INSERT INTO command_delivery(command_id,ack_timeout_s,response_timeout_s,expires_at) VALUES(?,?,?,?)',(command_id,ack_timeout_seconds,response_timeout_seconds if response_timeout_seconds is not None else timeout_seconds,timeout_at))
         connection.commit()
     except Exception:
         connection.rollback()
@@ -583,7 +602,7 @@ def update_command_state(
                 error = ?,
                 result = ?,
                 updated_at = ?
-            WHERE command_id = ?
+            WHERE command_id = ? AND state = ?
         """, (
             new_state,
             sent_at,
@@ -593,8 +612,10 @@ def update_command_state(
             err_text,
             result_json,
             now,
-            command_id
+            command_id,
+            current_state
         ))
+        if cursor.rowcount!=1:raise ValueError('COMMAND_STATE_CONFLICT')
         connection.commit()
     except Exception:
         connection.rollback()
@@ -758,7 +779,8 @@ def process_command_ack(
     """
     command_id = validate_safe_id(command_id, "command_id")
     node_id = validate_node_id(node_id)
-    status = str(status or "RECEIVED").strip().upper()
+    status = str(status or "").strip().upper()
+    if status not in {'RECEIVED','ACCEPTED','DUPLICATE','REJECTED','BUSY','NACK','ERROR','FAILED','OK'}:raise ValueError('INVALID_ACK_STATUS')
 
     command = get_command(command_id)
     if command is None:
@@ -792,7 +814,7 @@ def process_command_ack(
     ack_time = timestamp if timestamp else now
 
     # Check for negative ACK / rejection
-    if status in ("NACK", "REJECTED", "ERROR", "FAILED"):
+    if status in ("NACK", "REJECTED", "BUSY", "ERROR", "FAILED"):
         err_msg = message or f"Command rejected by node with status {status}"
         _update_ack_fields(command_id, ack_time, status, message)
         updated = update_command_state(
@@ -817,7 +839,14 @@ def process_command_ack(
             "command": final_cmd
         }
 
-    # Affirmative ACK (RECEIVED, ACCEPTED, OK, etc.)
+    with command_db() as db:
+        ensure_delivery_schema(db)
+        policy=db.execute('SELECT * FROM command_delivery WHERE command_id=?',(command_id,)).fetchone()
+        if policy and not policy['response_deadline']:
+            deadline=_calculate_timeout_at(datetime.now().isoformat(),policy['response_timeout_s'])
+            db.execute('UPDATE command_delivery SET response_deadline=? WHERE command_id=?',(deadline,command_id))
+            db.execute('UPDATE commands SET timeout_at=? WHERE command_id=?',(min(policy['expires_at'],deadline),command_id))
+    # Affirmative ACK confirms acceptance only.
     _update_ack_fields(command_id, ack_time, status, message)
     updated = update_command_state(command_id, "ACK_RECEIVED")
     record_command_event(
@@ -919,7 +948,8 @@ def process_command_response(
     """
     command_id = validate_safe_id(command_id, "command_id")
     node_id = validate_node_id(node_id)
-    status = str(status or "SUCCESS").strip().upper()
+    status = str(status or "").strip().upper()
+    if status not in {'SUCCESS','OK','COMPLETED','FAILED','UNSUPPORTED'}:raise ValueError('INVALID_RESPONSE_STATUS')
 
     command = get_command(command_id)
     if command is None:
@@ -1045,6 +1075,10 @@ def prepare_command_retry(command_id: str) -> Dict[str, Any]:
             f"Command has reached maximum retries ({command['retry_count']}/{command['max_retries']})"
         )
 
+    policy=delivery_policy(command_id)
+    if policy and datetime.now().isoformat()>=policy['expires_at']:raise ValueError('COMMAND_EXPIRED; submit a new command ID')
+    if policy:
+        with command_db() as db:db.execute('UPDATE command_delivery SET last_attempt_at=NULL,response_deadline=NULL WHERE command_id=?',(command_id,))
     new_retry_count = command["retry_count"] + 1
     now = datetime.now().isoformat()
     new_timeout_at = _calculate_timeout_at(now, command["timeout_seconds"])
@@ -1082,3 +1116,64 @@ def prepare_command_retry(command_id: str) -> Dict[str, Any]:
     )
 
     return get_command(command_id)
+
+
+@contextmanager
+def command_db():
+    db=get_connection()
+    try:
+        yield db
+        db.commit()
+    except Exception:
+        db.rollback();raise
+    finally:db.close()
+
+# Durable device scheduling augments the existing command manager; no second queue.
+_DEVICE_LOCK=threading.RLock()
+def ensure_delivery_schema(db):
+    db.execute("""CREATE TABLE IF NOT EXISTS command_delivery(
+        command_id TEXT PRIMARY KEY,ack_timeout_s INTEGER NOT NULL DEFAULT 5,
+        response_timeout_s INTEGER NOT NULL DEFAULT 30,expires_at TEXT NOT NULL,
+        attempts INTEGER NOT NULL DEFAULT 0,last_attempt_at TEXT,response_deadline TEXT)""")
+
+def delivery_policy(command_id):
+    with command_db() as db:
+        ensure_delivery_schema(db)
+        row=db.execute('SELECT * FROM command_delivery WHERE command_id=?',(command_id,)).fetchone()
+    return dict(row) if row else None
+
+def claim_device_dispatch(command_id):
+    """Reserve one bounded attempt atomically. HTTP/MQTT queueing is not device ACK."""
+    with _DEVICE_LOCK:
+        command=get_command(command_id)
+        if not command or command['state'] in TERMINAL_STATES:return False
+        now=datetime.now();stamp=now.isoformat();reason=None
+        with command_db() as db:
+            ensure_delivery_schema(db)
+            db.execute('INSERT OR IGNORE INTO command_delivery(command_id,expires_at,response_timeout_s) VALUES(?,?,?)',(command_id,command['timeout_at'],min(300,command['timeout_seconds'])))
+            policy=dict(db.execute('SELECT * FROM command_delivery WHERE command_id=?',(command_id,)).fetchone())
+            if stamp>=min(policy['expires_at'],command.get('timeout_at') or policy['expires_at']):reason='COMMAND_EXPIRED; execution outcome unknown'
+            elif command.get('ack_at'):
+                if policy['response_deadline'] and stamp>=policy['response_deadline']:reason='RESPONSE_TIMEOUT; execution outcome unknown'
+                else:return False
+            elif policy['last_attempt_at'] and (now-datetime.fromisoformat(policy['last_attempt_at'])).total_seconds()<policy['ack_timeout_s']:return False
+            elif policy['attempts']>=1+command['max_retries']:reason='ACK_TIMEOUT; device acceptance unknown'
+            if not reason:
+                db.execute('UPDATE command_delivery SET attempts=attempts+1,last_attempt_at=? WHERE command_id=?',(stamp,command_id))
+        if reason:
+            update_command_state(command_id,'TIMEOUT',error=reason)
+            record_command_event(command_id,command['node_id'],'TIMEOUT','TIMEOUT',error=reason)
+            return False
+        if command['state']=='QUEUED':mark_command_sent(command_id)
+        with command_db() as db:db.execute('UPDATE commands SET timeout_at=? WHERE command_id=?',(policy['expires_at'],command_id))
+        record_command_event(command_id,command['node_id'],'DISPATCH_ATTEMPT','SENT',details={'attempt':policy['attempts']+1,'device_acknowledged':False})
+        return True
+
+def _serialized(fn):
+    @wraps(fn)
+    def locked(*args,**kwargs):
+        with _DEVICE_LOCK:return fn(*args,**kwargs)
+    return locked
+# Keep response/timeout/retry decisions ordered within this single Gateway worker process.
+for _name in ('create_command','update_command_state','process_command_ack','process_command_response','prepare_command_retry','cancel_command','handle_command_timeout'):
+    globals()[_name]=_serialized(globals()[_name])

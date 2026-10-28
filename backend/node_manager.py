@@ -36,70 +36,26 @@ NODE_OFFLINE_TIMEOUT_SECONDS = 60
 # ADD NODE
 # ============================================================
 
-def add_node(
-    node_id,
-    name,
-    mcu_family,
-    mcu_model,
-    hardware_revision,
-    firmware_version,
-    communication_type,
-    communication_config,
-    node_address,
-    enabled=True
-):
-
+def add_node(node_id,name,mcu_family,mcu_model,hardware_revision,firmware_version,
+             communication_type,communication_config,node_address,enabled=True):
     if communication_type not in SUPPORTED_COMMUNICATIONS:
-
-        raise ValueError(
-            f"Unsupported communication type: {communication_type}"
-        )
-
-
-    now = datetime.now().isoformat()
-
-    connection = get_connection()
-    cursor = connection.cursor()
-
-
-    cursor.execute("""
-        INSERT INTO nodes (
-            node_id,
-            name,
-            mcu_family,
-            mcu_model,
-            hardware_revision,
-            firmware_version,
-            communication_type,
-            communication_config,
-            node_address,
-            enabled,
-            status,
-            last_seen,
-            created_at,
-            updated_at
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        node_id,
-        name,
-        mcu_family,
-        mcu_model,
-        hardware_revision,
-        firmware_version,
-        communication_type,
-        json.dumps(communication_config),
-        node_address,
-        1 if enabled else 0,
-        "offline" if enabled else "disabled",
-        None,
-        now,
-        now
-    ))
-
-
-    connection.commit()
-    connection.close()
+        raise ValueError(f"Unsupported communication type: {communication_type}")
+    import device_identity
+    now=datetime.now().isoformat();connection=get_connection()
+    try:
+        # Serialize the MAC-alias check and insert across processes, without a
+        # schema migration or changes to existing device IDs and foreign keys.
+        connection.execute('BEGIN IMMEDIATE')
+        device_identity.require_available_hardware(node_id,connection)
+        connection.execute("""INSERT INTO nodes
+          (node_id,name,mcu_family,mcu_model,hardware_revision,firmware_version,
+           communication_type,communication_config,node_address,enabled,status,last_seen,created_at,updated_at)
+          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+          (node_id,name,mcu_family,mcu_model,hardware_revision,firmware_version,communication_type,
+           json.dumps(communication_config),node_address,1 if enabled else 0,
+           'offline' if enabled else 'disabled',None,now,now))
+        connection.commit()
+    finally:connection.close()
 
 
 # ============================================================

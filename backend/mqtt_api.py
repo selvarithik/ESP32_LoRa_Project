@@ -19,7 +19,11 @@ def service():
         path=Path(database.DATABASE)
         if _service is None or _service.store.database!=path:
             if _service:_service.stop()
-            _service=Service(Store(path,path.parent/'mqtt-secrets.bin'),os.environ.get('GATEWAY_MQTT_TRUST_ACL')=='1')
+            from mqtt_runtime_policy import authorized,command_authorized
+            store=Store(path,path.parent/'mqtt-secrets.bin');scoped=authorized(store)
+            commands=command_authorized(store)
+            explicit=os.environ.get('GATEWAY_MQTT_TRUST_ACL')=='1'
+            _service=Service(store,explicit or scoped,telemetry_only=(scoped and not commands) or os.environ.get('GATEWAY_MQTT_TELEMETRY_ONLY')=='1',acl_guard=((lambda:command_authorized(store)) if commands else (lambda:authorized(store))) if scoped and not explicit else None,commands_only=commands)
         return _service
 
 def start():
@@ -27,9 +31,11 @@ def start():
     current=service();migrate(current.store,os.environ);current.store.recover();current.start();atexit.register(current.stop);return current
 
 def install(app):
+    import mqtt_explorer
+    mqtt_explorer.install(app,service)
     service() # Additive schema migration; does not start a broker connection.
     @app.get('/mqtt')
-    def mqtt_page():return render_template('mqtt.html')
+    def mqtt_page():return render_template('mqtt.html',mqtt_topic_types=[kind for kind in contract.TYPES if not kind.startswith('chat/')])
 
     @app.get('/api/mqtt')
     def mqtt_state():

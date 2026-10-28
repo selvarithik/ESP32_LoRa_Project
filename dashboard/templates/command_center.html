@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Command Center | SELVARITHIK A&amp;D{% endblock %}
 {% block page_title %}Command Center{% endblock %}
-{% block page_subtitle %}Node command conversations and device responses{% endblock %}
+{% block page_subtitle %}Device acceptance, execution responses and command history{% endblock %}
 {% block content %}
 <div id="command-chat" class="command-chat">
  <aside class="command-chat-nodes" aria-label="Command nodes">
   <header><h2>Nodes</h2><span id="node-count-badge">0 registered</span></header>
   <label class="command-node-search"><span class="sr-only">Search node ID or name</span><input class="input" id="node-search-input" type="search" placeholder="Search node ID / name..."></label>
-  <div class="command-node-filters" role="group" aria-label="Filter nodes"><button type="button" data-node-filter="all" aria-pressed="true">All</button><button type="button" data-node-filter="online" aria-pressed="false">Online</button><button type="button" data-node-filter="offline" aria-pressed="false">Offline</button></div>
+  <div class="command-node-filters" role="group" aria-label="Filter nodes"><button type="button" data-node-filter="all" aria-pressed="true">All</button><button type="button" data-node-filter="master" aria-pressed="false">Master</button><button type="button" data-node-filter="slave" aria-pressed="false">Slave</button><button type="button" data-node-filter="online" aria-pressed="false">Online</button><button type="button" data-node-filter="offline" aria-pressed="false">Offline</button></div>
   <div id="node-list-container" class="command-node-list"><p class="command-empty">Loading registered nodes…</p></div>
  </aside>
  <section class="command-chat-workspace" aria-label="Node command conversation">
@@ -18,26 +18,26 @@
    <button class="btn command-refresh" id="cmd-refresh-btn" type="button" aria-label="Refresh node and conversation" title="Refresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"/></svg></button>
   </header>
   <div class="command-chat-toolbar"><span id="socket-status-text">Connecting</span><label>History <select id="history-filter-select"><option value="ALL">All states</option><option value="ACTIVE">Active</option><option value="COMPLETED">Completed</option><option value="FAILED">Failed</option><option value="TIMEOUT">Timed out</option><option value="CANCELLED">Cancelled</option></select></label><button type="button" class="btn" id="command-latest" title="Scroll to latest command">Latest ↓</button></div>
-  <div id="command-notice" class="command-notice" role="status" aria-live="polite"></div>
+  <p class="param-hint">ACK confirms acceptance only. A separate RESPONSE confirms execution. Stop dispatch does not cancel work already accepted by a device. LoRa delivery requires verified radio settings and an observed route.</p><div id="command-notice" class="command-notice" role="status" aria-live="polite"></div>
   <div id="command-conversation" class="command-conversation" tabindex="0" role="region" aria-label="Command and response history">
    <button type="button" class="btn" id="command-older" hidden>Load older commands</button>
    <div id="history-list-container"><p class="command-empty">Select a node to view commands and responses.</p></div>
   </div>
   <footer class="command-composer">
-   <div id="command-active-status" class="command-active-status">No active command</div>
+   <div id="command-arguments-box" hidden><label>Command arguments (JSON)<textarea id="command-arguments-json" class="cmd-textarea" rows="3">{}</textarea></label><small>Use documented fields such as {"seconds":10} or {"device_name":"Workshop"}. Credentials require physical USB. Network/role updates require expected_revision from GET_CONFIG. Supported non-secret fields include role, master_id, wifi_ssid, local_ip_enabled and routing_policy; connectivity changes are saved for an explicit restart, and role-specific builds reject an incompatible role.</small></div><div id="command-active-status" class="command-active-status">No active command</div>
    <div class="command-compose-row"><label class="command-type-label"><span>Command type</span><select id="cmd-type-select" class="cmd-select">
                                 <option value="STATUS">STATUS — Query device telemetry & state</option>
                                 <option value="PING">PING — Test round-trip connectivity</option>
                                 <option value="WIFI_SCAN">WIFI_SCAN — Scan nearby Wi-Fi networks</option>
-                                <option value="WIFI_CONNECT">WIFI_CONNECT — Configure Wi-Fi station</option>
+
                                 <option value="RESTART">RESTART — Reboot node MCU</option>
                                 <option value="GET_CONFIG">GET_CONFIG — Fetch current configuration</option>
                                 <option value="SET_INTERVAL">SET_INTERVAL — Change telemetry interval</option>
-                                <option value="CUSTOM">CUSTOM — User-defined command & payload</option>
+                                <option value="GET_CAPABILITIES">GET_CAPABILITIES</option><option value="GET_TELEMETRY">GET_TELEMETRY</option><option value="GET_SENSOR_STATUS">GET_SENSOR_STATUS</option><option value="GET_MESH_STATUS">GET_MESH_STATUS</option><option value="GET_NODE_STATUS">GET_NODE_STATUS</option><option value="GET_ROUTE_INFO">GET_ROUTE_INFO</option><option value="SET_DEVICE_NAME">SET_DEVICE_NAME</option><option value="CONFIG_UPDATE">CONFIG_UPDATE</option><option value="SET_TELEMETRY_INTERVAL">SET_TELEMETRY_INTERVAL</option><option value="SET_HEARTBEAT_INTERVAL">SET_HEARTBEAT_INTERVAL</option><option value="CUSTOM">CUSTOM — User-defined command & payload</option>
                             </select></label><button class="btn" type="button" id="command-config-toggle" aria-expanded="false" aria-controls="command-configuration"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="18" r="2"/></svg>Configure</button><button class="btn command-send" id="btn-send-command" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13"/></svg><span>Send</span></button></div>
    <input class="input command-quick-input" id="command-quick-input" aria-label="PING echo payload" placeholder="Echo payload" hidden>
-   <div id="command-configuration" class="command-configuration" hidden><div class="config-form-col">
-                    <div class="config-row-main">
+   <div id="command-configuration" class="command-configuration" hidden><header class="command-config-heading"><h3>Command configuration</h3><button class="btn" type="button" id="command-config-close" aria-label="Close configuration">Close ×</button></header><div class="config-form-col">
+                    <div class="config-row-main"><label>ACK timeout (seconds)<input id="cmd-ack-timeout" type="number" min="1" max="60" value="5"></label><label>Expiry (seconds)<input id="cmd-expiry" type="number" min="1" max="300" value="300"></label>
 
 
                         <div class="form-group flex-1">
@@ -51,7 +51,7 @@
 
                         <div class="form-group flex-1">
                             <label for="cmd-timeout-input">Timeout (s)</label>
-                            <input type="number" id="cmd-timeout-input" class="cmd-input" value="30" min="1" max="3600">
+                            <input type="number" id="cmd-timeout-input" class="cmd-input" value="30" min="1" max="300">
                         </div>
 
                         <div class="form-group flex-1">
@@ -64,7 +64,7 @@
                     <div class="dynamic-param-box" id="dynamic-param-container">
                         <!-- STATUS -->
                         <div class="param-pane active" id="pane-STATUS">
-                            <p class="param-hint">Queries live telemetry, signal metrics (RSSI/SNR), battery levels, and runtime diagnostics from the node.</p>
+                            <p class="param-hint">Queries the device-reported status and sensor health. Unavailable radio metrics or unsupported measurements remain unknown.</p>
                         </div>
 
                         <!-- PING -->
@@ -76,82 +76,29 @@
                         </div>
 
                         <!-- WIFI_SCAN -->
-                        <div class="param-pane" id="pane-WIFI_SCAN">
-                            <div class="param-form-row">
-                                <div class="form-group flex-1">
-                                    <label for="param-scan-band">Band</label>
-                                    <select id="param-scan-band" class="cmd-select">
-                                        <option value="2.4GHz">2.4 GHz</option>
-                                        <option value="5GHz">5 GHz (if supported)</option>
-                                        <option value="ALL">All Bands</option>
-                                    </select>
-                                </div>
-                                <div class="form-group flex-1">
-                                    <label for="param-scan-limit">Max Networks</label>
-                                    <input type="number" id="param-scan-limit" class="cmd-input" value="20" min="1" max="50">
-                                </div>
-                            </div>
-                        </div>
+<div class="param-pane" id="pane-WIFI_SCAN"><p class="param-hint">Scans supported Wi-Fi networks using the device driver defaults. This ESP32 build uses 2.4 GHz; custom band and result-limit parameters are not supported.</p></div>
 
-                        <!-- WIFI_CONNECT -->
-                        <div class="param-pane" id="pane-WIFI_CONNECT">
-                            <div class="param-form-row">
-                                <div class="form-group flex-2">
-                                    <label for="param-wifi-ssid">SSID <span class="required">*</span>
-</label>
-                                    <input type="text" id="param-wifi-ssid" class="cmd-input" placeholder="Wi-Fi Network Name" required>
-                                </div>
-                                <div class="form-group flex-2">
-                                    <label for="param-wifi-pass">Password</label>
-                                    <input type="password" id="param-wifi-pass" class="cmd-input" placeholder="Network Password">
-                                </div>
-                                <div class="form-group flex-1">
-                                    <label for="param-wifi-save">Persist in Flash</label>
-                                    <select id="param-wifi-save" class="cmd-select">
-                                        <option value="true">Yes</option>
-                                        <option value="false">Session Only</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+<!-- RESTART -->
+<div class="param-pane" id="pane-RESTART"><p class="param-hint">Requests a controlled restart after pending work drains. Completion requires the device to reboot and return its stored execution response; no custom delay/reason parameter is supported.</p></div>
 
-                        <!-- RESTART -->
-                        <div class="param-pane" id="pane-RESTART">
-                            <div class="param-form-row">
-                                <div class="form-group flex-1">
-                                    <label for="param-reboot-delay">Delay (seconds)</label>
-                                    <input type="number" id="param-reboot-delay" class="cmd-input" value="1" min="0" max="60">
-                                </div>
-                                <div class="form-group flex-2">
-                                    <label for="param-reboot-reason">Reason</label>
-                                    <input type="text" id="param-reboot-reason" class="cmd-input" placeholder="Maintenance reboot" value="Operator requested">
-                                </div>
-                            </div>
-                        </div>
+<!-- GET_CONFIG -->
+<div class="param-pane" id="pane-GET_CONFIG"><p class="param-hint">Fetches the documented runtime configuration snapshot. Credentials are excluded; section/key selection is not supported.</p></div>
 
-                        <!-- GET_CONFIG -->
-                        <div class="param-pane" id="pane-GET_CONFIG">
-                            <div class="param-form-row">
-                                <label for="param-config-section">Config Section / Key</label>
-                                <input type="text" id="param-config-section" class="cmd-input" placeholder="Leave empty for full config" value="all">
-                            </div>
-                        </div>
-
-                        <!-- SET_INTERVAL -->
+<!-- SET_INTERVAL -->
                         <div class="param-pane" id="pane-SET_INTERVAL">
                             <div class="param-form-row">
                                 <label for="param-interval-ms">Telemetry Interval (ms) <span class="required">*</span>
 </label>
-                                <input type="number" id="param-interval-ms" class="cmd-input" value="5000" min="500" max="3600000">
+                                <input type="number" id="param-interval-ms" class="cmd-input" value="5000" min="2000" max="3600000">
                             </div>
                         </div>
 
                         <!-- CUSTOM -->
                         <div class="param-pane" id="pane-CUSTOM">
                             <div class="param-form-row mb-2">
-                                <label for="param-custom-name">Custom Command Name <span class="required">*</span>
+                                <label for="param-custom-name">Registry Command Name <span class="required">*</span>
 </label>
-                                <input type="text" id="param-custom-name" class="cmd-input" placeholder="MY_CUSTOM_COMMAND">
+                                <input type="text" id="param-custom-name" class="cmd-input" placeholder="GET_STATUS">
                             </div>
                             <div class="param-form-row">
                                 <label for="param-custom-json">JSON Payload</label>
@@ -166,6 +113,8 @@
 </div>
 {% endblock %}
 {% block extra_js %}
-<link rel="stylesheet" href="{{ url_for('static',filename='css/command-center-chat.css') }}?v=1">
-<script src="{{ url_for('static',filename='js/command_center.js') }}?v=20261019-refresh" defer></script>
+<link rel="stylesheet" href="/static/css/approved-workspaces.css?v=20261027">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/command-center-chat.css') }}?v=20261027-approved">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/command-responses.css') }}?v=20261027-approved">
+<script src="{{ url_for('static',filename='js/command_center.js') }}?v=20261027-approved" defer></script>
 {% endblock %}

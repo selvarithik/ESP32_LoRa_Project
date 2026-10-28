@@ -3,6 +3,7 @@
 window.SensorUI = (() => {
  const esc = value => gateway.escape(String(value ?? ""));
  const cfg = p => {try {return typeof p.widget_config === "string" ? JSON.parse(p.widget_config) : (p.widget_config || {});} catch (_) {return {};}};
+ function freshnessTimeout(p){const saved=Number(cfg(p).stale_timeout||10),derived=Number(p.effective_stale_timeout_s);return Math.max(Number.isFinite(saved)&&saved>=1?saved:10,Number.isFinite(derived)&&derived>=1&&derived<=604800?derived:0);}
  const numeric = p => ["FLOAT","DOUBLE","INT","UINT","UINT32"].includes(p.data_type);
  const accents = [["temp","#2563EB"],["press","#0D9488"],["batt.*volt|batt_v","#16A34A"],["rssi","#7C3AED"],["snr","#0891B2"],["humid","#0284C7"]];
  function color(p) {return /^#[0-9a-f]{6}$/i.test(cfg(p).color || "") ? cfg(p).color : (accents.find(([rx]) => new RegExp(rx,"i").test([p.parameter_type,p.parameter_id,p.parameter_name].join(" ")))?.[1] || "#2563EB");}
@@ -38,7 +39,7 @@ window.SensorUI = (() => {
  function status(p,node) {
    if(node && !connection(node).online)return "Offline";
    if(!p.timestamp)return "Unavailable";
-   if(Date.now()-new Date(p.timestamp).getTime()>Number(cfg(p).stale_timeout||10)*1000)return "Stale";
+   if(Date.now()-new Date(p.timestamp).getTime()>freshnessTimeout(p)*1000)return "Stale";
    if(["HIGH","LOW","SENSOR_ERROR"].includes(p.alarm_status))return p.alarm_status.replace("_"," ");
    if(p.quality && p.quality!=="GOOD")return p.quality;
    const c=cfg(p), n=Number(p.value);
@@ -131,5 +132,5 @@ window.SensorUI = (() => {
      search.oninput=render;category.onchange=render;render();search.focus();
    }catch(e){message.textContent=e.message;}
  }
- return {config:cfg,color,icon,value,status,connection,chart,card,open,chooseWidgets};
+ return {config:cfg,freshnessTimeout,color,icon,value,status,connection,chart,card,open,chooseWidgets};
 })();

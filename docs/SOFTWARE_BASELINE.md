@@ -1,3 +1,7 @@
+> Historical baseline: BLE is removed from active scope. Current shared builds and
+> E220 implementation status are in SHARED_FIRMWARE_REPORT.md; old missing-feature
+> descriptions below are not current runtime specifications.
+
 # Software completion baseline — 2026-10-19
 
 Inspected existing source before implementation. This phase has no attached ESP32 and will not use serial, upload, erase or reset hardware. Earlier physical evidence is historical. Private Chat and OTA are excluded; their current file hashes are recorded separately to verify no edits in this phase.

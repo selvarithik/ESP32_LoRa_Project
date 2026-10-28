@@ -27,7 +27,9 @@ class DeviceControlsTests(unittest.TestCase):
   cid=self.command('SET_SLEEP_SCHEDULE',{'sleep_enabled':True,'sleep_start_minute':1380,'sleep_duration_seconds':7200,'utc_offset_minutes':330,'sleep_days_mask':127,'expected_revision':1});self.master.tick();self.assertEqual(command_manager.get_command(cid)['state'],'FAILED')
  def test_lost_response_duplicate_and_process_restart_no_reexecution(self):
   self.nodes[1].drop_response=True;cid=self.command('RESTART');reply=self.master.tick();self.assertEqual(command_manager.get_command(cid)['state'],'ACK_RECEIVED');count=self.nodes[1].executions
-  restored=SimulatedNode(self.nodes[1].identity,self.master_id,self.nodes[1].path);self.master.nodes[restored.identity]=restored;self.master.tick();self.assertEqual(command_manager.get_command(cid)['state'],'COMPLETED');self.assertEqual(restored.executions,count)
+  restored=SimulatedNode(self.nodes[1].identity,self.master_id,self.nodes[1].path);self.master.nodes[restored.identity]=restored;self.master.tick();self.assertEqual(command_manager.get_command(cid)['state'],'ACK_RECEIVED');self.assertEqual(restored.executions,count)
+  with command_manager.command_db() as db:db.execute("UPDATE command_delivery SET response_deadline='2000-01-01T00:00:00' WHERE command_id=?",(cid,))
+  self.master.tick();self.assertEqual(command_manager.get_command(cid)['state'],'TIMEOUT')
  def test_invalid_settings_permissions_and_wrong_target(self):
   for data in ({'telemetry_seconds':True},{'telemetry_seconds':1},{'device_name':''},{'sleep_days_mask':0},{'utc_offset_minutes':841},{'wifi_password':'never-network'}):
    self.assertEqual(self.client.post('/api/v1/commands',json={'node_id':'SIM-NODE-1','command_type':'CONFIG_UPDATE','payload':data}).status_code,400)
@@ -35,6 +37,7 @@ class DeviceControlsTests(unittest.TestCase):
   with self.assertRaises(ValueError):self.nodes[1].receive(device_api.packet('COMMAND','GATEWAY','SIM-NODE-2',{'command_id':'BAD','command':'PING','arguments':{}}))
  def test_lost_radio_fragment_retries_without_false_ack(self):
   cid=self.command('PING');self.master.radio.drop_next=1;self.master.tick();self.assertEqual(command_manager.get_command(cid)['state'],'SENT');self.assertEqual(self.nodes[1].executions,0)
+  with command_manager.command_db() as db:db.execute("UPDATE command_delivery SET last_attempt_at='2000-01-01T00:00:00' WHERE command_id=?",(cid,))
   self.master.tick();self.assertEqual(command_manager.get_command(cid)['state'],'COMPLETED');self.assertEqual(self.nodes[1].executions,1);self.assertTrue(self.master.radio.status()['simulated'])
  def test_failed_sensor_does_not_create_numeric_samples(self):
   self.nodes[1].sensor_valid=False;self.master.uplink(self.nodes[1],'TELEMETRY',self.nodes[1].telemetry())

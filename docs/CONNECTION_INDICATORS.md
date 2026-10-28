@@ -1,3 +1,10 @@
+> Update 25 October 2026: Master GPIO2 follows authenticated Gateway receipts (15 s). Slave GPIO2 follows authenticated Master receipts over IP, or authenticated accepted Master radio packets when RF is enabled. Slave timeout is derived as 2 × configured heartbeat + 5 seconds (65 s for existing 30 s heartbeat); it does not change heartbeat, Wi-Fi, MQTT or sensor settings. Slave diagnostics expose master_connected and master_ack_age_seconds separately from direct Gateway connectivity. An in-flight request does not turn an otherwise fresh connection into CONNECTING. Firmware LED requests are not a new visual confirmation. TM1637 remains inhibited by the existing shared-build hardware profile.
+
+> Current shared-build override2026-10-23: TM1637 is disconnected. DisplayPresent=false
+> inhibits construction and GPIO18/19 activity in both builds regardless of NVS flag.
+> The following physical evidence is historical. Blue LED behavior is retained;
+> no new physical test was performed.
+
 # Connection LED and Master TM1637
 
 The GPIO2 blue LED is working, confirmed by the owner after the first app-only COM8 upload. That first TM1637 image attempted RSSI/ack-age writes, but the owner reported a blank display. Driver write attempts are not successful physical display verification.
