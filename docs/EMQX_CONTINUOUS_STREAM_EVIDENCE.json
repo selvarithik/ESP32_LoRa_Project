@@ -1,0 +1,60 @@
+{
+  "scope": "Normal running server.py MQTT worker; physical Master only; database receive timestamps",
+  "elapsed_seconds": 170.65,
+  "new_sensor_values": 102,
+  "parameter_groups": [
+    {
+      "parameter_id": "bus_voltage",
+      "samples": 17,
+      "first_received": "2026-10-26T20:15:08.996751",
+      "last_received": "2026-10-26T20:17:49.084372",
+      "minimum": 3.172,
+      "maximum": 3.18
+    },
+    {
+      "parameter_id": "current",
+      "samples": 17,
+      "first_received": "2026-10-26T20:15:08.996751",
+      "last_received": "2026-10-26T20:17:49.084372",
+      "minimum": 0.0013,
+      "maximum": 0.0018
+    },
+    {
+      "parameter_id": "mq135_adc_raw",
+      "samples": 17,
+      "first_received": "2026-10-26T20:15:09.217981",
+      "last_received": "2026-10-26T20:17:49.305648",
+      "minimum": 465.0,
+      "maximum": 486.0
+    },
+    {
+      "parameter_id": "mq135_pin_mv",
+      "samples": 17,
+      "first_received": "2026-10-26T20:15:09.217981",
+      "last_received": "2026-10-26T20:17:49.305648",
+      "minimum": 528.0,
+      "maximum": 544.0
+    },
+    {
+      "parameter_id": "power",
+      "samples": 17,
+      "first_received": "2026-10-26T20:15:08.996751",
+      "last_received": "2026-10-26T20:17:49.084372",
+      "minimum": 0.004129,
+      "maximum": 0.005724
+    },
+    {
+      "parameter_id": "shunt_voltage",
+      "samples": 17,
+      "first_received": "2026-10-26T20:15:08.996751",
+      "last_received": "2026-10-26T20:17:49.084372",
+      "minimum": 0.13,
+      "maximum": 0.18
+    }
+  ],
+  "sample_batches": 34,
+  "maximum_batch_gap_seconds": 10.470054,
+  "node_last_seen": "2026-10-26T20:17:49.305648",
+  "reported_transport": "MQTT",
+  "local_ip_enabled": null
+}

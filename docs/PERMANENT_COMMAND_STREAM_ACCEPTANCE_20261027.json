@@ -1,0 +1,1051 @@
+{
+  "started_at": "2026-10-27T21:36:15.192906",
+  "scope": "PERMANENT_EMQX_WORKER_PHYSICAL_MASTER",
+  "separate_mqtt_client": false,
+  "settings_mutations_sent": false,
+  "dashboard_ui": "NOT_TESTED_BROWSER_TOOL_UNAVAILABLE",
+  "before": {
+    "device_id": "ESP32-10777D842178",
+    "role": "MASTER",
+    "uptime_ms": 113587,
+    "free_8bit_heap": 58828,
+    "largest_8bit_block": 47092,
+    "minimum_free_heap": 68280,
+    "mqtt": {
+      "schema_version": 1,
+      "revision": 77,
+      "shared_revision": 2,
+      "secret_revision": 7,
+      "transaction": {
+        "transaction_id": "0763602d-20ef-4d0c-b03b-31db19a4702f",
+        "state": "COMMITTED",
+        "reason": "PROTECTED_PROVISIONING_REQUIRED",
+        "deadline": 1793024731,
+        "digest": "2a4014232ac94ab5047d83155abb4610e76569305f263ecdeffdcbcdf2e31d0d",
+        "test_deadline": 1793024671,
+        "proofs": {
+          "peer_probe": true,
+          "broker_ready": true
+        },
+        "decision": "COMMIT"
+      },
+      "active_fingerprint": "893d5379230177b6db42cc70bd8cc63c69f50a89a57b37cc015a127da3933850",
+      "active_client_id": "CL_ID_ESP32_MASTER_01",
+      "active_configured": true,
+      "pending_configured": false,
+      "comparison": {
+        "status": "UNKNOWN",
+        "message": "",
+        "fields": []
+      },
+      "runtime": {
+        "runtime_enabled": true,
+        "device_role": "MASTER",
+        "wifi_state": "CONNECTED",
+        "station_ip": "192.168.1.108",
+        "time_state": "CLOCK_VALID",
+        "unix_time": 1793117176,
+        "ntp_status": "UNKNOWN",
+        "status_label": "CONNECTED",
+        "tls_verification_required": true,
+        "tls_state": "VERIFIED",
+        "authentication_state": "ACCEPTED",
+        "subscription_state": "READY",
+        "last_connected_at": 1793117150,
+        "last_outbound_queued_at": 1793117173,
+        "last_broker_puback_at": 1793117173,
+        "last_broker_frame_received_at": 1793117174,
+        "chat_inbox_count": 0,
+        "outbox_bytes": 0,
+        "publish_attempts": 16,
+        "enqueued": 13,
+        "pubacks": 13,
+        "publish_error": 0,
+        "state": "connected",
+        "reconnect_count": 0,
+        "dropped": 0,
+        "comparison": {
+          "status": "UNKNOWN",
+          "message": "",
+          "fields": []
+        }
+      },
+      "candidate_runtime": {
+        "running": false,
+        "connected": false,
+        "subscribed": false,
+        "puback": false,
+        "peer_probe": false,
+        "tls_error": 0,
+        "failure_code": 0
+      },
+      "capabilities": {
+        "protected_provisioning": true,
+        "connection_test": true,
+        "coordinated_commit": true
+      },
+      "active_source": "physical commissioning",
+      "secret_state": {
+        "password_configured": true
+      },
+      "storage_protection": "NVS encryption not configured; chip security unverified"
+    },
+    "sensors": [
+      {
+        "sensor_type": "DHT11",
+        "sensor_id": "ESP32-10777D842178-DHT11",
+        "valid": false,
+        "simulated": false,
+        "status": "READ_ERROR",
+        "sampled_uptime_ms": 111842,
+        "sampling_interval_seconds": 2,
+        "parameters": {},
+        "units": {
+          "temperature": "C",
+          "humidity": "%RH"
+        },
+        "capture_method": "PULSE_POLLING",
+        "last_success_uptime_ms": 0,
+        "capture_status": "POLLING_READ_ERROR",
+        "capture_pulses": 0,
+        "data_idle_high": false
+      },
+      {
+        "sensor_type": "INA219",
+        "sensor_id": "ESP32-10777D842178-INA219",
+        "valid": true,
+        "simulated": false,
+        "status": "OK",
+        "sampled_uptime_ms": 111842,
+        "sampling_interval_seconds": 2,
+        "parameters": {
+          "bus_voltage": 3.192,
+          "shunt_voltage": 0.46,
+          "current": 0.0046,
+          "power": 0.014683
+        },
+        "units": {
+          "bus_voltage": "V",
+          "shunt_voltage": "mV",
+          "current": "A",
+          "power": "W"
+        },
+        "current_calibrated": false,
+        "shunt_resistance_configured": true,
+        "shunt_milliohms": 100
+      },
+      {
+        "sensor_type": "MQ135",
+        "sensor_id": "ESP32-10777D842178-MQ135",
+        "valid": true,
+        "simulated": false,
+        "status": "WARMING_UP_RAW_ONLY",
+        "sampled_uptime_ms": 111842,
+        "sampling_interval_seconds": 2,
+        "parameters": {
+          "mq135_adc_raw": 636,
+          "mq135_pin_mv": 670
+        },
+        "units": {
+          "mq135_adc_raw": "count",
+          "mq135_pin_mv": "mV"
+        },
+        "calibrated": false,
+        "warmup_remaining_seconds": 86287,
+        "voltage_divider_verification_required": true
+      }
+    ]
+  },
+  "commands": [
+    {
+      "command_id": "CMD-30FEAD0494DC",
+      "command_type": "PING",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:36:18.860799",
+      "response_at": "2026-10-27T21:36:19.050014",
+      "result": {
+        "ok": true,
+        "message": "Permanent EMQX acceptance"
+      },
+      "error": null,
+      "elapsed_s": 2.45
+    },
+    {
+      "command_id": "CMD-A976066CAE8D",
+      "command_type": "GET_STATUS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:36:24.677516",
+      "response_at": "2026-10-27T21:36:24.934503",
+      "result": {
+        "device_id": "ESP32-10777D842178",
+        "device_name": "ESP32 LoRa Device",
+        "role": "MASTER",
+        "master_id": "ESP32-10777D842178",
+        "node_address": "1",
+        "hardware_mac": "78:21:84:7D:77:10",
+        "firmware_version": "1.1.0-software",
+        "configuration_revision": 11,
+        "heartbeat_seconds": 30,
+        "uptime_s": 121,
+        "free_heap": 84328,
+        "wifi_connected": true,
+        "wifi_rssi": -66,
+        "gateway_reachable": true,
+        "transport": "MQTT",
+        "telemetry_seconds": 10,
+        "simulated": false,
+        "operating_state": "ACTIVE",
+        "reset_reason": "POWERON",
+        "internet_status": "UNKNOWN",
+        "sensor_status": "READ_ERROR",
+        "sensors": [
+          {
+            "sensor_type": "DHT11",
+            "sensor_id": "ESP32-10777D842178-DHT11",
+            "valid": false,
+            "simulated": false,
+            "status": "READ_ERROR",
+            "sampled_uptime_ms": 120095,
+            "sampling_interval_seconds": 2,
+            "capture_method": "PULSE_POLLING",
+            "last_success_uptime_ms": 0,
+            "capture_status": "POLLING_READ_ERROR",
+            "capture_pulses": 0,
+            "data_idle_high": false
+          },
+          {
+            "sensor_type": "INA219",
+            "sensor_id": "ESP32-10777D842178-INA219",
+            "valid": true,
+            "simulated": false,
+            "status": "OK",
+            "sampled_uptime_ms": 120095,
+            "sampling_interval_seconds": 2,
+            "current_calibrated": false,
+            "shunt_resistance_configured": true,
+            "shunt_milliohms": 100
+          },
+          {
+            "sensor_type": "MQ135",
+            "sensor_id": "ESP32-10777D842178-MQ135",
+            "valid": true,
+            "simulated": false,
+            "status": "WARMING_UP_RAW_ONLY",
+            "sampled_uptime_ms": 120095,
+            "sampling_interval_seconds": 2,
+            "calibrated": false,
+            "warmup_remaining_seconds": 86279,
+            "voltage_divider_verification_required": true
+          }
+        ],
+        "last_sensor_sample_uptime_ms": 120095,
+        "last_transport_accept_uptime_ms": 116927,
+        "last_gateway_receipt_uptime_ms": 116927,
+        "sample_time_basis": "DEVICE_UPTIME_MS",
+        "enabled": true
+      },
+      "error": null,
+      "elapsed_s": 2.03
+    },
+    {
+      "command_id": "CMD-178C8A98C5C0",
+      "command_type": "STATUS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:36:31.278916",
+      "response_at": "2026-10-27T21:36:31.956978",
+      "result": {
+        "device_id": "ESP32-10777D842178",
+        "device_name": "ESP32 LoRa Device",
+        "role": "MASTER",
+        "master_id": "ESP32-10777D842178",
+        "node_address": "1",
+        "hardware_mac": "78:21:84:7D:77:10",
+        "firmware_version": "1.1.0-software",
+        "configuration_revision": 11,
+        "heartbeat_seconds": 30,
+        "uptime_s": 127,
+        "free_heap": 87848,
+        "wifi_connected": true,
+        "wifi_rssi": -71,
+        "gateway_reachable": true,
+        "transport": "MQTT",
+        "telemetry_seconds": 10,
+        "simulated": false,
+        "operating_state": "ACTIVE",
+        "reset_reason": "POWERON",
+        "internet_status": "UNKNOWN",
+        "sensor_status": "READ_ERROR",
+        "sensors": [
+          {
+            "sensor_type": "DHT11",
+            "sensor_id": "ESP32-10777D842178-DHT11",
+            "valid": false,
+            "simulated": false,
+            "status": "READ_ERROR",
+            "sampled_uptime_ms": 126303,
+            "sampling_interval_seconds": 2,
+            "capture_method": "RMT",
+            "last_success_uptime_ms": 0,
+            "capture_status": "NO_RESPONSE",
+            "capture_pulses": 0,
+            "data_idle_high": false
+          },
+          {
+            "sensor_type": "INA219",
+            "sensor_id": "ESP32-10777D842178-INA219",
+            "valid": true,
+            "simulated": false,
+            "status": "OK",
+            "sampled_uptime_ms": 126303,
+            "sampling_interval_seconds": 2,
+            "current_calibrated": false,
+            "shunt_resistance_configured": true,
+            "shunt_milliohms": 100
+          },
+          {
+            "sensor_type": "MQ135",
+            "sensor_id": "ESP32-10777D842178-MQ135",
+            "valid": true,
+            "simulated": false,
+            "status": "WARMING_UP_RAW_ONLY",
+            "sampled_uptime_ms": 126303,
+            "sampling_interval_seconds": 2,
+            "calibrated": false,
+            "warmup_remaining_seconds": 86273,
+            "voltage_divider_verification_required": true
+          }
+        ],
+        "last_sensor_sample_uptime_ms": 126303,
+        "last_transport_accept_uptime_ms": 122682,
+        "last_gateway_receipt_uptime_ms": 122682,
+        "sample_time_basis": "DEVICE_UPTIME_MS",
+        "enabled": true
+      },
+      "error": null,
+      "elapsed_s": 2.87
+    },
+    {
+      "command_id": "CMD-2EADE3A132E2",
+      "command_type": "DIAGNOSTICS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:36:39.197090",
+      "response_at": "2026-10-27T21:36:39.674526",
+      "result": {
+        "device": {
+          "id": "ESP32-10777D842178",
+          "name": "ESP32 LoRa Device",
+          "role": "MASTER",
+          "master_id": "ESP32-10777D842178",
+          "enabled": true,
+          "build_profile": "MASTER",
+          "build_role_matches_stored": true,
+          "display_inhibited_by_profile": true,
+          "firmware_version": "1.1.0-software",
+          "configuration_revision": 11,
+          "heap_free": 84228,
+          "heap_min": 60676,
+          "uptime_s": 134,
+          "reset_reason": "POWERON",
+          "watchdog": true
+        },
+        "wifi": {
+          "enabled": true,
+          "connected": true,
+          "ip": "192.168.1.108",
+          "rssi": -65,
+          "ap_enabled": false,
+          "ap_ssid": "Setup-ESP32-10777D842178",
+          "ap_ip": "192.168.100.1",
+          "dhcp": true,
+          "settings_pending_restart": false,
+          "subnet": "255.255.255.0",
+          "gateway": "192.168.1.1",
+          "dns1": "192.168.1.1",
+          "dns2": "0.0.0.0",
+          "disconnect_reason": 0,
+          "reconnect_attempts": 0,
+          "last_connected_uptime_ms": 4889,
+          "scan_state": "IDLE"
+        },
+        "power": {
+          "state": "ACTIVE",
+          "last_error": "",
+          "clock_valid": true,
+          "sleep_remaining_seconds": 0,
+          "remote_wake_supported": false,
+          "restart_pending": false,
+          "restart_storage_ready": true,
+          "reset_reason": "POWERON",
+          "sleep_enabled": false,
+          "sleep_start_minute": 0,
+          "sleep_duration_seconds": 3600,
+          "sleep_days_mask": 127,
+          "utc_offset_minutes": 330,
+          "wake_minute": 60,
+          "active_seconds_per_day": 82800
+        },
+        "lora_status": "DISABLED_OR_ERROR",
+        "ethernet_status": "NOT_AVAILABLE",
+        "gateway_reachable": true,
+        "internet_status": "UNKNOWN"
+      },
+      "error": null,
+      "elapsed_s": 3.67
+    },
+    {
+      "command_id": "CMD-3E732811153C",
+      "command_type": "GET_CAPABILITIES",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:36:45.675288",
+      "response_at": "2026-10-27T21:36:45.929036",
+      "result": {
+        "protocol_version": 1,
+        "role": "MASTER",
+        "lora_driver": "E220_SHARED_RV1_HARDWARE_UNVERIFIED",
+        "remote_cancellation": false,
+        "commands": [
+          "PING",
+          "GET_STATUS",
+          "STATUS",
+          "DIAGNOSTICS",
+          "GET_TELEMETRY",
+          "GET_CONFIG",
+          "GET_CONFIGURATION",
+          "GET_CAPABILITIES",
+          "GET_SENSOR_STATUS",
+          "GET_MESH_STATUS",
+          "GET_NODE_STATUS",
+          "GET_ROUTE_INFO",
+          "SET_CONFIGURATION",
+          "SET_DEVICE_NAME",
+          "CONFIG_UPDATE",
+          "SET_TELEMETRY_INTERVAL",
+          "SET_HEARTBEAT_INTERVAL",
+          "SET_SLEEP_SCHEDULE",
+          "GET_NETWORK",
+          "WIFI_SCAN",
+          "WIFI_RECONNECT",
+          "GET_RADIO_STATUS",
+          "RADIO_TEST",
+          "GET_POWER_STATUS",
+          "RESTART",
+          "REBOOT"
+        ]
+      },
+      "error": null,
+      "elapsed_s": 2.03
+    },
+    {
+      "command_id": "CMD-B2FCA6C8921E",
+      "command_type": "GET_SENSOR_STATUS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:36:51.865599",
+      "response_at": "2026-10-27T21:36:52.348924",
+      "result": [
+        {
+          "sensor_type": "DHT11",
+          "sensor_id": "ESP32-10777D842178-DHT11",
+          "valid": false,
+          "simulated": false,
+          "status": "READ_ERROR",
+          "sampled_uptime_ms": 146934,
+          "sampling_interval_seconds": 2,
+          "capture_method": "RMT",
+          "last_success_uptime_ms": 0,
+          "capture_status": "NO_RESPONSE",
+          "capture_pulses": 0,
+          "data_idle_high": false
+        },
+        {
+          "sensor_type": "INA219",
+          "sensor_id": "ESP32-10777D842178-INA219",
+          "valid": true,
+          "simulated": false,
+          "status": "OK",
+          "sampled_uptime_ms": 146934,
+          "sampling_interval_seconds": 2,
+          "current_calibrated": false,
+          "shunt_resistance_configured": true,
+          "shunt_milliohms": 100
+        },
+        {
+          "sensor_type": "MQ135",
+          "sensor_id": "ESP32-10777D842178-MQ135",
+          "valid": true,
+          "simulated": false,
+          "status": "WARMING_UP_RAW_ONLY",
+          "sampled_uptime_ms": 146934,
+          "sampling_interval_seconds": 2,
+          "calibrated": false,
+          "warmup_remaining_seconds": 86252,
+          "voltage_divider_verification_required": true
+        }
+      ],
+      "error": null,
+      "elapsed_s": 2.46
+    },
+    {
+      "command_id": "CMD-F2960A25800F",
+      "command_type": "GET_MESH_STATUS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:36:58.322197",
+      "response_at": "2026-10-27T21:36:58.517225",
+      "result": {
+        "radio_state": "DISABLED_OR_ERROR",
+        "hardware_verified": false,
+        "node_count": 0,
+        "route_count": 0,
+        "pending": 3,
+        "delivery_failures": 2,
+        "duplicates": 0
+      },
+      "error": null,
+      "elapsed_s": 2.04
+    },
+    {
+      "command_id": "CMD-86A2EF17F842",
+      "command_type": "GET_NODE_STATUS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:37:04.471469",
+      "response_at": "2026-10-27T21:37:04.751871",
+      "result": {
+        "radio_state": "DISABLED_OR_ERROR",
+        "hardware_verified": false,
+        "nodes": []
+      },
+      "error": null,
+      "elapsed_s": 2.44
+    },
+    {
+      "command_id": "CMD-CDAE810C9396",
+      "command_type": "GET_ROUTE_INFO",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:37:10.864096",
+      "response_at": "2026-10-27T21:37:11.219876",
+      "result": {
+        "radio_state": "DISABLED_OR_ERROR",
+        "hardware_verified": false,
+        "routes": []
+      },
+      "error": null,
+      "elapsed_s": 2.45
+    },
+    {
+      "command_id": "CMD-FB690C1F3ABA",
+      "command_type": "GET_TELEMETRY",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:37:18.026307",
+      "response_at": "2026-10-27T21:37:18.288033",
+      "result": {
+        "sensor_type": "DHT11",
+        "sensor_id": "ESP32-10777D842178-DHT11",
+        "valid": false,
+        "simulated": false,
+        "status": "READ_ERROR",
+        "sampled_uptime_ms": 173747,
+        "sampling_interval_seconds": 2,
+        "parameters": {},
+        "units": {
+          "temperature": "C",
+          "humidity": "%RH"
+        },
+        "capture_method": "PULSE_POLLING",
+        "last_success_uptime_ms": 0,
+        "capture_status": "POLLING_READ_ERROR",
+        "capture_pulses": 0,
+        "data_idle_high": false
+      },
+      "error": null,
+      "elapsed_s": 2.86
+    },
+    {
+      "command_id": "CMD-A290907A4111",
+      "command_type": "GET_CONFIG",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:37:23.441320",
+      "response_at": "2026-10-27T21:37:24.404471",
+      "result": {
+        "device_id": "ESP32-10777D842178",
+        "device_name": "ESP32 LoRa Device",
+        "role": "MASTER",
+        "master_id": "ESP32-10777D842178",
+        "configuration_version": 1,
+        "configuration_revision": 11,
+        "telemetry_seconds": 10,
+        "heartbeat_seconds": 30,
+        "enabled": true,
+        "sleep_enabled": false,
+        "sleep_start_minute": 0,
+        "sleep_duration_seconds": 3600,
+        "sleep_days_mask": 127,
+        "utc_offset_minutes": 330,
+        "local_ip_enabled": false,
+        "routing_policy": "MASTER_ONLY",
+        "server_host": "192.168.1.104",
+        "server_port": 5001,
+        "wifi_dhcp": true,
+        "wifi_ip": "",
+        "wifi_subnet": "255.255.255.0",
+        "wifi_gateway": "",
+        "wifi_dns": "",
+        "wifi_dns2": "",
+        "dht_enabled": true,
+        "dht_pin": 4,
+        "ina219_enabled": true,
+        "ina219_address": 64,
+        "ina219_shunt_milliohms": 100,
+        "mq135_enabled": true,
+        "mq135_warmup_seconds": 86400,
+        "config_scope": "RUNTIME"
+      },
+      "error": null,
+      "elapsed_s": 2.03
+    },
+    {
+      "command_id": "CMD-AF3EC434CADA",
+      "command_type": "GET_CONFIGURATION",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:37:30.449816",
+      "response_at": "2026-10-27T21:37:30.931514",
+      "result": {
+        "device_id": "ESP32-10777D842178",
+        "device_name": "ESP32 LoRa Device",
+        "role": "MASTER",
+        "master_id": "ESP32-10777D842178",
+        "configuration_version": 1,
+        "configuration_revision": 11,
+        "telemetry_seconds": 10,
+        "heartbeat_seconds": 30,
+        "enabled": true,
+        "sleep_enabled": false,
+        "sleep_start_minute": 0,
+        "sleep_duration_seconds": 3600,
+        "sleep_days_mask": 127,
+        "utc_offset_minutes": 330,
+        "local_ip_enabled": false,
+        "routing_policy": "MASTER_ONLY",
+        "server_host": "192.168.1.104",
+        "server_port": 5001,
+        "wifi_dhcp": true,
+        "wifi_ip": "",
+        "wifi_subnet": "255.255.255.0",
+        "wifi_gateway": "",
+        "wifi_dns": "",
+        "wifi_dns2": "",
+        "dht_enabled": true,
+        "dht_pin": 4,
+        "ina219_enabled": true,
+        "ina219_address": 64,
+        "ina219_shunt_milliohms": 100,
+        "mq135_enabled": true,
+        "mq135_warmup_seconds": 86400,
+        "config_scope": "RUNTIME"
+      },
+      "error": null,
+      "elapsed_s": 2.42
+    },
+    {
+      "command_id": "CMD-93C580C382F2",
+      "command_type": "GET_NETWORK",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:37:37.726441",
+      "response_at": "2026-10-27T21:37:37.996074",
+      "result": {
+        "enabled": true,
+        "connected": true,
+        "ip": "192.168.1.108",
+        "rssi": -62,
+        "ap_enabled": false,
+        "ap_ssid": "Setup-ESP32-10777D842178",
+        "ap_ip": "192.168.100.1",
+        "dhcp": true,
+        "settings_pending_restart": false,
+        "subnet": "255.255.255.0",
+        "gateway": "192.168.1.1",
+        "dns1": "192.168.1.1",
+        "dns2": "0.0.0.0",
+        "disconnect_reason": 0,
+        "reconnect_attempts": 0,
+        "last_connected_uptime_ms": 4889,
+        "scan_state": "IDLE"
+      },
+      "error": null,
+      "elapsed_s": 3.27
+    },
+    {
+      "command_id": "CMD-74C71ADDDD4F",
+      "command_type": "GET_RADIO_STATUS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:37:44.491884",
+      "response_at": "2026-10-27T21:37:44.637472",
+      "result": {
+        "state": "DISABLED",
+        "error": "DISABLED",
+        "module": "E220-900T22D",
+        "hardware_link_verified": false,
+        "public_settings_read": false,
+        "register_writes": 0,
+        "aux_ready": false,
+        "tx_pending": false,
+        "tx_uart_fragments": 0,
+        "rx_messages": 0,
+        "rejected": 0,
+        "auth_failures": 0,
+        "timeouts": 0,
+        "reassembly_expired": 0,
+        "reassembly_duplicates": 0,
+        "completed_uart_transfers": 0,
+        "rssi_dbm": null,
+        "snr_db": null
+      },
+      "error": null,
+      "elapsed_s": 2.42
+    },
+    {
+      "command_id": "CMD-E9C1257E201B",
+      "command_type": "GET_POWER_STATUS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:37:51.166568",
+      "response_at": "2026-10-27T21:37:51.367683",
+      "result": {
+        "state": "ACTIVE",
+        "last_error": "",
+        "clock_valid": true,
+        "sleep_remaining_seconds": 0,
+        "remote_wake_supported": false,
+        "restart_pending": false,
+        "restart_storage_ready": true,
+        "reset_reason": "POWERON",
+        "sleep_enabled": false,
+        "sleep_start_minute": 0,
+        "sleep_duration_seconds": 3600,
+        "sleep_days_mask": 127,
+        "utc_offset_minutes": 330,
+        "wake_minute": 60,
+        "active_seconds_per_day": 82800
+      },
+      "error": null,
+      "elapsed_s": 2.89
+    },
+    {
+      "command_id": "CMD-DEE4CA70F7F9",
+      "command_type": "WIFI_SCAN",
+      "state": "FAILED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:37:58.311672",
+      "response_at": "2026-10-27T21:37:58.443079",
+      "result": {
+        "error": "WIFI_SCAN_BUSY_MQTT_ACTIVE"
+      },
+      "error": "Command execution failed with status FAILED",
+      "elapsed_s": 2.86
+    },
+    {
+      "command_id": "CMD-51C2AD446EE5",
+      "command_type": "RADIO_TEST",
+      "state": "FAILED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-27T21:38:05.324451",
+      "response_at": "2026-10-27T21:38:05.660444",
+      "result": {
+        "error": "USE_ADDRESSED_PING_DURING_APPROVED_HARDWARE_TEST"
+      },
+      "error": "Command execution failed with status FAILED",
+      "elapsed_s": 3.29
+    }
+  ],
+  "post_sweep_ping": {
+    "command_id": "CMD-A4EF1D8930F9",
+    "state": "COMPLETED",
+    "ack_status": "ACCEPTED",
+    "ack_at": "2026-10-27T21:38:32.113177",
+    "response_at": "2026-10-27T21:38:32.364982",
+    "result": {
+      "ok": true,
+      "message": "After command sweep"
+    },
+    "error": null
+  },
+  "after": {
+    "device_id": "ESP32-10777D842178",
+    "role": "MASTER",
+    "uptime_ms": 250338,
+    "free_8bit_heap": 44440,
+    "largest_8bit_block": 18420,
+    "minimum_free_heap": 49116,
+    "mqtt": {
+      "schema_version": 1,
+      "revision": 77,
+      "shared_revision": 2,
+      "secret_revision": 7,
+      "transaction": {
+        "transaction_id": "0763602d-20ef-4d0c-b03b-31db19a4702f",
+        "state": "COMMITTED",
+        "reason": "PROTECTED_PROVISIONING_REQUIRED",
+        "deadline": 1793024731,
+        "digest": "2a4014232ac94ab5047d83155abb4610e76569305f263ecdeffdcbcdf2e31d0d",
+        "test_deadline": 1793024671,
+        "proofs": {
+          "peer_probe": true,
+          "broker_ready": true
+        },
+        "decision": "COMMIT"
+      },
+      "active_fingerprint": "893d5379230177b6db42cc70bd8cc63c69f50a89a57b37cc015a127da3933850",
+      "active_client_id": "CL_ID_ESP32_MASTER_01",
+      "active_configured": true,
+      "pending_configured": false,
+      "comparison": {
+        "status": "UNKNOWN",
+        "message": "",
+        "fields": []
+      },
+      "runtime": {
+        "runtime_enabled": true,
+        "device_role": "MASTER",
+        "wifi_state": "CONNECTED",
+        "station_ip": "192.168.1.108",
+        "time_state": "CLOCK_VALID",
+        "unix_time": 1793117312,
+        "ntp_status": "UNKNOWN",
+        "status_label": "CONNECTED",
+        "tls_verification_required": true,
+        "tls_state": "VERIFIED",
+        "authentication_state": "ACCEPTED",
+        "subscription_state": "READY",
+        "last_connected_at": 1793117150,
+        "last_outbound_queued_at": 1793117310,
+        "last_broker_puback_at": 1793117312,
+        "last_broker_frame_received_at": 1793117312,
+        "chat_inbox_count": 0,
+        "outbox_bytes": 0,
+        "publish_attempts": 118,
+        "enqueued": 113,
+        "pubacks": 113,
+        "publish_error": 0,
+        "state": "connected",
+        "reconnect_count": 0,
+        "dropped": 0,
+        "comparison": {
+          "status": "UNKNOWN",
+          "message": "",
+          "fields": []
+        }
+      },
+      "candidate_runtime": {
+        "running": false,
+        "connected": false,
+        "subscribed": false,
+        "puback": false,
+        "peer_probe": false,
+        "tls_error": 0,
+        "failure_code": 0
+      },
+      "capabilities": {
+        "protected_provisioning": true,
+        "connection_test": true,
+        "coordinated_commit": true
+      },
+      "active_source": "physical commissioning",
+      "secret_state": {
+        "password_configured": true
+      },
+      "storage_protection": "NVS encryption not configured; chip security unverified"
+    },
+    "sensors": [
+      {
+        "sensor_type": "DHT11",
+        "sensor_id": "ESP32-10777D842178-DHT11",
+        "valid": false,
+        "simulated": false,
+        "status": "READ_ERROR",
+        "sampled_uptime_ms": 250097,
+        "sampling_interval_seconds": 2,
+        "parameters": {},
+        "units": {
+          "temperature": "C",
+          "humidity": "%RH"
+        },
+        "capture_method": "RMT",
+        "last_success_uptime_ms": 0,
+        "capture_status": "NO_RESPONSE",
+        "capture_pulses": 0,
+        "data_idle_high": false
+      },
+      {
+        "sensor_type": "INA219",
+        "sensor_id": "ESP32-10777D842178-INA219",
+        "valid": true,
+        "simulated": false,
+        "status": "OK",
+        "sampled_uptime_ms": 250097,
+        "sampling_interval_seconds": 2,
+        "parameters": {
+          "bus_voltage": 3.076,
+          "shunt_voltage": 0.42,
+          "current": 0.0042,
+          "power": 0.012919
+        },
+        "units": {
+          "bus_voltage": "V",
+          "shunt_voltage": "mV",
+          "current": "A",
+          "power": "W"
+        },
+        "current_calibrated": false,
+        "shunt_resistance_configured": true,
+        "shunt_milliohms": 100
+      },
+      {
+        "sensor_type": "MQ135",
+        "sensor_id": "ESP32-10777D842178-MQ135",
+        "valid": true,
+        "simulated": false,
+        "status": "WARMING_UP_RAW_ONLY",
+        "sampled_uptime_ms": 250097,
+        "sampling_interval_seconds": 2,
+        "parameters": {
+          "mq135_adc_raw": 624,
+          "mq135_pin_mv": 662
+        },
+        "units": {
+          "mq135_adc_raw": "count",
+          "mq135_pin_mv": "mV"
+        },
+        "calibrated": false,
+        "warmup_remaining_seconds": 86150,
+        "voltage_divider_verification_required": true
+      }
+    ]
+  },
+  "finished_at": "2026-10-27T21:38:33.412315",
+  "telemetry": {
+    "bus_voltage": {
+      "count": 13,
+      "first": "2026-10-27T21:36:24.357849",
+      "last": "2026-10-27T21:38:25.100891",
+      "last_value": 3.072,
+      "sources": [
+        "mqtt"
+      ],
+      "max_gap_s": 11.254444
+    },
+    "current": {
+      "count": 13,
+      "first": "2026-10-27T21:36:24.357849",
+      "last": "2026-10-27T21:38:25.100891",
+      "last_value": 0.0044,
+      "sources": [
+        "mqtt"
+      ],
+      "max_gap_s": 11.254444
+    },
+    "mq135_adc_raw": {
+      "count": 13,
+      "first": "2026-10-27T21:36:24.522863",
+      "last": "2026-10-27T21:38:27.821413",
+      "last_value": 624.0,
+      "sources": [
+        "mqtt"
+      ],
+      "max_gap_s": 12.032281
+    },
+    "mq135_pin_mv": {
+      "count": 13,
+      "first": "2026-10-27T21:36:24.522863",
+      "last": "2026-10-27T21:38:27.821413",
+      "last_value": 661.0,
+      "sources": [
+        "mqtt"
+      ],
+      "max_gap_s": 12.032281
+    },
+    "power": {
+      "count": 13,
+      "first": "2026-10-27T21:36:24.357849",
+      "last": "2026-10-27T21:38:25.100891",
+      "last_value": 0.013517,
+      "sources": [
+        "mqtt"
+      ],
+      "max_gap_s": 11.254444
+    },
+    "shunt_voltage": {
+      "count": 13,
+      "first": "2026-10-27T21:36:24.357849",
+      "last": "2026-10-27T21:38:25.100891",
+      "last_value": 0.44,
+      "sources": [
+        "mqtt"
+      ],
+      "max_gap_s": 11.254444
+    }
+  },
+  "latest_sensor_status": [
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 239771,
+      "sampling_interval_seconds": 2,
+      "capture_method": "PULSE_POLLING",
+      "last_success_uptime_ms": 0,
+      "capture_status": "POLLING_READ_ERROR",
+      "capture_pulses": 0,
+      "data_idle_high": false
+    },
+    {
+      "sensor_type": "INA219",
+      "sensor_id": "ESP32-10777D842178-INA219",
+      "valid": true,
+      "simulated": false,
+      "status": "OK",
+      "sampled_uptime_ms": 239771,
+      "sampling_interval_seconds": 2,
+      "current_calibrated": false,
+      "shunt_resistance_configured": true,
+      "shunt_milliohms": 100
+    },
+    {
+      "sensor_type": "MQ135",
+      "sensor_id": "ESP32-10777D842178-MQ135",
+      "valid": true,
+      "simulated": false,
+      "status": "WARMING_UP_RAW_ONLY",
+      "sampled_uptime_ms": 239771,
+      "sampling_interval_seconds": 2,
+      "calibrated": false,
+      "warmup_remaining_seconds": 86160,
+      "voltage_divider_verification_required": true
+    }
+  ],
+  "mqtt_state_unchanged": true,
+  "skipped_physical_commands": [
+    "SET_CONFIGURATION",
+    "CONFIG_UPDATE",
+    "SET_DEVICE_NAME",
+    "SET_SLEEP_SCHEDULE",
+    "SET_TELEMETRY_INTERVAL",
+    "SET_HEARTBEAT_INTERVAL",
+    "RESTART",
+    "REBOOT",
+    "WIFI_RECONNECT"
+  ]
+}

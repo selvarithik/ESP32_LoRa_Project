@@ -1,0 +1,16 @@
+{
+  "port": "COM12",
+  "upload": "SUCCESS_HASH_VERIFIED",
+  "application_offset": "0x10000",
+  "image_bytes": 1295328,
+  "device_id": "ESP32-10777D842178",
+  "role": "MASTER",
+  "station_ip": "192.168.1.104",
+  "uptime_ms": 9496,
+  "radio_state": "DISABLED",
+  "slave_com8_accessed": false,
+  "nvs_partition_written": false,
+  "filesystem_written": false,
+  "partition_table_written": false,
+  "login_http": 200
+}

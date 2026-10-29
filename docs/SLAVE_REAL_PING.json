@@ -1,0 +1,14 @@
+{
+  "command_id": "CMD-29CEC62D93E4",
+  "node_id": "ESP32-CC9B23E2DEC4",
+  "command_type": "PING",
+  "state": "COMPLETED",
+  "ack_status": "ACCEPTED",
+  "ack_at": "2026-10-25T17:23:38.126339",
+  "response_at": "2026-10-25T17:23:40.087010",
+  "result": {
+    "message": "local-link-verification",
+    "ok": true
+  },
+  "error": null
+}

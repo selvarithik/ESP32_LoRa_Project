@@ -1,0 +1,14 @@
+{
+  "files_preserved": {
+    "accounts.sqlite3": true,
+    "local-ip-token-efce905bbd8bcc0c0f80f5c97364293465449be86c69e09abc5a4f484d42476a.bin": true,
+    "mqtt-secrets.bin": true
+  },
+  "mqtt_profile_and_revision_preserved": true,
+  "mqtt_transaction_state": "PENDING",
+  "/healthz": 200,
+  "/api/deployment/status": 401,
+  "/api/local-test-session": 401,
+  "exe_sha256": "5ce70abd46075b84c7bd033891ac862d0085bce143681be7093635b29753b356",
+  "bundle_bytes": 40630945
+}

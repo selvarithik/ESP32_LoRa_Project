@@ -1,0 +1,22 @@
+{
+  "state": "FAILED",
+  "operation": "roundtrip",
+  "profile_revision": 6,
+  "scope": "BROKER_PROBE_ONLY",
+  "acl_status": "UNVERIFIED",
+  "started_at": 1792947590,
+  "tls_verified": true,
+  "connack": false,
+  "suback": false,
+  "puback": false,
+  "loopback_received": false,
+  "master_delivery": "NOT_TESTED",
+  "error": "AUTH_FAILED",
+  "tls_version": "TLSv1.3",
+  "certificate_expires": "Feb 26 23:59:59 2027 GMT",
+  "finished_at": 1792947591,
+  "duration_s": 1.005,
+  "active_configuration_unchanged": true,
+  "physical_esp32_mqtt_test": false,
+  "permanent_worker_started": false
+}

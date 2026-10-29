@@ -1,0 +1,222 @@
+{
+  "scope": "PERMANENT_GATEWAY_WORKER_REAL_EMQX_MASTER",
+  "separate_mqtt_test_client": false,
+  "dashboard_browser_test": "PENDING_USER_CANNOT_SIGN_IN",
+  "commands": [
+    {
+      "command_id": "CMD-B4780D80DB42",
+      "command_type": "PING",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-26T20:58:43.242330",
+      "response_at": "2026-10-26T20:58:43.377826",
+      "elapsed_s": 2.451,
+      "result": {
+        "ok": true,
+        "message": "Permanent Gateway MQTT check"
+      },
+      "error": null
+    },
+    {
+      "command_id": "CMD-EA5C36B110D6",
+      "command_type": "GET_STATUS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-10-26T20:58:45.667122",
+      "response_at": "2026-10-26T20:58:46.191216",
+      "elapsed_s": 2.863,
+      "result": {
+        "device_id": "ESP32-10777D842178",
+        "device_name": "ESP32 LoRa Device",
+        "role": "MASTER",
+        "master_id": "ESP32-10777D842178",
+        "node_address": "1",
+        "hardware_mac": "78:21:84:7D:77:10",
+        "firmware_version": "1.1.0-software",
+        "configuration_revision": 11,
+        "heartbeat_seconds": 30,
+        "uptime_s": 468,
+        "free_heap": 72368,
+        "wifi_connected": true,
+        "wifi_rssi": -63,
+        "gateway_reachable": false,
+        "transport": "MQTT",
+        "telemetry_seconds": 10,
+        "simulated": false,
+        "operating_state": "ACTIVE",
+        "reset_reason": "POWERON",
+        "internet_status": "UNKNOWN",
+        "sensor_status": "READ_ERROR",
+        "sensors": [
+          {
+            "sensor_type": "DHT11",
+            "sensor_id": "ESP32-10777D842178-DHT11",
+            "valid": false,
+            "simulated": false,
+            "status": "READ_ERROR",
+            "sampled_uptime_ms": 467795,
+            "sampling_interval_seconds": 2,
+            "capture_method": "PULSE_POLLING",
+            "last_success_uptime_ms": 0,
+            "capture_status": "POLLING_READ_ERROR",
+            "capture_pulses": 0,
+            "data_idle_high": true
+          },
+          {
+            "sensor_type": "INA219",
+            "sensor_id": "ESP32-10777D842178-INA219",
+            "valid": true,
+            "simulated": false,
+            "status": "OK",
+            "sampled_uptime_ms": 467795,
+            "sampling_interval_seconds": 2,
+            "current_calibrated": false,
+            "shunt_resistance_configured": true,
+            "shunt_milliohms": 100
+          },
+          {
+            "sensor_type": "MQ135",
+            "sensor_id": "ESP32-10777D842178-MQ135",
+            "valid": true,
+            "simulated": false,
+            "status": "WARMING_UP_RAW_ONLY",
+            "sampled_uptime_ms": 467795,
+            "sampling_interval_seconds": 2,
+            "calibrated": false,
+            "warmup_remaining_seconds": 85932,
+            "voltage_divider_verification_required": true
+          }
+        ],
+        "last_sensor_sample_uptime_ms": 467795,
+        "last_transport_accept_uptime_ms": 0,
+        "last_gateway_receipt_uptime_ms": 0,
+        "sample_time_basis": "DEVICE_UPTIME_MS",
+        "enabled": true
+      },
+      "error": null
+    },
+    {
+      "command_id": "CMD-78D93BF6DC60",
+      "command_type": "STATUS",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 11.382,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-13A95FD8CD6C",
+      "command_type": "DIAGNOSTICS",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 11.348,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-0908C1FB6384",
+      "command_type": "GET_CAPABILITIES",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 11.336,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-E0B71126B3F7",
+      "command_type": "GET_SENSOR_STATUS",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 11.326,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-71E38380D0F2",
+      "command_type": "GET_MESH_STATUS",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 10.961,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-7055E1FE415F",
+      "command_type": "GET_NODE_STATUS",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 11.326,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-AE3AF4C3E296",
+      "command_type": "GET_ROUTE_INFO",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 11.387,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-1DBB6701FF42",
+      "command_type": "GET_TELEMETRY",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 11.359,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-1E9D3B6F5D80",
+      "command_type": "GET_CONFIG",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 10.955,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-18F788D55C23",
+      "command_type": "GET_CONFIGURATION",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 11.345,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    },
+    {
+      "command_id": "CMD-FBC1461413EA",
+      "command_type": "GET_NETWORK",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 11.381,
+      "result": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown"
+    }
+  ],
+  "master_id": "ESP32-10777D842178",
+  "profile_before_revision": 21
+}

@@ -1,0 +1,246 @@
+{
+  "devices": {
+    "COM8": {
+      "device_id": "ESP32-10777D842178",
+      "role": "MASTER",
+      "station_ip": "192.168.1.106",
+      "uptime_ms": 33586,
+      "local_ip": {
+        "enabled": true,
+        "credential_configured": true,
+        "interface": "WIFI",
+        "local_ip": "192.168.1.106",
+        "gateway_host": "192.168.1.104",
+        "gateway_port": 5001,
+        "routing_policy": "MASTER_ONLY",
+        "last_success_uptime_ms": 29327,
+        "last_error": 200,
+        "state": "CONNECTING",
+        "ethernet": "NOT_AVAILABLE",
+        "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+      }
+    },
+    "COM11": {
+      "device_id": "ESP32-CC9B23E2DEC4",
+      "role": "NODE",
+      "station_ip": "192.168.1.105",
+      "uptime_ms": 200167,
+      "local_ip": {
+        "enabled": true,
+        "credential_configured": false,
+        "interface": "WIFI",
+        "local_ip": "192.168.1.105",
+        "gateway_host": "",
+        "gateway_port": 5000,
+        "routing_policy": "MASTER_ONLY",
+        "last_success_uptime_ms": 199757,
+        "last_error": 202,
+        "state": "CONNECTING",
+        "ethernet": "NOT_AVAILABLE",
+        "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+      }
+    }
+  },
+  "settings": {
+    "COM8": {
+      "sensor_flags_unchanged": true,
+      "mqtt_profile_fingerprint_unchanged": true,
+      "mqtt_revision_unchanged": true,
+      "initial_password_change_pending": false
+    },
+    "COM11": {
+      "sensor_flags_unchanged": true,
+      "mqtt_profile_fingerprint_unchanged": true,
+      "mqtt_revision_unchanged": true,
+      "initial_password_change_pending": true
+    }
+  },
+  "samples": [
+    [
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "bus_voltage",
+        "latest_id": 9352,
+        "latest_time": "2026-10-25T17:19:38.102387"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "current",
+        "latest_id": 9354,
+        "latest_time": "2026-10-25T17:19:38.102387"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "humidity",
+        "latest_id": 9349,
+        "latest_time": "2026-10-25T17:19:18.202946"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "mq135_adc_raw",
+        "latest_id": 9358,
+        "latest_time": "2026-10-25T17:19:46.729467"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "mq135_pin_mv",
+        "latest_id": 9359,
+        "latest_time": "2026-10-25T17:19:46.729467"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "power",
+        "latest_id": 9355,
+        "latest_time": "2026-10-25T17:19:38.102387"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "shunt_voltage",
+        "latest_id": 9353,
+        "latest_time": "2026-10-25T17:19:38.102387"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "temperature",
+        "latest_id": 9348,
+        "latest_time": "2026-10-25T17:19:18.202946"
+      },
+      {
+        "node_id": "ESP32-CC9B23E2DEC4",
+        "parameter_id": "mq135_adc_raw",
+        "latest_id": 9356,
+        "latest_time": "2026-10-25T17:19:39.622567"
+      },
+      {
+        "node_id": "ESP32-CC9B23E2DEC4",
+        "parameter_id": "mq135_pin_mv",
+        "latest_id": 9357,
+        "latest_time": "2026-10-25T17:19:39.622567"
+      }
+    ],
+    [
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "bus_voltage",
+        "latest_id": 9352,
+        "latest_time": "2026-10-25T17:19:38.102387"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "current",
+        "latest_id": 9354,
+        "latest_time": "2026-10-25T17:19:38.102387"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "humidity",
+        "latest_id": 9349,
+        "latest_time": "2026-10-25T17:19:18.202946"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "mq135_adc_raw",
+        "latest_id": 9358,
+        "latest_time": "2026-10-25T17:19:46.729467"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "mq135_pin_mv",
+        "latest_id": 9359,
+        "latest_time": "2026-10-25T17:19:46.729467"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "power",
+        "latest_id": 9355,
+        "latest_time": "2026-10-25T17:19:38.102387"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "shunt_voltage",
+        "latest_id": 9353,
+        "latest_time": "2026-10-25T17:19:38.102387"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "temperature",
+        "latest_id": 9348,
+        "latest_time": "2026-10-25T17:19:18.202946"
+      },
+      {
+        "node_id": "ESP32-CC9B23E2DEC4",
+        "parameter_id": "mq135_adc_raw",
+        "latest_id": 9356,
+        "latest_time": "2026-10-25T17:19:39.622567"
+      },
+      {
+        "node_id": "ESP32-CC9B23E2DEC4",
+        "parameter_id": "mq135_pin_mv",
+        "latest_id": 9357,
+        "latest_time": "2026-10-25T17:19:39.622567"
+      }
+    ],
+    [
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "bus_voltage",
+        "latest_id": 9362,
+        "latest_time": "2026-10-25T17:20:17.734487"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "current",
+        "latest_id": 9364,
+        "latest_time": "2026-10-25T17:20:17.734487"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "humidity",
+        "latest_id": 9361,
+        "latest_time": "2026-10-25T17:20:16.910532"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "mq135_adc_raw",
+        "latest_id": 9358,
+        "latest_time": "2026-10-25T17:19:46.729467"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "mq135_pin_mv",
+        "latest_id": 9359,
+        "latest_time": "2026-10-25T17:19:46.729467"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "power",
+        "latest_id": 9365,
+        "latest_time": "2026-10-25T17:20:17.734487"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "shunt_voltage",
+        "latest_id": 9363,
+        "latest_time": "2026-10-25T17:20:17.734487"
+      },
+      {
+        "node_id": "ESP32-10777D842178",
+        "parameter_id": "temperature",
+        "latest_id": 9360,
+        "latest_time": "2026-10-25T17:20:16.910532"
+      },
+      {
+        "node_id": "ESP32-CC9B23E2DEC4",
+        "parameter_id": "mq135_adc_raw",
+        "latest_id": 9356,
+        "latest_time": "2026-10-25T17:19:39.622567"
+      },
+      {
+        "node_id": "ESP32-CC9B23E2DEC4",
+        "parameter_id": "mq135_pin_mv",
+        "latest_id": 9357,
+        "latest_time": "2026-10-25T17:19:39.622567"
+      }
+    ]
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "port": "COM10",
+  "role_requested": "SLAVE",
+  "boot_confirmation_received": true,
+  "chip": "ESP32-D0WD-V3 revision3.0",
+  "mac": "c4:de:e2:23:9b:cc",
+  "flash_id": "FF/FFFF",
+  "capacity": "UNKNOWN",
+  "upload_status": "BLOCKED_FLASH_NOT_RESPONDING",
+  "flash_written": false,
+  "flash_erased": false,
+  "backup_created": false,
+  "master_modified": false,
+  "next_action": "Release BOOT. Slave CPU is reachable but flash remains unreadable. With USB-only wiring and known-good cable, inspect/repair or replace this board before firmware upload; do not force guessed flash settings.",
+  "manual_boot_recheck": {
+    "owner_confirmation": "BOOT held; RESET pressed and released",
+    "usb_port_temporarily_disappeared": true,
+    "subsequent_connection": "CPU identified successfully with default reset",
+    "flash_id": "FF/FFFF",
+    "capacity": "UNKNOWN",
+    "flash_written": false
+  },
+  "latest_port": "COM8",
+  "com8_recheck": {
+    "same_slave_mac": "c4:de:e2:23:9b:cc",
+    "flash_id": "FF/FFFF",
+    "capacity": "UNKNOWN",
+    "flash_written": false
+  }
+}

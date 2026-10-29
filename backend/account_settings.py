@@ -9,9 +9,10 @@ from pathlib import Path
 from flask import Blueprint, request, session, jsonify, render_template, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 import account_sessions
+from runtime_paths import data_dir
 
 bp = Blueprint("accounts", __name__)
-DB = Path(__file__).resolve().parent.parent / "data" / "accounts.sqlite3"
+DB = data_dir() / "accounts.sqlite3"
 
 def connect():
     DB.parent.mkdir(parents=True, exist_ok=True)

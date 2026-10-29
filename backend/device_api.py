@@ -280,7 +280,9 @@ def ingest(master_id, frame, transport='wifi'):
                     else:
                         if body.get("status") not in {"SUCCESS", "FAILED", "UNSUPPORTED"}:
                             raise ValueError("Invalid response status")
-                        command_manager.process_command_response(cid, source, status=body["status"], data=redact(body.get("data")))
+                        result_data=redact(body.get('data'))
+                        if isinstance(result_data,dict):result_data['gateway_verified_transport']={'mqtt':'MQTT','local-ip':'IP'}.get(transport,'UNVERIFIED')
+                        command_manager.process_command_response(cid, source, status=body["status"], data=result_data)
                     if kind=="RESPONSE" and body.get("status")=="SUCCESS" and isinstance(body.get("data"),dict):
                         result=body['data']
                         if type(result.get('configuration_revision')) is int:
@@ -408,7 +410,7 @@ def commands():
         return error
     try:
         if set(body)-{'node_id','command_type','payload','timeout_seconds','command_id','priority','max_retries','ack_timeout_seconds','response_timeout_seconds','expiry_seconds'}:raise ValueError('UNSUPPORTED_REQUEST_FIELD')
-        timeout=body.get('timeout_seconds',60)
+        timeout=body.get('timeout_seconds',120 if body.get('command_type') in (*control.OPERATION_COMMANDS,'RESTART','REBOOT','WIFI_RECONNECT') else 60)
         if type(timeout) is not int or not 1<=timeout<=300:raise ValueError('TIMEOUT_MUST_BE_INTEGER_1_TO_300')
         identity_db=connect()
         try:body['node_id']=device_identity.resolve(body.get('node_id'),identity_db)
@@ -437,6 +439,8 @@ def install(app, emit):
     global _emit
     _emit = emit
     migrate()
+    import transport_switch
+    transport_switch.install(bp)
     app.register_blueprint(bp)
 
 @bp.route('/api/v1/devices/<identity>/config', methods=['GET', 'POST'])
@@ -475,3 +479,14 @@ def diagnostics(identity):
     try:rows=db.execute("SELECT * FROM logs WHERE node_id=? AND source IN ('EVENT','ALARM','DIAGNOSTIC') ORDER BY id DESC LIMIT 100",(identity,)).fetchall()
     finally:db.close()
     return jsonify(entries=[dict(row) for row in rows])
+
+@bp.post('/api/v1/devices/<identity>/commands/<command_id>/cancel-queued')
+@require_admin
+def cancel_queued_device_command(identity,command_id):
+    try:
+        current=command_manager.get_command(safe_id(command_id))
+        if not current or current['node_id']!=safe_id(identity):return jsonify(error='COMMAND_NOT_FOUND'),404
+        command=command_manager.cancel_queued_command(command_id)
+        _emit('command_update',command)
+        return jsonify(command=control.state(command),device_execution_cancelled=False)
+    except ValueError as error:return jsonify(error=str(error)),409

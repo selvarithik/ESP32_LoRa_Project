@@ -1,0 +1,45 @@
+{
+  "scope": "Physical Master COM8 verified TLS candidate test only; no permanent activation",
+  "device_id": "ESP32-10777D842178",
+  "username": "ESP32_MASTER_01",
+  "configured_client_id": "CL_ID_ESP32GATEWAY",
+  "actual_client_id_mode": "Firmware appends :test:<transaction prefix>",
+  "samples": [
+    {
+      "running": true,
+      "connected": false,
+      "subscribed": false,
+      "puback": false,
+      "peer_probe": false,
+      "tls_error": 0,
+      "failure_code": 0,
+      "transaction_state": "TESTING"
+    },
+    {
+      "running": true,
+      "connected": true,
+      "subscribed": true,
+      "puback": true,
+      "peer_probe": false,
+      "tls_error": 0,
+      "failure_code": 0,
+      "transaction_state": "TESTING"
+    }
+  ],
+  "usb_clock_set": true,
+  "physical_candidate": {
+    "running": true,
+    "connected": true,
+    "subscribed": true,
+    "puback": true,
+    "peer_probe": false,
+    "tls_error": 0,
+    "failure_code": 0,
+    "transaction_state": "TESTING"
+  },
+  "active_profile_preserved": true,
+  "pending_cleared": true,
+  "final_revision": 57,
+  "local_ip_configuration_preserved": true,
+  "sensor_flags_preserved": true
+}

@@ -1,0 +1,30 @@
+{
+  "scope": "Physical COM8 Master through EMQX into actual Gateway Service.handle and mqtt_receipts, then reply to Master",
+  "permanent_worker_started": false,
+  "tls_verification_required": true,
+  "peer_probe": true,
+  "gateway_receipts": [
+    "ESP32-10777D842178:a2bcc2c7"
+  ],
+  "clock_set": true,
+  "gateway_connack": true,
+  "gateway_suback_qos1": true,
+  "master_candidate": {
+    "running": true,
+    "connected": true,
+    "subscribed": true,
+    "puback": true,
+    "peer_probe": true,
+    "tls_error": 0,
+    "failure_code": 0
+  },
+  "master_transaction_state": "READY_TO_CONFIRM",
+  "gateway_reply_puback": true,
+  "database_receipts_persisted": true,
+  "active_master_profile_preserved": true,
+  "pending_cleared": true,
+  "master_revision": 63,
+  "sensor_flags_preserved": true,
+  "active_gateway_profile_preserved": true,
+  "telemetry_delivery_tested": false
+}

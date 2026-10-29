@@ -9,7 +9,7 @@ from radio_model import SimulatedRadio
 class SimulatedNode:
  def __init__(self,identity,master_id,storage):
   self.identity=identity;self.master_id=master_id;self.path=Path(storage);self.path.parent.mkdir(parents=True,exist_ok=True)
-  self.config={'device_name':identity,'telemetry_seconds':10,'heartbeat_seconds':30,'enabled':True,'sleep_enabled':False,'sleep_start_minute':0,'sleep_duration_seconds':3600,'sleep_days_mask':127,'utc_offset_minutes':330,'wifi_dhcp':True,'wifi_ip':'','wifi_subnet':'255.255.255.0','wifi_gateway':'','wifi_dns':'','wifi_dns2':''}
+  self.config={'device_name':identity,'telemetry_seconds':10,'heartbeat_seconds':30,'enabled':True,'sleep_mode':'DEEP','lora_sleep_mode':'KEEP','sleep_mode':'DEEP','lora_sleep_mode':'KEEP','sleep_enabled':False,'sleep_start_minute':0,'sleep_duration_seconds':3600,'sleep_days_mask':127,'utc_offset_minutes':330,'wifi_dhcp':True,'wifi_ip':'','wifi_subnet':'255.255.255.0','wifi_gateway':'','wifi_dns':'','wifi_dns2':''}
   self.revision=1;self.executions=0;self.cache={};self.sensor_valid=True;self.drop_ack=False;self.drop_response=False
   if self.path.exists():
    state=json.loads(self.path.read_text(encoding='utf-8'));self.config=state['config'];self.revision=state['revision'];self.executions=state['executions'];self.cache=state['cache']
@@ -33,8 +33,11 @@ class SimulatedNode:
    try:
     control.validate_command(kind,args)
     kind=control.ALIASES.get(kind,kind)
+    if 'transport_action' in args:raise ValueError('SIMULATOR_TRANSPORT_TRANSACTION_UNSUPPORTED_USE_NATIVE_TEST')
+    if 'transport_action' in args:raise ValueError('SIMULATOR_TRANSPORT_TRANSACTION_UNSUPPORTED_USE_NATIVE_TEST')
     if 'expected_revision' in args and args['expected_revision']!=self.revision:raise ValueError('REVISION_CONFLICT')
     self.executions+=1
+    if kind in control.OPERATION_COMMANDS:raise ValueError('SIMULATOR_OPERATION_REQUIRES_NATIVE_RUNTIME_TEST')
     if kind in ('CONFIG_UPDATE','SET_SLEEP_SCHEDULE','SET_DEVICE_NAME'):
      self.config.update({k:v for k,v in args.items() if k!='expected_revision'});self.revision+=1;result={'saved':True,'configuration_revision':self.revision,'restart_required':any(k.startswith('wifi_') for k in args)}
     elif kind in ('SET_TELEMETRY_INTERVAL','SET_HEARTBEAT_INTERVAL'):
@@ -42,7 +45,7 @@ class SimulatedNode:
     elif kind in ('PING',):result={'ok':True}
     elif kind in ('STATUS','GET_STATUS'):result=self.status()
     elif kind=='GET_CONFIG':result=dict(self.config,configuration_revision=self.revision,config_scope='RUNTIME')
-    elif kind=='GET_CAPABILITIES':result={'commands':sorted(control.COMMANDS),'lora_driver':'SIMULATED_ONLY','remote_cancellation':False}
+    elif kind=='GET_CAPABILITIES':result={'commands':list(control.PRIMARY_COMMANDS),'lora_driver':'SIMULATED_ONLY','remote_cancellation':False}
     elif kind=='GET_SENSOR_STATUS':result={'status':'SIMULATED','valid':self.sensor_valid}
     elif kind in ('GET_MESH_STATUS','GET_NODE_STATUS','GET_ROUTE_INFO'):result={'physical_routes_available':False,'state':'SIMULATED_RADIO'}
     elif kind=='GET_TELEMETRY':result=self.telemetry()

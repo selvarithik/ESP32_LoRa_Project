@@ -1,0 +1,158 @@
+{
+  "device_id": "ESP32-10777D842178",
+  "role": "MASTER",
+  "station_ip": "192.168.1.106",
+  "ap_ip": "192.168.100.1",
+  "uptime_ms": 38887,
+  "free_heap": 126700,
+  "minimum_free_heap": 107780,
+  "loop_stack_free_min_bytes": 6716,
+  "network_stack_free_min_bytes": 4624,
+  "password_change_required": false,
+  "dht_enabled": true,
+  "ina219_enabled": true,
+  "mq135_enabled": true,
+  "radio": {
+    "state": "DISABLED",
+    "error": "DISABLED",
+    "module": "E220-900T22D",
+    "hardware_link_verified": false,
+    "public_settings_read": false,
+    "register_writes": 0,
+    "aux_ready": false,
+    "tx_pending": false,
+    "tx_uart_fragments": 0,
+    "rx_messages": 0,
+    "rejected": 0,
+    "auth_failures": 0,
+    "timeouts": 0,
+    "reassembly_expired": 0,
+    "reassembly_duplicates": 0,
+    "completed_uart_transfers": 0,
+    "rssi_dbm": null,
+    "snr_db": null
+  },
+  "sensors": [
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": true,
+      "simulated": false,
+      "status": "OK",
+      "sampled_uptime_ms": 36993,
+      "sampling_interval_seconds": 2,
+      "parameters": {
+        "temperature": 28.5,
+        "humidity": 85
+      },
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "last_success_uptime_ms": 36993
+    },
+    {
+      "sensor_type": "INA219",
+      "sensor_id": "ESP32-10777D842178-INA219",
+      "valid": true,
+      "simulated": false,
+      "status": "OK",
+      "sampled_uptime_ms": 36993,
+      "sampling_interval_seconds": 2,
+      "parameters": {
+        "bus_voltage": 3.204,
+        "shunt_voltage": 1.66,
+        "current": 0.0166,
+        "power": 0.053186
+      },
+      "units": {
+        "bus_voltage": "V",
+        "shunt_voltage": "mV",
+        "current": "A",
+        "power": "W"
+      },
+      "current_calibrated": false,
+      "shunt_resistance_configured": true,
+      "shunt_milliohms": 100
+    },
+    {
+      "sensor_type": "MQ135",
+      "sensor_id": "ESP32-10777D842178-MQ135",
+      "valid": true,
+      "simulated": false,
+      "status": "WARMING_UP_RAW_ONLY",
+      "sampled_uptime_ms": 36993,
+      "sampling_interval_seconds": 2,
+      "parameters": {
+        "mq135_adc_raw": 626,
+        "mq135_pin_mv": 662
+      },
+      "units": {
+        "mq135_adc_raw": "count",
+        "mq135_pin_mv": "mV"
+      },
+      "calibrated": false,
+      "warmup_remaining_seconds": 86362,
+      "voltage_divider_verification_required": true
+    }
+  ],
+  "indicators": {
+    "server_connected": false,
+    "basis": "AUTHENTICATED_GATEWAY_RECEIPT",
+    "receipt_timeout_seconds": 15,
+    "led_enabled": true,
+    "led_gpio": 2,
+    "led_on_requested": false,
+    "led_active_high": true,
+    "display_acknowledged": false,
+    "display_ack_failures": 0,
+    "display_idle_clk_high": false,
+    "display_idle_dio_high": false,
+    "connection_count_since_boot": 0,
+    "connected_duration_seconds": 0,
+    "display_enabled": false,
+    "display_state": "DISABLED_OR_NODE",
+    "display_clk_gpio": 18,
+    "display_dio_gpio": 19,
+    "display_text": "",
+    "physical_visual_verified": false,
+    "gateway_ack_age_seconds": null
+  },
+  "mqtt_preservation": {
+    "revision": true,
+    "shared_revision": true,
+    "active_fingerprint": true
+  },
+  "mqtt_runtime": "unknown",
+  "local_ip": {
+    "enabled": true,
+    "credential_configured": true,
+    "interface": "WIFI",
+    "local_ip": "192.168.1.106",
+    "gateway_host": "192.168.1.108",
+    "gateway_port": 5001,
+    "routing_policy": "MASTER_ONLY",
+    "last_success_uptime_ms": 0,
+    "last_error": -1,
+    "state": "CONNECTING",
+    "ethernet": "NOT_AVAILABLE",
+    "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+  },
+  "serial_malformed_responses": 0,
+  "http_checks": {
+    "/login": 200,
+    "/api/auth/session": 200,
+    "/api/status": 401
+  },
+  "upload_status": "SUCCESS_HASH_VERIFIED",
+  "application_offset": 65536,
+  "application_bytes": 1295328,
+  "full_chip_erased": false,
+  "nvs_partition_written": false,
+  "filesystem_written": false,
+  "partition_table_written": false,
+  "slave_accessed": false,
+  "live_broker_tested": false,
+  "peripheral_wiring_confirmation": "OWNER_PREVIOUSLY_REPORTED_USB_ONLY; sensor values are firmware-reported, present wiring not independently verified",
+  "lora_hardware_test": "PENDING_MODULE_WIRING_AND_SETTINGS_INSPECTION"
+}

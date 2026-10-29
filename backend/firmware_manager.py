@@ -6,10 +6,10 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 
-from database import BASE_DIR, get_connection
+from database import BASE_DIR, DATA_DIR, get_connection
 
 
-FIRMWARE_DIR = BASE_DIR / "data" / "firmware"
+FIRMWARE_DIR = DATA_DIR / "firmware"
 RELEASES_DIR = FIRMWARE_DIR / "releases"
 STAGING_DIR = FIRMWARE_DIR / "staging"
 

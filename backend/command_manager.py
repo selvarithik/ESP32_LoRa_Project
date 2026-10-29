@@ -349,13 +349,15 @@ def create_command(
     command_id: Optional[str] = None,
     ack_timeout_seconds: int = 5,
     response_timeout_seconds: Optional[int] = None,
-    expiry_seconds: int = 300
+    expiry_seconds: int = 300,
+    transport_authorized: bool = False
 ) -> Dict[str, Any]:
     """Create a new command in the QUEUED state."""
     if any(type(v) is not int for v in (priority,max_retries,timeout_seconds)):raise ValueError("INTEGER_COMMAND_POLICY_REQUIRED")
     node_id = validate_node_id(node_id)
     command_type = validate_command_type(command_type)
     payload_dict = validate_payload(payload)
+    if "transport_action" in payload_dict and not transport_authorized:raise ValueError("TRANSPORT_PASSWORD_CONFIRMATION_REQUIRED")
     priority = validate_priority(priority)
     max_retries = validate_retries(max_retries)
     timeout_seconds = validate_timeout(timeout_seconds)
@@ -1152,10 +1154,11 @@ def claim_device_dispatch(command_id):
             ensure_delivery_schema(db)
             db.execute('INSERT OR IGNORE INTO command_delivery(command_id,expires_at,response_timeout_s) VALUES(?,?,?)',(command_id,command['timeout_at'],min(300,command['timeout_seconds'])))
             policy=dict(db.execute('SELECT * FROM command_delivery WHERE command_id=?',(command_id,)).fetchone())
-            if stamp>=min(policy['expires_at'],command.get('timeout_at') or policy['expires_at']):reason='COMMAND_EXPIRED; execution outcome unknown'
+            if stamp>=policy['expires_at']:reason='COMMAND_EXPIRED; execution outcome unknown'
             elif command.get('ack_at'):
                 if policy['response_deadline'] and stamp>=policy['response_deadline']:reason='RESPONSE_TIMEOUT; execution outcome unknown'
                 else:return False
+            elif command.get('timeout_at') and stamp>=command['timeout_at']:reason='COMMAND_EXPIRED; execution outcome unknown'
             elif policy['last_attempt_at'] and (now-datetime.fromisoformat(policy['last_attempt_at'])).total_seconds()<policy['ack_timeout_s']:return False
             elif policy['attempts']>=1+command['max_retries']:reason='ACK_TIMEOUT; device acceptance unknown'
             if not reason:
@@ -1177,3 +1180,11 @@ def _serialized(fn):
 # Keep response/timeout/retry decisions ordered within this single Gateway worker process.
 for _name in ('create_command','update_command_state','process_command_ack','process_command_response','prepare_command_retry','cancel_command','handle_command_timeout'):
     globals()[_name]=_serialized(globals()[_name])
+
+def cancel_queued_command(command_id):
+    """Only never-dispatched work is cancellable; do not claim device cancellation."""
+    with _DEVICE_LOCK:
+        command=get_command(command_id)
+        if not command:raise ValueError('COMMAND_NOT_FOUND')
+        if command['state']!='QUEUED' or command.get('sent_at'):raise ValueError('ALREADY_DISPATCHED_CANNOT_CANCEL_EXECUTION')
+        return cancel_command(command_id,'Cancelled before dispatch')

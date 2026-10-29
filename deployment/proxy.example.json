@@ -1,0 +1,1 @@
+{"mode":"proxy","host":"127.0.0.1","port":5000,"threads":16,"allowed_hosts":["gateway.example.com"],"trusted_proxies":["127.0.0.1/32"],"public_url":"https://gateway.example.com","backup_hours":24,"backup_keep":7}

@@ -1,0 +1,79 @@
+{
+  "usb_status_probe": "JSON response interrupted; runtime heap observation unavailable",
+  "samples": [
+    {
+      "command_id": "CMD-54E0C12EE769",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 10.58,
+      "recent_telemetry": [
+        [
+          "mq135_pin_mv",
+          "2026-10-26T21:12:23.500004"
+        ],
+        [
+          "mq135_adc_raw",
+          "2026-10-26T21:12:23.500004"
+        ],
+        [
+          "power",
+          "2026-10-26T21:12:21.190164"
+        ],
+        [
+          "current",
+          "2026-10-26T21:12:21.190164"
+        ],
+        [
+          "shunt_voltage",
+          "2026-10-26T21:12:21.190164"
+        ],
+        [
+          "bus_voltage",
+          "2026-10-26T21:12:21.190164"
+        ]
+      ],
+      "transport": "MQTT",
+      "gateway_reachable": true,
+      "uptime_s": 40
+    },
+    {
+      "command_id": "CMD-B5F49CBD067A",
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "ack_at": null,
+      "response_at": null,
+      "elapsed_s": 10.56,
+      "recent_telemetry": [
+        [
+          "mq135_pin_mv",
+          "2026-10-26T21:12:23.500004"
+        ],
+        [
+          "mq135_adc_raw",
+          "2026-10-26T21:12:23.500004"
+        ],
+        [
+          "power",
+          "2026-10-26T21:12:21.190164"
+        ],
+        [
+          "current",
+          "2026-10-26T21:12:21.190164"
+        ],
+        [
+          "shunt_voltage",
+          "2026-10-26T21:12:21.190164"
+        ],
+        [
+          "bus_voltage",
+          "2026-10-26T21:12:21.190164"
+        ]
+      ],
+      "transport": "MQTT",
+      "gateway_reachable": true,
+      "uptime_s": 40
+    }
+  ]
+}

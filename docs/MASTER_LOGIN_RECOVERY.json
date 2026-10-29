@@ -1,0 +1,29 @@
+{
+  "port": "COM12",
+  "device_id": "ESP32-10777D842178",
+  "station_ip": "192.168.1.104",
+  "recovery_confirmed": true,
+  "password_change_required": true,
+  "unchanged_status_fields": {
+    "device_id": true,
+    "role": true,
+    "station_ip": true,
+    "dht_enabled": true,
+    "dht_pin": true,
+    "ina219_enabled": true,
+    "mq135_enabled": true,
+    "mqtt_revision": true,
+    "mqtt_shared_revision": true,
+    "mqtt_secret_revision": true,
+    "mqtt_active_fingerprint": true,
+    "mqtt_pending_configured": true,
+    "local_enabled": true,
+    "local_credential_configured": true,
+    "local_gateway_host": true,
+    "local_gateway_port": true,
+    "local_routing_policy": true
+  },
+  "only_persistence_target": "device/login_v1",
+  "com8_accessed": false,
+  "real_http_login_verified": true
+}

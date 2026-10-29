@@ -1,0 +1,163 @@
+{
+  "protected_files_unchanged": {
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\data\\accounts.sqlite3": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\data\\mqtt-secrets.bin": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\data\\session.key": true
+  },
+  "excluded_chat_ota_files_unchanged": {
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\backend\\chat_manager.py": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\backend\\firmware_manager.py": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\backend\\ota_manager.py": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\static\\css\\command-center-chat.css": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\static\\js\\chat.js": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\static\\js\\firmware.js": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\templates\\chat.html": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\dashboard\\templates\\firmware.html": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\docs\\COMMAND_CHAT_IMPLEMENTATION.md": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\tests\\command_chat.cjs": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\tests\\artifacts\\chat-1440.png": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\tests\\artifacts\\chat-375.png": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\tests\\artifacts\\chat-768.png": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\static\\css\\pages\\chat.css": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\static\\js\\pages\\chat.js": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\static\\js\\pages\\firmware.js": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\templates\\pages\\chat.html": true,
+    "D:\\esp32 selva\\ESP32_LoRa_Project\\_rejected_ui_rebuild\\templates\\pages\\firmware.html": true
+  },
+  "mqtt_document_unchanged": true,
+  "node_count": 1,
+  "node_count_before": 1,
+  "contract_identical": true,
+  "contract_sha256": "4a6ac838e0fb437606e791d3bd21941cdfe64d560763f0f182e5b105fb5fedde",
+  "slave_upload": {
+    "performed": false,
+    "port": "COM8",
+    "read_only_attempts": [
+      "no_reset: no serial data received",
+      "default_reset: wrong boot mode 0x17"
+    ],
+    "protected_backup_created": false
+  },
+  "latest_delivery_native_test": "PASS",
+  "hardware_delivery_gate_verification": "PENDING",
+  "builds": {
+    "esp32_master": {
+      "environment": "esp32_master",
+      "flash_capacity": 4194304,
+      "partitions": [
+        {
+          "name": "nvs",
+          "type": 1,
+          "subtype": 2,
+          "offset": 36864,
+          "size": 20480
+        },
+        {
+          "name": "otadata",
+          "type": 1,
+          "subtype": 0,
+          "offset": 57344,
+          "size": 8192
+        },
+        {
+          "name": "app0",
+          "type": 0,
+          "subtype": 16,
+          "offset": 65536,
+          "size": 1310720
+        },
+        {
+          "name": "app1",
+          "type": 0,
+          "subtype": 17,
+          "offset": 1376256,
+          "size": 1310720
+        },
+        {
+          "name": "spiffs",
+          "type": 1,
+          "subtype": 130,
+          "offset": 2686976,
+          "size": 1441792
+        },
+        {
+          "name": "coredump",
+          "type": 1,
+          "subtype": 3,
+          "offset": 4128768,
+          "size": 65536
+        }
+      ],
+      "application_capacity": 1310720,
+      "program_bytes": 1289245,
+      "image_bytes": 1295952,
+      "image_headroom": 14768,
+      "program_headroom": 21475,
+      "static_ram_bytes": 74588,
+      "second_ota_slot": true,
+      "filesystem_bytes": 1441792,
+      "physical_upload_performed": false,
+      "passed": true,
+      "image_sha256": "e8138af3cd2cf4b2e10ae1ebd03296eff27ed2fa272b76c9db0e10422dea8be7"
+    },
+    "esp32_slave": {
+      "environment": "esp32_slave",
+      "flash_capacity": 4194304,
+      "partitions": [
+        {
+          "name": "nvs",
+          "type": 1,
+          "subtype": 2,
+          "offset": 36864,
+          "size": 20480
+        },
+        {
+          "name": "otadata",
+          "type": 1,
+          "subtype": 0,
+          "offset": 57344,
+          "size": 8192
+        },
+        {
+          "name": "app0",
+          "type": 0,
+          "subtype": 16,
+          "offset": 65536,
+          "size": 1310720
+        },
+        {
+          "name": "app1",
+          "type": 0,
+          "subtype": 17,
+          "offset": 1376256,
+          "size": 1310720
+        },
+        {
+          "name": "spiffs",
+          "type": 1,
+          "subtype": 130,
+          "offset": 2686976,
+          "size": 1441792
+        },
+        {
+          "name": "coredump",
+          "type": 1,
+          "subtype": 3,
+          "offset": 4128768,
+          "size": 65536
+        }
+      ],
+      "application_capacity": 1310720,
+      "program_bytes": 1284849,
+      "image_bytes": 1291552,
+      "image_headroom": 19168,
+      "program_headroom": 25871,
+      "static_ram_bytes": 74540,
+      "second_ota_slot": true,
+      "filesystem_bytes": 1441792,
+      "physical_upload_performed": false,
+      "passed": true,
+      "image_sha256": "bbe1472de0ff75b59d97331a8306a6b4378cd7a24f2628eb289244f7b269b915"
+    }
+  }
+}

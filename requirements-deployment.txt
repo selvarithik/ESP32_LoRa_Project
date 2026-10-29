@@ -1,0 +1,3 @@
+-r requirements-part1.txt
+-r requirements-mqtt.txt
+waitress==3.0.2

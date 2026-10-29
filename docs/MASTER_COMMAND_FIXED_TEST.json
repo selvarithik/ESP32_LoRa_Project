@@ -1,0 +1,111 @@
+{
+  "scope": "BOUNDED_READ_ONLY_MASTER_COMMAND_TEST",
+  "simulated": false,
+  "settings_changed": false,
+  "commands": [
+    {
+      "command_id": "CMD-E420302D34CD",
+      "command_type": "PING",
+      "received": [
+        {
+          "type": "ACK",
+          "source": "ESP32-10777D842178",
+          "correlation_id": "CMD-E420302D34CD"
+        },
+        {
+          "type": "RESPONSE",
+          "source": "ESP32-10777D842178",
+          "correlation_id": "CMD-E420302D34CD"
+        }
+      ],
+      "broker_puback": true,
+      "state": "COMPLETED",
+      "ack_at": "2026-10-26T20:51:06.330307",
+      "response_at": "2026-10-26T20:51:06.735415",
+      "response": null,
+      "response_data": null,
+      "error": null,
+      "persisted_result": {
+        "completed_at": "2026-10-26T20:51:06.743819",
+        "result": {
+          "ok": true
+        },
+        "ack_status": "ACCEPTED"
+      }
+    },
+    {
+      "command_id": "CMD-21728F2ACA94",
+      "command_type": "GET_SENSOR_STATUS",
+      "received": [
+        {
+          "type": "ACK",
+          "source": "ESP32-10777D842178",
+          "correlation_id": "CMD-21728F2ACA94"
+        },
+        {
+          "type": "RESPONSE",
+          "source": "ESP32-10777D842178",
+          "correlation_id": "CMD-21728F2ACA94"
+        }
+      ],
+      "broker_puback": true,
+      "state": "COMPLETED",
+      "ack_at": "2026-10-26T20:51:07.858600",
+      "response_at": "2026-10-26T20:51:08.204686",
+      "response": null,
+      "response_data": null,
+      "error": null,
+      "persisted_result": {
+        "completed_at": "2026-10-26T20:51:08.213782",
+        "result": [
+          {
+            "sensor_type": "DHT11",
+            "sensor_id": "ESP32-10777D842178-DHT11",
+            "valid": false,
+            "simulated": false,
+            "status": "READ_ERROR",
+            "sampled_uptime_ms": 10730,
+            "sampling_interval_seconds": 2,
+            "capture_method": "RMT",
+            "last_success_uptime_ms": 0,
+            "capture_status": "NO_RESPONSE",
+            "capture_pulses": 0,
+            "data_idle_high": true
+          },
+          {
+            "sensor_type": "INA219",
+            "sensor_id": "ESP32-10777D842178-INA219",
+            "valid": true,
+            "simulated": false,
+            "status": "OK",
+            "sampled_uptime_ms": 10730,
+            "sampling_interval_seconds": 2,
+            "current_calibrated": false,
+            "shunt_resistance_configured": true,
+            "shunt_milliohms": 100
+          },
+          {
+            "sensor_type": "MQ135",
+            "sensor_id": "ESP32-10777D842178-MQ135",
+            "valid": true,
+            "simulated": false,
+            "status": "WARMING_UP_RAW_ONLY",
+            "sampled_uptime_ms": 10730,
+            "sampling_interval_seconds": 2,
+            "calibrated": false,
+            "warmup_remaining_seconds": 86389,
+            "voltage_divider_verification_required": true
+          }
+        ],
+        "ack_status": "ACCEPTED"
+      }
+    }
+  ],
+  "usb_master_verified": true,
+  "connack": 0,
+  "suback_qos": [
+    1
+  ],
+  "tls_verified": true,
+  "active_profile_and_revision_unchanged": true
+}

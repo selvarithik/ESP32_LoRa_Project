@@ -1,0 +1,88 @@
+{
+  "port": "COM8",
+  "device_id": "ESP32-10777D842178",
+  "role": "MASTER",
+  "application": "esp32_master",
+  "upload_hash_verified": true,
+  "settings_backup_verified": true,
+  "changed_config_fields": [
+    "configuration_revision",
+    "master_id",
+    "role"
+  ],
+  "wifi_and_sensor_settings_unchanged": true,
+  "mqtt_blob_unchanged": true,
+  "partition_layout_unchanged": true,
+  "gateway_telemetry": [
+    {
+      "parameter_id": "bus_voltage",
+      "timestamp": "2026-10-25T14:27:06.830930",
+      "value": 3.248,
+      "status": "NORMAL",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "current",
+      "timestamp": "2026-10-25T14:27:06.830930",
+      "value": 0.0037,
+      "status": "NORMAL",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "humidity",
+      "timestamp": "2026-10-25T14:27:06.110083",
+      "value": 71.0,
+      "status": "NORMAL",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "mq135_adc_raw",
+      "timestamp": "2026-10-25T14:27:07.634953",
+      "value": 463.0,
+      "status": "NORMAL",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "mq135_pin_mv",
+      "timestamp": "2026-10-25T14:27:07.634953",
+      "value": 528.0,
+      "status": "NORMAL",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "power",
+      "timestamp": "2026-10-25T14:27:06.830930",
+      "value": 0.012018,
+      "status": "NORMAL",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "shunt_voltage",
+      "timestamp": "2026-10-25T14:27:06.830930",
+      "value": 0.37,
+      "status": "NORMAL",
+      "source": "local-ip"
+    },
+    {
+      "parameter_id": "temperature",
+      "timestamp": "2026-10-25T14:27:06.110083",
+      "value": 28.5,
+      "status": "NORMAL",
+      "source": "local-ip"
+    }
+  ],
+  "gateway_node": {
+    "node_id": "ESP32-10777D842178",
+    "device_role": "MASTER",
+    "master_id": "ESP32-10777D842178",
+    "status": "online",
+    "last_seen": "2026-10-25T14:27:08.181103"
+  },
+  "dashboard_verified": "ONLINE; DHT11, INA219 and MQ135 values visible in actual browser",
+  "station_ip": "192.168.1.104",
+  "gateway_host": "192.168.1.105",
+  "gateway_port": 5001,
+  "slave_end_to_end_test": "PENDING_OTHER_BOARD_NOT_CONNECTED",
+  "mq135": "RAW_UNCALIBRATED",
+  "freshest_timestamp": "2026-10-25T14:27:07.634953"
+}

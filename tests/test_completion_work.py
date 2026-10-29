@@ -9,7 +9,8 @@ from test_mqtt_contract import profile
 class CompletionWorkTests(unittest.TestCase):
  def setUp(self):self.client=seed()
  def test_remote_connectivity_settings_require_revision_and_reject_credentials(self):
-  for fields in ({'role':'NODE'},{'wifi_ssid':'Bench'},{'local_ip_enabled':True}):
+  with self.assertRaises(ValueError):controls.validate_command('CONFIG_UPDATE',{'local_ip_enabled':True,'expected_revision':1})
+  for fields in ({'role':'NODE'},{'wifi_ssid':'Bench'}):
    with self.assertRaises(ValueError):controls.validate_command('CONFIG_UPDATE',fields)
    self.assertEqual(controls.validate_command('CONFIG_UPDATE',{**fields,'expected_revision':1}),{**fields,'expected_revision':1})
   for fields in ({'role':'SLAVE','expected_revision':1},{'wifi_password':'fixture-secret','expected_revision':1},{'routing_policy':'bogus','expected_revision':1}):

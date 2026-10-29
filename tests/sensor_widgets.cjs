@@ -7,15 +7,14 @@ const assert=require("node:assert/strict");
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
  const base="http://127.0.0.1:5057";
  for(let attempt=0;attempt<40;attempt++){
-  try{const ready=await page.request.get(base+"/api/status",{timeout:1000});if(ready.ok())break;}catch(_){}
+  try{const ready=await page.request.get(base+"/login",{timeout:1000});if(ready.ok())break;}catch(_){}
   if(attempt===39)throw Error("Disposable gateway fixture did not start.");
   await new Promise(resolve=>setTimeout(resolve,250));
  }
- await page.goto(base+"/accounts");
- await page.locator("#account-sign-in [name=username]").fill("admin");
- await page.locator("#account-sign-in [name=password]").fill("admin");
- await page.locator("#account-sign-in button").click();
- await page.locator("#account-workspace").waitFor({state:"visible"});
+ await page.goto(base+"/login");
+ await page.locator('#login-form [name=username]').fill('admin');
+ await page.locator('#login-form [name=password]').fill('fixture-only-admin-123');
+ await page.locator('#signin').click();await page.waitForURL(base+'/');
  await page.goto(base+"/sensors");
  await page.locator("#sensor-add").waitFor({state:"visible"});
  await page.waitForFunction(()=>!document.getElementById("sensor-add").disabled);
@@ -26,6 +25,9 @@ const assert=require("node:assert/strict");
  await form.locator("[name=sensor_id]").fill("PRESS_TEST");
  await form.locator("[name=parameter_type]").fill("Pressure");
  await form.locator("[name=unit]").fill("hPa");
+ for(const [icon,color] of Object.entries({fan:'#0d9488',flame:'#dc2626','cloud-rain':'#0284c7',magnet:'#7c3aed',door:'#b45309',weight:'#475569',ruler:'#2563eb',volume:'#be185d',compass:'#4f46e5',beaker:'#15803d'})){await form.locator('[name=icon]').selectOption(icon);assert.equal(await form.locator('[name=color]').inputValue(),color);}
+ await form.locator('[name=color]').fill('#112233');await form.locator('[name=icon]').selectOption('fan');assert.equal(await form.locator('[name=color]').inputValue(),'#112233','custom color survives icon choice');
+ await form.locator('[name=icon]').selectOption('gauge');
  await form.locator("[name=color]").fill("#0d9488");
  await form.locator("#sensor-wizard-next").click();
  await form.locator("#sensor-wizard-next").click();
@@ -36,8 +38,9 @@ const assert=require("node:assert/strict");
  await form.locator("#sensor-wizard-save").click();
  await form.waitFor({state:"detached"});
  await page.waitForFunction(()=>document.getElementById("sensor-management-rows").textContent.includes("Workshop pressure"));
- const publish=await page.request.post(base+"/api/telemetry",{data:{node_id:"TEST_001",parameters:{raw_pressure:1010.2}}});assert.equal(publish.status(),200);
- await page.request.post(base+"/api/telemetry",{data:{node_id:"TEST_001",parameters:{raw_pressure:1011.3}}});
+ const csrf=await page.locator('meta[name="sensor-csrf"]').getAttribute("content");
+ const publish=await page.request.post(base+"/api/telemetry",{headers:{"X-CSRF-Token":csrf},data:{node_id:"TEST_001",parameters:{raw_pressure:1010.2}}});assert.equal(publish.status(),200);
+ await page.request.post(base+"/api/telemetry",{headers:{"X-CSRF-Token":csrf},data:{node_id:"TEST_001",parameters:{raw_pressure:1011.3}}});
  await page.goto(base+"/");
  await page.locator('.sensor-live-card[data-id="PRESS_TEST"]').waitFor();
  await page.locator('.sensor-live-card[data-id="PRESS_TEST"] .sensor-chart-trigger').click();

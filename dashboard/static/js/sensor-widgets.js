@@ -5,9 +5,23 @@ window.SensorUI = (() => {
  const cfg = p => {try {return typeof p.widget_config === "string" ? JSON.parse(p.widget_config) : (p.widget_config || {});} catch (_) {return {};}};
  function freshnessTimeout(p){const saved=Number(cfg(p).stale_timeout||10),derived=Number(p.effective_stale_timeout_s);return Math.max(Number.isFinite(saved)&&saved>=1?saved:10,Number.isFinite(derived)&&derived>=1&&derived<=604800?derived:0);}
  const numeric = p => ["FLOAT","DOUBLE","INT","UINT","UINT32"].includes(p.data_type);
+ const iconColors = {"fan": "#0D9488", "flame": "#DC2626", "cloud-rain": "#0284C7", "magnet": "#7C3AED", "door": "#B45309", "weight": "#475569", "ruler": "#2563EB", "volume": "#BE185D", "compass": "#4F46E5", "beaker": "#15803D"};
  const accents = [["temp","#2563EB"],["press","#0D9488"],["batt.*volt|batt_v","#16A34A"],["rssi","#7C3AED"],["snr","#0891B2"],["humid","#0284C7"]];
- function color(p) {return /^#[0-9a-f]{6}$/i.test(cfg(p).color || "") ? cfg(p).color : (accents.find(([rx]) => new RegExp(rx,"i").test([p.parameter_type,p.parameter_id,p.parameter_name].join(" ")))?.[1] || "#2563EB");}
+ function color(p) {return /^#[0-9a-f]{6}$/i.test(cfg(p).color || "") ? cfg(p).color : (iconColors[cfg(p).icon] || accents.find(([rx]) => new RegExp(rx,"i").test([p.parameter_type,p.parameter_id,p.parameter_name].join(" ")))?.[1] || "#2563EB");}
  const paths = {
+  "wind":'<path d="M3 8h12a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h6a3 3 0 1 1-3 3"/>',
+  "network":'<rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-5h14v5"/>',
+  "cpu":'<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 1v4m6-4v4M9 19v4m6-4v4M1 9h4m-4 6h4m14-6h4m-4 6h4"/>',
+  "fan":'<circle cx="12" cy="12" r="2"/><path d="M10 10C2 8 8 0 12 3c2 2 0 5 0 7M14 10c2-8 10-2 7 2-2 2-5 0-7 0M14 14c8 2 2 10-2 7-2-2 0-5 0-7M10 14c-2 8-10 2-7-2 2-2 5 0 7 0"/>',
+  "flame":'<path d="M13 2c2 6-4 7-1 11 2-1 3-3 3-5 4 3 5 6 4 9a7 7 0 0 1-14-1c0-5 5-8 8-14Z"/>',
+  "cloud-rain":'<path d="M5 14a4 4 0 0 1 0-8 7 7 0 0 1 13 1 4 4 0 0 1 1 7M7 17l-1 3m6-3-1 3m6-3-1 3"/>',
+  "magnet":'<path d="M4 3v10a8 8 0 0 0 16 0V3h-5v10a3 3 0 0 1-6 0V3H4ZM4 7h5m6 0h5"/>',
+  "door":'<path d="M4 22V2h16v20M7 22V4l10-2v20H4"/><circle cx="14" cy="12" r=".8"/>',
+  "weight":'<path d="M8 7h8l5 14H3L8 7Z"/><circle cx="12" cy="4" r="3"/>',
+  "ruler":'<path d="m3 16 13-13 5 5L8 21l-5-5Zm4-4 2 2m2-6 2 2m2-6 2 2"/>',
+  "volume":'<path d="M3 9h4l5-5v16l-5-5H3V9Zm13-2a7 7 0 0 1 0 10m3-13a11 11 0 0 1 0 16"/>',
+  "compass":'<circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6 6-2Z"/>',
+  "beaker":'<path d="M8 2h8M9 2v8L4 19a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-5-9V2M7 15h10"/>',
   thermometer:'<path d="M9 14.5V5a3 3 0 0 1 6 0v9.5a5 5 0 1 1-6 0Z"/><path d="M12 9v8"/>',
   gauge:'<path d="M4 17a9 9 0 1 1 16 0M12 13l4-5M6 17h12"/>',
   battery:'<rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4m-12-6-3 5h5l-3 5"/>',
@@ -132,5 +146,5 @@ window.SensorUI = (() => {
      search.oninput=render;category.onchange=render;render();search.focus();
    }catch(e){message.textContent=e.message;}
  }
- return {config:cfg,freshnessTimeout,color,icon,value,status,connection,chart,card,open,chooseWidgets};
+ return {iconColors,config:cfg,freshnessTimeout,color,icon,value,status,connection,chart,card,open,chooseWidgets};
 })();

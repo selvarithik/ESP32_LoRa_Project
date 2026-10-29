@@ -1,0 +1,131 @@
+{
+  "stage": "A_BUILD_ONLY",
+  "hardware_tests": "NOT_TESTED",
+  "live_broker_tests": "NOT_APPROVED_NOT_RUN",
+  "contract_sha256": "4a6ac838e0fb437606e791d3bd21941cdfe64d560763f0f182e5b105fb5fedde",
+  "builds": {
+    "master": {
+      "program_bytes": 1288621,
+      "application_capacity_bytes": 1310720,
+      "program_percent": 98.31,
+      "static_ram_bytes": 74548,
+      "ram_capacity_bytes": 327680,
+      "ram_percent": 22.75,
+      "image_bytes": 1295328,
+      "image_headroom_bytes": 15392,
+      "image_sha256": "7d231a4d39220e4759c191d1233035d0b5e6216fef8a49a9bb30b8ddc3b64623",
+      "partition_sha256": "148b959cbff1c38aa8e1d5c0ba9d612c54997b945e56a63f41223eef650653a1",
+      "partitions": [
+        {
+          "name": "nvs",
+          "type": 1,
+          "subtype": 2,
+          "offset": 36864,
+          "size": 20480
+        },
+        {
+          "name": "otadata",
+          "type": 1,
+          "subtype": 0,
+          "offset": 57344,
+          "size": 8192
+        },
+        {
+          "name": "app0",
+          "type": 0,
+          "subtype": 16,
+          "offset": 65536,
+          "size": 1310720
+        },
+        {
+          "name": "app1",
+          "type": 0,
+          "subtype": 17,
+          "offset": 1376256,
+          "size": 1310720
+        },
+        {
+          "name": "spiffs",
+          "type": 1,
+          "subtype": 130,
+          "offset": 2686976,
+          "size": 1441792
+        },
+        {
+          "name": "coredump",
+          "type": 1,
+          "subtype": 3,
+          "offset": 4128768,
+          "size": 65536
+        }
+      ]
+    },
+    "slave": {
+      "program_bytes": 1284665,
+      "application_capacity_bytes": 1310720,
+      "program_percent": 98.01,
+      "static_ram_bytes": 74492,
+      "ram_capacity_bytes": 327680,
+      "ram_percent": 22.73,
+      "image_bytes": 1291376,
+      "image_headroom_bytes": 19344,
+      "image_sha256": "e7afef50b1aee171e80851f2206efd4b41e14a0f53428227f1ace83a1e2ecbe9",
+      "partition_sha256": "148b959cbff1c38aa8e1d5c0ba9d612c54997b945e56a63f41223eef650653a1",
+      "partitions": [
+        {
+          "name": "nvs",
+          "type": 1,
+          "subtype": 2,
+          "offset": 36864,
+          "size": 20480
+        },
+        {
+          "name": "otadata",
+          "type": 1,
+          "subtype": 0,
+          "offset": 57344,
+          "size": 8192
+        },
+        {
+          "name": "app0",
+          "type": 0,
+          "subtype": 16,
+          "offset": 65536,
+          "size": 1310720
+        },
+        {
+          "name": "app1",
+          "type": 0,
+          "subtype": 17,
+          "offset": 1376256,
+          "size": 1310720
+        },
+        {
+          "name": "spiffs",
+          "type": 1,
+          "subtype": 130,
+          "offset": 2686976,
+          "size": 1441792
+        },
+        {
+          "name": "coredump",
+          "type": 1,
+          "subtype": 3,
+          "offset": 4128768,
+          "size": 65536
+        }
+      ]
+    }
+  },
+  "excluded_chat_ota_baseline_unchanged": true,
+  "active_mqtt_document_and_protected_stores_unchanged": true,
+  "stored_mqtt_secrets_absent_from_checked_source_profiles_images": true,
+  "gateway_tests": {
+    "scope": "Software unit/API tests; excludes Private Chat, OTA and physical tests",
+    "run": 108,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true
+  }
+}

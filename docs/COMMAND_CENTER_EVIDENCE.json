@@ -1,0 +1,204 @@
+{
+  "scope": "Software implementation, actual firmware builds and isolated acceptance; no physical actions in this task",
+  "contract_version": "1.1.1",
+  "wire_schema": 1,
+  "contract_sha256": "70f187bdfdbf97812f609fa71cebc0c03238232b5b1cdf7fb2551b0b4c2a6a45",
+  "contracts_byte_identical": true,
+  "gateway_unit_api": {
+    "scope": "Software unit/API tests; excludes Private Chat, OTA and physical tests",
+    "run": 103,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true
+  },
+  "loopback_local_ip_tests": {
+    "run": 4,
+    "passed": true,
+    "physical": false
+  },
+  "cross_language": {
+    "canonical_vectors": 6,
+    "network_schedule_vectors": 56,
+    "sensor_vectors": 53,
+    "production_command_rules_and_registry_parity": true
+  },
+  "browser": {
+    "esp32_login_mocked_mobile_desktop": true,
+    "esp32_login_timeout_mocked": true,
+    "esp32_local_page_mocked_mobile_desktop": true,
+    "esp32_mqtt_page_mocked_mobile_desktop": true,
+    "command_center_real_flask_sqlite_simulated_device": true
+  },
+  "builds": {
+    "esp32_master": {
+      "program_bytes": 1243685,
+      "binary_bytes": 1250384,
+      "application_partition_bytes": 1310720,
+      "program_headroom_bytes": 67035,
+      "binary_headroom_bytes": 60336,
+      "ram_bytes": 60316,
+      "flash_percent": 94.89,
+      "ram_percent": 18.41,
+      "sha256": "e33b4fa4c69afce98bb82e1569efdbe4ee60f042b4b9567d65f5421ab88599ea",
+      "partitions": [
+        {
+          "type": 1,
+          "subtype": 2,
+          "offset": "0x9000",
+          "bytes": 20480,
+          "label": "nvs"
+        },
+        {
+          "type": 1,
+          "subtype": 0,
+          "offset": "0xe000",
+          "bytes": 8192,
+          "label": "otadata"
+        },
+        {
+          "type": 0,
+          "subtype": 16,
+          "offset": "0x10000",
+          "bytes": 1310720,
+          "label": "app0"
+        },
+        {
+          "type": 0,
+          "subtype": 17,
+          "offset": "0x150000",
+          "bytes": 1310720,
+          "label": "app1"
+        },
+        {
+          "type": 1,
+          "subtype": 130,
+          "offset": "0x290000",
+          "bytes": 1441792,
+          "label": "spiffs"
+        },
+        {
+          "type": 1,
+          "subtype": 3,
+          "offset": "0x3f0000",
+          "bytes": 65536,
+          "label": "coredump"
+        }
+      ],
+      "prior_documented_partition_layout_preserved": true,
+      "measurement": "PlatformIO espressif32 SIZEPROGREGEXP/SIZEDATAREGEXP section sums"
+    },
+    "esp32_slave": {
+      "program_bytes": 1243685,
+      "binary_bytes": 1250384,
+      "application_partition_bytes": 1310720,
+      "program_headroom_bytes": 67035,
+      "binary_headroom_bytes": 60336,
+      "ram_bytes": 60316,
+      "flash_percent": 94.89,
+      "ram_percent": 18.41,
+      "sha256": "1096a8b8612d1ad392fb96c683d69e13939c49fe6a1224865e96963da55116f6",
+      "partitions": [
+        {
+          "type": 1,
+          "subtype": 2,
+          "offset": "0x9000",
+          "bytes": 20480,
+          "label": "nvs"
+        },
+        {
+          "type": 1,
+          "subtype": 0,
+          "offset": "0xe000",
+          "bytes": 8192,
+          "label": "otadata"
+        },
+        {
+          "type": 0,
+          "subtype": 16,
+          "offset": "0x10000",
+          "bytes": 1310720,
+          "label": "app0"
+        },
+        {
+          "type": 0,
+          "subtype": 17,
+          "offset": "0x150000",
+          "bytes": 1310720,
+          "label": "app1"
+        },
+        {
+          "type": 1,
+          "subtype": 130,
+          "offset": "0x290000",
+          "bytes": 1441792,
+          "label": "spiffs"
+        },
+        {
+          "type": 1,
+          "subtype": 3,
+          "offset": "0x3f0000",
+          "bytes": 65536,
+          "label": "coredump"
+        }
+      ],
+      "prior_documented_partition_layout_preserved": true,
+      "measurement": "PlatformIO espressif32 SIZEPROGREGEXP/SIZEDATAREGEXP section sums"
+    }
+  },
+  "physical_upload_performed": false,
+  "physical_password_reset_performed": false,
+  "physical_lora_driver_enabled": false,
+  "live_broker_test_performed": false,
+  "secret_source_scan_findings": 0,
+  "excluded_features_baseline_unchanged": true,
+  "files_changed": {
+    "ESP32_LoRa_ESP32_Firmware": [
+      "COMMAND_PROTOCOL.md",
+      "CONFIG_CONTRACT.md",
+      "HARDWARE_REQUIREMENTS.md",
+      "MQTT_TOPIC_CONTRACT.md",
+      "TELEMETRY_SCHEMA.md",
+      "platformio.ini",
+      "src/command/command_executor.cpp",
+      "src/config/default_config.h",
+      "src/core/commissioning.cpp",
+      "src/core/commissioning.h",
+      "src/core/config_manager.cpp",
+      "src/core/network_service.cpp",
+      "src/web/access_page.h",
+      "src/web/browser_auth.cpp",
+      "src/web/local_web_server.cpp",
+      "src/web/local_web_server.h",
+      "src/web/web_assets_gzip.h",
+      "test/access_page.cjs",
+      "src/command/command_catalog.h",
+      "src/command/command_rules.h",
+      "test/access_timeout.cjs",
+      "test/check_command_rules.py",
+      "test/command_rules_host.cpp"
+    ],
+    "ESP32_LoRa_Project": [
+      "COMMAND_PROTOCOL.md",
+      "CONFIG_CONTRACT.md",
+      "HARDWARE_REQUIREMENTS.md",
+      "MQTT_TOPIC_CONTRACT.md",
+      "TELEMETRY_SCHEMA.md",
+      "backend/command_manager.py",
+      "backend/device_api.py",
+      "backend/device_control_contract.py",
+      "backend/device_controls.py",
+      "backend/device_simulator.py",
+      "backend/server.py",
+      "dashboard/static/js/command_center.js",
+      "dashboard/templates/command_center.html",
+      "docs/SOFTWARE_TEST_RESULTS.json",
+      "tests/contract_parity.py",
+      "tests/test_device_controls.py",
+      "backend/device_identity.py",
+      "tests/command_center_fixture.py",
+      "tests/command_center_ui.cjs",
+      "tests/test_command_center.py"
+    ]
+  }
+}

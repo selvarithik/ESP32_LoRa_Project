@@ -1,0 +1,77 @@
+{
+  "ping": {
+    "command_id": "CMD-81CBE4B68627",
+    "state": "COMPLETED",
+    "ack_status": "ACCEPTED",
+    "ack_at": "2026-10-28T19:10:17.040392",
+    "response_at": "2026-10-28T19:10:17.241246"
+  },
+  "mqtt_sensor_values_since_ping": 144,
+  "first": "2026-10-28T19:10:17.638962",
+  "last": "2026-10-28T19:13:18.456583",
+  "latest_sensor_rows": [
+    {
+      "parameter_id": "mq135_pin_mv",
+      "value": 447.0,
+      "timestamp": "2026-10-28T19:13:18.456583"
+    },
+    {
+      "parameter_id": "mq135_adc_raw",
+      "value": 365.0,
+      "timestamp": "2026-10-28T19:13:18.456583"
+    },
+    {
+      "parameter_id": "power",
+      "value": 0.010652,
+      "timestamp": "2026-10-28T19:13:18.272223"
+    },
+    {
+      "parameter_id": "current",
+      "value": 0.0033,
+      "timestamp": "2026-10-28T19:13:18.272223"
+    },
+    {
+      "parameter_id": "shunt_voltage",
+      "value": 0.33,
+      "timestamp": "2026-10-28T19:13:18.272223"
+    },
+    {
+      "parameter_id": "bus_voltage",
+      "value": 3.228,
+      "timestamp": "2026-10-28T19:13:18.272223"
+    },
+    {
+      "parameter_id": "humidity",
+      "value": 52.0,
+      "timestamp": "2026-10-28T19:13:17.983199"
+    },
+    {
+      "parameter_id": "temperature",
+      "value": 30.2,
+      "timestamp": "2026-10-28T19:13:17.983199"
+    },
+    {
+      "parameter_id": "mq135_pin_mv",
+      "value": 448.0,
+      "timestamp": "2026-10-28T19:13:09.641514"
+    },
+    {
+      "parameter_id": "mq135_adc_raw",
+      "value": 368.0,
+      "timestamp": "2026-10-28T19:13:09.641514"
+    },
+    {
+      "parameter_id": "power",
+      "value": 0.011326,
+      "timestamp": "2026-10-28T19:13:09.337756"
+    },
+    {
+      "parameter_id": "current",
+      "value": 0.0035,
+      "timestamp": "2026-10-28T19:13:09.337756"
+    }
+  ],
+  "gateway_mqtt_and_protected_files_unchanged": true,
+  "local_listener_address": "192.168.1.103:5001",
+  "local_unauthenticated_challenge_http_status": 401
+}

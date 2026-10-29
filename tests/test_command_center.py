@@ -14,7 +14,7 @@ class CommandCenterTests(unittest.TestCase):
  def age_attempt(self,cid):
   with cm.command_db() as db:db.execute("UPDATE command_delivery SET last_attempt_at='2000-01-01T00:00:00' WHERE command_id=?",(cid,))
  def test_registry_metadata_matches_commands(self):
-  registry=self.client.get('/api/device-controls').json['command_registry'];self.assertEqual(set(registry),contract.COMMANDS);self.assertEqual(registry['SET_DEVICE_NAME']['roles'],['MASTER','NODE']);self.assertIn('device_name',registry['SET_DEVICE_NAME']['arguments']);self.assertEqual(registry['RADIO_TEST']['hardware_state'],'DRIVER_UNAVAILABLE')
+  registry=self.client.get('/api/device-controls').json['command_registry'];self.assertEqual(set(registry),set(contract.PRIMARY_COMMANDS));self.assertEqual(registry['SET_DEVICE_NAME']['roles'],['MASTER','NODE']);self.assertIn('device_name',registry['SET_DEVICE_NAME']['arguments']);self.assertNotIn('RADIO_TEST',registry)
  def test_lost_ack_response_does_not_invent_ack(self):
   cid=self.create();api.pending_commands(self.master);self.uplink(cid,'RESPONSE','SUCCESS',data={'ok':True});c=cm.get_command(cid);self.assertEqual(c['state'],'COMPLETED');self.assertIsNone(c['ack_at'])
  def test_rejected_busy_and_invalid_ack(self):
@@ -25,6 +25,20 @@ class CommandCenterTests(unittest.TestCase):
   self.assertEqual(cm.get_command(cid)['state'],'QUEUED')
  def test_retry_bytes_and_bounded_attempts(self):
   cid=self.create(max_retries=1);first=api.pending_commands(self.master)[0];self.assertEqual(api.pending_commands(self.master),[]);self.age_attempt(cid);second=api.pending_commands(self.master)[0];self.assertEqual(first,second);self.age_attempt(cid);self.assertEqual(api.pending_commands(self.master),[]);self.assertEqual(cm.get_command(cid)['state'],'TIMEOUT')
+ def test_recovery_commands_default_to_explicit_recovery_budget(self):
+  for kind in ('RESTART','WIFI_RECONNECT'):
+   r=self.client.post('/api/v1/commands',json={'node_id':self.master,'command_type':kind,'payload':{}})
+   self.assertEqual(r.status_code,201,r.json)
+   self.assertEqual(r.json['command']['timeout_seconds'],120)
+   self.assertEqual(cm.delivery_policy(r.json['command']['command_id'])['response_timeout_s'],120)
+   self.assertEqual(contract.describe_command(kind)['response_timeout_seconds'],120)
+ def test_response_deadline_is_distinct_from_total_expiry(self):
+  cid=self.create();api.pending_commands(self.master);self.uplink(cid)
+  with cm.command_db() as db:
+   db.execute("UPDATE commands SET timeout_at='2000-01-01T00:00:00' WHERE command_id=?",(cid,))
+   db.execute("UPDATE command_delivery SET response_deadline='2000-01-01T00:00:00' WHERE command_id=?",(cid,))
+  self.assertFalse(cm.claim_device_dispatch(cid))
+  self.assertIn('RESPONSE_TIMEOUT',cm.get_command(cid)['error'])
  def test_ack_then_response_timeout_and_late_result(self):
   cid=self.create();api.pending_commands(self.master);self.uplink(cid);self.assertEqual(api.pending_commands(self.master),[])
   with cm.command_db() as db:db.execute("UPDATE command_delivery SET response_deadline='2000-01-01T00:00:00' WHERE command_id=?",(cid,))

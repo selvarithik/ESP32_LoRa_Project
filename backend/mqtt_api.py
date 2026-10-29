@@ -4,6 +4,7 @@ import os
 import json
 import threading
 from pathlib import Path
+from runtime_paths import resource_root
 from flask import jsonify, request, render_template
 import database
 import mqtt_contract as contract
@@ -39,7 +40,7 @@ def install(app):
 
     @app.get('/api/mqtt')
     def mqtt_state():
-        current=service();result=current.store.public();result['runtime']=current.status();result['comparison']=result['runtime']['comparison'];result['defaults']=json.loads((Path(__file__).resolve().parents[1]/'deployment/profile.example.json').read_text(encoding='utf-8'));result['defaults'].pop('password',None);return jsonify(result)
+        current=service();result=current.store.public();result['runtime']=current.status();result['comparison']=result['runtime']['comparison'];result['defaults']=json.loads((resource_root()/'deployment/profile.example.json').read_text(encoding='utf-8'));result['defaults'].pop('password',None);return jsonify(result)
 
     @app.post('/api/mqtt/<operation>')
     def mqtt_action(operation):

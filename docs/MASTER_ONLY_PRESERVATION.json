@@ -1,0 +1,29 @@
+{
+  "protected_files_unchanged": {
+    "accounts.sqlite3": true,
+    "mqtt-secrets.bin": true,
+    "session.key": true
+  },
+  "excluded_sources_unchanged": {
+    "backend\\chat_manager.py": true,
+    "backend\\firmware_manager.py": true,
+    "backend\\ota_manager.py": true,
+    "dashboard\\static\\css\\command-center-chat.css": true,
+    "dashboard\\static\\js\\chat.js": true,
+    "dashboard\\static\\js\\firmware.js": true,
+    "dashboard\\templates\\chat.html": true,
+    "dashboard\\templates\\firmware.html": true,
+    "docs\\COMMAND_CHAT_IMPLEMENTATION.md": true,
+    "tests\\command_chat.cjs": true,
+    "tests\\artifacts\\chat-1440.png": true,
+    "tests\\artifacts\\chat-375.png": true,
+    "tests\\artifacts\\chat-768.png": true,
+    "_rejected_ui_rebuild\\static\\css\\pages\\chat.css": true,
+    "_rejected_ui_rebuild\\static\\js\\pages\\chat.js": true,
+    "_rejected_ui_rebuild\\static\\js\\pages\\firmware.js": true,
+    "_rejected_ui_rebuild\\templates\\pages\\chat.html": true,
+    "_rejected_ui_rebuild\\templates\\pages\\firmware.html": true
+  },
+  "contract_identical": true,
+  "contract_sha256": "4a6ac838e0fb437606e791d3bd21941cdfe64d560763f0f182e5b105fb5fedde"
+}

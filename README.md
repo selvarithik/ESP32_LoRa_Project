@@ -1,3 +1,5 @@
+Local Windows EXE, start/stop, automatic startup and encrypted backups: [deployment instructions](docs/LOCAL_DEPLOYMENT_20261029.md).
+
 Current local-IP implementation and physical acceptance: [LOCAL_IP_REPORT.md](docs/LOCAL_IP_REPORT.md). MQTT broker acceptance remains separate and pending ACL confirmation.
 
 # ESP32 LoRa Gateway — current integration

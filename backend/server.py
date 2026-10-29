@@ -1,3 +1,8 @@
+# Keep the familiar command, but delegate actual serving to the protected launcher.
+if __name__ == "__main__":
+    from gateway_runtime import cli
+    raise SystemExit(cli())
+
 from flask import Flask, render_template, jsonify, request, send_file, session, redirect, url_for
 from flask_socketio import SocketIO, emit
 
@@ -8,6 +13,7 @@ import os
 import json
 import secrets
 import hashlib
+from runtime_paths import resource_root
 import account_sessions
 import local_test_access
 
@@ -37,13 +43,15 @@ from chat_manager import (
 
 app = Flask(
     __name__,
-    template_folder="../dashboard/templates",
-    static_folder="../dashboard/static"
+    template_folder=str(resource_root()/"dashboard/templates"),
+    static_folder=str(resource_root()/"dashboard/static")
 )
 
 socketio = SocketIO(
     app,
-    cors_allowed_origins=None
+    cors_allowed_origins=None,
+    async_mode="threading" if os.environ.get("GATEWAY_DEPLOYMENT_MODE") else None,
+    allow_upgrades=not bool(os.environ.get("GATEWAY_DEPLOYMENT_MODE"))
 )
 app.register_blueprint(account_settings.bp)
 local_test_access.install(app)
@@ -82,6 +90,7 @@ def protect_gateway_api():
             return jsonify(error="Too many sign-in attempts; retry in one minute."), 429
     if request.path.startswith("/api/") and not request.path.startswith("/api/firmware/") and (request.content_length or 0) > 65536:
         return jsonify(error="Payload too large"), 413
+    if request.path=='/healthz':return
     if request.path.startswith(('/static/','/api/v1/device/')) or request.path in ('/login','/api/auth/login','/api/accounts/sign-in','/api/auth/status'):
         return
     db = account_settings.connect()
@@ -122,7 +131,7 @@ def oversized_request(error):
     return jsonify(error="Payload too large"), 413
 
 # Local web-session security. Override GATEWAY_SECRET_KEY for a deployment.
-secret_path = Path(__file__).resolve().parent.parent / "data" / "session.key"
+secret_path = database.DATA_DIR / "session.key"
 secret_path.parent.mkdir(parents=True, exist_ok=True)
 try:
     with secret_path.open("x", encoding="utf-8") as secret_file:
@@ -4289,49 +4298,14 @@ def send_nodes():
 # MAIN
 # ============================================================
 
-def server_time_heartbeat():
-    while True:
+def server_time_heartbeat(stop_event=None):
+    while stop_event is None or not stop_event.is_set():
         socketio.emit(
             "server_time",
             {"server_time": datetime.now().isoformat()}
         )
         for _ in range(5):
+            if stop_event is not None and stop_event.is_set():return
             for cmd in command_manager.check_timeouts():socketio.emit('command_update',cmd)
             account_sessions.expire()
             socketio.sleep(1)
-
-if __name__ == "__main__":
-    account_settings.connect().close()
-    local_ip.start_saved()
-    import mqtt_adapter
-    mqtt_client = mqtt_adapter.start_from_environment()
-    print('MQTT permanent worker:',mqtt_client.state,'reason:',mqtt_client.last_error or 'none',flush=True)
-
-    print("=" * 60)
-
-    print(
-        "SELVARITHIK LORA GATEWAY"
-    )
-
-    print(
-        "ESP32 / ESP8266 / Arduino "
-        "Gateway Control Center"
-    )
-
-    print("=" * 60)
-
-    print(
-        "Dashboard: "
-        "http://127.0.0.1:5000"
-    )
-
-    print("=" * 60)
-    socketio.start_background_task(server_time_heartbeat)
-
-    socketio.run(
-        app,
-        host=os.environ.get("GATEWAY_BIND", "127.0.0.1"),
-        port=5000,
-        debug=False,
-        allow_unsafe_werkzeug=True
-    )

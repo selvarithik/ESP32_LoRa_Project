@@ -1,0 +1,13 @@
+{
+  "command_id": "CMD-DE4C10CB2B70",
+  "state": "COMPLETED",
+  "ack_status": "ACCEPTED",
+  "created_at": "2026-10-25T18:00:50.771107",
+  "ack_at": "2026-10-25T18:00:54.521517",
+  "response_at": "2026-10-25T18:00:54.795016",
+  "result": {
+    "message": "sensor-latency-check",
+    "ok": true
+  },
+  "error": null
+}

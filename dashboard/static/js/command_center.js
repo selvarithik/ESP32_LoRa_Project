@@ -171,6 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
  }
  function switchType(){
   const type=$("cmd-type-select").value;root.classList.toggle("ping-compose",type==="PING");
+  // Recovery includes restoring the verified connection after reconnect/reboot.
+  if(["RESTART","WIFI_RECONNECT"].includes(type)&&Number($("cmd-timeout-input").value)<120)$("cmd-timeout-input").value="120";
   $("command-arguments-box").hidden=!new Set(["CONFIG_UPDATE","SET_DEVICE_NAME","SET_SLEEP_SCHEDULE","SET_TELEMETRY_INTERVAL","SET_HEARTBEAT_INTERVAL"]).has(type);
   root.querySelectorAll(".param-pane").forEach(pane=>pane.classList.toggle("active",pane.id==="pane-"+type));
   $("command-quick-input").hidden=type!=="PING";

@@ -1,0 +1,27 @@
+{
+  "scope": "BOUNDED_READ_ONLY_MASTER_COMMAND_TEST",
+  "simulated": false,
+  "settings_changed": false,
+  "commands": [
+    {
+      "command_id": "CMD-AC2D88D358FA",
+      "command_type": "PING",
+      "received": [],
+      "broker_puback": true,
+      "broker_command_echo": true,
+      "state": "SENT",
+      "ack_at": null,
+      "response_at": null,
+      "response": null,
+      "error": null
+    }
+  ],
+  "usb_master_verified": true,
+  "connack": 0,
+  "suback_qos": [
+    1,
+    1
+  ],
+  "tls_verified": true,
+  "active_profile_and_revision_unchanged": true
+}

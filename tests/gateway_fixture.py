@@ -2,6 +2,9 @@
 import sys
 import tempfile
 import os
+import atexit
+import gc
+import sqlite3
 from unittest.mock import patch
 from pathlib import Path
 
@@ -17,6 +20,23 @@ database.DATA_DIR = Path(TEMP.name) / "data"
 database.DATABASE = database.DATA_DIR / "gateway.db"
 import server
 server.app.config["TEMPLATES_AUTO_RELOAD"] = True
+
+def cleanup_fixture():
+    # sqlite3 context managers commit but do not close connections. Release only
+    # this isolated fixture's handles before Windows removes its temporary files.
+    import local_ip, mqtt_api
+    local_ip.service.stop()
+    if mqtt_api._service:mqtt_api._service.stop()
+    gc.collect()
+    for obj in gc.get_objects():
+        if not isinstance(obj,sqlite3.Connection):continue
+        try:
+            paths=[row[2] for row in obj.execute('PRAGMA database_list')]
+            if any(path and Path(path).resolve().is_relative_to(Path(TEMP.name).resolve()) for path in paths):obj.close()
+        except sqlite3.ProgrammingError:pass
+    TEMP.cleanup()
+
+atexit.register(cleanup_fixture)
 
 
 def seed():

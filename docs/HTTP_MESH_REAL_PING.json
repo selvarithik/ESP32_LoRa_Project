@@ -1,0 +1,13 @@
+{
+  "command_id": "CMD-DEB7EE1CB686",
+  "state": "COMPLETED",
+  "ack_status": "ACCEPTED",
+  "created_at": "2026-10-25T18:32:26.902422",
+  "ack_at": "2026-10-25T18:32:30.001315",
+  "response_at": "2026-10-25T18:32:34.302793",
+  "result": {
+    "message": "physical-ip-link-check",
+    "ok": true
+  },
+  "error": null
+}

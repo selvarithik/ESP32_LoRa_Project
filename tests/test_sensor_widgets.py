@@ -1,5 +1,6 @@
 """Feature coverage uses the fixture database, never production telemetry."""
 import unittest
+import json
 from datetime import datetime, timedelta
 from gateway_fixture import seed, server
 import database
@@ -37,6 +38,23 @@ class SensorWidgetTests(unittest.TestCase):
   self.assertEqual(self.c.put(path+"/scaled",json={"widget_config":{"source":"mqtt"}}).status_code,400)
   self.assertEqual(self.c.put(path+"/scaled",json={"widget_config":{"color":"bad"}}).status_code,400)
   self.assertEqual(self.c.put(path+"/scaled",json={"min_value":10,"max_value":2}).status_code,400)
+ def test_future_icons_validate_and_persist(self):
+  icons=("fan","flame","cloud-rain","magnet","door","weight","ruler","volume","compass","beaker")
+  path="/api/nodes/TEST_002/parameters"
+  for icon in icons:
+   with self.subTest(icon=icon):
+    pid="future_icon_"+icon
+    response=self.c.post(path,json={"parameter_id":pid,"parameter_name":"Future "+icon,"parameter_type":"Custom","data_type":"FLOAT","enabled":False,"display_enabled":False,"widget_config":{"icon":icon,"source":"node_telemetry","source_field":pid}})
+    self.assertEqual(response.status_code,200,response.json)
+    saved=next(p for p in self.c.get(path).json["parameters"] if p["parameter_id"]==pid)
+    self.assertEqual(json.loads(saved["widget_config"])["icon"],icon)
+    self.assertFalse(saved["enabled"])
+    from sensor_widgets import ICON_COLORS,config
+    self.assertEqual(config(saved)["color"],ICON_COLORS[icon])
+    self.assertEqual(self.c.put(path+"/"+pid,json={"widget_config":{"color":"#112233"}}).status_code,200)
+    saved=next(p for p in self.c.get(path).json["parameters"] if p["parameter_id"]==pid)
+    self.assertEqual(config(saved)["color"],"#112233")
+  self.assertEqual(self.c.post(path,json={"parameter_id":"bad_icon","parameter_name":"Bad","parameter_type":"Custom","data_type":"FLOAT","widget_config":{"icon":"not-an-icon"}}).status_code,400)
  def test_time_windows_and_negative_values(self):
   from telemetry_manager import save_value
   for hours,value in ((.2,-82),(2,-90),(25,-105),(200,-120)):

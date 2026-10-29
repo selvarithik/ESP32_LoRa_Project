@@ -1,0 +1,134 @@
+{
+  "scope": "Physical Master COM8 DHT11 after driver-only application upload",
+  "samples": [
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 100090,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 102115,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 106167,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 110217,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 114268,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    }
+  ],
+  "mqtt_runtime": {
+    "runtime_enabled": true,
+    "device_role": "MASTER",
+    "wifi_state": "CONNECTED",
+    "station_ip": "192.168.1.104",
+    "time_state": "CLOCK_VALID",
+    "unix_time": 1793027178,
+    "ntp_status": "UNKNOWN",
+    "status_label": "CONNECTED",
+    "tls_verification_required": true,
+    "tls_state": "VERIFIED",
+    "authentication_state": "ACCEPTED",
+    "subscription_state": "READY",
+    "last_connected_at": 1793027069,
+    "last_outbound_queued_at": 1793027175,
+    "last_broker_puback_at": 1793027176,
+    "last_broker_frame_received_at": 1793027176,
+    "chat_inbox_count": 0,
+    "outbox_bytes": 0,
+    "publish_attempts": 95,
+    "enqueued": 95,
+    "pubacks": 95,
+    "publish_error": 0,
+    "state": "connected",
+    "reconnect_count": 0,
+    "dropped": 0,
+    "comparison": {
+      "status": "UNKNOWN",
+      "message": "",
+      "fields": []
+    }
+  },
+  "dht_pin": 4,
+  "dht_enabled": true
+}

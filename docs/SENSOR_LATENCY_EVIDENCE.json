@@ -1,0 +1,364 @@
+{
+  "date": "2026-10-25",
+  "gateway_tests": {
+    "scope": "Local-system unit/API regression; excludes MQTT/cloud, Chat, OTA and physical tests",
+    "run": 85,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true
+  },
+  "preservation": {
+    "sensor_settings_unchanged": true,
+    "mqtt_configuration_unchanged": true,
+    "protected_files_unchanged": true,
+    "excluded_chat_ota_files_unchanged": true,
+    "contract_equal": true,
+    "contract_sha256": "4a6ac838e0fb437606e791d3bd21941cdfe64d560763f0f182e5b105fb5fedde",
+    "live_freshness": [
+      {
+        "device_id": "ESP32-10777D842178",
+        "freshness": [
+          {
+            "parameter_id": "temperature",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "humidity",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "bus_voltage",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "shunt_voltage",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "current",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "power",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "mq135_adc_raw",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "mq135_pin_mv",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          }
+        ]
+      },
+      {
+        "device_id": "ESP32-CC9B23E2DEC4",
+        "freshness": [
+          {
+            "parameter_id": "temperature",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "humidity",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "mq135_adc_raw",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          },
+          {
+            "parameter_id": "mq135_pin_mv",
+            "saved_timeout": 10,
+            "effective_timeout": 25,
+            "expected_interval": 10
+          }
+        ]
+      }
+    ]
+  },
+  "soak": {
+    "start": "2026-10-25T18:00:55.889692",
+    "end": "2026-10-25T18:02:55.949951",
+    "observation": "Readonly Gateway SQL only; no serial opens or intentional network interruption",
+    "snapshots": [
+      {
+        "time": "2026-10-25T18:00:55.892685",
+        "nodes": [
+          {
+            "id": "ESP32-10777D842178",
+            "last_seen": "2026-10-25T18:00:55.133107",
+            "reported_uptime": 603,
+            "reset_reason": "POWERON"
+          },
+          {
+            "id": "ESP32-CC9B23E2DEC4",
+            "last_seen": "2026-10-25T18:00:54.787517",
+            "reported_uptime": 34,
+            "reset_reason": "POWERON"
+          }
+        ]
+      },
+      {
+        "time": "2026-10-25T18:01:10.894733",
+        "nodes": [
+          {
+            "id": "ESP32-10777D842178",
+            "last_seen": "2026-10-25T18:01:10.592235",
+            "reported_uptime": 618,
+            "reset_reason": "POWERON"
+          },
+          {
+            "id": "ESP32-CC9B23E2DEC4",
+            "last_seen": "2026-10-25T18:01:07.576954",
+            "reported_uptime": 64,
+            "reset_reason": "POWERON"
+          }
+        ]
+      },
+      {
+        "time": "2026-10-25T18:01:25.898181",
+        "nodes": [
+          {
+            "id": "ESP32-10777D842178",
+            "last_seen": "2026-10-25T18:01:25.828737",
+            "reported_uptime": 634,
+            "reset_reason": "POWERON"
+          },
+          {
+            "id": "ESP32-CC9B23E2DEC4",
+            "last_seen": "2026-10-25T18:01:16.621332",
+            "reported_uptime": 64,
+            "reset_reason": "POWERON"
+          }
+        ]
+      },
+      {
+        "time": "2026-10-25T18:01:40.908078",
+        "nodes": [
+          {
+            "id": "ESP32-10777D842178",
+            "last_seen": "2026-10-25T18:01:40.206405",
+            "reported_uptime": 648,
+            "reset_reason": "POWERON"
+          },
+          {
+            "id": "ESP32-CC9B23E2DEC4",
+            "last_seen": "2026-10-25T18:01:38.383755",
+            "reported_uptime": 94,
+            "reset_reason": "POWERON"
+          }
+        ]
+      },
+      {
+        "time": "2026-10-25T18:01:55.919474",
+        "nodes": [
+          {
+            "id": "ESP32-10777D842178",
+            "last_seen": "2026-10-25T18:01:55.653582",
+            "reported_uptime": 663,
+            "reset_reason": "POWERON"
+          },
+          {
+            "id": "ESP32-CC9B23E2DEC4",
+            "last_seen": "2026-10-25T18:01:46.855440",
+            "reported_uptime": 94,
+            "reset_reason": "POWERON"
+          }
+        ]
+      },
+      {
+        "time": "2026-10-25T18:02:10.927292",
+        "nodes": [
+          {
+            "id": "ESP32-10777D842178",
+            "last_seen": "2026-10-25T18:02:10.271300",
+            "reported_uptime": 678,
+            "reset_reason": "POWERON"
+          },
+          {
+            "id": "ESP32-CC9B23E2DEC4",
+            "last_seen": "2026-10-25T18:02:10.038430",
+            "reported_uptime": 126,
+            "reset_reason": "POWERON"
+          }
+        ]
+      },
+      {
+        "time": "2026-10-25T18:02:25.937927",
+        "nodes": [
+          {
+            "id": "ESP32-10777D842178",
+            "last_seen": "2026-10-25T18:02:24.357820",
+            "reported_uptime": 692,
+            "reset_reason": "POWERON"
+          },
+          {
+            "id": "ESP32-CC9B23E2DEC4",
+            "last_seen": "2026-10-25T18:02:24.114113",
+            "reported_uptime": 126,
+            "reset_reason": "POWERON"
+          }
+        ]
+      },
+      {
+        "time": "2026-10-25T18:02:40.941758",
+        "nodes": [
+          {
+            "id": "ESP32-10777D842178",
+            "last_seen": "2026-10-25T18:02:40.128943",
+            "reported_uptime": 708,
+            "reset_reason": "POWERON"
+          },
+          {
+            "id": "ESP32-CC9B23E2DEC4",
+            "last_seen": "2026-10-25T18:02:37.623203",
+            "reported_uptime": 158,
+            "reset_reason": "POWERON"
+          }
+        ]
+      },
+      {
+        "time": "2026-10-25T18:02:55.944957",
+        "nodes": [
+          {
+            "id": "ESP32-10777D842178",
+            "last_seen": "2026-10-25T18:02:54.543468",
+            "reported_uptime": 722,
+            "reset_reason": "POWERON"
+          },
+          {
+            "id": "ESP32-CC9B23E2DEC4",
+            "last_seen": "2026-10-25T18:02:55.346804",
+            "reported_uptime": 158,
+            "reset_reason": "POWERON"
+          }
+        ]
+      }
+    ],
+    "metrics": [
+      {
+        "node": "ESP32-10777D842178",
+        "parameter": "temperature",
+        "samples": 12,
+        "median_gap_seconds": 10.028,
+        "max_gap_seconds": 10.345,
+        "first": "2026-10-25T18:01:02.438028",
+        "last": "2026-10-25T18:02:52.720950"
+      },
+      {
+        "node": "ESP32-10777D842178",
+        "parameter": "current",
+        "samples": 12,
+        "median_gap_seconds": 10.019,
+        "max_gap_seconds": 10.317,
+        "first": "2026-10-25T18:01:02.702224",
+        "last": "2026-10-25T18:02:53.150188"
+      },
+      {
+        "node": "ESP32-10777D842178",
+        "parameter": "mq135_adc_raw",
+        "samples": 12,
+        "median_gap_seconds": 9.995,
+        "max_gap_seconds": 12.893,
+        "first": "2026-10-25T18:01:02.920798",
+        "last": "2026-10-25T18:02:53.656953"
+      },
+      {
+        "node": "ESP32-CC9B23E2DEC4",
+        "parameter": "mq135_adc_raw",
+        "samples": 12,
+        "median_gap_seconds": 9.979,
+        "max_gap_seconds": 15.567,
+        "first": "2026-10-25T18:00:57.863444",
+        "last": "2026-10-25T18:02:47.601997"
+      }
+    ]
+  },
+  "soak_uptime_monotonic": true,
+  "physical_ping": {
+    "command_id": "CMD-DE4C10CB2B70",
+    "state": "COMPLETED",
+    "ack_status": "ACCEPTED",
+    "created_at": "2026-10-25T18:00:50.771107",
+    "ack_at": "2026-10-25T18:00:54.521517",
+    "response_at": "2026-10-25T18:00:54.795016",
+    "result": {
+      "message": "sensor-latency-check",
+      "ok": true
+    },
+    "error": null
+  },
+  "uploads": [
+    {
+      "port": "COM8",
+      "device_id": "ESP32-10777D842178",
+      "application_role": "master",
+      "application_offset": 65536,
+      "image_bytes": 1303664,
+      "image_sha256": "d1624e7c649f500c18b3827af862192abca42d0380b2e624ebcaac33250f5c3b",
+      "upload_hash_verified": true,
+      "partition_nvs_ota_bytes_unchanged_during_upload": true,
+      "protected_backup_roundtrip_verified": true
+    },
+    {
+      "port": "COM11",
+      "device_id": "ESP32-CC9B23E2DEC4",
+      "application_role": "slave",
+      "application_offset": 65536,
+      "image_bytes": 1298768,
+      "image_sha256": "c5b6f1b5ad4484a463d8b5e7363ed43c04c2bc6245dbc6172f34ab1cf5a4d61e",
+      "upload_hash_verified": true,
+      "partition_nvs_ota_bytes_unchanged_during_upload": true,
+      "protected_backup_roundtrip_verified": true
+    }
+  ],
+  "radio": {
+    "read_only_register_inspection_passed_both": true,
+    "channel": 18,
+    "frequency_mhz": 868.125,
+    "power_dbm": 22,
+    "register_writes": 0,
+    "rf_test_performed": false
+  },
+  "dht": {
+    "master": {
+      "result": "OK",
+      "capture_pulses": 84
+    },
+    "slave": {
+      "result": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true,
+      "hardware_swap_available": false
+    }
+  },
+  "remaining": [
+    "Slave physical DHT11 fault isolation",
+    "Verified India-compatible RF operating profile and RF delivery test",
+    "Intermittent HTTP errors and longer connection soak"
+  ]
+}

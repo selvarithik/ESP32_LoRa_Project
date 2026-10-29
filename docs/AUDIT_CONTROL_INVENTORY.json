@@ -1,0 +1,3405 @@
+{
+  "scope": "Existing controls excluding MQTT, Private Chat and OTA. API candidates are static script references, not proof of a particular control binding. Dynamic controls and fixture/live evidence are listed separately in the report.",
+  "count": 194,
+  "controls": [
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "input",
+      "id": null,
+      "name": "username",
+      "label_or_selector": "username",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:21"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "input",
+      "id": null,
+      "name": "password",
+      "label_or_selector": "password",
+      "type": "password",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:24",
+        "dashboard\\static\\js\\command_center.js:20",
+        "dashboard\\static\\js\\login.js:2"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in",
+        "/api/auth/local-test-session",
+        "/api/auth/login",
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "Credential entry not exercised on live accounts; isolated authentication regression only"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "button",
+      "id": "account-new",
+      "name": null,
+      "label_or_selector": "account-new",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:35"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/logout",
+      "type": null,
+      "href": "/logout",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "input",
+      "id": null,
+      "name": "name",
+      "label_or_selector": "name",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:20",
+        "dashboard\\static\\js\\app.js:269",
+        "dashboard\\static\\js\\command_center.js:38",
+        "dashboard\\static\\js\\communication.js:280",
+        "dashboard\\static\\js\\dashboard.js:131",
+        "dashboard\\static\\js\\device-controls.js:5",
+        "dashboard\\static\\js\\dom.js:28",
+        "dashboard\\static\\js\\local_ip.js:4",
+        "dashboard\\static\\js\\nodes.js:244",
+        "dashboard\\static\\js\\sensor-management.js:6",
+        "dashboard\\static\\js\\sensor-widgets.js:8",
+        "dashboard\\static\\js\\sensors.js:165",
+        "dashboard\\static\\js\\system.js:47"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in",
+        "/api/commands",
+        "/api/commands/",
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status",
+        "/api/device-controls",
+        "/api/live/snapshot",
+        "/api/local-ip",
+        "/api/local-ip/devices/",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog",
+        "/api/system/factory-reset",
+        "/api/system/reboot",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "input",
+      "id": null,
+      "name": "username",
+      "label_or_selector": "username",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:21"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "select",
+      "id": null,
+      "name": "role",
+      "label_or_selector": "role",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accessibility.js:14",
+        "dashboard\\static\\js\\accounts.js:22",
+        "dashboard\\static\\js\\communication.js:434",
+        "dashboard\\static\\js\\dashboard.js:378",
+        "dashboard\\static\\js\\device-controls.js:5",
+        "dashboard\\static\\js\\local_ip.js:5",
+        "dashboard\\static\\js\\sensor-management.js:27",
+        "dashboard\\static\\js\\sensor-widgets.js:72"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in",
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status",
+        "/api/device-controls",
+        "/api/live/snapshot",
+        "/api/local-ip",
+        "/api/local-ip/devices/",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "input",
+      "id": null,
+      "name": "current_password",
+      "label_or_selector": "current_password",
+      "type": "password",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:56"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "Credential entry not exercised on live accounts; isolated authentication regression only"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "input",
+      "id": null,
+      "name": "password",
+      "label_or_selector": "password",
+      "type": "password",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:24",
+        "dashboard\\static\\js\\command_center.js:20",
+        "dashboard\\static\\js\\login.js:2"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in",
+        "/api/auth/local-test-session",
+        "/api/auth/login",
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "Credential entry not exercised on live accounts; isolated authentication regression only"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "input",
+      "id": null,
+      "name": "confirm_password",
+      "label_or_selector": "confirm_password",
+      "type": "password",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:25"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "Credential entry not exercised on live accounts; isolated authentication regression only"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "button",
+      "id": "account-show-password",
+      "name": null,
+      "label_or_selector": "account-show-password",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:56"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\accounts.html",
+      "element": "button",
+      "id": "account-cancel",
+      "name": null,
+      "label_or_selector": "account-cancel",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:58"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/accounts",
+      "type": null,
+      "href": "/accounts",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/logout",
+      "type": null,
+      "href": "/logout",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "Dashboard",
+      "type": null,
+      "href": "/",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "Nodes",
+      "type": null,
+      "href": "/nodes",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "Sensors",
+      "type": null,
+      "href": "/sensors",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "Commands",
+      "type": null,
+      "href": "/command-center",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "Network",
+      "type": null,
+      "href": "/communication",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "Firmware",
+      "type": null,
+      "href": "/firmware",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "Logs",
+      "type": null,
+      "href": "/logs",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "System",
+      "type": null,
+      "href": "/system",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "Private Chat",
+      "type": null,
+      "href": "/chat",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/logout",
+      "type": null,
+      "href": "/logout",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "Close navigation",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/",
+      "type": null,
+      "href": "/",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/nodes",
+      "type": null,
+      "href": "/nodes",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/sensors",
+      "type": null,
+      "href": "/sensors",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/command-center",
+      "type": null,
+      "href": "/command-center",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/communication",
+      "type": null,
+      "href": "/communication",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/firmware",
+      "type": null,
+      "href": "/firmware",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/logs",
+      "type": null,
+      "href": "/logs",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/system",
+      "type": null,
+      "href": "/system",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/chat",
+      "type": null,
+      "href": "/chat",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\base.html",
+      "element": "input",
+      "id": "global-nav-search",
+      "name": null,
+      "label_or_selector": "global-nav-search",
+      "type": "search",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\app.js:967"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "input",
+      "id": "node-search-input",
+      "name": null,
+      "label_or_selector": "node-search-input",
+      "type": "search",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:36"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "button",
+      "id": "command-back",
+      "name": null,
+      "label_or_selector": "Back to Nodes",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:203"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "button",
+      "id": "cmd-refresh-btn",
+      "name": null,
+      "label_or_selector": "Refresh node and conversation",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:201"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "select",
+      "id": "history-filter-select",
+      "name": null,
+      "label_or_selector": "history-filter-select",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:112"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "button",
+      "id": "command-latest",
+      "name": null,
+      "label_or_selector": "Scroll to latest command",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:202"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "LIVE VERIFIED: refresh/test session/PING/response history, as applicable; see report"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "button",
+      "id": "command-older",
+      "name": null,
+      "label_or_selector": "command-older",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:101"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "textarea",
+      "id": "command-arguments-json",
+      "name": null,
+      "label_or_selector": "command-arguments-json",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:179"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "select",
+      "id": "cmd-type-select",
+      "name": null,
+      "label_or_selector": "cmd-type-select",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:156"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "button",
+      "id": "command-config-toggle",
+      "name": null,
+      "label_or_selector": "command-config-toggle",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:210"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "button",
+      "id": "btn-send-command",
+      "name": null,
+      "label_or_selector": "btn-send-command",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:52"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "LIVE VERIFIED: refresh/test session/PING/response history, as applicable; see report"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "input",
+      "id": "command-quick-input",
+      "name": null,
+      "label_or_selector": "PING echo payload",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:159"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "input",
+      "id": "cmd-ack-timeout",
+      "name": null,
+      "label_or_selector": "cmd-ack-timeout",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:182"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "input",
+      "id": "cmd-expiry",
+      "name": null,
+      "label_or_selector": "cmd-expiry",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:182"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "select",
+      "id": "cmd-priority-select",
+      "name": null,
+      "label_or_selector": "cmd-priority-select",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:172"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "input",
+      "id": "cmd-timeout-input",
+      "name": null,
+      "label_or_selector": "cmd-timeout-input",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:172"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "input",
+      "id": "cmd-retries-input",
+      "name": null,
+      "label_or_selector": "cmd-retries-input",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:172"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "input",
+      "id": "param-ping-msg",
+      "name": null,
+      "label_or_selector": "param-ping-msg",
+      "type": "text",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:160"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "input",
+      "id": "param-interval-ms",
+      "name": null,
+      "label_or_selector": "param-interval-ms",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:177"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "input",
+      "id": "param-custom-name",
+      "name": null,
+      "label_or_selector": "param-custom-name",
+      "type": "text",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:178"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\command_center.html",
+      "element": "textarea",
+      "id": "param-custom-json",
+      "name": null,
+      "label_or_selector": "param-custom-json",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:178"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "button",
+      "id": "communication-refresh",
+      "name": null,
+      "label_or_selector": "communication-refresh",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\communication.js:1168"
+      ],
+      "api_candidates_from_script": [
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "input",
+      "id": "route-source",
+      "name": null,
+      "label_or_selector": "route-source",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\communication.js:695"
+      ],
+      "api_candidates_from_script": [
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "input",
+      "id": "route-destination",
+      "name": null,
+      "label_or_selector": "route-destination",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\communication.js:701"
+      ],
+      "api_candidates_from_script": [
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "select",
+      "id": "route-direction",
+      "name": null,
+      "label_or_selector": "route-direction",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\communication.js:707"
+      ],
+      "api_candidates_from_script": [
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "button",
+      "id": "route-test",
+      "name": null,
+      "label_or_selector": "route-test",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\communication.js:1200"
+      ],
+      "api_candidates_from_script": [
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "input",
+      "id": "uplink-threshold",
+      "name": null,
+      "label_or_selector": "uplink-threshold",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\communication.js:511"
+      ],
+      "api_candidates_from_script": [
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "input",
+      "id": "downlink-threshold",
+      "name": null,
+      "label_or_selector": "downlink-threshold",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\communication.js:517"
+      ],
+      "api_candidates_from_script": [
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "input",
+      "id": "retry-count",
+      "name": null,
+      "label_or_selector": "retry-count",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\communication.js:523"
+      ],
+      "api_candidates_from_script": [
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "input",
+      "id": "max-hops",
+      "name": null,
+      "label_or_selector": "max-hops",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\communication.js:529"
+      ],
+      "api_candidates_from_script": [
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\communication.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/system",
+      "type": null,
+      "href": "/system",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/system-overview",
+      "type": null,
+      "href": "/system-overview",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/device-controls",
+      "type": null,
+      "href": "/device-controls",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "select",
+      "id": "control-device",
+      "name": null,
+      "label_or_selector": "control-device",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:4"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "device_name",
+      "label_or_selector": "device_name",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:5"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "telemetry_seconds",
+      "label_or_selector": "telemetry_seconds",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:439",
+        "dashboard\\static\\js\\device-controls.js:10"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/live/snapshot",
+        "/api/nodes/",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "expected_revision",
+      "label_or_selector": "expected_revision",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:5",
+        "dashboard\\static\\js\\local_ip.js:6"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/local-ip",
+        "/api/local-ip/devices/",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": "submit",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "wifi_dhcp",
+      "label_or_selector": "wifi_dhcp",
+      "type": "checkbox",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:11"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "wifi_ip",
+      "label_or_selector": "wifi_ip",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:11"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "wifi_subnet",
+      "label_or_selector": "wifi_subnet",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:11"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "wifi_gateway",
+      "label_or_selector": "wifi_gateway",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:11"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "wifi_dns",
+      "label_or_selector": "wifi_dns",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:11"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "wifi_dns2",
+      "label_or_selector": "wifi_dns2",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:11"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": "submit",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "sleep_enabled",
+      "label_or_selector": "sleep_enabled",
+      "type": "checkbox",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:12"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "sleep_start_minute",
+      "label_or_selector": "sleep_start_minute",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:12"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "sleep_duration_seconds",
+      "label_or_selector": "sleep_duration_seconds",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:12"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "sleep_days_mask",
+      "label_or_selector": "sleep_days_mask",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:12"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": null,
+      "name": "utc_offset_minutes",
+      "label_or_selector": "utc_offset_minutes",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:12"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": "submit",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "input",
+      "id": "control-restart-confirm",
+      "name": null,
+      "label_or_selector": "control-restart-confirm",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:14"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "button",
+      "id": "control-restart",
+      "name": null,
+      "label_or_selector": "control-restart",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\device-controls.js:14"
+      ],
+      "api_candidates_from_script": [
+        "/api/device-controls",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\device_controls.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/command-center",
+      "type": null,
+      "href": "/command-center",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "input",
+      "id": "dashboard-search",
+      "name": null,
+      "label_or_selector": "Search dashboard",
+      "type": "search",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:850"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "select",
+      "id": "dashboard-node-filter",
+      "name": null,
+      "label_or_selector": "Filter by node",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:128"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "button",
+      "id": "dashboard-refresh",
+      "name": null,
+      "label_or_selector": "Refresh telemetry",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:846"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "LIVE VERIFIED: refresh/test session/PING/response history, as applicable; see report"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "select",
+      "id": "dashboard-status-filter",
+      "name": null,
+      "label_or_selector": "Filter by node status",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:860"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "button",
+      "id": "dashboard-show-config",
+      "name": null,
+      "label_or_selector": "dashboard-show-config",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:865"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "button",
+      "id": "dashboard-show-hidden",
+      "name": null,
+      "label_or_selector": "dashboard-show-hidden",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:871"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "button",
+      "id": "dashboard-customize-btn",
+      "name": null,
+      "label_or_selector": "dashboard-customize-btn",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:878"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "button",
+      "id": "add-sensor-widget-inline",
+      "name": null,
+      "label_or_selector": "add-sensor-widget-inline",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:886"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/sensors",
+      "type": null,
+      "href": "/sensors",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/logs",
+      "type": null,
+      "href": "/logs",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "button",
+      "id": "close-widget-drawer",
+      "name": null,
+      "label_or_selector": "Close",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:879"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "input",
+      "id": null,
+      "name": null,
+      "label_or_selector": "input",
+      "type": "checkbox",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "input",
+      "id": null,
+      "name": null,
+      "label_or_selector": "input",
+      "type": "checkbox",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "input",
+      "id": null,
+      "name": null,
+      "label_or_selector": "input",
+      "type": "checkbox",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "button",
+      "id": "reset-widgets-btn",
+      "name": null,
+      "label_or_selector": "reset-widgets-btn",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:885"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\index.html",
+      "element": "button",
+      "id": "save-widgets-btn",
+      "name": null,
+      "label_or_selector": "save-widgets-btn",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:881"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\local_ip.html",
+      "element": "input",
+      "id": "local-ip-enabled",
+      "name": null,
+      "label_or_selector": "local-ip-enabled",
+      "type": "checkbox",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\local_ip.js:5"
+      ],
+      "api_candidates_from_script": [
+        "/api/local-ip",
+        "/api/local-ip/devices/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\local_ip.html",
+      "element": "input",
+      "id": "local-ip-bind",
+      "name": null,
+      "label_or_selector": "local-ip-bind",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\local_ip.js:5"
+      ],
+      "api_candidates_from_script": [
+        "/api/local-ip",
+        "/api/local-ip/devices/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\local_ip.html",
+      "element": "input",
+      "id": "local-ip-port",
+      "name": null,
+      "label_or_selector": "local-ip-port",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\local_ip.js:5"
+      ],
+      "api_candidates_from_script": [
+        "/api/local-ip",
+        "/api/local-ip/devices/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\local_ip.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": "submit",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\local_ip.html",
+      "element": "button",
+      "id": "local-ip-refresh",
+      "name": null,
+      "label_or_selector": "local-ip-refresh",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\local_ip.js:7"
+      ],
+      "api_candidates_from_script": [
+        "/api/local-ip",
+        "/api/local-ip/devices/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\login.html",
+      "element": "input",
+      "id": null,
+      "name": "username",
+      "label_or_selector": "username",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:21"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\login.html",
+      "element": "input",
+      "id": "password",
+      "name": "password",
+      "label_or_selector": "password",
+      "type": "password",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:24",
+        "dashboard\\static\\js\\command_center.js:20",
+        "dashboard\\static\\js\\login.js:2"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in",
+        "/api/auth/local-test-session",
+        "/api/auth/login",
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "Credential entry not exercised on live accounts; isolated authentication regression only"
+    },
+    {
+      "page_template": "dashboard\\templates\\login.html",
+      "element": "button",
+      "id": "visibility",
+      "name": null,
+      "label_or_selector": "visibility",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accessibility.js:32",
+        "dashboard\\static\\js\\app.js:36",
+        "dashboard\\static\\js\\command_center.js:222",
+        "dashboard\\static\\js\\login.js:3"
+      ],
+      "api_candidates_from_script": [
+        "/api/auth/local-test-session",
+        "/api/auth/login",
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\login.html",
+      "element": "button",
+      "id": "signin",
+      "name": null,
+      "label_or_selector": "signin",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\login.js:2"
+      ],
+      "api_candidates_from_script": [
+        "/api/auth/local-test-session",
+        "/api/auth/login"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\login.html",
+      "element": "button",
+      "id": "local-test-session",
+      "name": null,
+      "label_or_selector": "local-test-session",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\login.js:6"
+      ],
+      "api_candidates_from_script": [
+        "/api/auth/local-test-session",
+        "/api/auth/login"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "LIVE VERIFIED: refresh/test session/PING/response history, as applicable; see report"
+    },
+    {
+      "page_template": "dashboard\\templates\\logout.html",
+      "element": "button",
+      "id": "logout",
+      "name": null,
+      "label_or_selector": "logout",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\logout.js:1"
+      ],
+      "api_candidates_from_script": [
+        "/api/auth/logout"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\logout.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/",
+      "type": null,
+      "href": "/",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\logs.html",
+      "element": "input",
+      "id": "logs-date",
+      "name": null,
+      "label_or_selector": "Log date",
+      "type": "date",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\logs.js:57"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\logs.html",
+      "element": "select",
+      "id": "logs-severity",
+      "name": null,
+      "label_or_selector": "Log severity",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\logs.js:49"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\logs.html",
+      "element": "input",
+      "id": "logs-search",
+      "name": null,
+      "label_or_selector": "Search logs",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\logs.js:41"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\logs.html",
+      "element": "button",
+      "id": "logs-clear",
+      "name": null,
+      "label_or_selector": "logs-clear",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\logs.js:80"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\logs.html",
+      "element": "button",
+      "id": "logs-refresh",
+      "name": null,
+      "label_or_selector": "logs-refresh",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\logs.js:33"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\logs.html",
+      "element": "input",
+      "id": "logs-auto-refresh",
+      "name": null,
+      "label_or_selector": "logs-auto-refresh",
+      "type": "checkbox",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\logs.js:65"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "input",
+      "id": "node-search",
+      "name": null,
+      "label_or_selector": "node-search",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:36",
+        "dashboard\\static\\js\\nodes.js:63"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/nodes",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "button",
+      "id": "node-refresh",
+      "name": null,
+      "label_or_selector": "node-refresh",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\nodes.js:58"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "button",
+      "id": "add-node",
+      "name": null,
+      "label_or_selector": "add-node",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\nodes.js:49"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "button",
+      "id": "node-drawer-close",
+      "name": null,
+      "label_or_selector": "node-drawer-close",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\nodes.js:68"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "input",
+      "id": null,
+      "name": "node_id",
+      "label_or_selector": "node_id",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:13",
+        "dashboard\\static\\js\\communication.js:94",
+        "dashboard\\static\\js\\dashboard.js:131",
+        "dashboard\\static\\js\\device-controls.js:4",
+        "dashboard\\static\\js\\logs.js:324",
+        "dashboard\\static\\js\\nodes.js:245",
+        "dashboard\\static\\js\\sensor-management.js:7",
+        "dashboard\\static\\js\\sensor-widgets.js:84",
+        "dashboard\\static\\js\\sensors.js:159",
+        "dashboard\\static\\js\\system-overview.js:71",
+        "dashboard\\static\\js\\system.js:47"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/commands",
+        "/api/commands/",
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status",
+        "/api/device-controls",
+        "/api/live/snapshot",
+        "/api/logs",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog",
+        "/api/status",
+        "/api/system/factory-reset",
+        "/api/system/reboot",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "input",
+      "id": null,
+      "name": "name",
+      "label_or_selector": "name",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accounts.js:20",
+        "dashboard\\static\\js\\app.js:269",
+        "dashboard\\static\\js\\command_center.js:38",
+        "dashboard\\static\\js\\communication.js:280",
+        "dashboard\\static\\js\\dashboard.js:131",
+        "dashboard\\static\\js\\device-controls.js:5",
+        "dashboard\\static\\js\\dom.js:28",
+        "dashboard\\static\\js\\local_ip.js:4",
+        "dashboard\\static\\js\\nodes.js:244",
+        "dashboard\\static\\js\\sensor-management.js:6",
+        "dashboard\\static\\js\\sensor-widgets.js:8",
+        "dashboard\\static\\js\\sensors.js:165",
+        "dashboard\\static\\js\\system.js:47"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/accounts/",
+        "/api/accounts/sign-in",
+        "/api/commands",
+        "/api/commands/",
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status",
+        "/api/device-controls",
+        "/api/live/snapshot",
+        "/api/local-ip",
+        "/api/local-ip/devices/",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog",
+        "/api/system/factory-reset",
+        "/api/system/reboot",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "input",
+      "id": null,
+      "name": "node_address",
+      "label_or_selector": "node_address",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:207",
+        "dashboard\\static\\js\\nodes.js:778",
+        "dashboard\\static\\js\\system.js:67"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "input",
+      "id": null,
+      "name": "mcu_family",
+      "label_or_selector": "mcu_family",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:45",
+        "dashboard\\static\\js\\dashboard.js:207",
+        "dashboard\\static\\js\\nodes.js:246",
+        "dashboard\\static\\js\\system.js:68"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/live/snapshot",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/system/factory-reset",
+        "/api/system/reboot",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "input",
+      "id": null,
+      "name": "mcu_model",
+      "label_or_selector": "mcu_model",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:208",
+        "dashboard\\static\\js\\nodes.js:247",
+        "dashboard\\static\\js\\system.js:68"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "input",
+      "id": null,
+      "name": "hardware_revision",
+      "label_or_selector": "hardware_revision",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\dashboard.js:208",
+        "dashboard\\static\\js\\nodes.js:799",
+        "dashboard\\static\\js\\system.js:69"
+      ],
+      "api_candidates_from_script": [
+        "/api/live/snapshot",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "input",
+      "id": null,
+      "name": "firmware_version",
+      "label_or_selector": "firmware_version",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:39",
+        "dashboard\\static\\js\\dashboard.js:208",
+        "dashboard\\static\\js\\nodes.js:249",
+        "dashboard\\static\\js\\system.js:70"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/live/snapshot",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/system/factory-reset",
+        "/api/system/reboot",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "select",
+      "id": null,
+      "name": "communication_type",
+      "label_or_selector": "communication_type",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\command_center.js:45",
+        "dashboard\\static\\js\\dashboard.js:209",
+        "dashboard\\static\\js\\nodes.js:248",
+        "dashboard\\static\\js\\system.js:104"
+      ],
+      "api_candidates_from_script": [
+        "/api/commands",
+        "/api/commands/",
+        "/api/live/snapshot",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/system/factory-reset",
+        "/api/system/reboot",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "input",
+      "id": null,
+      "name": "enabled",
+      "label_or_selector": "enabled",
+      "type": "checkbox",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\app.js:25",
+        "dashboard\\static\\js\\command_center.js:12",
+        "dashboard\\static\\js\\communication.js:119",
+        "dashboard\\static\\js\\dashboard.js:189",
+        "dashboard\\static\\js\\device-controls.js:12",
+        "dashboard\\static\\js\\local_ip.js:5",
+        "dashboard\\static\\js\\nodes.js:307",
+        "dashboard\\static\\js\\sensor-management.js:24",
+        "dashboard\\static\\js\\sensor-widgets.js:28",
+        "dashboard\\static\\js\\sensors.js:275",
+        "dashboard\\static\\js\\system-overview.js:42",
+        "dashboard\\static\\js\\system.js:76"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/commands",
+        "/api/commands/",
+        "/api/communication/mesh",
+        "/api/communication/settings",
+        "/api/communication/status",
+        "/api/device-controls",
+        "/api/live/snapshot",
+        "/api/local-ip",
+        "/api/local-ip/devices/",
+        "/api/logs",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog",
+        "/api/status",
+        "/api/system/factory-reset",
+        "/api/system/reboot",
+        "/api/v1/commands"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "button",
+      "id": "node-cancel",
+      "name": null,
+      "label_or_selector": "node-cancel",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\nodes.js:73"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\nodes.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": "submit",
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "button",
+      "id": "sensor-add",
+      "name": null,
+      "label_or_selector": "sensor-add",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\sensor-management.js:28"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "input",
+      "id": "sensor-management-search",
+      "name": null,
+      "label_or_selector": "Search sensors and templates",
+      "type": "search",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\sensor-management.js:23"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "select",
+      "id": "sensor-management-category",
+      "name": null,
+      "label_or_selector": "Category",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\sensor-management.js:23"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "select",
+      "id": "sensor-management-filter",
+      "name": null,
+      "label_or_selector": "Sensor state",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\sensor-management.js:23"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "select",
+      "id": "sensor-management-sort",
+      "name": null,
+      "label_or_selector": "Sort sensors",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\sensor-management.js:23"
+      ],
+      "api_candidates_from_script": [
+        "/api/accounts",
+        "/api/nodes",
+        "/api/nodes/",
+        "/api/sensor-catalog"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/accounts",
+      "type": null,
+      "href": "/accounts",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "select",
+      "id": "sensor-node",
+      "name": null,
+      "label_or_selector": "sensor-node",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\sensors.js:36"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "input",
+      "id": "sensor-search",
+      "name": null,
+      "label_or_selector": "sensor-search",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\sensors.js:51"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "button",
+      "id": null,
+      "name": null,
+      "label_or_selector": "button",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\sensors.html",
+      "element": "button",
+      "id": "sensor-close",
+      "name": null,
+      "label_or_selector": "sensor-close",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\sensors.js:90"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/nodes/"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system-overview.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/system",
+      "type": null,
+      "href": "/system",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system-overview.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/system-overview",
+      "type": null,
+      "href": "/system-overview",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system-overview.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/logs",
+      "type": null,
+      "href": "/logs",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/system",
+      "type": null,
+      "href": "/system",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/system-overview",
+      "type": null,
+      "href": "/system-overview",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/device-controls",
+      "type": null,
+      "href": "/device-controls",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "/local-ip",
+      "type": null,
+      "href": "/local-ip",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "select",
+      "id": "system-node",
+      "name": null,
+      "label_or_selector": "Node selector",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:7"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "input",
+      "id": "system-node-name",
+      "name": "name",
+      "label_or_selector": "system-node-name",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:65"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "input",
+      "id": "system-node-id",
+      "name": "node_id",
+      "label_or_selector": "system-node-id",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:66"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "input",
+      "id": "system-address",
+      "name": "node_address",
+      "label_or_selector": "system-address",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:67"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "input",
+      "id": "system-mcu",
+      "name": null,
+      "label_or_selector": "system-mcu",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:68"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "input",
+      "id": "system-hardware",
+      "name": "hardware_revision",
+      "label_or_selector": "system-hardware",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:69"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "input",
+      "id": "system-firmware",
+      "name": "firmware_version",
+      "label_or_selector": "system-firmware",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:70"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "input",
+      "id": "system-timezone",
+      "name": "timezone",
+      "label_or_selector": "system-timezone",
+      "type": null,
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:75"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "input",
+      "id": "system-time-sync",
+      "name": "time_sync",
+      "label_or_selector": "system-time-sync",
+      "type": "checkbox",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:76"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "input",
+      "id": "system-watchdog",
+      "name": "watchdog",
+      "label_or_selector": "system-watchdog",
+      "type": "number",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:77"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "button",
+      "id": "system-reboot",
+      "name": null,
+      "label_or_selector": "system-reboot",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:27"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "button",
+      "id": "system-factory-reset",
+      "name": null,
+      "label_or_selector": "system-factory-reset",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:30"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "button",
+      "id": "system-reset",
+      "name": null,
+      "label_or_selector": "system-reset",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:26"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\system.html",
+      "element": "button",
+      "id": "system-save",
+      "name": null,
+      "label_or_selector": "system-save",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\system.js:25"
+      ],
+      "api_candidates_from_script": [
+        "/api/nodes",
+        "/api/system/factory-reset",
+        "/api/system/reboot"
+      ],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\partials\\global-header.html",
+      "element": "button",
+      "id": "mobile-menu-btn",
+      "name": null,
+      "label_or_selector": "Open navigation",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\app.js:1082"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\partials\\global-header.html",
+      "element": "a",
+      "id": null,
+      "name": null,
+      "label_or_selector": "SELVARITHIK'S A&D dashboard",
+      "type": null,
+      "href": "/",
+      "frontend_handler_locations": [],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\partials\\global-header.html",
+      "element": "button",
+      "id": "global-nav-search-button",
+      "name": null,
+      "label_or_selector": "Search pages",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\app.js:969"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    },
+    {
+      "page_template": "dashboard\\templates\\partials\\global-header.html",
+      "element": "button",
+      "id": "theme-toggle",
+      "name": null,
+      "label_or_selector": "Dark theme",
+      "type": "button",
+      "href": null,
+      "frontend_handler_locations": [
+        "dashboard\\static\\js\\accessibility.js:4"
+      ],
+      "api_candidates_from_script": [],
+      "authorization": "Existing account/role checks; CSRF for mutations",
+      "verification": "INSPECTED; NOT LIVE-EXERCISED unless listed in live checks"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "cards": [
+    {
+      "display": "Temperature\nESP32-10777D842178-DHT11-temperature\nStale\n36.30\nC\n\nGateway received 10/26/2026, 12:06:01 AM\n\nHistory · 1 hour\nClick graph to expand ↗\nRemove widget",
+      "name": "Temperature"
+    },
+    {
+      "display": "Humidity\nESP32-10777D842178-DHT11-humidity\nStale\n47.00\n%RH\n\nGateway received 10/26/2026, 12:06:01 AM\n\nHistory · 1 hour\nClick graph to expand ↗\nRemove widget",
+      "name": "Humidity"
+    },
+    {
+      "display": "Bus Voltage\nESP32-10777D842178-INA219-bus_voltage\nLive\n3.176\nV\n\nGateway received 10/26/2026, 8:20:49 PM\n\nHistory · 1 hour\nClick graph to expand ↗\nRemove widget",
+      "name": "Bus Voltage"
+    },
+    {
+      "display": "Shunt Voltage\nESP32-10777D842178-INA219-shunt_voltage\nLive\n0.150\nmV\n\nGateway received 10/26/2026, 8:20:49 PM\n\nHistory · 1 hour\nClick graph to expand ↗\nRemove widget",
+      "name": "Shunt Voltage"
+    },
+    {
+      "display": "Current\nESP32-10777D842178-INA219-current\nLive\n0.00150\nA\n\nGateway received 10/26/2026, 8:20:49 PM\n\nHistory · 1 hour\nClick graph to expand ↗\nRemove widget",
+      "name": "Current"
+    },
+    {
+      "display": "Power\nESP32-10777D842178-INA219-power\nLive\n0.00476\nW\n\nGateway received 10/26/2026, 8:20:49 PM\n\nHistory · 1 hour\nClick graph to expand ↗\nRemove widget",
+      "name": "Power"
+    },
+    {
+      "display": "Mq135 Adc Raw\nESP32-10777D842178-MQ135-mq135_adc_raw\nLive\n486\ncount\n\nGateway received 10/26/2026, 8:20:49 PM\n\nHistory · 1 hour\nClick graph to expand ↗\nRemove widget",
+      "name": "Mq135 Adc Raw"
+    },
+    {
+      "display": "Mq135 Pin Mv\nESP32-10777D842178-MQ135-mq135_pin_mv\nLive\n539\nmV\n\nGateway received 10/26/2026, 8:20:49 PM\n\nHistory · 1 hour\nClick graph to expand ↗\nRemove widget",
+      "name": "Mq135 Pin Mv"
+    }
+  ],
+  "connection": "Fleet\n1 online\n1 Master · 1 registered Node\nLocal IP\nFAILED\n0 persisted exchanges\nMQTT\nconnected\nSCOPED_TELEMETRY_VERIFIED\nEthernet\nNOT_AVAILABLE\nLoRa RF delivery not verified",
+  "observed_at": "2026-10-26T14:50:54.129Z",
+  "page": "/"
+}

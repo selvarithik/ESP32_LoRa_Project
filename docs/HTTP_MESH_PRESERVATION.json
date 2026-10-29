@@ -1,0 +1,12 @@
+{
+  "all_saved_firmware_config_fields_unchanged": {
+    "COM8": true,
+    "COM11": true
+  },
+  "gateway_sensor_settings_unchanged": true,
+  "gateway_mqtt_configuration_unchanged": true,
+  "protected_gateway_files_unchanged": true,
+  "excluded_chat_ota_files_unchanged": true,
+  "contract_identical": true,
+  "contract_sha256": "4a6ac838e0fb437606e791d3bd21941cdfe64d560763f0f182e5b105fb5fedde"
+}

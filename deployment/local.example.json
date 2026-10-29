@@ -1,0 +1,1 @@
+{"mode":"local","host":"127.0.0.1","port":5000,"threads":16,"allowed_hosts":["localhost","127.0.0.1"],"trusted_proxies":[],"public_url":"","backup_hours":24,"backup_keep":7}

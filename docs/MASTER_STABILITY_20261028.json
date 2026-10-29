@@ -1,0 +1,941 @@
+{
+  "started_at_local": "2026-10-28T19:29:19.889861",
+  "timezone": "Asia/Calcutta",
+  "planned_duration_s": 1800,
+  "port": "COM8",
+  "device_id": "ESP32-10777D842178",
+  "transport": "PERMANENT_EMQX_WORKER_ONLY",
+  "mutations_sent": false,
+  "forced_reconnects": false,
+  "samples": [
+    {
+      "elapsed_s": 1.1,
+      "uptime_ms": 1454249,
+      "free_internal_bytes": 37956,
+      "largest_internal_block": 16372,
+      "tls": "VERIFIED",
+      "mqtt": "connected",
+      "subscriptions": "READY",
+      "reconnect_count": 3,
+      "client_recycles": 3,
+      "outbox_bytes": 0,
+      "dropped": 0,
+      "last_puback": 1793195959,
+      "sensor_status": {
+        "DHT11": "OK",
+        "INA219": "OK",
+        "MQ135": "WARMING_UP_RAW_ONLY"
+      }
+    }
+  ],
+  "pings": [
+    {
+      "command_id": "CMD-1ABAA44BF373",
+      "queued_elapsed_s": 0.5,
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "sent_at": "2026-10-28T19:29:20.605117",
+      "ack_at": "2026-10-28T19:29:27.382694",
+      "response_at": "2026-10-28T19:29:27.588112",
+      "error": null,
+      "response_ok": true,
+      "ack_at_delay_s": 6.778,
+      "response_at_delay_s": 6.983
+    },
+    {
+      "command_id": "CMD-C1D89F432769",
+      "queued_elapsed_s": 350.9,
+      "state": "TIMEOUT",
+      "ack_status": null,
+      "sent_at": "2026-10-28T19:35:11.408604",
+      "ack_at": null,
+      "response_at": null,
+      "error": "ACK_TIMEOUT; device acceptance unknown",
+      "response_ok": false
+    },
+    {
+      "command_id": "CMD-FC54C43C5C6C",
+      "queued_elapsed_s": 601.5,
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "sent_at": "2026-10-28T19:39:21.883319",
+      "ack_at": "2026-10-28T19:39:23.014214",
+      "response_at": "2026-10-28T19:39:23.295525",
+      "error": null,
+      "response_ok": true,
+      "ack_at_delay_s": 1.131,
+      "response_at_delay_s": 1.412
+    },
+    {
+      "command_id": "CMD-28376D7CF588",
+      "queued_elapsed_s": 902.1,
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "sent_at": "2026-10-28T19:44:22.177463",
+      "ack_at": "2026-10-28T19:44:23.745486",
+      "response_at": "2026-10-28T19:44:23.967186",
+      "error": null,
+      "response_ok": true,
+      "ack_at_delay_s": 1.568,
+      "response_at_delay_s": 1.79
+    },
+    {
+      "command_id": "CMD-D8C069D5EF65",
+      "queued_elapsed_s": 1202.7,
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "sent_at": "2026-10-28T19:49:22.687399",
+      "ack_at": "2026-10-28T19:49:24.323276",
+      "response_at": "2026-10-28T19:49:24.570905",
+      "error": null,
+      "response_ok": true,
+      "ack_at_delay_s": 1.636,
+      "response_at_delay_s": 1.884
+    },
+    {
+      "command_id": "CMD-DB81D0D917F2",
+      "queued_elapsed_s": 1503.5,
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "sent_at": "2026-10-28T19:54:24.421606",
+      "ack_at": "2026-10-28T19:54:25.883108",
+      "response_at": "2026-10-28T19:54:26.128313",
+      "error": null,
+      "response_ok": true,
+      "ack_at_delay_s": 1.462,
+      "response_at_delay_s": 1.707
+    }
+  ],
+  "complete": true,
+  "instrumentation_findings": [
+    {
+      "elapsed_s": 31.1,
+      "operation": "USB_STATUS",
+      "error": "RuntimeError"
+    },
+    {
+      "elapsed_s": 61.1,
+      "operation": "USB_STATUS",
+      "error": "RuntimeError"
+    },
+    {
+      "elapsed_s": 91.2,
+      "operation": "USB_STATUS",
+      "error": "RuntimeError"
+    },
+    {
+      "elapsed_s": 121.2,
+      "operation": "USB_STATUS",
+      "error": "RuntimeError"
+    },
+    {
+      "elapsed_s": 151.3,
+      "operation": "USB_STATUS",
+      "error": "RuntimeError"
+    },
+    {
+      "elapsed_s": 181.3,
+      "operation": "USB_STATUS",
+      "error": "RuntimeError"
+    },
+    {
+      "elapsed_s": 211.4,
+      "operation": "USB_STATUS",
+      "error": "RuntimeError"
+    },
+    {
+      "elapsed_s": 241.4,
+      "operation": "USB_STATUS",
+      "error": "RuntimeError"
+    }
+  ],
+  "errors": [],
+  "monitor_note": "Persistent serial observer timed out; resumed original timeline with read-only MQTT heartbeat/database observation. No board reset or configuration operation.",
+  "heartbeat_samples": [
+    {
+      "elapsed_s": 350.9,
+      "uptime_s": 1800,
+      "free_heap": 73428,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:35:10.291627",
+      "heartbeat_age_s": 0.51
+    },
+    {
+      "elapsed_s": 371.0,
+      "uptime_s": 1800,
+      "free_heap": 73428,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:35:10.291627",
+      "heartbeat_age_s": 20.58
+    },
+    {
+      "elapsed_s": 391.0,
+      "uptime_s": 1800,
+      "free_heap": 73428,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:35:10.291627",
+      "heartbeat_age_s": 40.61
+    },
+    {
+      "elapsed_s": 411.1,
+      "uptime_s": 1800,
+      "free_heap": 73428,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:35:10.291627",
+      "heartbeat_age_s": 60.65
+    },
+    {
+      "elapsed_s": 431.1,
+      "uptime_s": 1800,
+      "free_heap": 73428,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:35:10.291627",
+      "heartbeat_age_s": 80.72
+    },
+    {
+      "elapsed_s": 451.1,
+      "uptime_s": 1903,
+      "free_heap": 74260,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:36:50.376829",
+      "heartbeat_age_s": 0.66
+    },
+    {
+      "elapsed_s": 471.2,
+      "uptime_s": 1920,
+      "free_heap": 70176,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:37:09.866338",
+      "heartbeat_age_s": 1.19
+    },
+    {
+      "elapsed_s": 491.2,
+      "uptime_s": 1928,
+      "free_heap": 75364,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:37:28.360601",
+      "heartbeat_age_s": 2.75
+    },
+    {
+      "elapsed_s": 511.3,
+      "uptime_s": 1959,
+      "free_heap": 73792,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:37:48.796543",
+      "heartbeat_age_s": 2.35
+    },
+    {
+      "elapsed_s": 531.3,
+      "uptime_s": 1980,
+      "free_heap": 70120,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:38:09.537497",
+      "heartbeat_age_s": 1.64
+    },
+    {
+      "elapsed_s": 551.3,
+      "uptime_s": 1989,
+      "free_heap": 73716,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:38:28.429459",
+      "heartbeat_age_s": 2.81
+    },
+    {
+      "elapsed_s": 571.4,
+      "uptime_s": 2019,
+      "free_heap": 75260,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:38:49.080365",
+      "heartbeat_age_s": 2.17
+    },
+    {
+      "elapsed_s": 591.4,
+      "uptime_s": 2040,
+      "free_heap": 72560,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:39:09.741066",
+      "heartbeat_age_s": 1.54
+    },
+    {
+      "elapsed_s": 611.5,
+      "uptime_s": 2049,
+      "free_heap": 73808,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:39:28.340277",
+      "heartbeat_age_s": 3.05
+    },
+    {
+      "elapsed_s": 631.5,
+      "uptime_s": 2080,
+      "free_heap": 75192,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:39:49.984455",
+      "heartbeat_age_s": 1.43
+    },
+    {
+      "elapsed_s": 651.6,
+      "uptime_s": 2100,
+      "free_heap": 72368,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:40:09.132440",
+      "heartbeat_age_s": 2.31
+    },
+    {
+      "elapsed_s": 671.6,
+      "uptime_s": 2112,
+      "free_heap": 72904,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:40:29.466105",
+      "heartbeat_age_s": 2.05
+    },
+    {
+      "elapsed_s": 691.7,
+      "uptime_s": 2142,
+      "free_heap": 71508,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:40:49.529239",
+      "heartbeat_age_s": 2.02
+    },
+    {
+      "elapsed_s": 711.7,
+      "uptime_s": 2160,
+      "free_heap": 73012,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:41:09.787107",
+      "heartbeat_age_s": 1.8
+    },
+    {
+      "elapsed_s": 731.7,
+      "uptime_s": 2173,
+      "free_heap": 72672,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:41:29.194351",
+      "heartbeat_age_s": 2.43
+    },
+    {
+      "elapsed_s": 751.9,
+      "uptime_s": 2190,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:41:48.951771",
+      "heartbeat_age_s": 2.79
+    },
+    {
+      "elapsed_s": 771.9,
+      "uptime_s": 2220,
+      "free_heap": 72992,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:42:09.228789",
+      "heartbeat_age_s": 2.55
+    },
+    {
+      "elapsed_s": 791.9,
+      "uptime_s": 2236,
+      "free_heap": 69888,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:42:29.113185",
+      "heartbeat_age_s": 2.71
+    },
+    {
+      "elapsed_s": 812.0,
+      "uptime_s": 2250,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:42:49.179675",
+      "heartbeat_age_s": 2.67
+    },
+    {
+      "elapsed_s": 832.0,
+      "uptime_s": 2280,
+      "free_heap": 73012,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:43:09.076438",
+      "heartbeat_age_s": 2.79
+    },
+    {
+      "elapsed_s": 852.0,
+      "uptime_s": 2298,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:43:29.016557",
+      "heartbeat_age_s": 2.9
+    },
+    {
+      "elapsed_s": 872.0,
+      "uptime_s": 2310,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:43:49.111343",
+      "heartbeat_age_s": 2.83
+    },
+    {
+      "elapsed_s": 892.1,
+      "uptime_s": 2340,
+      "free_heap": 69868,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:44:09.143592",
+      "heartbeat_age_s": 2.84
+    },
+    {
+      "elapsed_s": 912.2,
+      "uptime_s": 2359,
+      "free_heap": 75628,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:44:29.262768",
+      "heartbeat_age_s": 2.82
+    },
+    {
+      "elapsed_s": 932.2,
+      "uptime_s": 2370,
+      "free_heap": 75628,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:44:48.903105",
+      "heartbeat_age_s": 3.21
+    },
+    {
+      "elapsed_s": 952.3,
+      "uptime_s": 2400,
+      "free_heap": 72836,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:45:09.358760",
+      "heartbeat_age_s": 2.78
+    },
+    {
+      "elapsed_s": 972.3,
+      "uptime_s": 2422,
+      "free_heap": 73112,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:45:29.919577",
+      "heartbeat_age_s": 2.27
+    },
+    {
+      "elapsed_s": 992.3,
+      "uptime_s": 2430,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:45:49.065699",
+      "heartbeat_age_s": 3.14
+    },
+    {
+      "elapsed_s": 1012.3,
+      "uptime_s": 2460,
+      "free_heap": 72992,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:46:09.489131",
+      "heartbeat_age_s": 2.74
+    },
+    {
+      "elapsed_s": 1032.4,
+      "uptime_s": 2484,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:46:31.820905",
+      "heartbeat_age_s": 0.45
+    },
+    {
+      "elapsed_s": 1052.4,
+      "uptime_s": 2490,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:46:48.920962",
+      "heartbeat_age_s": 3.4
+    },
+    {
+      "elapsed_s": 1072.4,
+      "uptime_s": 2520,
+      "free_heap": 73008,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:47:10.397318",
+      "heartbeat_age_s": 1.94
+    },
+    {
+      "elapsed_s": 1092.5,
+      "uptime_s": 2520,
+      "free_heap": 73008,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:47:31.202779",
+      "heartbeat_age_s": 1.18
+    },
+    {
+      "elapsed_s": 1112.5,
+      "uptime_s": 2550,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:47:49.277383",
+      "heartbeat_age_s": 3.12
+    },
+    {
+      "elapsed_s": 1132.5,
+      "uptime_s": 2580,
+      "free_heap": 72992,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:48:09.295360",
+      "heartbeat_age_s": 3.12
+    },
+    {
+      "elapsed_s": 1152.6,
+      "uptime_s": 2580,
+      "free_heap": 72992,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:48:28.878560",
+      "heartbeat_age_s": 3.59
+    },
+    {
+      "elapsed_s": 1172.6,
+      "uptime_s": 2610,
+      "free_heap": 75800,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:48:48.952553",
+      "heartbeat_age_s": 3.56
+    },
+    {
+      "elapsed_s": 1192.6,
+      "uptime_s": 2640,
+      "free_heap": 73008,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:49:10.903128",
+      "heartbeat_age_s": 1.63
+    },
+    {
+      "elapsed_s": 1212.7,
+      "uptime_s": 2640,
+      "free_heap": 73008,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:49:29.172566",
+      "heartbeat_age_s": 3.44
+    },
+    {
+      "elapsed_s": 1232.7,
+      "uptime_s": 2670,
+      "free_heap": 75628,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:49:49.098402",
+      "heartbeat_age_s": 3.54
+    },
+    {
+      "elapsed_s": 1252.8,
+      "uptime_s": 2700,
+      "free_heap": 72812,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:50:09.357600",
+      "heartbeat_age_s": 3.32
+    },
+    {
+      "elapsed_s": 1272.9,
+      "uptime_s": 2700,
+      "free_heap": 72812,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:50:29.205802",
+      "heartbeat_age_s": 3.55
+    },
+    {
+      "elapsed_s": 1292.9,
+      "uptime_s": 2730,
+      "free_heap": 75808,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:50:49.555411",
+      "heartbeat_age_s": 3.23
+    },
+    {
+      "elapsed_s": 1312.9,
+      "uptime_s": 2760,
+      "free_heap": 70604,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:51:10.095651",
+      "heartbeat_age_s": 2.74
+    },
+    {
+      "elapsed_s": 1333.1,
+      "uptime_s": 2760,
+      "free_heap": 70604,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:51:29.396872",
+      "heartbeat_age_s": 3.54
+    },
+    {
+      "elapsed_s": 1353.1,
+      "uptime_s": 2790,
+      "free_heap": 73384,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:51:49.023936",
+      "heartbeat_age_s": 3.93
+    },
+    {
+      "elapsed_s": 1373.2,
+      "uptime_s": 2822,
+      "free_heap": 74240,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:52:09.151674",
+      "heartbeat_age_s": 3.95
+    },
+    {
+      "elapsed_s": 1393.3,
+      "uptime_s": 2822,
+      "free_heap": 74240,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:52:29.254480",
+      "heartbeat_age_s": 3.9
+    },
+    {
+      "elapsed_s": 1413.3,
+      "uptime_s": 2853,
+      "free_heap": 75792,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:52:49.261107",
+      "heartbeat_age_s": 3.93
+    },
+    {
+      "elapsed_s": 1433.3,
+      "uptime_s": 2885,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:53:12.281486",
+      "heartbeat_age_s": 0.96
+    },
+    {
+      "elapsed_s": 1453.4,
+      "uptime_s": 2885,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:53:29.318148",
+      "heartbeat_age_s": 3.96
+    },
+    {
+      "elapsed_s": 1473.5,
+      "uptime_s": 2916,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:53:49.051846",
+      "heartbeat_age_s": 4.3
+    },
+    {
+      "elapsed_s": 1493.5,
+      "uptime_s": 2940,
+      "free_heap": 73016,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:54:09.347155",
+      "heartbeat_age_s": 4.05
+    },
+    {
+      "elapsed_s": 1513.6,
+      "uptime_s": 2947,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:54:28.825954",
+      "heartbeat_age_s": 4.66
+    },
+    {
+      "elapsed_s": 1533.6,
+      "uptime_s": 2978,
+      "free_heap": 75628,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:54:49.729487",
+      "heartbeat_age_s": 3.79
+    },
+    {
+      "elapsed_s": 1553.7,
+      "uptime_s": 3000,
+      "free_heap": 72816,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:55:09.262694",
+      "heartbeat_age_s": 4.3
+    },
+    {
+      "elapsed_s": 1573.7,
+      "uptime_s": 3009,
+      "free_heap": 74876,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:55:28.946082",
+      "heartbeat_age_s": 4.68
+    },
+    {
+      "elapsed_s": 1593.8,
+      "uptime_s": 3040,
+      "free_heap": 75800,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:55:49.225115",
+      "heartbeat_age_s": 4.42
+    },
+    {
+      "elapsed_s": 1613.8,
+      "uptime_s": 3060,
+      "free_heap": 73008,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:56:09.550133",
+      "heartbeat_age_s": 4.12
+    },
+    {
+      "elapsed_s": 1633.9,
+      "uptime_s": 3071,
+      "free_heap": 73512,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:56:29.040263",
+      "heartbeat_age_s": 4.72
+    },
+    {
+      "elapsed_s": 1653.9,
+      "uptime_s": 3102,
+      "free_heap": 73136,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:56:49.293375",
+      "heartbeat_age_s": 4.5
+    },
+    {
+      "elapsed_s": 1674.0,
+      "uptime_s": 3120,
+      "free_heap": 69888,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:57:09.008238",
+      "heartbeat_age_s": 4.85
+    },
+    {
+      "elapsed_s": 1694.0,
+      "uptime_s": 3133,
+      "free_heap": 75800,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:57:31.232279",
+      "heartbeat_age_s": 2.69
+    },
+    {
+      "elapsed_s": 1714.1,
+      "uptime_s": 3165,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:57:52.963093",
+      "heartbeat_age_s": 1.01
+    },
+    {
+      "elapsed_s": 1734.1,
+      "uptime_s": 3180,
+      "free_heap": 73008,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:58:10.549966",
+      "heartbeat_age_s": 3.44
+    },
+    {
+      "elapsed_s": 1754.2,
+      "uptime_s": 3196,
+      "free_heap": 73008,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:58:29.191193",
+      "heartbeat_age_s": 4.86
+    },
+    {
+      "elapsed_s": 1774.2,
+      "uptime_s": 3226,
+      "free_heap": 75804,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:58:53.628334",
+      "heartbeat_age_s": 0.47
+    },
+    {
+      "elapsed_s": 1794.2,
+      "uptime_s": 3240,
+      "free_heap": 72992,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:59:09.576260",
+      "heartbeat_age_s": 4.54
+    },
+    {
+      "elapsed_s": 1804.3,
+      "uptime_s": 3240,
+      "free_heap": 72992,
+      "transport": "MQTT",
+      "wifi_connected": true,
+      "last_seen": "2026-10-28T19:59:19.396139",
+      "heartbeat_age_s": 4.8
+    }
+  ],
+  "telemetry": {
+    "mqtt_values": 1096,
+    "parameters": {
+      "temperature": {
+        "count": 35,
+        "maximum_gap_s": 12.855,
+        "last_age_s": 1454.3,
+        "first": "2026-10-28T19:29:27.716298",
+        "last": "2026-10-28T19:35:09.894289"
+      },
+      "humidity": {
+        "count": 35,
+        "maximum_gap_s": 12.855,
+        "last_age_s": 1454.3,
+        "first": "2026-10-28T19:29:27.716298",
+        "last": "2026-10-28T19:35:09.894289"
+      },
+      "bus_voltage": {
+        "count": 171,
+        "maximum_gap_s": 98.83,
+        "last_age_s": 5.091,
+        "first": "2026-10-28T19:29:27.941502",
+        "last": "2026-10-28T19:59:19.103332"
+      },
+      "shunt_voltage": {
+        "count": 171,
+        "maximum_gap_s": 98.83,
+        "last_age_s": 5.091,
+        "first": "2026-10-28T19:29:27.941502",
+        "last": "2026-10-28T19:59:19.103332"
+      },
+      "current": {
+        "count": 171,
+        "maximum_gap_s": 98.83,
+        "last_age_s": 5.091,
+        "first": "2026-10-28T19:29:27.941502",
+        "last": "2026-10-28T19:59:19.103332"
+      },
+      "power": {
+        "count": 171,
+        "maximum_gap_s": 98.83,
+        "last_age_s": 5.091,
+        "first": "2026-10-28T19:29:27.941502",
+        "last": "2026-10-28T19:59:19.103332"
+      },
+      "mq135_adc_raw": {
+        "count": 171,
+        "maximum_gap_s": 98.839,
+        "last_age_s": 4.798,
+        "first": "2026-10-28T19:29:28.203676",
+        "last": "2026-10-28T19:59:19.396139"
+      },
+      "mq135_pin_mv": {
+        "count": 171,
+        "maximum_gap_s": 98.839,
+        "last_age_s": 4.798,
+        "first": "2026-10-28T19:29:28.203676",
+        "last": "2026-10-28T19:59:19.396139"
+      }
+    },
+    "missing_parameters": []
+  },
+  "actual_duration_s": 1804.3,
+  "finished_at_local": "2026-10-28T19:59:24.196153",
+  "gateway_settings_unchanged": true,
+  "final_master_runtime": {
+    "tls_state": "VERIFIED",
+    "state": "connected",
+    "subscription_state": "READY",
+    "reconnect_count": 4,
+    "tls_client_recycles": 3,
+    "outbox_bytes": 2330,
+    "dropped": 0
+  },
+  "final_master_uptime_ms": 3259498,
+  "reconnect_delta": 1,
+  "recycle_delta": 0,
+  "master_settings_unchanged": true,
+  "pings_passed": 5,
+  "heartbeat_reboots_observed": 0,
+  "network_result": "COMPLETED_WITH_NETWORK_FINDINGS",
+  "result": "COMPLETED_WITH_SERIAL_OBSERVER_FINDINGS",
+  "final_sensor_health": [
+    {
+      "sensor_type": "DHT11",
+      "valid": false,
+      "status": "READ_ERROR",
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": false,
+      "last_success_uptime_ms": 1895577
+    },
+    {
+      "sensor_type": "INA219",
+      "valid": true,
+      "status": "OK",
+      "capture_status": null,
+      "capture_pulses": null,
+      "data_idle_high": null,
+      "last_success_uptime_ms": null
+    },
+    {
+      "sensor_type": "MQ135",
+      "valid": true,
+      "status": "WARMING_UP_RAW_ONLY",
+      "capture_status": null,
+      "capture_pulses": null,
+      "data_idle_high": null,
+      "last_success_uptime_ms": null
+    }
+  ],
+  "mqtt_reported_heap": {
+    "minimum_bytes": 69868,
+    "maximum_bytes": 75808,
+    "first_bytes": 73428,
+    "last_bytes": 72992,
+    "first_5_samples_median": 73428,
+    "last_5_samples_median": 73008
+  }
+}

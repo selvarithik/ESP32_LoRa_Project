@@ -1,0 +1,153 @@
+{
+  "scope": "Physical Master EMQX telemetry activation and bounded pre-worker ACL verification",
+  "master_id": "ESP32-10777D842178",
+  "wifi_and_sensor_mutations_sent": false,
+  "master_client_id": "CL_ID_ESP32_MASTER_01",
+  "gateway_client_id": "CL_ID_ESP32GATEWAY",
+  "host": "n1161c10.ala.eu-central-1.emqxsl.com",
+  "tls_verification_required": true,
+  "samples": [
+    {
+      "time": 1793024626,
+      "state": "unknown",
+      "subscription_state": "UNKNOWN",
+      "pubacks": null,
+      "last_broker_frame_received_at": null
+    },
+    {
+      "time": 1793024630,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024635,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024639,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024644,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024648,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024653,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024657,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024662,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024667,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024671,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024676,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    },
+    {
+      "time": 1793024680,
+      "state": "paused",
+      "subscription_state": "UNKNOWN",
+      "pubacks": 0,
+      "last_broker_frame_received_at": 0
+    }
+  ],
+  "observer_connack": true,
+  "step": "COORDINATED_CONFIRM",
+  "coordinator_proofs": {
+    "connack": true,
+    "peer_probe": true,
+    "peer_ready": true,
+    "puback": true,
+    "suback": true,
+    "tls": true
+  },
+  "coordinated_commit": true,
+  "received_types": [],
+  "config_reply_puback": false,
+  "scoped_acl_verified": false,
+  "master_runtime": {
+    "runtime_enabled": false,
+    "device_role": "MASTER",
+    "wifi_state": "CONNECTED",
+    "station_ip": "192.168.1.104",
+    "time_state": "CLOCK_VALID",
+    "unix_time": 1793024680,
+    "ntp_status": "UNKNOWN",
+    "status_label": "CONNECTING",
+    "tls_verification_required": true,
+    "tls_state": "UNKNOWN",
+    "authentication_state": "UNKNOWN",
+    "subscription_state": "UNKNOWN",
+    "last_connected_at": 0,
+    "last_outbound_queued_at": 0,
+    "last_broker_puback_at": 0,
+    "last_broker_frame_received_at": 0,
+    "chat_inbox_count": 0,
+    "outbox_bytes": 0,
+    "publish_attempts": 0,
+    "enqueued": 0,
+    "pubacks": 0,
+    "publish_error": 0,
+    "state": "paused",
+    "reconnect_count": 0,
+    "dropped": 0,
+    "comparison": {
+      "status": "UNKNOWN",
+      "message": "",
+      "fields": []
+    }
+  },
+  "sensor_flags_preserved": true,
+  "mqtt_transport_selected": true,
+  "error": "TELEMETRY_STATUS_OR_CONFIG_PATH_NOT_VERIFIED",
+  "gateway_revision": 20,
+  "gateway_transaction_state": "COMMITTED"
+}

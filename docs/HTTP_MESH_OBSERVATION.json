@@ -1,0 +1,601 @@
+{
+  "start": "2026-10-25T18:49:03.707415",
+  "end": "2026-10-25T18:51:03.741983",
+  "method": "Physical board USB status before/after; readonly Gateway SQL during 120-second observation; no intentional outage in observation",
+  "before": {
+    "COM8": {
+      "device_id": "ESP32-10777D842178",
+      "role": "MASTER",
+      "station_ip": "192.168.1.106",
+      "uptime_ms": 47029,
+      "local_ip": {
+        "enabled": true,
+        "credential_configured": true,
+        "interface": "WIFI",
+        "local_ip": "192.168.1.106",
+        "gateway_host": "192.168.1.104",
+        "gateway_port": 5001,
+        "routing_policy": "MASTER_ONLY",
+        "last_success_uptime_ms": 46441,
+        "last_error": 200,
+        "successful_exchanges": 51,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0,
+        "last_inbound_error": "NONE",
+        "inbound_queued": 0,
+        "queue_drops": 1,
+        "state": "CONNECTED",
+        "exchange_in_progress": false,
+        "ethernet": "NOT_AVAILABLE",
+        "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+      },
+      "indicators": {
+        "server_connected": true,
+        "master_connected": false,
+        "basis": "AUTHENTICATED_GATEWAY_RECEIPT",
+        "receipt_timeout_seconds": 15,
+        "led_enabled": true,
+        "led_gpio": 2,
+        "led_on_requested": true,
+        "led_active_high": true,
+        "display_acknowledged": false,
+        "display_ack_failures": 0,
+        "display_idle_clk_high": false,
+        "display_idle_dio_high": false,
+        "connection_count_since_boot": 1,
+        "connected_duration_seconds": 42,
+        "display_enabled": false,
+        "display_state": "DISABLED_OR_NODE",
+        "display_clk_gpio": 18,
+        "display_dio_gpio": 19,
+        "display_text": "",
+        "physical_visual_verified": false,
+        "gateway_ack_age_seconds": 0
+      },
+      "sensors": [
+        {
+          "sensor_type": "DHT11",
+          "sensor_id": "ESP32-10777D842178-DHT11",
+          "valid": false,
+          "simulated": false,
+          "status": "READ_ERROR",
+          "sampled_uptime_ms": 45078,
+          "sampling_interval_seconds": 2,
+          "parameters": {},
+          "units": {
+            "temperature": "C",
+            "humidity": "%RH"
+          },
+          "last_success_uptime_ms": 0,
+          "capture_status": "NO_RESPONSE",
+          "capture_pulses": 0,
+          "data_idle_high": true
+        },
+        {
+          "sensor_type": "INA219",
+          "sensor_id": "ESP32-10777D842178-INA219",
+          "valid": true,
+          "simulated": false,
+          "status": "OK",
+          "sampled_uptime_ms": 45078,
+          "sampling_interval_seconds": 2,
+          "parameters": {
+            "bus_voltage": 3.26,
+            "shunt_voltage": 0.15,
+            "current": 0.0015,
+            "power": 0.00489
+          },
+          "units": {
+            "bus_voltage": "V",
+            "shunt_voltage": "mV",
+            "current": "A",
+            "power": "W"
+          },
+          "current_calibrated": false,
+          "shunt_resistance_configured": true,
+          "shunt_milliohms": 100
+        },
+        {
+          "sensor_type": "MQ135",
+          "sensor_id": "ESP32-10777D842178-MQ135",
+          "valid": true,
+          "simulated": false,
+          "status": "WARMING_UP_RAW_ONLY",
+          "sampled_uptime_ms": 45078,
+          "sampling_interval_seconds": 2,
+          "parameters": {
+            "mq135_adc_raw": 409,
+            "mq135_pin_mv": 484
+          },
+          "units": {
+            "mq135_adc_raw": "count",
+            "mq135_pin_mv": "mV"
+          },
+          "calibrated": false,
+          "warmup_remaining_seconds": 86353,
+          "voltage_divider_verification_required": true
+        }
+      ],
+      "free_8bit_heap": 101252,
+      "largest_8bit_block": 51188
+    },
+    "COM11": {
+      "device_id": "ESP32-CC9B23E2DEC4",
+      "role": "NODE",
+      "station_ip": "192.168.1.105",
+      "uptime_ms": 66961,
+      "local_ip": {
+        "enabled": true,
+        "credential_configured": true,
+        "interface": "WIFI",
+        "local_ip": "192.168.1.105",
+        "gateway_host": "",
+        "gateway_port": 5000,
+        "routing_policy": "MASTER_ONLY",
+        "last_success_uptime_ms": 62577,
+        "last_error": 202,
+        "successful_exchanges": 25,
+        "failed_exchanges": 5,
+        "last_failure_stage": 6,
+        "last_failure_code": 408,
+        "last_inbound_error": "NONE",
+        "inbound_queued": 0,
+        "queue_drops": 0,
+        "state": "CONNECTED",
+        "exchange_in_progress": false,
+        "ethernet": "NOT_AVAILABLE",
+        "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+      },
+      "indicators": {
+        "server_connected": false,
+        "master_connected": true,
+        "basis": "AUTHENTICATED_MASTER_RECEIPT",
+        "receipt_timeout_seconds": 65,
+        "led_enabled": true,
+        "led_gpio": 2,
+        "led_on_requested": true,
+        "led_active_high": true,
+        "display_acknowledged": false,
+        "display_ack_failures": 0,
+        "display_idle_clk_high": false,
+        "display_idle_dio_high": false,
+        "connection_count_since_boot": 1,
+        "connected_duration_seconds": 61,
+        "display_enabled": false,
+        "display_state": "DISABLED_OR_NODE",
+        "display_clk_gpio": 18,
+        "display_dio_gpio": 19,
+        "display_text": "",
+        "physical_visual_verified": false,
+        "master_ack_age_seconds": 4
+      },
+      "sensors": [
+        {
+          "sensor_type": "DHT11",
+          "sensor_id": "ESP32-CC9B23E2DEC4-DHT11",
+          "valid": false,
+          "simulated": false,
+          "status": "READ_ERROR",
+          "sampled_uptime_ms": 66019,
+          "sampling_interval_seconds": 2,
+          "parameters": {},
+          "units": {
+            "temperature": "C",
+            "humidity": "%RH"
+          },
+          "last_success_uptime_ms": 0,
+          "capture_status": "NO_RESPONSE",
+          "capture_pulses": 8,
+          "data_idle_high": true
+        },
+        {
+          "sensor_type": "INA219",
+          "sensor_id": "ESP32-CC9B23E2DEC4-INA219",
+          "disabled_reason": "SLAVE_INA219_INHIBITED",
+          "valid": false,
+          "simulated": false,
+          "status": "NOT_CONFIGURED",
+          "sampled_uptime_ms": 0,
+          "sampling_interval_seconds": 2,
+          "parameters": {},
+          "units": {
+            "bus_voltage": "V",
+            "shunt_voltage": "mV"
+          },
+          "current_calibrated": false,
+          "shunt_resistance_configured": false,
+          "shunt_milliohms": 0
+        },
+        {
+          "sensor_type": "MQ135",
+          "sensor_id": "ESP32-CC9B23E2DEC4-MQ135",
+          "valid": true,
+          "simulated": false,
+          "status": "WARMING_UP_RAW_ONLY",
+          "sampled_uptime_ms": 66019,
+          "sampling_interval_seconds": 2,
+          "parameters": {
+            "mq135_adc_raw": 1229,
+            "mq135_pin_mv": 1152
+          },
+          "units": {
+            "mq135_adc_raw": "count",
+            "mq135_pin_mv": "mV"
+          },
+          "calibrated": false,
+          "warmup_remaining_seconds": 86334,
+          "voltage_divider_verification_required": true
+        }
+      ],
+      "free_8bit_heap": 130820,
+      "largest_8bit_block": 106484
+    }
+  },
+  "after": {
+    "COM8": {
+      "device_id": "ESP32-10777D842178",
+      "role": "MASTER",
+      "station_ip": "192.168.1.106",
+      "uptime_ms": 168095,
+      "local_ip": {
+        "enabled": true,
+        "credential_configured": true,
+        "interface": "WIFI",
+        "local_ip": "192.168.1.106",
+        "gateway_host": "192.168.1.104",
+        "gateway_port": 5001,
+        "routing_policy": "MASTER_ONLY",
+        "last_success_uptime_ms": 167492,
+        "last_error": 200,
+        "successful_exchanges": 195,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0,
+        "last_inbound_error": "NONE",
+        "inbound_queued": 0,
+        "queue_drops": 1,
+        "state": "CONNECTED",
+        "exchange_in_progress": false,
+        "ethernet": "NOT_AVAILABLE",
+        "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+      },
+      "indicators": {
+        "server_connected": true,
+        "master_connected": false,
+        "basis": "AUTHENTICATED_GATEWAY_RECEIPT",
+        "receipt_timeout_seconds": 15,
+        "led_enabled": true,
+        "led_gpio": 2,
+        "led_on_requested": true,
+        "led_active_high": true,
+        "display_acknowledged": false,
+        "display_ack_failures": 0,
+        "display_idle_clk_high": false,
+        "display_idle_dio_high": false,
+        "connection_count_since_boot": 1,
+        "connected_duration_seconds": 163,
+        "display_enabled": false,
+        "display_state": "DISABLED_OR_NODE",
+        "display_clk_gpio": 18,
+        "display_dio_gpio": 19,
+        "display_text": "",
+        "physical_visual_verified": false,
+        "gateway_ack_age_seconds": 0
+      },
+      "sensors": [
+        {
+          "sensor_type": "DHT11",
+          "sensor_id": "ESP32-10777D842178-DHT11",
+          "valid": false,
+          "simulated": false,
+          "status": "READ_ERROR",
+          "sampled_uptime_ms": 166676,
+          "sampling_interval_seconds": 2,
+          "parameters": {},
+          "units": {
+            "temperature": "C",
+            "humidity": "%RH"
+          },
+          "last_success_uptime_ms": 0,
+          "capture_status": "NO_RESPONSE",
+          "capture_pulses": 0,
+          "data_idle_high": true
+        },
+        {
+          "sensor_type": "INA219",
+          "sensor_id": "ESP32-10777D842178-INA219",
+          "valid": true,
+          "simulated": false,
+          "status": "OK",
+          "sampled_uptime_ms": 166676,
+          "sampling_interval_seconds": 2,
+          "parameters": {
+            "bus_voltage": 3.256,
+            "shunt_voltage": 0.13,
+            "current": 0.0013,
+            "power": 0.004233
+          },
+          "units": {
+            "bus_voltage": "V",
+            "shunt_voltage": "mV",
+            "current": "A",
+            "power": "W"
+          },
+          "current_calibrated": false,
+          "shunt_resistance_configured": true,
+          "shunt_milliohms": 100
+        },
+        {
+          "sensor_type": "MQ135",
+          "sensor_id": "ESP32-10777D842178-MQ135",
+          "valid": true,
+          "simulated": false,
+          "status": "WARMING_UP_RAW_ONLY",
+          "sampled_uptime_ms": 166676,
+          "sampling_interval_seconds": 2,
+          "parameters": {
+            "mq135_adc_raw": 428,
+            "mq135_pin_mv": 494
+          },
+          "units": {
+            "mq135_adc_raw": "count",
+            "mq135_pin_mv": "mV"
+          },
+          "calibrated": false,
+          "warmup_remaining_seconds": 86232,
+          "voltage_divider_verification_required": true
+        }
+      ],
+      "free_8bit_heap": 84268,
+      "largest_8bit_block": 29684
+    },
+    "COM11": {
+      "device_id": "ESP32-CC9B23E2DEC4",
+      "role": "NODE",
+      "station_ip": "192.168.1.105",
+      "uptime_ms": 188026,
+      "local_ip": {
+        "enabled": true,
+        "credential_configured": true,
+        "interface": "WIFI",
+        "local_ip": "192.168.1.105",
+        "gateway_host": "",
+        "gateway_port": 5000,
+        "routing_policy": "MASTER_ONLY",
+        "last_success_uptime_ms": 182265,
+        "last_error": 202,
+        "successful_exchanges": 71,
+        "failed_exchanges": 6,
+        "last_failure_stage": 6,
+        "last_failure_code": 408,
+        "last_inbound_error": "NONE",
+        "inbound_queued": 0,
+        "queue_drops": 0,
+        "state": "CONNECTED",
+        "exchange_in_progress": false,
+        "ethernet": "NOT_AVAILABLE",
+        "security": "HMAC_SHA256_CHALLENGE_RESPONSE"
+      },
+      "indicators": {
+        "server_connected": false,
+        "master_connected": true,
+        "basis": "AUTHENTICATED_MASTER_RECEIPT",
+        "receipt_timeout_seconds": 65,
+        "led_enabled": true,
+        "led_gpio": 2,
+        "led_on_requested": true,
+        "led_active_high": true,
+        "display_acknowledged": false,
+        "display_ack_failures": 0,
+        "display_idle_clk_high": false,
+        "display_idle_dio_high": false,
+        "connection_count_since_boot": 1,
+        "connected_duration_seconds": 182,
+        "display_enabled": false,
+        "display_state": "DISABLED_OR_NODE",
+        "display_clk_gpio": 18,
+        "display_dio_gpio": 19,
+        "display_text": "",
+        "physical_visual_verified": false,
+        "master_ack_age_seconds": 5
+      },
+      "sensors": [
+        {
+          "sensor_type": "DHT11",
+          "sensor_id": "ESP32-CC9B23E2DEC4-DHT11",
+          "valid": false,
+          "simulated": false,
+          "status": "READ_ERROR",
+          "sampled_uptime_ms": 187485,
+          "sampling_interval_seconds": 2,
+          "parameters": {},
+          "units": {
+            "temperature": "C",
+            "humidity": "%RH"
+          },
+          "last_success_uptime_ms": 0,
+          "capture_status": "NO_RESPONSE",
+          "capture_pulses": 4,
+          "data_idle_high": true
+        },
+        {
+          "sensor_type": "INA219",
+          "sensor_id": "ESP32-CC9B23E2DEC4-INA219",
+          "disabled_reason": "SLAVE_INA219_INHIBITED",
+          "valid": false,
+          "simulated": false,
+          "status": "NOT_CONFIGURED",
+          "sampled_uptime_ms": 0,
+          "sampling_interval_seconds": 2,
+          "parameters": {},
+          "units": {
+            "bus_voltage": "V",
+            "shunt_voltage": "mV"
+          },
+          "current_calibrated": false,
+          "shunt_resistance_configured": false,
+          "shunt_milliohms": 0
+        },
+        {
+          "sensor_type": "MQ135",
+          "sensor_id": "ESP32-CC9B23E2DEC4-MQ135",
+          "valid": true,
+          "simulated": false,
+          "status": "WARMING_UP_RAW_ONLY",
+          "sampled_uptime_ms": 187485,
+          "sampling_interval_seconds": 2,
+          "parameters": {
+            "mq135_adc_raw": 1275,
+            "mq135_pin_mv": 1180
+          },
+          "units": {
+            "mq135_adc_raw": "count",
+            "mq135_pin_mv": "mV"
+          },
+          "calibrated": false,
+          "warmup_remaining_seconds": 86212,
+          "voltage_divider_verification_required": true
+        }
+      ],
+      "free_8bit_heap": 129624,
+      "largest_8bit_block": 106484
+    }
+  },
+  "snapshots": [
+    {
+      "time": "2026-10-25T18:49:03.707415",
+      "nodes": [
+        {
+          "node_id": "ESP32-10777D842178",
+          "last_seen": "2026-10-25T18:49:02.153411"
+        },
+        {
+          "node_id": "ESP32-CC9B23E2DEC4",
+          "last_seen": "2026-10-25T18:49:01.908720"
+        }
+      ]
+    },
+    {
+      "time": "2026-10-25T18:49:18.710275",
+      "nodes": [
+        {
+          "node_id": "ESP32-10777D842178",
+          "last_seen": "2026-10-25T18:49:17.744918"
+        },
+        {
+          "node_id": "ESP32-CC9B23E2DEC4",
+          "last_seen": "2026-10-25T18:49:18.253999"
+        }
+      ]
+    },
+    {
+      "time": "2026-10-25T18:49:33.715321",
+      "nodes": [
+        {
+          "node_id": "ESP32-10777D842178",
+          "last_seen": "2026-10-25T18:49:28.766512"
+        },
+        {
+          "node_id": "ESP32-CC9B23E2DEC4",
+          "last_seen": "2026-10-25T18:49:29.345675"
+        }
+      ]
+    },
+    {
+      "time": "2026-10-25T18:49:48.720518",
+      "nodes": [
+        {
+          "node_id": "ESP32-10777D842178",
+          "last_seen": "2026-10-25T18:49:48.684418"
+        },
+        {
+          "node_id": "ESP32-CC9B23E2DEC4",
+          "last_seen": "2026-10-25T18:49:48.494277"
+        }
+      ]
+    },
+    {
+      "time": "2026-10-25T18:50:03.723089",
+      "nodes": [
+        {
+          "node_id": "ESP32-10777D842178",
+          "last_seen": "2026-10-25T18:50:02.465252"
+        },
+        {
+          "node_id": "ESP32-CC9B23E2DEC4",
+          "last_seen": "2026-10-25T18:50:02.703299"
+        }
+      ]
+    },
+    {
+      "time": "2026-10-25T18:50:18.725210",
+      "nodes": [
+        {
+          "node_id": "ESP32-10777D842178",
+          "last_seen": "2026-10-25T18:50:18.429893"
+        },
+        {
+          "node_id": "ESP32-CC9B23E2DEC4",
+          "last_seen": "2026-10-25T18:50:08.699995"
+        }
+      ]
+    },
+    {
+      "time": "2026-10-25T18:50:33.733212",
+      "nodes": [
+        {
+          "node_id": "ESP32-10777D842178",
+          "last_seen": "2026-10-25T18:50:31.900711"
+        },
+        {
+          "node_id": "ESP32-CC9B23E2DEC4",
+          "last_seen": "2026-10-25T18:50:29.557561"
+        }
+      ]
+    },
+    {
+      "time": "2026-10-25T18:50:48.738128",
+      "nodes": [
+        {
+          "node_id": "ESP32-10777D842178",
+          "last_seen": "2026-10-25T18:50:48.096902"
+        },
+        {
+          "node_id": "ESP32-CC9B23E2DEC4",
+          "last_seen": "2026-10-25T18:50:48.654495"
+        }
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "node_id": "ESP32-10777D842178",
+      "parameter_id": "temperature",
+      "samples": 0,
+      "median_gap_s": null,
+      "maximum_gap_s": null
+    },
+    {
+      "node_id": "ESP32-10777D842178",
+      "parameter_id": "current",
+      "samples": 12,
+      "median_gap_s": 9.954,
+      "maximum_gap_s": 10.765
+    },
+    {
+      "node_id": "ESP32-10777D842178",
+      "parameter_id": "mq135_adc_raw",
+      "samples": 12,
+      "median_gap_s": 9.934,
+      "maximum_gap_s": 13.029
+    },
+    {
+      "node_id": "ESP32-CC9B23E2DEC4",
+      "parameter_id": "mq135_adc_raw",
+      "samples": 12,
+      "median_gap_s": 9.909,
+      "maximum_gap_s": 13.372
+    }
+  ]
+}

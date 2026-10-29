@@ -1,0 +1,11 @@
+# Master COM8 EMQX runtime recovery — 27 October 2026
+
+Master ESP32-10777D842178 reported mbedtls_ssl_setup -0x7F00. The installed SDK ssl.h defines this as MBEDTLS_ERR_SSL_ALLOC_FAILED. A laptop handshake with the existing stored CA verified EMQX certificate/hostname using both TLS1.3 and TLS1.2; plaintext or certificate bypass was never used. The Master had 85,796 free internal bytes but a largest block of 32,756 bytes. This is evidence of an allocation failure; heap fragmentation is a likely contributor, not a proven permanent firmware defect.
+
+A single hardware EN reset recovered the Master. The first status after boot showed verified TLS, accepted MQTT authentication, ready subscriptions and zero reconnects. Its valid clock required no USB clock adjustment. No firmware was uploaded, no flash was erased, and no provisioning/settings mutations were sent.
+
+The actual authenticated Gateway Command Center sent PING CMD-78F5022E3B69 through its permanent EMQX worker. Sent: 23:15:48.926756 IST; ACK ACCEPTED: 23:15:50.392217; execution RESPONSE COMPLETED: 23:15:50.541567. Response JSON contains ok=true and the test echo. Both records are persisted in the real Gateway database and the response was expanded and inspected in the live browser. The Gateway runtime reported connected, TELEMETRY_COMMANDS and SCOPED_COMMANDS_VERIFIED. Master local-IP delivery remains unavailable due to the pre-existing Gateway bind failure; no alternate local transport was enabled for this test.
+
+Post-test verification confirms the Master MQTT revision/shared revision/secret revision/fingerprint/client ID/transaction are unchanged. Sensor enable flags and DHT GPIO are unchanged. The complete Gateway MQTT configuration document and every existing protected .bin file match their earlier SHA256 fingerprints. No Wi-Fi configuration command was sent. See MASTER_EMQX_TLS_RECOVERY_EVIDENCE.json for post-test runtime and fresh MQTT telemetry counts.
+
+This is successful runtime recovery and a physical MQTT command round-trip, not proof of a permanent memory-fragmentation fix or long soak stability. Firmware was unchanged. If allocation failures recur, capture heap-block distributions during reconnect and implement/test a bounded memory-lifecycle fix; do not replace credentials or disable TLS verification.

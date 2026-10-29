@@ -16,6 +16,17 @@ class DeviceControlsTests(unittest.TestCase):
  def tearDown(self):self.folder.cleanup()
  def command(self,kind,payload=None,target='SIM-NODE-1'):
   r=self.client.post('/api/v1/commands',json={'node_id':target,'command_type':kind,'payload':payload or {}});self.assertEqual(r.status_code,201,r.json);return r.json['command']['command_id']
+ def test_all_21_primary_commands_through_gateway_simulated_target(self):
+  node=self.nodes[1]
+  for kind in contract.PRIMARY_COMMANDS:
+   payload={}
+   if kind=='SET_DEVICE_NAME':payload={'device_name':'Sim bench'}
+   elif kind=='SET_TELEMETRY_INTERVAL':payload={'seconds':10}
+   elif kind=='SET_HEARTBEAT_INTERVAL':payload={'seconds':30}
+   elif kind=='SET_SLEEP_SCHEDULE':payload={'sleep_enabled':False,'sleep_mode':'LIGHT','lora_sleep_mode':'DEEP'}
+   elif kind=='CONFIG_UPDATE':payload={'device_name':'Sim restored','expected_revision':node.revision}
+   cid=self.command(kind,payload);self.master.tick();cmd=command_manager.get_command(cid)
+   self.assertEqual(cmd['state'],'COMPLETED',(kind,cmd));self.assertEqual(cmd['ack_status'],'ACCEPTED');self.assertTrue(cmd['result']['simulated'])
  def test_gateway_master_nodes_ack_execution_and_database(self):
   cid=self.command('PING');self.master.tick();self.assertEqual(command_manager.get_command(cid)['state'],'COMPLETED')
   self.master.uplink(self.nodes[1],'TELEMETRY',self.nodes[1].telemetry());self.master.uplink(self.nodes[2],'TELEMETRY',self.nodes[2].telemetry())

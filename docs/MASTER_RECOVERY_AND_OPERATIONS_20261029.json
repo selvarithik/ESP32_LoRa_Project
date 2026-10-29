@@ -1,0 +1,254 @@
+{
+  "device_id": "ESP32-10777D842178",
+  "firmware": "1.1.1-recovery",
+  "upload": {
+    "port": "COM8",
+    "device_id": "ESP32-10777D842178",
+    "flash_bytes": 4194304,
+    "backup_sha256": "37a7cad765ccef5565b9ea4194bce58d67fe97dc1e1d6fb08df7ed274f470c73",
+    "full_backup_verified": true,
+    "backup_encrypted": true,
+    "partition_matches_built_huge_app": true,
+    "physical_upload": true,
+    "application_bytes": 1367824,
+    "application_sha256": "cfcba217494b1a09a8c340a5ce095a596337742571f1a9fbb82af0f2d38c8e95",
+    "application_readback_verified": true,
+    "all_bytes_outside_application_unchanged": true,
+    "nvs_ota_partitions_bootloader_preserved": true,
+    "filesystem_preserved": true,
+    "reset_requested": true
+  },
+  "test_method": "Owner-authorized local validated command queue; real permanent EMQX worker ACK/RESPONSE; not Dashboard click/API-auth testing",
+  "recovery_commands": [
+    {
+      "command_id": "CMD-C10682F3CA73",
+      "command_type": "WIFI_RECONNECT",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:20:00.430546",
+      "response_at": "2026-10-29T21:20:38.282903"
+    },
+    {
+      "command_id": "CMD-6BEC6E7ECCED",
+      "command_type": "PING",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:20:39.836420",
+      "response_at": "2026-10-29T21:20:41.962152"
+    },
+    {
+      "command_id": "CMD-F626CD2CA3B6",
+      "command_type": "RESTART",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:20:43.591928",
+      "response_at": "2026-10-29T21:21:43.413314"
+    },
+    {
+      "command_id": "CMD-218E14A1215F",
+      "command_type": "PING",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:21:44.958688",
+      "response_at": "2026-10-29T21:21:46.924193"
+    },
+    {
+      "command_id": "CMD-C63B3D74A03C",
+      "command_type": "GET_CAPABILITIES",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:21:48.521872",
+      "response_at": "2026-10-29T21:21:53.626827"
+    },
+    {
+      "command_id": "CMD-E6E6BEB8DA6D",
+      "command_type": "GET_CONFIG",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:21:55.326772",
+      "response_at": "2026-10-29T21:21:59.524192"
+    }
+  ],
+  "operational_commands": [
+    {
+      "command_id": "CMD-19BFEC002E49",
+      "command_type": "SYNC_TIME",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:23:01.155714",
+      "response_at": "2026-10-29T21:23:03.648165",
+      "detail": ""
+    },
+    {
+      "command_id": "CMD-215EACD20E84",
+      "command_type": "MQTT_CONNECT",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:23:05.325787",
+      "response_at": "2026-10-29T21:23:09.636990",
+      "detail": ""
+    },
+    {
+      "command_id": "CMD-2B9543A39C6D",
+      "command_type": "MQTT_RECONNECT",
+      "state": "FAILED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:23:11.205034",
+      "response_at": "2026-10-29T21:23:13.708311",
+      "detail": "VERIFIED_IP_RETURN_PATH_REQUIRED"
+    },
+    {
+      "command_id": "CMD-CD8BD824FC4C",
+      "command_type": "MQTT_DISCONNECT",
+      "state": "FAILED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:23:15.363109",
+      "response_at": "2026-10-29T21:23:17.970687",
+      "detail": "VERIFIED_IP_RETURN_PATH_REQUIRED"
+    },
+    {
+      "command_id": "CMD-22C2110F3974",
+      "command_type": "MQTT_TEST",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:23:19.523056",
+      "response_at": "2026-10-29T21:23:22.426136",
+      "detail": ""
+    },
+    {
+      "command_id": "CMD-7395240622FE",
+      "command_type": "RADIO_INSPECT",
+      "state": "FAILED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:23:24.092569",
+      "response_at": "2026-10-29T21:23:39.546100",
+      "detail": "MODE_RESTORE_TIMEOUT"
+    },
+    {
+      "command_id": "CMD-35B4F40846BF",
+      "command_type": "DISCOVER_NODES",
+      "state": "FAILED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:23:41.131732",
+      "response_at": "2026-10-29T21:23:51.850964",
+      "detail": "REGISTRATION_CLOSED"
+    },
+    {
+      "command_id": "CMD-0BFF80D9CEE9",
+      "command_type": "I2C_SCAN",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:23:53.406636",
+      "response_at": "2026-10-29T21:23:55.673783",
+      "detail": ""
+    },
+    {
+      "command_id": "CMD-BCAEDB9432C5",
+      "command_type": "GET_COMMAND_RESULT",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:23:57.371957",
+      "response_at": "2026-10-29T21:23:59.894492",
+      "detail": ""
+    },
+    {
+      "command_id": "CMD-98AE634101E6",
+      "command_type": "RESET_DIAGNOSTIC_COUNTERS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:24:01.540083",
+      "response_at": "2026-10-29T21:24:04.214211",
+      "detail": ""
+    },
+    {
+      "command_id": "CMD-601EF75D84C3",
+      "command_type": "SLEEP_NOW",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:24:05.942797",
+      "response_at": "2026-10-29T21:24:08.185282",
+      "detail": ""
+    },
+    {
+      "command_id": "CMD-7085D4105DD9",
+      "command_type": "CANCEL_PENDING_SLEEP",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:24:08.005408",
+      "response_at": "2026-10-29T21:24:18.586449",
+      "detail": ""
+    }
+  ],
+  "telemetry": {
+    "observed_seconds": 180.1,
+    "new_mqtt_values": 108,
+    "telemetry": {
+      "temperature": {
+        "new_values": 0,
+        "maximum_gap_s": null,
+        "last_value": null,
+        "last_received_at": "2026-10-28T21:59:12.651939",
+        "age_at_finish_s": 84526.9
+      },
+      "humidity": {
+        "new_values": 0,
+        "maximum_gap_s": null,
+        "last_value": null,
+        "last_received_at": "2026-10-28T21:59:12.651939",
+        "age_at_finish_s": 84526.9
+      },
+      "bus_voltage": {
+        "new_values": 18,
+        "maximum_gap_s": 11.125563,
+        "last_value": 3.212,
+        "last_received_at": "2026-10-29T21:27:58.526062",
+        "age_at_finish_s": 1.0
+      },
+      "shunt_voltage": {
+        "new_values": 18,
+        "maximum_gap_s": 11.125563,
+        "last_value": 0.13,
+        "last_received_at": "2026-10-29T21:27:58.526062",
+        "age_at_finish_s": 1.0
+      },
+      "current": {
+        "new_values": 18,
+        "maximum_gap_s": 11.125563,
+        "last_value": 0.0013,
+        "last_received_at": "2026-10-29T21:27:58.526062",
+        "age_at_finish_s": 1.0
+      },
+      "power": {
+        "new_values": 18,
+        "maximum_gap_s": 11.125563,
+        "last_value": 0.004176,
+        "last_received_at": "2026-10-29T21:27:58.526062",
+        "age_at_finish_s": 1.0
+      },
+      "mq135_adc_raw": {
+        "new_values": 18,
+        "maximum_gap_s": 11.176386,
+        "last_value": 624.0,
+        "last_received_at": "2026-10-29T21:27:58.709139",
+        "age_at_finish_s": 0.8
+      },
+      "mq135_pin_mv": {
+        "new_values": 18,
+        "maximum_gap_s": 11.176386,
+        "last_value": 658.0,
+        "last_received_at": "2026-10-29T21:27:58.709139",
+        "age_at_finish_s": 0.8
+      }
+    },
+    "usb_errors": [],
+    "observed_reboot": false,
+    "gateway_settings_and_protected_files_preserved": true,
+    "master_mqtt_and_sensor_snapshot_preserved": true
+  },
+  "protected_files_unchanged": true,
+  "public_config_unchanged_between_recovery_and_operations": true,
+  "mqtt_profile_preserved": true,
+  "sensor_snapshot_preserved": true,
+  "contract_sha256": "2ab672c11966684547bda89f0b2022bb461e6e34584b0834450a625a53d9d183",
+  "contract_copies_identical": true
+}

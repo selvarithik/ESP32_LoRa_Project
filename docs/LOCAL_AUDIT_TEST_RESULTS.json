@@ -1,0 +1,8 @@
+{
+  "scope": "Local-system unit/API regression; excludes MQTT/cloud, Chat, OTA and physical tests",
+  "run": 94,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": true
+}

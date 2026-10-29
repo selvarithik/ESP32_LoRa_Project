@@ -1,0 +1,60 @@
+{
+  "device_id": "ESP32-10777D842178",
+  "port": "COM8",
+  "recovery": "One hardware EN reset; no flash or configuration writes requested",
+  "observed_error": "mbedtls_ssl_setup returned -0x7F00 (MBEDTLS_ERR_SSL_ALLOC_FAILED)",
+  "laptop_tls12_verified": true,
+  "master_runtime": {
+    "runtime_enabled": true,
+    "device_role": "MASTER",
+    "wifi_state": "CONNECTED",
+    "station_ip": "192.168.1.108",
+    "time_state": "CLOCK_VALID",
+    "unix_time": 1793123228,
+    "ntp_status": "UNKNOWN",
+    "status_label": "CONNECTED",
+    "tls_verification_required": true,
+    "tls_state": "VERIFIED",
+    "authentication_state": "ACCEPTED",
+    "subscription_state": "READY",
+    "last_connected_at": 1793123111,
+    "last_outbound_queued_at": 1793123225,
+    "last_broker_puback_at": 1793123226,
+    "last_broker_frame_received_at": 1793123227,
+    "chat_inbox_count": 0,
+    "outbox_bytes": 0,
+    "publish_attempts": 59,
+    "enqueued": 55,
+    "pubacks": 55,
+    "publish_error": 0,
+    "state": "connected",
+    "reconnect_count": 0,
+    "dropped": 0,
+    "comparison": {
+      "status": "UNKNOWN",
+      "message": "",
+      "fields": []
+    }
+  },
+  "command": {
+    "command_id": "CMD-78F5022E3B69",
+    "command_type": "PING",
+    "state": "COMPLETED",
+    "ack_status": "ACCEPTED",
+    "ack_at": "2026-10-27T23:15:50.392217",
+    "sent_at": "2026-10-27T23:15:48.926756",
+    "response_at": "2026-10-27T23:15:50.541567"
+  },
+  "response_ok": true,
+  "settings_checks": {
+    "master_mqtt_revision_fingerprint_and_secret_revision_unchanged": true,
+    "sensor_enable_and_dht_pin_unchanged": true,
+    "gateway_full_mqtt_document_unchanged": true,
+    "gateway_protected_bin_files_unchanged": true,
+    "no_wifi_configuration_mutation_sent": true
+  },
+  "fresh_mqtt_telemetry_values_since_ping": 48,
+  "fresh_mqtt_telemetry_first": "2026-10-27T23:15:56.300571",
+  "fresh_mqtt_telemetry_last": "2026-10-27T23:17:06.540161",
+  "scope_limit": "Runtime recovered; no firmware change. Long-term heap-fragmentation/reconnect stability unverified."
+}

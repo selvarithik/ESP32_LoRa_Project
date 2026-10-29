@@ -1,0 +1,36 @@
+{
+  "scope": "Actual physical Master MQTT telemetry/status/config into production Gateway ingestion; bounded pre-worker verification",
+  "received": {
+    "status": 6,
+    "telemetry": 11
+  },
+  "handler_errors": [],
+  "samples": [],
+  "gateway_runtime": {
+    "mode": "TELEMETRY_ONLY",
+    "state": "connected",
+    "last_error": null,
+    "reconnect_count": 0,
+    "queue_length": 0,
+    "incoming_queue_length": 0,
+    "dropped": 0,
+    "pubacks": 17,
+    "comparison": {
+      "status": "UNKNOWN",
+      "fields": [],
+      "message": "No fresh authorized Master snapshot"
+    },
+    "subscription_state": "READY",
+    "last_connected_at": 1793025829,
+    "last_broker_frame_received_at": 1793025844,
+    "last_database_persisted_at": 1793025839,
+    "last_broker_puback_at": 1793025844,
+    "tls_verification_required": true,
+    "tls_state": "VERIFIED",
+    "authentication_state": "ACCEPTED",
+    "acl_status": "UNVERIFIED"
+  },
+  "master_runtime": "MQTT receipt is observed independently of USB; last USB sample verified TLS and READY",
+  "elapsed_seconds": 20.07,
+  "scoped_acl_verified": true
+}

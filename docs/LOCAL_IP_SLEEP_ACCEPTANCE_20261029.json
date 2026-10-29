@@ -1,0 +1,220 @@
+{
+  "listener": {
+    "unauthorized_status": 401,
+    "enrolled_device_challenge_status": 200,
+    "signature_verified": true,
+    "master_transport_not_changed": true
+  },
+  "listener_settings": {
+    "state": "LISTENING",
+    "settings": {
+      "schema_version": 1,
+      "revision": 6,
+      "enabled": true,
+      "bind_address": "192.168.1.102",
+      "port": 5001
+    }
+  },
+  "sleep": {
+    "mode": "DEEP",
+    "requested_duration_seconds": 90,
+    "samples": [
+      {
+        "seconds": 0.6,
+        "uptime_ms": 1143295,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 5.2,
+        "uptime_ms": 1147899,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 10.0,
+        "uptime_ms": 1152617,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 14.5,
+        "uptime_ms": 1157210,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 19.1,
+        "uptime_ms": 1161803,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 23.7,
+        "uptime_ms": 1166389,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 28.3,
+        "uptime_ms": 1170971,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 32.9,
+        "uptime_ms": 1175573,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 37.5,
+        "uptime_ms": 1180149,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 42.1,
+        "uptime_ms": 1184811,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 46.9,
+        "uptime_ms": 1189474,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 51.4,
+        "uptime_ms": 1194107,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 56.0,
+        "uptime_ms": 1198696,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      },
+      {
+        "seconds": 65.1,
+        "usb": "TimeoutError"
+      },
+      {
+        "seconds": 74.2,
+        "usb": "TimeoutError"
+      },
+      {
+        "seconds": 83.3,
+        "usb": "TimeoutError"
+      },
+      {
+        "seconds": 92.4,
+        "usb": "TimeoutError"
+      },
+      {
+        "seconds": 98.6,
+        "uptime_ms": 2579,
+        "mqtt": "connected",
+        "tls": "UNKNOWN"
+      },
+      {
+        "seconds": 103.2,
+        "uptime_ms": 8796,
+        "mqtt": "connected",
+        "tls": "VERIFIED"
+      }
+    ],
+    "sleep_command": {
+      "command_id": "CMD-A651290CC56C",
+      "command_type": "SLEEP_NOW",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:40:39.753457",
+      "ack_at": "2026-10-29T21:40:41.568528",
+      "response_at": "2026-10-29T21:40:41.774152",
+      "result": {
+        "state": "PREPARING_TO_SLEEP",
+        "request_applied": true,
+        "sleep_entry_confirmed": false,
+        "saved_schedule_changed": false,
+        "remote_wake_supported": false,
+        "gateway_verified_transport": "MQTT"
+      },
+      "error": null
+    },
+    "reboot_and_verified_reconnection_observed": true,
+    "power_status": {
+      "command_id": "CMD-6D9BB9EB4833",
+      "command_type": "GET_POWER_STATUS",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:42:27.031576",
+      "ack_at": "2026-10-29T21:42:29.555585",
+      "response_at": "2026-10-29T21:42:30.057479",
+      "result": {
+        "transport_switch": {
+          "transaction_id": "",
+          "state": "IDLE",
+          "requested_transport": "MQTT",
+          "active_transport": "MQTT",
+          "deadline": 0,
+          "ping_verified": false,
+          "configuration_revision": 11
+        },
+        "state": "ACTIVE",
+        "last_error": "",
+        "clock_valid": true,
+        "sleep_remaining_seconds": 0,
+        "remote_wake_supported": false,
+        "manual_sleep_pending": false,
+        "effective_sleep_mode": "DEEP",
+        "restart_pending": false,
+        "restart_storage_ready": true,
+        "reset_reason": "DEEPSLEEP",
+        "sleep_mode": "DEEP",
+        "lora_sleep_mode": "KEEP",
+        "sleep_enabled": false,
+        "sleep_start_minute": 0,
+        "sleep_duration_seconds": 3600,
+        "sleep_days_mask": 127,
+        "utc_offset_minutes": 330,
+        "wake_minute": 60,
+        "active_seconds_per_day": 82800,
+        "gateway_verified_transport": "MQTT"
+      },
+      "error": null
+    },
+    "ping": {
+      "command_id": "CMD-B4E71D0465ED",
+      "command_type": "PING",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "created_at": "2026-10-29T21:42:32.092961",
+      "ack_at": "2026-10-29T21:42:34.643662",
+      "response_at": "2026-10-29T21:42:35.257116",
+      "result": {
+        "transport": "MQTT",
+        "transaction_id": "",
+        "path_verified": false,
+        "ok": true,
+        "message": "After timed deep sleep wake",
+        "gateway_verified_transport": "MQTT"
+      },
+      "error": null
+    },
+    "mqtt_profile_preserved": true,
+    "sensor_flags_preserved": true
+  },
+  "final_mqtt": {
+    "state": "connected",
+    "tls_state": "VERIFIED",
+    "authentication_state": "ACCEPTED",
+    "subscription_state": "READY"
+  },
+  "mqtt_preserved": true,
+  "sensor_flags_preserved": true,
+  "station_ip_preserved": true,
+  "mq135_calibration": "NOT_CALIBRATED_REFERENCE_REQUIRED"
+}

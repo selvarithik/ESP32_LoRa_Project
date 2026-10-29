@@ -10,6 +10,7 @@ PATH='/api/auth/local-test-session'
 
 def install(app):
     app.config.setdefault('LOCAL_TEST_SESSION',os.environ.get('GATEWAY_LOCAL_TEST_SESSION')=='1')
+    if os.environ.get('GATEWAY_DEPLOYMENT_MODE'):app.config['LOCAL_TEST_SESSION']=False
     app.config.setdefault('LOCAL_TEST_SESSION_DEADLINE',time.monotonic()+3600)
     def create():
         if not app.config.get('LOCAL_TEST_SESSION'):return jsonify(error='NOT_FOUND'),404

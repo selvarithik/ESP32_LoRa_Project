@@ -1,0 +1,58 @@
+{
+  "environment": "esp32_slave",
+  "flash_capacity": 4194304,
+  "partitions": [
+    {
+      "name": "nvs",
+      "type": 1,
+      "subtype": 2,
+      "offset": 36864,
+      "size": 20480
+    },
+    {
+      "name": "otadata",
+      "type": 1,
+      "subtype": 0,
+      "offset": 57344,
+      "size": 8192
+    },
+    {
+      "name": "app0",
+      "type": 0,
+      "subtype": 16,
+      "offset": 65536,
+      "size": 1310720
+    },
+    {
+      "name": "app1",
+      "type": 0,
+      "subtype": 17,
+      "offset": 1376256,
+      "size": 1310720
+    },
+    {
+      "name": "spiffs",
+      "type": 1,
+      "subtype": 130,
+      "offset": 2686976,
+      "size": 1441792
+    },
+    {
+      "name": "coredump",
+      "type": 1,
+      "subtype": 3,
+      "offset": 4128768,
+      "size": 65536
+    }
+  ],
+  "application_capacity": 1310720,
+  "program_bytes": 1285917,
+  "image_bytes": 1292624,
+  "image_headroom": 18096,
+  "program_headroom": 24803,
+  "static_ram_bytes": 74540,
+  "second_ota_slot": true,
+  "filesystem_bytes": 1441792,
+  "physical_upload_performed": false,
+  "passed": true
+}

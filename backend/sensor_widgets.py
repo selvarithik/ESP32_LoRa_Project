@@ -308,7 +308,9 @@ CATALOG = [
   }
 ]
 bp = Blueprint("sensor_widgets", __name__)
-ICONS = {"thermometer","gauge","battery","signal","zap","droplet","sun","wind","activity","map-pin","clock","network","cpu"}
+ICONS = {"thermometer","gauge","battery","signal","zap","droplet","sun","wind","activity","map-pin","clock","network","cpu","fan","flame","cloud-rain","magnet","door","weight","ruler","volume","compass","beaker"}
+ICON_COLORS = {'fan': '#0D9488', 'flame': '#DC2626', 'cloud-rain': '#0284C7', 'magnet': '#7C3AED', 'door': '#B45309', 'weight': '#475569', 'ruler': '#2563EB', 'volume': '#BE185D', 'compass': '#4F46E5', 'beaker': '#15803D'}
+
 def migrate():
     db = get_connection()
     try:
@@ -339,7 +341,8 @@ def config(parameter):
     preset = template(parameter)
     saved = decode(parameter.get("widget_config"))
     direct = parameter.get("parameter_id", "")
-    return dict(category=preset["category"], icon=preset["icon"], color=preset["color"], widget_type="numeric" if parameter.get("data_type") in ("FLOAT","DOUBLE","INT","UINT","UINT32") else preset["widget_type"] if preset["widget_type"] != "numeric" else "state",
+    icon_color=ICON_COLORS.get(saved.get("icon"),preset["color"])
+    return dict(category=preset["category"], icon=preset["icon"], color=icon_color, widget_type="numeric" if parameter.get("data_type") in ("FLOAT","DOUBLE","INT","UINT","UINT32") else preset["widget_type"] if preset["widget_type"] != "numeric" else "state",
                 source="node_telemetry", source_field=direct, scale=1, offset=0, stale_timeout=10, reporting_interval=2,
                 position=parameter.get("id", 0), **{}) | saved
 

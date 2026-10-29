@@ -1,0 +1,34 @@
+{
+  "scope": "Physical Master only; read-only serial status and database telemetry after normal Gateway restart",
+  "elapsed_seconds": 139.91,
+  "device_id": "ESP32-10777D842178",
+  "role": "MASTER",
+  "station_ip": "192.168.1.108",
+  "state": "CONNECTED",
+  "successful_exchange_delta": 124,
+  "failed_exchange_delta": 0,
+  "queue_drop_delta": 0,
+  "historical_failed_exchanges": 4,
+  "historical_last_failure_code": 400,
+  "telemetry_sample_times": 42,
+  "max_telemetry_gap_seconds": 9.826175,
+  "sensor_status": [
+    {
+      "sensor_type": "DHT11",
+      "status": "OK",
+      "valid": true
+    },
+    {
+      "sensor_type": "INA219",
+      "status": "OK",
+      "valid": true
+    },
+    {
+      "sensor_type": "MQ135",
+      "status": "WARMING_UP_RAW_ONLY",
+      "valid": true
+    }
+  ],
+  "active_mqtt_revision": 6,
+  "mqtt_document_unchanged": true
+}

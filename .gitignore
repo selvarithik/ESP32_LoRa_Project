@@ -15,3 +15,10 @@ tests/*-before.png
 
 # Root-level local database is runtime data, never source.
 /gateway.db
+
+# Local deployment bundles and non-secret machine-specific launcher options.
+/build/
+/dist/
+/dist-recovery/
+/build-recovery/
+/deployment/local.json

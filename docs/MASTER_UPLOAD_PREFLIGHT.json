@@ -1,0 +1,32 @@
+{
+  "stage": "MASTER_UPLOAD_PREFLIGHT",
+  "port": "COM8",
+  "master_build": "SUCCESS",
+  "program_bytes": 1288621,
+  "application_capacity_bytes": 1310720,
+  "static_ram_bytes": 74548,
+  "expected_previous_master_mac": "78:21:84:7d:77:10",
+  "observed_mac": "c4:de:e2:23:9b:cc",
+  "chip": "ESP32-D0WD-V3 revision3.0",
+  "flash_manufacturer": "ff",
+  "flash_device": "ffff",
+  "flash_capacity": "UNKNOWN",
+  "boot_error": "invalid header: 0xffffffff",
+  "boot_reset": "RTCWDT_RTC_RESET",
+  "upload_status": "BLOCKED_FLASH_NOT_RESPONDING",
+  "flash_written": false,
+  "flash_erased": false,
+  "slave_accessed": false,
+  "production_mqtt_tested": false,
+  "sensor_test": "BLOCKED_NO_RUNNING_APPLICATION",
+  "lora_test": "BLOCKED_NO_RUNNING_APPLICATION",
+  "next_action": "Try another known-good USB data cable/direct USB port and reconnect Master; verify flash ID before upload. Slave upload waits for Master verification and explicit BOOT confirmation.",
+  "usb_only_recheck": {
+    "external_modules": "Owner confirmed all disconnected",
+    "rom_and_stub_flash_id": "Both returned FF/FFFF and unknown capacity",
+    "chip": "ESP32-D0WD-V3 revision3.0",
+    "mac": "c4:de:e2:23:9b:cc",
+    "flash_written": false,
+    "slave_accessed": false
+  }
+}

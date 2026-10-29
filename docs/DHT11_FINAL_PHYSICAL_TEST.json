@@ -1,0 +1,265 @@
+{
+  "samples": [
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 176727,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "PULSE_POLLING",
+      "last_success_uptime_ms": 0,
+      "capture_status": "POLLING_READ_ERROR",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 180828,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "PULSE_POLLING",
+      "last_success_uptime_ms": 0,
+      "capture_status": "POLLING_READ_ERROR",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 182900,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 186998,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 189024,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "PULSE_POLLING",
+      "last_success_uptime_ms": 0,
+      "capture_status": "POLLING_READ_ERROR",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 191096,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 195195,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 197221,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "PULSE_POLLING",
+      "last_success_uptime_ms": 0,
+      "capture_status": "POLLING_READ_ERROR",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 199295,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 203393,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "RMT",
+      "last_success_uptime_ms": 0,
+      "capture_status": "NO_RESPONSE",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 205419,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "PULSE_POLLING",
+      "last_success_uptime_ms": 0,
+      "capture_status": "POLLING_READ_ERROR",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    },
+    {
+      "sensor_type": "DHT11",
+      "sensor_id": "ESP32-10777D842178-DHT11",
+      "valid": false,
+      "simulated": false,
+      "status": "READ_ERROR",
+      "sampled_uptime_ms": 209518,
+      "sampling_interval_seconds": 2,
+      "parameters": {},
+      "units": {
+        "temperature": "C",
+        "humidity": "%RH"
+      },
+      "capture_method": "PULSE_POLLING",
+      "last_success_uptime_ms": 0,
+      "capture_status": "POLLING_READ_ERROR",
+      "capture_pulses": 0,
+      "data_idle_high": true
+    }
+  ],
+  "settings_mutations_sent": false,
+  "database": [
+    [
+      "humidity",
+      "2026-10-26T00:06:01.487153",
+      47.0
+    ],
+    [
+      "temperature",
+      "2026-10-26T00:06:01.487153",
+      36.3
+    ],
+    [
+      "humidity",
+      "2026-10-26T00:05:51.451063",
+      47.0
+    ],
+    [
+      "temperature",
+      "2026-10-26T00:05:51.451063",
+      36.3
+    ],
+    [
+      "humidity",
+      "2026-10-26T00:05:41.456501",
+      47.0
+    ],
+    [
+      "temperature",
+      "2026-10-26T00:05:41.456501",
+      36.3
+    ]
+  ]
+}

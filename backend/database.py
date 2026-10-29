@@ -1,4 +1,5 @@
 import sqlite3
+from runtime_paths import data_dir
 from pathlib import Path
 from datetime import datetime
 
@@ -9,7 +10,7 @@ from datetime import datetime
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATA_DIR = BASE_DIR / "data"
+DATA_DIR = data_dir()
 
 DATABASE = DATA_DIR / "gateway.db"
 
@@ -20,11 +21,11 @@ DATABASE = DATA_DIR / "gateway.db"
 
 def get_connection():
 
-    DATA_DIR.mkdir(exist_ok=True)
+    DATA_DIR.mkdir(parents=True,exist_ok=True)
 
     connection = sqlite3.connect(
         DATABASE,
-        check_same_thread=False
+        check_same_thread=False,timeout=10
     )
 
     connection.row_factory = sqlite3.Row

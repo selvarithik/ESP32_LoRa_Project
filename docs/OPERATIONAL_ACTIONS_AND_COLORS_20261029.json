@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-29",
+  "contract_version": "1.4.0",
+  "wire_schema": 1,
+  "contract_sha256": "2ab672c11966684547bda89f0b2022bb461e6e34584b0834450a625a53d9d183",
+  "primary_commands": 21,
+  "operational_extension_commands": 12,
+  "reused_actions": 3,
+  "sensor_icon_defaults": 10,
+  "gateway_ui_layout_changed": false,
+  "gateway_restarted": false,
+  "firmware_uploaded": false,
+  "live_configuration_changes": false,
+  "build": {
+    "environment": "esp32dev",
+    "application_bytes": 1359577,
+    "application_capacity": 3145728,
+    "static_ram_bytes": 75988,
+    "ram_capacity": 327680,
+    "binary_bytes": 1366288,
+    "binary_sha256": "cd733cc1f6c2dc7f95e46855cff20cf5a332ca92b53a6840f7d184b6e78def41",
+    "partition_configuration_changed": false
+  },
+  "tests": {
+    "gateway_unittest": {
+      "passed": 177,
+      "failed": 0,
+      "scope": "isolated fixture databases; no physical device"
+    },
+    "native_runtime": "PASS actual production operational_runtime.inc with mock network/hardware",
+    "native_rules": "PASS accepted command parity; stable 21-primary UI registry",
+    "native_shared_controls": "PASS register encoding, sleep drain, transport rollback/proof/restart/corrupt storage",
+    "digest_parity_vectors": 6,
+    "esp32_mock_ui": "PASS local, MQTT and access desktop/mobile plus all sidebar routes",
+    "gateway_sensor_browser": "PASS actual fixture UI, ten icon/default colors, custom override, mapping, charts, both themes and desktop/mobile"
+  },
+  "physical_hardware_tests": "PENDING",
+  "live_emqx_tests_this_task": "NOT RUN",
+  "radio_configuration_result": "PENDING_LOCAL_COMMISSIONING; no RF activation or readback success claimed"
+}

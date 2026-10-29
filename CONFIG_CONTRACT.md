@@ -1,8 +1,8 @@
 # Shared configuration contract
 
-Version: 1.2.0
+Version: 1.4.0
 Schema version: 1
-Date: 2026-10-19
+Date: 2026-10-29
 Authority: latest MASTER IMPLEMENTATION PROMPT, Sections 2, 5, 6, 8, 9, 12, 15 and 21.
 State: normative software contract; implementation and live acceptance are separate gates.
 Authoritative edit location: firmware repository CONFIG_CONTRACT.md. Copy entire UTF-8/no-BOM/LF file to Gateway, then verify SHA-256. Never independently edit the copy.
@@ -707,3 +707,100 @@ Master/Slave builds initialize the optional MQTT client paused; only an explicit
 requested connect can start the cloud task. Slave never initializes a cloud connection.
 This changes startup policy only, not stored profiles/revisions or the existing chat handlers.
 Read-only radio_probe on physical USB always restores original mode and never enables RF.
+
+
+## Role, sleep and transport-control extension 1.3.0 (2026-10-28)
+Wire schema remains 1; broker profiles, topic registry and radio packet formats are unchanged.
+One firmware image supports MASTER and NODE through persisted role. Build target names remain compatibility aliases.
+Exactly 21 primary commands are exposed. Legacy aliases remain accepted for older clients but are not advertised.
+
+| Setting | Type | Range | Default | Storage / use |
+| --- | --- | --- | --- | --- |
+| sleep_mode | string | DEEP, LIGHT | DEEP | NVS; ESP32/Gateway schedule forms; PowerManager |
+| lora_sleep_mode | string | KEEP, DEEP | KEEP | NVS; schedule forms; E220 mode pins during ESP32 sleep |
+| lora_work_mode | string | NORMAL, WOR_TX, WOR_RX | NORMAL | NVS; ESP32 radio form; E220 M1/M0 |
+| lora_wor_cycle_ms | uint16 | 500..4000, multiples of 500 | 2000 | NVS; ESP32 radio form; E220 REG3 |
+| lora_packet_bytes | uint16 | 64, 128, 200 | 200 | NVS; ESP32 radio form; E220 REG1; 32 unsupported by authenticated frame size |
+| lora_apply_settings | bool | true/false | false | NVS; explicit local permission to write/read back public E220 registers; no key read/write |
+
+E220 mode mapping follows manual page 11: M1/M0 00=NORMAL, 01=WOR_TX,
+10=WOR_RX, 11=DEEP/configuration. Page 12 WOR_TX wording contradicts this table.
+WOR settings must match on peers. No RF success or regional approval follows from configuration success.
+AUX high is readiness only, never recipient ACK. SNR remains unavailable. RSSI only after actual received byte.
+Sleep uses timer wake. No radio-triggered ESP32 wake is promised. LIGHT uses bounded timer chunks with worker pause and Wi-Fi suspended; DEEP restarts on wake.
+
+Transport changes use CONFIG_UPDATE arguments exclusively:
+prepare: transport_action, transaction_id, local_ip_enabled, expected_revision, timeout_seconds (30..180).
+apply/confirm/cancel: transport_action, transaction_id, expected_revision.
+transaction_id is 1..48 ASCII alphanumeric/hyphen/underscore. No password is sent to ESP32.
+Direct remote writes of local_ip_enabled are rejected: TRANSPORT_TRANSACTION_REQUIRED.
+Only authenticated Gateway-origin commands can execute transport transactions.
+Gateway authorizes each action by rechecking the signed-in administrator password over HTTPS or loopback only;
+password is removed before queue/persistence/logging and never forwarded. Ordinary LAN HTTP is rejected.
+prepare persists PREPARED without changing transport or starting trial deadline; it expires after 10 minutes.
+apply persists TRIAL plus old selection and deadline before changing runtime selection, without touching broker profile.
+Device waits 3 seconds before runtime application to allow its old-path response to leave. Deadline starts on apply.
+confirm requires a fresh matching-transaction PING via the selected transport and a successful Gateway receipt after apply.
+Gateway checks a correlated COMPLETED PING result matching transaction and requested transport before allowing confirm.
+Until confirm, reboot or deadline expiry restores old selection. Uncertain/corrupt journal fails closed into recovery.
+Terminal transactions are idempotent; conflicting IDs, stale revisions and concurrent candidates are rejected.
+Final commit is truthful only after device RESPONSE; Gateway submission alone remains queued/unknown.
+
+Primary command order: PING, GET_STATUS, GET_CAPABILITIES, GET_CONFIG, GET_NETWORK,
+GET_TELEMETRY, GET_SENSOR_STATUS, GET_POWER_STATUS, GET_RADIO_STATUS, GET_MESH_STATUS,
+GET_NODE_STATUS, GET_ROUTE_INFO, DIAGNOSTICS, SET_DEVICE_NAME, SET_TELEMETRY_INTERVAL,
+SET_HEARTBEAT_INTERVAL, SET_SLEEP_SCHEDULE, CONFIG_UPDATE, WIFI_SCAN, WIFI_RECONNECT, RESTART.
+STATUS/GET_CONFIGURATION/SET_CONFIGURATION/REBOOT remain compatibility aliases; RADIO_TEST
+remains an unadvertised rejection boundary, not an enabled extra operation.
+On legacy E220 settings without explicit lora_apply_settings permission, NORMAL mode adopts
+observed packet length/WOR cycle without rewriting the radio; configured legacy address,
+channel, power, baud and flags must still match. WOR mode additionally requires matching cycle.
+
+
+## Operational action extension 1.4.0 (2026-10-29)
+This requested extension adds runtime operations; wire schema 1, broker profile fields,
+canonical topics and radio packet formats remain unchanged. Existing 21 primary commands
+and Gateway page layout/dropdown remain unchanged. Twelve accepted operational commands
+are additionally advertised by GET_CAPABILITIES and the Gateway operational_commands API.
+All require an authenticated Gateway administrator; no administrator password is forwarded.
+They use the same COMMAND, ACK and execution RESPONSE envelope and deduplication cache.
+
+| Command | Exact arguments | Execution semantics |
+| --- | --- | --- |
+| SYNC_TIME | unix_time integer 1700000000..2147483647 | Set volatile UTC; envelope time must match; steps above 300 seconds require local commissioning; blocked during transport/sleep coordination |
+| MQTT_CONNECT | empty object | Enable existing runtime profile; SUCCESS only after connection and subscription readiness |
+| MQTT_RECONNECT | empty object | Requires authenticated IP return path and selected local IP; SUCCESS requires a new client recycle plus subscription readiness |
+| MQTT_DISCONNECT | restore_after_seconds integer 10..120 | Requires authenticated IP return path and selected local IP; report actual paused state; automatically restore previous runtime enablement at deadline |
+| MQTT_TEST | empty object | Publish a normal STATUS on existing status topic; wait for correlated PERSISTED receipt on existing config topic via MQTT; PUBACK alone is insufficient |
+| RADIO_INSPECT | empty object | Existing initialized driver returns explicitly cached public settings; otherwise bounded read-only probe, no RF/register writes; actual fault fails |
+| DISCOVER_NODES | timeout_seconds integer 5..30 | Requires already initialized/enabled radio and open registration; send existing HELLO; report only responding radio peers; no response fails |
+| I2C_SCAN | confirm boolean true | Probe addresses 8..119 on already initialized INA219 bus in its sole sensor-task owner; bounded timeout; results at most 32 addresses; no pin/address-setting changes |
+| GET_COMMAND_RESULT | command_id ASCII ID 1..48 | Only same-source volatile cache; expired/absent outcome UNKNOWN; released response payload is never reconstructed |
+| RESET_DIAGNOSTIC_COUNTERS | scope NETWORK, confirm boolean true | Reset NetworkService delivery-failure and duplicate counters only; queues, NVS and history remain intact |
+| SLEEP_NOW | duration_seconds integer 60..86400, mode DEEP or LIGHT | Volatile one-shot request; RESPONSE confirms PREPARING_TO_SLEEP, never actual sleep entry; at least 5 seconds before entry and wait for pending work/coordinators; timer wake; saved schedule unchanged |
+| CANCEL_PENDING_SLEEP | empty object | Cancel only the one-shot request while awake; cannot wake an already sleeping device or cancel saved schedules |
+
+Operational waits use monotonic time; one asynchronous operation at a time, bounded at
+90 seconds (MQTT connection), 15 seconds (MQTT test / inspection / I2C), or the discovery
+window. Duplicate command IDs do not restart jobs. MQTT connect/reconnect failure requests
+restoration of previous runtime enablement, never overwrites the profile. Runtime restoration
+is volatile; reboot retains the existing firmware startup policy and saved profiles unchanged.
+A Gateway command timeout remains UNKNOWN until a correlated actual device result arrives.
+
+Three additional requested actions reuse existing operations rather than duplicate wire names:
+1. Gateway queued-only cancellation: authenticated POST
+   /api/v1/devices/<identity>/commands/<command_id>/cancel-queued. Only QUEUED with no sent_at;
+   response explicitly does not claim target execution was cancelled.
+2. IP/MQTT transport change: existing CONFIG_UPDATE transport_action prepare/apply/confirm/cancel
+   with Gateway administrator reauthentication and proof/rollback, as specified in 1.3.0.
+3. Public E220 configuration: CONFIG_UPDATE accepts only a radio-only set plus expected_revision:
+   lora_address_high/low (0..255), lora_baud (1200,2400,4800,9600,19200,38400,57600,115200),
+   lora_channel (0..80), lora_air_rate (0..7), lora_tx_power (10,13,17,22), lora_packet_bytes
+   (64,128,200), lora_wor_cycle_ms (500..4000, step500), lora_work_mode NORMAL/WOR_TX/WOR_RX,
+   lora_fixed_mode/lora_rssi/lora_lbt booleans. Existing radio must be disabled, uninitialized
+   and local lora_apply_settings permission false. Result is saved PENDING_LOCAL_COMMISSIONING,
+   not applied/readback-verified. No remote lora_enabled or lora_apply_settings changes; no
+   regional authorization or hardware success inferred from accepting a numeric setting.
+
+Sensor-icon colors are Gateway presentation preferences only; they are not shared device
+configuration, telemetry units, sensor calibration or hardware capabilities.
