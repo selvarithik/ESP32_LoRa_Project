@@ -1,5 +1,5 @@
 /* Shared-header regression checks against the isolated gateway fixture. */
-const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const routes = ['/', '/nodes', '/sensors', '/command-center', '/communication', '/firmware', '/logs', '/system-overview', '/system', '/chat'];

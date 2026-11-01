@@ -17,88 +17,28 @@
    <div class="command-chat-identity"><h2 id="banner-node-name">Select a node</h2><p id="banner-node-details">No node selected</p><small id="banner-connection-badge"></small></div>
    <button class="btn command-refresh" id="cmd-refresh-btn" type="button" aria-label="Refresh node and conversation" title="Refresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"/></svg></button>
   </header>
-  <div class="command-chat-toolbar"><span id="socket-status-text">Connecting</span><label>History <select id="history-filter-select"><option value="ALL">All states</option><option value="ACTIVE">Active</option><option value="COMPLETED">Completed</option><option value="FAILED">Failed</option><option value="TIMEOUT">Timed out</option><option value="CANCELLED">Cancelled</option></select></label><button type="button" class="btn" id="command-latest" title="Scroll to latest command">Latest ↓</button></div>
+  <div class="command-chat-toolbar"><span id="socket-status-text">Connecting</span><label>History <select id="history-filter-select"><option value="ALL">All states</option><option value="ACTIVE">Active</option><option value="COMPLETED">Completed</option><option value="FAILED">Failed</option><option value="TIMEOUT">Timed out</option><option value="CANCELLED">Cancelled</option></select></label><button type="button" class="btn" id="command-expand" aria-pressed="false" title="Expand conversation">Expand</button><button type="button" class="btn" id="command-latest" title="Scroll to latest command">Latest ↓</button></div>
   <p class="param-hint">ACK confirms acceptance only. A separate RESPONSE confirms execution. Stop dispatch does not cancel work already accepted by a device. LoRa delivery requires verified radio settings and an observed route.</p><div id="command-notice" class="command-notice" role="status" aria-live="polite"></div>
   <div id="command-conversation" class="command-conversation" tabindex="0" role="region" aria-label="Command and response history">
    <button type="button" class="btn" id="command-older" hidden>Load older commands</button>
    <div id="history-list-container"><p class="command-empty">Select a node to view commands and responses.</p></div>
   </div>
   <footer class="command-composer">
-   <div id="command-arguments-box" hidden><label>Command arguments (JSON)<textarea id="command-arguments-json" class="cmd-textarea" rows="3">{}</textarea></label><small>Use documented fields such as {"seconds":10} or {"device_name":"Workshop"}. Credentials require physical USB. Network/role updates require expected_revision from GET_CONFIG. The shared image uses the configured role. Sleep settings accept sleep_mode LIGHT/DEEP and lora_sleep_mode KEEP/DEEP. IP/MQTT changes require the password-confirmed transaction on Master / Node controls; direct local_ip_enabled writes are rejected.</small></div><div id="command-active-status" class="command-active-status">No active command</div>
-   <div class="command-compose-row"><label class="command-type-label"><span>Command type</span><select id="cmd-type-select" class="cmd-select"><option value="PING">PING</option><option value="GET_STATUS">GET_STATUS</option><option value="GET_CAPABILITIES">GET_CAPABILITIES</option><option value="GET_CONFIG">GET_CONFIG</option><option value="GET_NETWORK">GET_NETWORK</option><option value="GET_TELEMETRY">GET_TELEMETRY</option><option value="GET_SENSOR_STATUS">GET_SENSOR_STATUS</option><option value="GET_POWER_STATUS">GET_POWER_STATUS</option><option value="GET_RADIO_STATUS">GET_RADIO_STATUS</option><option value="GET_MESH_STATUS">GET_MESH_STATUS</option><option value="GET_NODE_STATUS">GET_NODE_STATUS</option><option value="GET_ROUTE_INFO">GET_ROUTE_INFO</option><option value="DIAGNOSTICS">DIAGNOSTICS</option><option value="SET_DEVICE_NAME">SET_DEVICE_NAME</option><option value="SET_TELEMETRY_INTERVAL">SET_TELEMETRY_INTERVAL</option><option value="SET_HEARTBEAT_INTERVAL">SET_HEARTBEAT_INTERVAL</option><option value="SET_SLEEP_SCHEDULE">SET_SLEEP_SCHEDULE</option><option value="CONFIG_UPDATE">CONFIG_UPDATE</option><option value="WIFI_SCAN">WIFI_SCAN</option><option value="WIFI_RECONNECT">WIFI_RECONNECT</option><option value="RESTART">RESTART</option></select></label><button class="btn" type="button" id="command-config-toggle" aria-expanded="false" aria-controls="command-configuration"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="18" r="2"/></svg>Configure</button><button class="btn command-send" id="btn-send-command" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13"/></svg><span>Send</span></button></div>
-   <input class="input command-quick-input" id="command-quick-input" aria-label="PING echo payload" placeholder="Echo payload" hidden>
-   <div id="command-configuration" class="command-configuration" hidden><header class="command-config-heading"><h3>Command configuration</h3><button class="btn" type="button" id="command-config-close" aria-label="Close configuration">Close ×</button></header><div class="config-form-col">
-                    <div class="config-row-main"><label>ACK timeout (seconds)<input id="cmd-ack-timeout" type="number" min="1" max="60" value="5"></label><label>Expiry (seconds)<input id="cmd-expiry" type="number" min="1" max="300" value="300"></label>
-
-
-                        <div class="form-group flex-1">
-                            <label for="cmd-priority-select">Priority</label>
-                            <select id="cmd-priority-select" class="cmd-select">
-                                <option value="1">1 — Normal</option>
-                                <option value="2">2 — High</option>
-                                <option value="3">3 — Urgent</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group flex-1">
-                            <label for="cmd-timeout-input">Timeout (s)</label>
-                            <input type="number" id="cmd-timeout-input" class="cmd-input" value="30" min="1" max="300">
-                        </div>
-
-                        <div class="form-group flex-1">
-                            <label for="cmd-retries-input">Max Retries</label>
-                            <input type="number" id="cmd-retries-input" class="cmd-input" value="3" min="0" max="10">
-                        </div>
-                    </div>
-
-                    <!-- DYNAMIC PARAMETER CONTAINERS -->
-                    <div class="dynamic-param-box" id="dynamic-param-container">
-                        <!-- STATUS -->
-                        <div class="param-pane active" id="pane-GET_STATUS">
-                            <p class="param-hint">Queries the device-reported status and sensor health. Unavailable radio metrics or unsupported measurements remain unknown.</p>
-                        </div>
-
-                        <!-- PING -->
-                        <div class="param-pane" id="pane-PING">
-                            <div class="param-form-row">
-                                <label for="param-ping-msg">Echo Payload</label>
-                                <input type="text" id="param-ping-msg" class="cmd-input" placeholder="Echo test message" value="Hello LoRa Node">
-                            </div>
-                        </div>
-
-                        <!-- WIFI_SCAN -->
-<div class="param-pane" id="pane-WIFI_SCAN"><p class="param-hint">Scans supported Wi-Fi networks using the device driver defaults. This ESP32 build uses 2.4 GHz; custom band and result-limit parameters are not supported.</p></div>
-
-<!-- RESTART -->
-<div class="param-pane" id="pane-RESTART"><p class="param-hint">Requests a controlled restart after pending work drains. Completion requires the device to reboot and return its stored execution response; no custom delay/reason parameter is supported.</p></div>
-
-<!-- GET_CONFIG -->
-<div class="param-pane" id="pane-GET_CONFIG"><p class="param-hint">Fetches the documented runtime configuration snapshot. Credentials are excluded; section/key selection is not supported.</p></div>
-
-<!-- SET_INTERVAL -->
-                        <div class="param-pane" id="pane-SET_INTERVAL">
-                            <div class="param-form-row">
-                                <label for="param-interval-ms">Telemetry Interval (ms) <span class="required">*</span>
-</label>
-                                <input type="number" id="param-interval-ms" class="cmd-input" value="5000" min="2000" max="3600000">
-                            </div>
-                        </div>
-
-                        <!-- CUSTOM -->
-                        <div class="param-pane" id="pane-CUSTOM">
-                            <div class="param-form-row mb-2">
-                                <label for="param-custom-name">Registry Command Name <span class="required">*</span>
-</label>
-                                <input type="text" id="param-custom-name" class="cmd-input" placeholder="GET_STATUS">
-                            </div>
-                            <div class="param-form-row">
-                                <label for="param-custom-json">JSON Payload</label>
-                                <textarea id="param-custom-json" class="cmd-textarea" rows="3" placeholder='{"key": "value"}'>
-</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div></div>
+   <div id="command-active-status" class="command-active-status">No active command</div>
+   <div class="command-compose-row"><label class="command-type-label"><span>Command type</span><select id="cmd-type-select" class="cmd-select"><option value="PING">PING — Test round-trip connectivity</option></select></label><button class="btn" type="button" id="command-config-toggle" aria-expanded="false" aria-controls="command-configuration">Configure</button><button class="btn command-send" id="btn-send-command" type="button" disabled><span>Send</span></button></div>
+   <input class="input command-quick-input" id="command-quick-input" aria-label="PING echo payload" placeholder="Echo message" hidden><input id="param-ping-msg" type="hidden" value="PING">
+   <div id="command-configuration" class="command-configuration" hidden>
+    <header class="command-config-heading"><h3 id="command-config-title">Command configuration</h3><button class="btn" type="button" id="command-config-close">Close ×</button></header>
+    <div id="command-fields" class="command-fields"><p>Loading supported command controls…</p></div>
+    <details class="command-policy"><summary>Delivery policy: ACK, timeout and retries</summary><div class="config-row-main">
+     <label>ACK timeout (seconds)<input id="cmd-ack-timeout" type="number" min="1" max="60" value="5"></label>
+     <label>Expiry (seconds)<input id="cmd-expiry" type="number" min="1" max="300" value="300"></label>
+     <label>Priority<select id="cmd-priority-select"><option value="1">Normal</option><option value="2">High</option><option value="3">Urgent</option></select></label>
+     <label>Response timeout (seconds)<input id="cmd-timeout-input" type="number" min="1" max="300" value="30"></label>
+     <label>Max retries<input id="cmd-retries-input" type="number" min="0" max="10" value="3"></label>
+    </div></details>
+    <details id="command-arguments-box" class="command-advanced"><summary>Advanced JSON arguments</summary><label><input type="checkbox" id="command-use-json"> Use JSON instead of the fields above</label><label>Arguments (JSON)<textarea id="command-arguments-json" class="cmd-textarea" rows="3">{}</textarea></label><small>Credentials require physical USB. IP/MQTT switching uses the administrator-confirmed transaction on Master / Node controls.</small></details>
+   </div>
   </footer>
  </section>
 </div>
@@ -107,5 +47,7 @@
 <link rel="stylesheet" href="/static/css/approved-workspaces.css?v=20261027">
 <link rel="stylesheet" href="{{ url_for('static',filename='css/command-center-chat.css') }}?v=20261027-approved">
 <link rel="stylesheet" href="{{ url_for('static',filename='css/command-responses.css') }}?v=20261027-approved">
-<script src="{{ url_for('static',filename='js/command_center.js') }}?v=20261027-approved" defer></script>
+<link rel="stylesheet" href="{{ url_for('static',filename='css/command-readable.css') }}?v=20261101">
+<script src="{{ url_for('static',filename='js/command_presentation.js') }}?v=20261101" defer></script>
+<script src="{{ url_for('static',filename='js/command_center.js') }}?v=20261101" defer></script>
 {% endblock %}

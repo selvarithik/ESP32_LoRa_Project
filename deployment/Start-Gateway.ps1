@@ -3,7 +3,8 @@ $ErrorActionPreference='Stop'
 $projectRoot=Split-Path -Parent $PSScriptRoot
 if(!$DataDir){$DataDir=Join-Path $projectRoot 'data'}
 if(!$Config){$Config=Join-Path $PSScriptRoot 'local.json';if(!(Test-Path -LiteralPath $Config)){$Config=Join-Path $PSScriptRoot 'local.example.json'}}
-$executable=Join-Path $projectRoot 'dist/Gateway/Gateway.exe'
+. (Join-Path $PSScriptRoot 'Resolve-GatewayExecutable.ps1')
+$executable=Get-GatewayExecutable $projectRoot
 $arguments=@('serve','--data-dir',('"'+$DataDir+'"'),'--config',('"'+$Config+'"'))
 if(!(Test-Path -LiteralPath $executable)){$executable=Join-Path $projectRoot '.venv/Scripts/python.exe';$arguments=@(('"'+(Join-Path $projectRoot 'tools/gateway.py')+'"'))+$arguments}
 if($NoBrowser){$arguments+='--no-browser'}

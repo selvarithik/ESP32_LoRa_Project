@@ -1,0 +1,31 @@
+/* Readable result cards and selected-command controls; scoped to Command Center. */
+.command-chat [hidden]{display:none!important}
+.command-chat .command-message{width:560px;max-width:96%}
+.command-chat .command-result{margin-top:10px;padding-top:8px;border-top:1px solid var(--m-line)}
+.command-chat .command-result h4{font-size:12px;margin:0 0 7px;color:var(--m-text)}
+.command-chat .command-result-group{margin-top:8px;padding:8px 10px;border:1px solid var(--m-line);border-radius:7px;background:var(--m-surface-2)}
+.command-chat .command-result-group h5{font-size:11px;margin:0 0 6px;color:var(--m-muted)}
+.command-chat .command-readable-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;margin:0;font-size:12px}
+.command-chat .command-readable-values dt{font-size:10px;color:var(--m-muted)}
+.command-chat .command-readable-values dd{margin:3px 0 0;font-size:12px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.command-chat .command-result-note,.command-chat .command-result-duration{font-size:11px;line-height:1.5;color:var(--m-muted);margin:6px 0}
+.command-chat .incoming .command-message-actions{float:none;margin:6px 0 0}
+.command-chat .command-configuration{max-height:min(520px,65dvh);padding:14px;background:var(--m-surface)}
+.command-chat .command-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.command-chat .command-field{display:grid;align-content:start;gap:6px;min-width:0;font-size:11px;font-weight:600}
+.command-chat .command-field :is(input:not([type=checkbox]),select){box-sizing:border-box;width:100%;min-height:38px;padding:7px 9px;border:1px solid var(--m-line);border-radius:6px;background:var(--m-surface);color:var(--m-text);font:inherit}
+.command-chat .command-field input[type=checkbox],.command-chat .command-days input{accent-color:#0066ff;width:18px;height:18px}
+.command-chat .command-days{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px;border:1px solid var(--m-line);border-radius:6px;padding:10px;font-size:11px}
+.command-chat .command-days label{display:flex;align-items:center;gap:5px}
+.command-chat .command-days legend{padding:0 5px;font-weight:600}
+.command-chat .command-form-note{grid-column:1/-1;font-size:11px;line-height:1.5;color:var(--m-muted);margin:0}
+.command-chat .command-policy,.command-chat .command-advanced{margin-top:12px;border-top:1px solid var(--m-line);padding-top:8px;font-size:11px}
+.command-chat .command-policy summary,.command-chat .command-advanced summary{cursor:pointer;padding:5px 0;font-weight:600}
+.command-chat .command-policy .config-row-main{margin-top:10px}
+.command-chat .command-advanced label{display:block;margin-top:8px}.command-chat .command-advanced textarea{width:100%;box-sizing:border-box}
+body[data-page="/command-center"] .command-chat{min-height:520px}
+body.command-conversation-expanded{overflow:hidden}
+body[data-page="/command-center"] #command-chat.command-expanded{position:fixed;inset:8px;height:auto!important;min-height:0;z-index:2200;background:var(--m-surface);box-shadow:0 0 0 12px #0005}
+.command-expanded .command-conversation{min-height:0}
+@media(max-width:700px){.command-chat .command-fields{gap:10px}.command-chat .command-readable-values{gap:8px}.command-chat .command-message{max-width:100%;width:100%}.command-chat .command-configuration{max-height:68dvh;left:0;right:0}.command-chat .command-field{font-size:11px}.command-chat .command-chat-toolbar{flex-wrap:wrap}.command-chat .command-days{gap:8px}.command-chat .command-policy .config-row-main{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:380px){.command-chat .command-fields,.command-chat .command-readable-values{grid-template-columns:minmax(0,1fr)}}

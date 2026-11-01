@@ -1,4 +1,4 @@
-const {chromium}=require("C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright");
+const {chromium}=require("playwright");
 const assert=require("node:assert/strict");
 (async()=>{
  const browser=await chromium.launch({channel:"msedge",headless:true});
@@ -65,7 +65,7 @@ const assert=require("node:assert/strict");
  await page.locator('.sensor-live-card[data-id="PRESS_TEST"] [data-sensor-remove]').click();
  await page.locator('.sensor-live-card[data-id="PRESS_TEST"]').waitFor({state:"detached"});
  await page.locator("#add-sensor-widget-inline").click();
- await page.getByRole("button",{name:"Workshop pressure · Workshop 1 · Add",exact:true}).click();
+ await page.getByRole("button",{name:"Workshop pressure Â· Workshop 1 Â· Add",exact:true}).click();
  await page.locator('.sensor-live-card[data-id="PRESS_TEST"]').waitFor();
  await page.keyboard.press("Escape");
  for(const width of [1600,390]){

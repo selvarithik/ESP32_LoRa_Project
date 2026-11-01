@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Diagnostics · SELVARITHIK A&amp;D{% endblock %}
+{% block title %}{{ "Logs" if request.path == "/logs" else "Diagnostics" }} · SELVARITHIK A&amp;D{% endblock %}
 
-{% block page_title %}Diagnostics{% endblock %}
+{% block page_title %}{{ "Logs" if request.path == "/logs" else "Diagnostics" }}{% endblock %}
 
 {% block page_subtitle %}
 System events, warnings and diagnostic records

@@ -26,8 +26,12 @@ class ApprovedWorkspacesTests(unittest.TestCase):
   page=self.client.get('/command-center');self.assertEqual(page.status_code,200)
   parser=IDs();parser.feed(page.get_data(as_text=True))
   self.assertEqual(len(parser.ids),len(set(parser.ids)))
-  for name in ('command-config-close','command-config-toggle','cmd-ack-timeout','cmd-expiry','cmd-timeout-input','cmd-retries-input','btn-send-command'):
+  for name in ('command-config-close','command-config-toggle','cmd-ack-timeout','cmd-expiry','cmd-timeout-input','cmd-retries-input','btn-send-command','command-fields','command-expand','command-use-json'):
    self.assertIn(name,parser.ids)
+  self.assertEqual(self.client.get('/api/commands').json['commands'],[])
+ def test_logs_navigation_is_available_without_creating_commands(self):
+  page=self.client.get('/logs');self.assertEqual(page.status_code,200)
+  html=page.get_data(as_text=True);self.assertIn('href="/logs"',html);self.assertIn('Logs',html)
   self.assertEqual(self.client.get('/api/commands').json['commands'],[])
  def test_layout_keeps_authentication_and_csrf(self):
   with self.client.session_transaction() as session:session.clear()

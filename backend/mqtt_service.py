@@ -166,7 +166,7 @@ class Service:
             self.last_persisted_at=int(time.time())
             response=message(self.profile,d['master_id'],'config',{'op':'PERSISTED','received_message_id':packet['message_id'],'status':'PERSISTED'},correlation_id=d['message_id'])
             if not self.telemetry_only and not self.commands_only:
-                for command in device_api.pending_commands(d['master_id']):self.enqueue(command_message(self.profile,d['master_id'],command))
+                for command in device_api.pending_commands(d['master_id'],transport='mqtt'):self.enqueue(command_message(self.profile,d['master_id'],command))
         elif kind=='config':
             contract.require(d['device_id']==d['master_id'],code='UNAUTHORIZED')
             op=data['op']
@@ -242,7 +242,7 @@ class Service:
             masters=db.execute("SELECT node_id FROM nodes WHERE device_role='MASTER' AND enabled=1 AND device_enrolled=1 ORDER BY node_id LIMIT 32").fetchall()
         for master in masters:
             if self.outgoing.qsize()>=self.outgoing.maxsize-2:break
-            for packet in device_api.pending_commands(master["node_id"]):self.enqueue(command_message(self.profile,master["node_id"],packet))
+            for packet in device_api.pending_commands(master["node_id"],transport="mqtt"):self.enqueue(command_message(self.profile,master["node_id"],packet))
 
     def run(self):
         delay=1

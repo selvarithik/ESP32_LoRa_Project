@@ -1,0 +1,7 @@
+{
+  "name": "selvarithik-gateway-tests",
+  "private": true,
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

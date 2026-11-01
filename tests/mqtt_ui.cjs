@@ -1,5 +1,5 @@
 // Real Flask fixture: backend field errors and read-only refresh, no live broker.
-const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict'),base='http://127.0.0.1:5057';
 (async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{
  const context=await browser.newContext({viewport:{width:375,height:960}}),page=await context.newPage();

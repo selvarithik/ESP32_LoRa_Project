@@ -1,4 +1,4 @@
-const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert = require('node:assert/strict');
 const base = 'http://127.0.0.1:5057';
 const localTime = (offset = 0) => new Date(Date.now() + offset - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1);

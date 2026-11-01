@@ -1,0 +1,339 @@
+{
+  "scope": "Gateway Command Center usability, Logs navigation and two physical ESP32 network checks",
+  "ui_changes": [
+    "Selected-command typed controls from existing registry",
+    "Recurring sleep start/wake/duration/day/time-zone controls",
+    "Readable device result cards with calculated schedule times and units",
+    "Optional advanced JSON with pre-request credential-field rejection",
+    "Larger conversation with Expand/Restore",
+    "Logs navigation and route title"
+  ],
+  "tests": {
+    "full_gateway_unittest_discovery": "191 passed before the extra Logs test was added",
+    "targeted_approved_workspaces": "4 passed including new Logs case",
+    "real_backend_browser_tests": [
+      "existing command_center_ui.cjs PASS",
+      "command_readable_ui.cjs PASS; simulated devices only"
+    ],
+    "production_js_checks": [
+      "command_center_state.cjs PASS",
+      "command_presentation.cjs PASS"
+    ],
+    "packaged_release_check": "PASS",
+    "post_release_physical_ping": {
+      "command_id": "CMD-FE683C64326C",
+      "state": "COMPLETED",
+      "ack_status": "ACCEPTED",
+      "ack_at": "2026-11-01T22:55:23.594225",
+      "response_at": "2026-11-01T22:55:23.843029",
+      "error": null,
+      "gateway_verified_transport": "MQTT"
+    }
+  },
+  "physical_network": {
+    "test": "Physical Master temporary authenticated LAN listener; commands suppressed",
+    "host": "192.168.1.103",
+    "port": 5501,
+    "before_station_ip": "192.168.1.106",
+    "probes": {
+      "gateway_http": {
+        "status": 200,
+        "content_type": "text/html; charset=utf-8"
+      },
+      "master_http": {
+        "status": 200,
+        "content_type": "text/html"
+      }
+    },
+    "observations": [
+      {
+        "state": "DISCONNECTED",
+        "successful_exchanges": 0,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0
+      },
+      {
+        "state": "CONNECTED",
+        "successful_exchanges": 3,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0
+      }
+    ],
+    "physical_listener": {
+      "accepted": 3,
+      "rejected": 0,
+      "last_packet_error": null,
+      "last_database_persisted_at": 1793551958,
+      "result": "PERSISTENCE_RECEIPTS_VERIFIED"
+    },
+    "temporary_backup_cancelled": true,
+    "saved_gateway_and_mqtt_documents_unchanged": true,
+    "firmware_mqtt_profile_unchanged": true,
+    "sensor_enable_flags_unchanged": true,
+    "saved_local_ip_fields_unchanged": true
+  },
+  "physical_network_45s": {
+    "test": "Physical Master temporary authenticated LAN listener; commands suppressed",
+    "host": "192.168.1.103",
+    "port": 5501,
+    "before_station_ip": "192.168.1.106",
+    "probes": {
+      "gateway_http": {
+        "status": 200,
+        "content_type": "text/html; charset=utf-8"
+      },
+      "master_http": {
+        "status": 200,
+        "content_type": "text/html"
+      }
+    },
+    "observed_seconds": 45.2,
+    "observations": [
+      {
+        "uptime_ms": 906612,
+        "network_stack_free_min_bytes": 3212,
+        "state": "DISCONNECTED",
+        "successful_exchanges": 3,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0
+      },
+      {
+        "uptime_ms": 910766,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 3,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0
+      },
+      {
+        "uptime_ms": 914923,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 6,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0
+      },
+      {
+        "uptime_ms": 919087,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 9,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0
+      },
+      {
+        "uptime_ms": 923243,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 14,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0
+      },
+      {
+        "uptime_ms": 927397,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 16,
+        "failed_exchanges": 0,
+        "last_failure_stage": 0,
+        "last_failure_code": 0
+      },
+      {
+        "uptime_ms": 931564,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 18,
+        "failed_exchanges": 1,
+        "last_failure_stage": 8,
+        "last_failure_code": -1103
+      },
+      {
+        "uptime_ms": 935721,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 21,
+        "failed_exchanges": 1,
+        "last_failure_stage": 8,
+        "last_failure_code": -1103
+      },
+      {
+        "uptime_ms": 939881,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 25,
+        "failed_exchanges": 1,
+        "last_failure_stage": 8,
+        "last_failure_code": -1103
+      },
+      {
+        "uptime_ms": 944037,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 30,
+        "failed_exchanges": 1,
+        "last_failure_stage": 8,
+        "last_failure_code": -1103
+      },
+      {
+        "uptime_ms": 948196,
+        "network_stack_free_min_bytes": 3212,
+        "state": "CONNECTED",
+        "successful_exchanges": 32,
+        "failed_exchanges": 1,
+        "last_failure_stage": 8,
+        "last_failure_code": -1103
+      }
+    ],
+    "reset_observed": false,
+    "physical_listener": {
+      "accepted": 32,
+      "rejected": 0,
+      "last_packet_error": null,
+      "last_database_persisted_at": 1793552808,
+      "result": "PERSISTENCE_RECEIPTS_VERIFIED"
+    },
+    "cancel_error": "RuntimeError",
+    "saved_gateway_and_mqtt_documents_unchanged": true,
+    "final_usb_status_error": "TimeoutError"
+  },
+  "read_only_physical_commands": {
+    "scope": "Real Master, permanent EMQX Gateway worker, read-only commands",
+    "commands": [
+      {
+        "command_id": "CMD-3B690169C061",
+        "command_type": "PING",
+        "state": "COMPLETED",
+        "ack_status": "ACCEPTED",
+        "ack_at": "2026-11-01T22:31:15.199637",
+        "response_at": "2026-11-01T22:31:15.452354",
+        "error": null,
+        "reported": {
+          "ok": true,
+          "message": "Read-only network acceptance",
+          "gateway_verified_transport": "MQTT"
+        }
+      },
+      {
+        "command_id": "CMD-79085E73B406",
+        "command_type": "GET_NETWORK",
+        "state": "COMPLETED",
+        "ack_status": "ACCEPTED",
+        "ack_at": "2026-11-01T22:31:17.369537",
+        "response_at": "2026-11-01T22:31:17.647391",
+        "error": null,
+        "reported": {
+          "connected": true,
+          "ip": "192.168.1.106",
+          "rssi": -63,
+          "dhcp": true,
+          "subnet": "255.255.255.0",
+          "gateway": "192.168.1.1",
+          "gateway_verified_transport": "MQTT"
+        }
+      },
+      {
+        "command_id": "CMD-BAECE8971C82",
+        "command_type": "GET_STATUS",
+        "state": "COMPLETED",
+        "ack_status": "ACCEPTED",
+        "ack_at": "2026-11-01T22:31:20.224301",
+        "response_at": "2026-11-01T22:31:20.448028",
+        "error": null,
+        "reported": {
+          "internet_status": "UNKNOWN",
+          "gateway_reachable": true,
+          "reset_reason": "PANIC",
+          "uptime_s": 620,
+          "gateway_verified_transport": "MQTT"
+        }
+      }
+    ]
+  },
+  "production_release": {
+    "protected_gateway_configuration_and_secret_files_unchanged": true,
+    "public_routes": {
+      "/login": 200,
+      "/static/js/command_center.js": 200,
+      "/static/js/command_presentation.js": 200,
+      "/static/css/command-readable.css": 200
+    },
+    "assets": {
+      "/static/js/command_center.js": true,
+      "/static/js/command_presentation.js": true,
+      "/static/css/command-readable.css": true
+    },
+    "runtime": {
+      "running": true,
+      "pid": 43164,
+      "host": "127.0.0.1",
+      "port": 5000,
+      "state": "RUNNING"
+    },
+    "mqtt": {
+      "state": "connected",
+      "tls_state": null,
+      "subscription_state": null,
+      "acl_status": null
+    },
+    "local_ip": {
+      "state": "FAILED",
+      "last_error": null,
+      "bind_failure_reason": null
+    }
+  },
+  "ethernet": "NOT_TESTED_NO_ETHERNET_HARDWARE_CONNECTED",
+  "remaining": [
+    "Slave Wi-Fi/Gateway commissioning unavailable without changing its current configuration",
+    "Permanent LAN listener has stale saved interface address; temporary listener was used for actual tests",
+    "One LAN receipt validation failure at stage8/code-1103 in 45-second test",
+    "Earlier Master reset reason PANIC; exact cause not established",
+    "LoRa excluded from this task"
+  ],
+  "protected_gateway_configuration_and_secret_files_unchanged": true,
+  "devices": {
+    "COM8": {
+      "device_id": "ESP32-10777D842178",
+      "role": "MASTER",
+      "station_ip": "192.168.1.106",
+      "ap_ip": "192.168.100.1",
+      "gateway_registry_row_present": true,
+      "mqtt": {
+        "state": "connected",
+        "tls_state": "VERIFIED",
+        "subscription_state": "READY"
+      },
+      "saved_local_ip_enabled": false,
+      "temporary_backup_remaining": 0,
+      "uptime_ms": 2261783,
+      "wifi_mqtt_sensor_settings_preserved": true
+    },
+    "COM11": {
+      "device_id": "ESP32-842F2AE81F84",
+      "role": "NODE",
+      "station_ip": "0.0.0.0",
+      "ap_ip": "192.168.100.1",
+      "gateway_registry_row_present": false,
+      "mqtt": {
+        "state": "unknown",
+        "tls_state": null,
+        "subscription_state": "UNKNOWN"
+      },
+      "saved_local_ip_enabled": false,
+      "temporary_backup_remaining": 0,
+      "uptime_ms": 11123359,
+      "wifi_mqtt_sensor_settings_preserved": true
+    }
+  },
+  "authentication_checks": {
+    "/command-center": 302,
+    "/logs": 302,
+    "/api/commands": 401
+  }
+}

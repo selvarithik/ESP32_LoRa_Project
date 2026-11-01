@@ -8,12 +8,22 @@ ROOT=Path(__file__).resolve().parents[1]
 def usb(port):
  p=serial.Serial(port=None,baudrate=115200,timeout=.2,write_timeout=2);p.dtr=False;p.rts=False;p.port=port
  try:
-  p.open();p.reset_input_buffer();p.write(b'{"op":"status"}\n');end=time.monotonic()+5
-  while time.monotonic()<end:
-   line=p.readline()
-   if line.startswith(b'[COMMISSION] '):return json.loads(line[13:])
-  raise TimeoutError('USB_STATUS_TIMEOUT')
+  p.open()
+  for attempt in range(3):
+   p.reset_input_buffer();p.write(b'{"op":"status"}\n');end=time.monotonic()+5;buffer=b''
+   while time.monotonic()<end:
+    chunk=p.readline()
+    if not chunk:continue
+    buffer+=chunk
+    if len(buffer)>32768:buffer=b'';break
+    if not buffer.endswith(b'\n'):continue
+    line=buffer;buffer=b''
+    if line.startswith(b'[COMMISSION] '):
+     try:return json.loads(line[13:])
+     except (ValueError,UnicodeError):break
+  raise TimeoutError('USB_STATUS_TIMEOUT_OR_INTERRUPTED_FRAME')
  finally:p.close()
+
 def connection():
  c=sqlite3.connect((ROOT/'data/gateway.db').as_uri()+'?mode=ro',uri=True);c.row_factory=sqlite3.Row;return c
 def fingerprint():

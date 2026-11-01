@@ -1,5 +1,5 @@
 // Real Flask fixture and temporary SQLite account DB; never production recovery.
-const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const base='http://127.0.0.1:5058';
 (async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{

@@ -10,7 +10,7 @@ import local_ip
 NAVIGATION=[{'label':'Dashboard','path':'/'},{'label':'Device Management','path':'/nodes'},{'label':'Sensor Management','path':'/sensors'},
  {'label':'Communication','children':[{'label':'LoRa Mesh Monitor','path':'/communication'},{'label':'MQTT Setup & Testing','path':'/mqtt'},{'label':'Network & Communication','path':'/network'}]},
  {'label':'Command Center','path':'/command-center'},{'label':'Diagnostics','path':'/diagnostics'},
- {'label':'System','children':[{'label':'Health','path':'/system-overview'},{'label':'Master / Node Controls','path':'/device-controls'},{'label':'Local IP Communication','path':'/local-ip'}]},
+ {'label':'System','children':[{'label':'Health','path':'/system-overview'},{'label':'Master / Node Controls','path':'/device-controls'},{'label':'Local IP Communication','path':'/local-ip'},{'label':'Logs','path':'/logs'}]},
  {'label':'Settings','path':'/system'},{'label':'Existing tools','children':[{'label':'Firmware','path':'/firmware'},{'label':'Private Chat','path':'/chat'}]}]
 
 def overview():

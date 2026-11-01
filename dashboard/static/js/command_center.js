@@ -10,6 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
  const composeRow=root.querySelector('.command-compose-row');if(composeRow)composeRow.insertBefore($('command-quick-input'),$('command-config-toggle'));
  const nodesList=$("node-list-container"),conversation=$("command-conversation"),history=$("history-list-container"),notice=$("command-notice");
  const terminal=new Set(["COMPLETED","FAILED","TIMEOUT","CANCELLED"]);
+ const forms=new CommandPresentation.Forms($('command-fields'),()=>{const commands=entries().filter(c=>c.response_at&&Number.isInteger(c.result?.configuration_revision)).sort((a,b)=>new Date(b.response_at)-new Date(a.response_at));const revision=commands[0]?.result?.configuration_revision;return Number.isInteger(revision)?revision:null;});
+ async function loadRegistry(){
+  try{const data=await gateway.get('/api/device-controls');forms.catalog(data);const select=$('cmd-type-select'),wanted=select.value;select.replaceChildren();
+   for(const type of [...(data.commands||[]),...(data.operational_commands||[])]){const option=document.createElement('option');option.value=type;option.textContent=type+' — '+CommandPresentation.label(type);select.append(option);}
+   select.value=[...select.options].some(o=>o.value===wanted)?wanted:'PING';switchType();renderComposer();
+  }catch(error){feedback('Command controls unavailable: '+error.message);}
+ }
+
  const caches=new Map(),socket=gateway.socket;
  let nodes=[],selected=null,nodeFilter="all",sending=false,actionBusy=new Set(),timer=null,stopped=false,pollBusy=false;
  const cache=id=>{if(!caches.has(id))caches.set(id,{commands:new Map(),events:new Map(),offset:0,more:true,busy:false,loaded:false,eventRequests:new Set(),forceBottom:false});return caches.get(id);};
@@ -23,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
  function feedback(text,error=true){notice.textContent=text;notice.style.color=error?"var(--m-red)":"var(--m-muted)";}
  function safe(value){
   if(Array.isArray(value))return value.map(safe);
-  if(value&&typeof value==="object")return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,/password|secret|token|credential/i.test(k)?"[redacted]":safe(v)]));
+  if(value&&typeof value==="object")return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,/password|secret|token|credential|^mesh_key$|^(mqtt_ca|gateway_ca|ca_cert)$|private_key/i.test(k)?"[redacted]":safe(v)]));
   return value;
  }
  function json(value){return JSON.stringify(safe(value),null,2)??"";}
@@ -62,14 +70,14 @@ document.addEventListener("DOMContentLoaded", () => {
  }
  function renderComposer(){
   const n=current(),running=active();
-  $("btn-send-command").disabled=!n||n.enabled===false||sending||Boolean(running)||!cache(selected).loaded;
+  $("btn-send-command").disabled=!n||n.enabled===false||sending||Boolean(running)||!cache(selected).loaded||!forms.ready;
   $("btn-send-command").querySelector("span").textContent=sending?"Sending…":"Send";
   $("command-active-status").dataset.state=running?"active":n?(online(n)?"ready":"offline"):"unselected";
   $("command-active-status").textContent=running?running.command_id+" · "+running.state.replaceAll("_"," "):n?(!online(n)?"Node offline · dispatch creates a queued command only after confirmation.":"No active command"):"Select a registered node";
  }
  function selectNode(id){
   selected=id;root.classList.add("conversation-open");feedback("",false);
-  renderNodes();renderHeader();render(true);loadHistory(id,false,true);
+  renderNodes();renderHeader();switchType();render(true);loadHistory(id,false,true);
  }
  async function loadEvents(cmd,force=false){
   const c=cache(cmd.node_id),old=c.events.get(cmd.command_id);
@@ -145,10 +153,10 @@ document.addEventListener("DOMContentLoaded", () => {
    }
    if(row.kind==="response"){
     const elapsed=cmd.sent_at&&cmd.response_at?new Date(cmd.response_at)-new Date(cmd.sent_at):null;
-    html+='<article class="command-message incoming" data-id="'+esc(row.key)+'" data-response-command="'+cid+'"><div class="command-bubble"><div class="command-bubble-head"><span>DEVICE RESPONSE</span>'+chip(cmd.state)+'</div><h3>'+esc(cmd.command_type)+'</h3><dl><div><dt>From device</dt><dd>'+esc(cmd.node_id)+'</dd></div><div><dt>To</dt><dd>GATEWAY</dd></div><div><dt>ACK status</dt><dd>'+esc(cmd.ack_status||(cmd.ack_at?"Received":"Not recorded"))+'</dd></div><div><dt>Execution outcome</dt><dd>'+chip(outcome(cmd))+'</dd></div>'+'</dl><details data-detail="'+cid+'-response" '+(opened.has(cmd.command_id+"-response")?"open":"")+'><summary>Response payload</summary>'+(elapsed!==null&&elapsed>=0?'<p>Response duration: '+esc((elapsed/1000).toFixed(3))+' s</p>':'')+'<pre>'+esc(cmd.result==null?"No response payload recorded.":json(cmd.result))+'</pre></details><div class="command-message-actions"><button class="btn" type="button" data-copy="'+cid+'" '+(cmd.result==null?"disabled":"")+'>Copy JSON</button></div>'+(cmd.error?'<p class="command-message-error">'+esc(cmd.error)+'</p>':'')+'<footer class="command-card-footer"><code>'+cid+'</code><time>'+esc(time(cmd.response_at))+'</time></footer></div></article>';continue;
+    html+='<article class="command-message incoming" data-id="'+esc(row.key)+'" data-response-command="'+cid+'"><div class="command-bubble"><div class="command-bubble-head"><span>DEVICE RESPONSE</span>'+chip(cmd.state)+'</div><h3>'+esc(cmd.command_type)+'</h3><dl><div><dt>From device</dt><dd>'+esc(cmd.node_id)+'</dd></div><div><dt>To</dt><dd>GATEWAY</dd></div><div><dt>ACK status</dt><dd>'+esc(cmd.ack_status||(cmd.ack_at?"Received":"Not recorded"))+'</dd></div><div><dt>Execution outcome</dt><dd>'+chip(outcome(cmd))+'</dd></div>'+'</dl><section class="command-result" aria-label="Device response details"><h4>Reported result</h4>'+CommandPresentation.readable(cmd.result)+'</section>'+(elapsed!==null&&elapsed>=0?'<p class="command-result-duration">Response time: '+esc((elapsed/1000).toFixed(3))+' s</p>':'')+'<details data-detail="'+cid+'-response" '+(opened.has(cmd.command_id+"-response")?"open":"")+'><summary>JSON details (advanced)</summary>'+(elapsed!==null&&elapsed>=0?'<p>Response duration: '+esc((elapsed/1000).toFixed(3))+' s</p>':'')+'<pre>'+esc(cmd.result==null?"No response payload recorded.":json(cmd.result))+'</pre></details><div class="command-message-actions"><button class="btn" type="button" data-copy="'+cid+'" '+(cmd.result==null?"disabled":"")+'>Copy JSON</button></div>'+(cmd.error?'<p class="command-message-error">'+esc(cmd.error)+'</p>':'')+'<footer class="command-card-footer"><code>'+cid+'</code><time>'+esc(time(cmd.response_at))+'</time></footer></div></article>';continue;
    }
    const isTerminal=terminal.has(cmd.state),retry=["FAILED","TIMEOUT"].includes(cmd.state)&&Number(cmd.retry_count)<Number(cmd.max_retries);
-   html+='<article class="command-message outgoing" data-id="'+cid+'" data-command-id="'+cid+'"><div class="command-bubble"><div class="command-bubble-head"><span>GATEWAY COMMAND</span>'+chip(cmd.state)+'</div><h3>'+esc(cmd.command_type)+'</h3><code>'+cid+'</code><dl>'+[["Source","GATEWAY"],["Target",cmd.node_id],["Priority",cmd.priority],["Timeout",cmd.timeout_seconds+" s"],["Retries",cmd.retry_count+" / "+cmd.max_retries],["Dispatch",cmd.sent_at?"Sent "+time(cmd.sent_at):"Not yet sent"],["ACK",cmd.ack_status||(cmd.ack_at?"Received":"Not recorded")],["Execution",outcome(cmd)],["Created",time(cmd.created_at)]].map(([k,v])=>'<div><dt>'+esc(k)+'</dt><dd title="'+esc(v)+'">'+(['ACK','Execution'].includes(k)?chip(v):esc(v))+'</dd></div>').join("")+'</dl><details data-detail="'+cid+'-payload" '+(opened.has(cmd.command_id+"-payload")?"open":"")+'><summary>Configured parameters</summary><pre>'+esc(json(cmd.payload||{}))+'</pre></details>'+(cmd.error?'<p class="command-message-error">'+esc(cmd.error)+'</p>':'')+'<div class="command-message-actions">'+(!isTerminal?'<button class="btn" type="button" data-action="cancel" data-command="'+cid+'" '+(actionBusy.has(cmd.command_id)?"disabled":"")+'>Stop dispatch</button>':'')+(retry?'<button class="btn" type="button" data-action="retry" data-command="'+cid+'" '+(actionBusy.has(cmd.command_id)||Boolean(active())?"disabled":"")+'>Retry</button>':'')+'</div></div><time>'+esc(time(cmd.sent_at||cmd.created_at))+'</time></article>';
+   html+='<article class="command-message outgoing" data-id="'+cid+'" data-command-id="'+cid+'"><div class="command-bubble"><div class="command-bubble-head"><span>GATEWAY COMMAND</span>'+chip(cmd.state)+'</div><h3>'+esc(cmd.command_type)+'</h3><code>'+cid+'</code><dl>'+[["Source","GATEWAY"],["Target",cmd.node_id],["Priority",cmd.priority],["Timeout",cmd.timeout_seconds+" s"],["Retries",cmd.retry_count+" / "+cmd.max_retries],["Dispatch",cmd.sent_at?"Sent "+time(cmd.sent_at):"Not yet sent"],["ACK",cmd.ack_status||(cmd.ack_at?"Received":"Not recorded")],["Execution",outcome(cmd)],["Created",time(cmd.created_at)]].map(([k,v])=>'<div><dt>'+esc(k)+'</dt><dd title="'+esc(v)+'">'+(['ACK','Execution'].includes(k)?chip(v):esc(v))+'</dd></div>').join("")+'</dl>'+(Object.keys(cmd.payload||{}).length?'<section class="command-result command-request-values" aria-label="Requested parameters"><h4>Requested parameters</h4>'+CommandPresentation.readable(cmd.payload)+'</section>':'')+'<details data-detail="'+cid+'-payload" '+(opened.has(cmd.command_id+"-payload")?"open":"")+'><summary>Parameters as JSON (advanced)</summary><pre>'+esc(json(cmd.payload||{}))+'</pre></details>'+(cmd.error?'<p class="command-message-error">'+esc(cmd.error)+'</p>':'')+'<div class="command-message-actions">'+(!isTerminal?'<button class="btn" type="button" data-action="cancel" data-command="'+cid+'" '+(actionBusy.has(cmd.command_id)?"disabled":"")+'>Stop dispatch</button>':'')+(retry?'<button class="btn" type="button" data-action="retry" data-command="'+cid+'" '+(actionBusy.has(cmd.command_id)||Boolean(active())?"disabled":"")+'>Retry</button>':'')+'</div></div><time>'+esc(time(cmd.sent_at||cmd.created_at))+'</time></article>';
   }
   gateway.patchHtml(history,html||'<p class="command-empty">'+(c.loaded?"No command history for this filter.":"Loading command history…")+'</p>');
   $("command-older").hidden=!c.more||!c.loaded;
@@ -173,7 +181,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const type=$("cmd-type-select").value;root.classList.toggle("ping-compose",type==="PING");
   // Recovery includes restoring the verified connection after reconnect/reboot.
   if(["RESTART","WIFI_RECONNECT"].includes(type)&&Number($("cmd-timeout-input").value)<120)$("cmd-timeout-input").value="120";
-  $("command-arguments-box").hidden=!new Set(["CONFIG_UPDATE","SET_DEVICE_NAME","SET_SLEEP_SCHEDULE","SET_TELEMETRY_INTERVAL","SET_HEARTBEAT_INTERVAL"]).has(type);
+  forms.render(type);$('command-use-json').checked=false;$('command-arguments-json').value='{}';$('command-config-title').textContent=CommandPresentation.label(type);
+  $('command-arguments-box').hidden=false;
+  const needsFields=type!=='PING'&&Object.keys(forms.registry[type]?.arguments||{}).length>0;
+  $('command-configuration').hidden=!needsFields;$('command-config-toggle').setAttribute('aria-expanded',String(needsFields));
   root.querySelectorAll(".param-pane").forEach(pane=>pane.classList.toggle("active",pane.id==="pane-"+type));
   $("command-quick-input").hidden=type!=="PING";
   if(type==="PING")$("command-quick-input").value=$("param-ping-msg").value;
@@ -195,11 +206,14 @@ document.addEventListener("DOMContentLoaded", () => {
    if(type==="GET_CONFIG")payload={};
    if(type==="SET_INTERVAL"){commandType="SET_TELEMETRY_INTERVAL";const ms=integer("param-interval-ms",2000,3600000);if(ms%1000)throw Error("Use whole seconds (multiples of 1000 ms).");payload={seconds:ms/1000};}
    if(type==="CUSTOM"){commandType=$("param-custom-name").value.trim();if(!/^[A-Za-z0-9_.-]{1,64}$/.test(commandType))throw Error("Enter a valid custom command name.");payload=JSON.parse($("param-custom-json").value.trim()||"{}");if(!payload||Array.isArray(payload)||typeof payload!=="object")throw Error("Custom payload must be a JSON object.");}
-   if($("command-arguments-json")&&!$("command-arguments-box").hidden){payload=JSON.parse($("command-arguments-json").value||"{}");if(!payload||Array.isArray(payload)||typeof payload!=="object")throw Error("Arguments must be a JSON object.");}
+   if(type!=='PING'&&!$('command-use-json').checked)payload=forms.payload();
+   if($('command-use-json').checked){payload=JSON.parse($('command-arguments-json').value||'{}');if(!payload||Array.isArray(payload)||typeof payload!=='object')throw Error('Arguments must be a JSON object.');}
+   if(CommandPresentation.hasPrivateFields(payload))throw Error('Credentials cannot be sent here. Use protected physical USB provisioning.');
+   if(node.device_enrolled&&!forms.registry[type]?.roles?.includes(String(node.device_role||node.role).toUpperCase()))throw Error('This command is not supported for the selected role.');
    if(!online(node)&&!confirm("This node is offline. The existing backend will create a QUEUED command; delivery is not confirmed. Continue?"))return;
    sending=true;renderComposer();feedback("",false);
    const result=await gateway.post(node.device_enrolled?"/api/v1/commands":"/api/commands",{node_id:node.node_id,command_type:commandType,payload,priority,timeout_seconds:timeout,max_retries:retries,...(node.device_enrolled?{ack_timeout_seconds:integer("cmd-ack-timeout",1,60),response_timeout_seconds:timeout,expiry_seconds:integer("cmd-expiry",1,300)}:{})});
-   merge(result.command);
+   merge(result.command);$('command-configuration').hidden=true;$('command-config-toggle').setAttribute('aria-expanded','false');
    if(selected===node.node_id){$("history-filter-select").value="ALL";render(true);}
   }catch(e){feedback(e.message);}
   finally{sending=false;renderComposer();}
@@ -219,6 +233,9 @@ document.addEventListener("DOMContentLoaded", () => {
  $("history-filter-select").onchange=()=>render(true);
  $("cmd-refresh-btn").onclick=refresh;
  $("command-latest").onclick=scrollLatest;
+ $('command-expand').onclick=()=>{const expanded=root.classList.toggle('command-expanded');document.body.classList.toggle('command-conversation-expanded',expanded);$('command-expand').textContent=expanded?'Restore':'Expand';$('command-expand').setAttribute('aria-pressed',String(expanded));fitWorkspace();};
+ $('command-arguments-json').oninput=()=>{$('command-use-json').checked=true;};
+
  $("command-back").onclick=()=>{root.classList.remove("conversation-open");$("node-search-input").focus();};
  $("command-older").onclick=()=>{if(selected){$("command-older").disabled=true;loadHistory(selected,true);}};
  conversation.addEventListener("scroll",()=>{if(selected&&conversation.scrollTop<12&&cache(selected).more&&cache(selected).loaded&&!cache(selected).busy)loadHistory(selected,true);},{passive:true});
@@ -228,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
  $("command-quick-input").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();send();}};
  $("command-config-toggle").onclick=()=>{const panel=$("command-configuration");panel.hidden=!panel.hidden;$("command-config-toggle").setAttribute("aria-expanded",String(!panel.hidden));};
  $("command-config-close").onclick=()=>{$("command-configuration").hidden=true;$("command-config-toggle").setAttribute("aria-expanded","false");$("command-config-toggle").focus();};
- root.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("command-configuration").hidden)$("command-config-close").click();});
+ root.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!$("command-configuration").hidden)$("command-config-close").click();else if(root.classList.contains("command-expanded"))$("command-expand").click();});
  $("btn-send-command").onclick=send;
  history.onclick=async e=>{
   const action=e.target.closest("[data-action]");if(action){commandAction(action.dataset.action,action.dataset.command);return;}
@@ -242,9 +259,9 @@ document.addEventListener("DOMContentLoaded", () => {
  timer=setInterval(async()=>{if(document.hidden||pollBusy)return;pollBusy=true;try{await loadNodes();if(selected)await loadHistory(selected);}finally{pollBusy=false;}},8000);
  const visible=()=>{if(!document.hidden)refresh();};document.addEventListener("visibilitychange",visible);
  window.addEventListener("pagehide",event=>{if(event.persisted)return;stopped=true;clearInterval(timer);socket?.off("command_update",update);socket?.off("node_update",nodeUpdate);socket?.off("connect",reconnect);socket?.off("disconnect",connection);document.removeEventListener("visibilitychange",visible);},{once:true});
- function fitWorkspace(){const height=Math.max(360,window.innerHeight-root.getBoundingClientRect().top-16);root.style.height=height+'px';}
+ function fitWorkspace(){const height=Math.max(520,window.innerHeight-root.getBoundingClientRect().top-8);root.style.height=height+'px';}
  const workspaceObserver=new ResizeObserver(fitWorkspace),header=document.querySelector('.geometric-header');if(header)workspaceObserver.observe(header);
  window.addEventListener('resize',fitWorkspace);window.addEventListener('pagehide',event=>{if(!event.persisted){workspaceObserver.disconnect();window.removeEventListener('resize',fitWorkspace);}},{once:true});
- fitWorkspace();connection();switchType();loadNodes();
+ fitWorkspace();connection();switchType();loadRegistry();loadNodes();
 });
 

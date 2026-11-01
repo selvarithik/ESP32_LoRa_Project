@@ -274,6 +274,14 @@ def install(app):
         return jsonify(ok=True)
     atexit.register(service.stop)
 
+def ip_return_fresh(identity):
+    # Prefer the authenticated IP exchange path while it is demonstrably live.
+    # A claimed IP address or a broker status is not proof of an IP return path.
+    with service.lock:
+        row=service.connections.get(identity)
+        age=time.time()-row['last_seen'] if row else None
+        return bool(service.server is not None and row and row.get('role')=='MASTER' and age is not None and 0<=age<=15)
+
 def start_saved():
     if not service.settings()['enabled']:return False
     try:

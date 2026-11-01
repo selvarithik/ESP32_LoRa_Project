@@ -1,5 +1,5 @@
 /* Browser presentation tests: controlled snapshot states, disposable Flask fixture. */
-const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict');
 (async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{
 const ctx=await browser.newContext();const base='http://127.0.0.1:5059';const login=await ctx.request.get(base+'/login');const csrf=(await login.text()).match(/data-csrf="([^"]+)"/)[1];assert((await ctx.request.post(base+'/api/auth/login',{headers:{'X-CSRF-Token':csrf},data:{username:'admin',password:'fixture-only-admin-123'}})).ok());

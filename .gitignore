@@ -22,3 +22,10 @@ tests/*-before.png
 /dist-recovery/
 /build-recovery/
 /deployment/local.json
+
+/dist-backup/
+/build-backup/
+
+node_modules/
+*.sgwportable
+*transfer.key

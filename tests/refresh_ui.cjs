@@ -1,5 +1,5 @@
 /* Actual disposable Flask, SQLite, Socket.IO and signed local TCP exchanges. */
-const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict'),crypto=require('node:crypto');
 const base='http://127.0.0.1:5062',device='REFRESH-MASTER';
 const key=crypto.createHash('sha256').update('fixture-refresh-token-only-not-deployment').digest();

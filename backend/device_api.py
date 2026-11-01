@@ -327,7 +327,11 @@ def ingest(master_id, frame, transport='wifi'):
         _emit(*event)
     return {"accepted": True, "duplicate": False}
 
-def pending_commands(master_id, device_id=None):
+def pending_commands(master_id, device_id=None, transport=None):
+    if transport=='mqtt':
+        import local_ip
+        if local_ip.ip_return_fresh(master_id):return []
+
     db = connect()
     try:
         rows = db.execute("SELECT c.* FROM commands c JOIN nodes n ON c.node_id=n.node_id WHERE n.master_id=? AND n.device_enrolled=1 AND n.enabled=1 AND c.state NOT IN ('COMPLETED','FAILED','CANCELLED','TIMEOUT') ORDER BY c.priority DESC,c.created_at LIMIT 64", (master_id,)).fetchall()

@@ -1,5 +1,5 @@
 /* Run against tests/gateway_fixture.py. All writes target its temporary database. */
-const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
 const base = process.env.GATEWAY_TEST_URL || 'http://127.0.0.1:5057';

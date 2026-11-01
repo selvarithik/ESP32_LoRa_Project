@@ -40,6 +40,23 @@ class LocalIpTests(unittest.TestCase):
                 db.execute('UPDATE local_ip_settings SET document=? WHERE id=1',(json.dumps(settings),))
             start.side_effect=ValueError('UNEXPECTED_CONFIGURATION_ERROR')
             with self.assertRaisesRegex(ValueError,'UNEXPECTED_CONFIGURATION_ERROR'):local_ip.start_saved()
+    def test_live_authenticated_ip_owns_dispatch_until_stale(self):
+        import command_manager
+        self.assertEqual(self.send(self.frame()).status_code,200)
+        command=command_manager.create_command('IP-MASTER','PING',{'message':'IP return path'})
+        with patch.object(local_ip,'service',self.service):
+            # Test client exchanges alone are not an actual listening service.
+            self.assertFalse(local_ip.ip_return_fresh('IP-MASTER'))
+            with patch.object(self.service,'server',object()):
+                self.assertTrue(local_ip.ip_return_fresh('IP-MASTER'))
+                self.assertEqual(list(device_api.pending_commands('IP-MASTER',transport='mqtt')),[])
+                packets=list(device_api.pending_commands('IP-MASTER'))
+                self.assertEqual(packets[0]['message_id'],command['command_id'])
+                self.service.connections['IP-MASTER']['last_seen']=int(time.time())-16
+                self.assertFalse(local_ip.ip_return_fresh('IP-MASTER'))
+                self.service.connections['IP-MASTER']['last_seen']=int(time.time())+5
+                self.assertFalse(local_ip.ip_return_fresh('IP-MASTER'))
+
     def frame(self,kind='TELEMETRY',source='IP-MASTER',body=None):
         if body is None:body={'valid':True,'parameters':{'temperature':25.5,'humidity':55.0}}
         return device_api.packet(kind,source,'GATEWAY',body)
