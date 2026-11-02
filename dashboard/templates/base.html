@@ -29,12 +29,14 @@
 </script>
 <script src="{{ url_for('static', filename='js/header-scroll.js') }}?v=20261027-approved" defer></script>
 {% block extra_js %}{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/selva-red.css') }}?v=20261102-2">
+<script src="{{ url_for('static', filename='js/selva-red.js') }}?v=20261102-1" defer></script>
 </head>
 
 {% set current_page_title %}{% block page_title %}Dashboard{% endblock %}{% endset %}
 {% set current_page_description %}{% block page_subtitle %}Gateway monitoring and configuration{% endblock %}{% endset %}
 {% set current_content_title %}{% block content_heading %}{{ current_page_title }}{% endblock %}{% endset %}
-<body class="gateway-body modern-shell" data-page="{{ request.path }}">
+<body class="gateway-body modern-shell gateway-red" data-page="{{ request.path }}">
 <a class="skip-link" href="#main-content">Skip to content</a>
 <div class="app-shell" id="app-shell">
   <aside class="modern-sidebar" id="side-navigation" aria-label="Gateway navigation">

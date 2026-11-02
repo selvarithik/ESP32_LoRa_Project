@@ -6,7 +6,6 @@
 {% block page_subtitle %}Real-time status of all gateway subsystems{% endblock %}
 
 {% block content %}
-{% set operations_view = "dashboard" %}{% include "partials/operations-overview.html" %}
 <div class="dashboard-console" id="dashboard-console">
   <div class="dashboard-v4-wrap">
 
@@ -38,6 +37,13 @@
       </div>
     </section>
 
+    <section class="dashboard-system-events" aria-labelledby="system-events-title">
+      <header><div><span class="red-eyebrow">GATEWAY ACTIVITY</span><h2 id="system-events-title">System events</h2></div><a href="/logs">View event log <span aria-hidden="true">↗</span></a></header>
+      <div id="activity-list" class="red-event-list" aria-live="polite"><p class="dashboard-empty">Waiting for Gateway log records…</p></div>
+    </section>
+    <details class="red-network-details"><summary>Network &amp; connection details</summary>
+      {% set operations_view = "dashboard" %}{% include "partials/operations-overview.html" %}
+    </details>
 
 
     <section class="dashboard-command" aria-label="Dashboard filters">

@@ -69,3 +69,6 @@ Start with this file, CONFIG_CONTRACT.md in both repositories, docs/GATE0_SETTIN
 
 ## Handoff verification (1 November 2026)
 Gateway unittest discovery: 195 passed, including 3 portable-transfer tests. Real encrypted archive: 10 files verified through isolated restore on this Windows account; different-machine restore pending. ESP32 contract/gzip/page checks, config-storage host checks and 8 flash-layout tests passed. Firmware build after gzip regeneration: 1,374,557 / 3,145,728 bytes (43.7%); RAM 76,140 / 327,680 bytes (23.2%). No firmware upload or saved device-setting change was performed for this transfer.
+
+## Gateway design update, 2 November 2026
+The approved updated red/black design is now implemented on the Gateway only. See docs/RED_GATEWAY_DESIGN_20261102.md. The active Windows release is dist/Gateway-red-ui-20261102. All navigation routes and live-data handlers are retained. ESP32 source and saved Wi-Fi/MQTT/sensor settings were not changed. The original encrypted private transfer archive remains a snapshot from 1 November; the newer UI is in source and the refreshed Windows bundle.
