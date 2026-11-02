@@ -1,0 +1,10 @@
+{
+  "description": "A red-themed dashboard that brings key metrics and insights together, helping users monitor performance and make informed decisions at a glance.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

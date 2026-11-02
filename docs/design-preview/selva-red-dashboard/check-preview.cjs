@@ -1,0 +1,40 @@
+const {chromium}=require('C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {pathToFileURL}=require('node:url');
+const path=require('node:path');
+const assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({channel:'msedge',headless:true});
+ const errors=[];const requests=[];const root=__dirname;
+ try{
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});
+ page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url())});
+ await page.goto(pathToFileURL(path.join(root,'selva Red Dashboard.html')).href);
+ await page.locator('.brand img').evaluate(img=>img.decode());await page.evaluate(()=>document.fonts.ready);
+ await page.screenshot({path:path.join(root,'laptop.png'),fullPage:true,animations:'disabled'});
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ await page.getByRole('button',{name:'Errors',exact:true}).click();
+ assert.equal(await page.locator('#eventsList .event').count(),1);
+ await page.getByRole('button',{name:'All activity',exact:true}).click();
+ await page.getByRole('button',{name:'Preview event',exact:true}).click();
+ assert.equal(await page.locator('#eventCount').innerText(),'5');
+ await page.getByRole('button',{name:'Simulate PING',exact:true}).click();
+ await page.locator('#history .badge.good').waitFor();
+ assert.equal(await page.locator('#history .bubble').count(),4);
+ await page.locator('.toast').waitFor({state:'hidden'});
+ await page.screenshot({path:path.join(root,'command-preview.png'),fullPage:true,animations:'disabled'});
+ await page.locator('[data-view="overview"]').click();
+ await page.setViewportSize({width:390,height:844});
+ await page.screenshot({path:path.join(root,'mobile.png'),fullPage:true,animations:'disabled'});
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ await page.getByRole('button',{name:'Open navigation'}).click();
+ await page.screenshot({path:path.join(root,'mobile-navigation.png'),fullPage:true,animations:'disabled'});
+ assert.equal(await page.locator('#menuToggle').getAttribute('aria-expanded'),'true');
+ await page.locator('[data-view="mqtt"]').click();
+ assert.equal(await page.locator('#view-mqtt').isVisible(),true);
+ assert.equal(await page.locator('#menuToggle').getAttribute('aria-expanded'),'false');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ assert.equal(await page.locator('.route-line').first().evaluate(el=>getComputedStyle(el,'::after').animationName),'none');
+ console.log('Computed body font:',await page.locator('body').evaluate(el=>getComputedStyle(el).fontFamily));assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);
+ console.log('PASS: laptop/mobile no overflow; navigation; event filters; local ACK/RESPONSE demo; reduced motion; no page errors; zero HTTP requests.');
+ }finally{await browser.close()}
+})().catch(e=>{console.error(e);process.exitCode=1});
