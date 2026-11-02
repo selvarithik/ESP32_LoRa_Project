@@ -1,0 +1,12 @@
+{% from "partials/page-icons.html" import page_icon %}
+<section class="communication-path" aria-labelledby="communication-path-title">
+  <header><div><h2 id="communication-path-title">Communication path</h2><p>Gateway-to-Master transport</p></div><span class="path-observation" id="path-state">Waiting for status</span></header>
+  <div class="communication-route">
+    <div class="communication-route-node"><span class="route-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01M11 6.5h6M11 17.5h6"/></svg></span><strong>Gateway</strong><small>Local application</small></div>
+    <span class="communication-route-line" id="path-broker-line" data-ready="false" aria-hidden="true"></span>
+    <div class="communication-route-node"><span class="route-icon broker-icon">{{ page_icon('/communication') }}</span><strong id="path-provider">MQTT broker</strong><small id="path-broker-state">Unknown</small></div>
+    <span class="communication-route-line" id="path-master-line" data-ready="false" aria-hidden="true"></span>
+    <div class="communication-route-node"><span class="route-icon master-icon">{{ page_icon('/nodes') }}</span><strong>Master</strong><small id="path-master-state">Unknown</small></div>
+  </div>
+  <dl class="communication-path-meta"><div><dt>Transport</dt><dd id="path-transport">Not reported</dd></div><div><dt>Delivery policy</dt><dd id="path-qos">Not reported</dd></div><div><dt>Execution proof</dt><dd>Separate ACK &amp; RESPONSE</dd></div></dl>
+</section>

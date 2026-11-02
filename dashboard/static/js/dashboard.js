@@ -423,7 +423,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             '<span class="dashboard-node-status ' + (nodeOnline ? "online" : "offline") + '"></span>' +
                             '<div class="dashboard-node-name" title="' + esc(node.name || node.node_id) + '">' + esc(node.name || node.node_id) + '</div>' +
                         '</div>' +
-                        '<div class="dashboard-node-id">' + esc(node.node_id) + (node.simulated ? ' · SIMULATED' : '') + '</div>' +
+                        (node.name && node.name !== node.node_id ? '<div class="dashboard-node-id">' + esc(node.node_id) + (node.simulated ? ' · SIMULATED' : '') + '</div>' : (node.simulated ? '<div class="dashboard-node-id">SIMULATED</div>' : '')) +
                     '</div>' +
                     '<button type="button" class="btn btn-secondary esp32-detail-button" data-esp32-details="' + esc(node.node_id) + '">ESP32 details</button>' +
                     '<div class="dashboard-node-state-pill ' + (nodeOnline ? "online" : "offline") + '"><span>' + esc(nodeOnline ? "ONLINE" : "OFFLINE") + '</span><strong>' + esc(nodeOnline ? (problemCount ? problemCount + " alerts" : "Connected") : "Connection unavailable") + '</strong></div>' +

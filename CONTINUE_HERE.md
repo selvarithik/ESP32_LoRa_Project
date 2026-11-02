@@ -75,3 +75,6 @@ The approved updated red/black design is now implemented on the Gateway only. Se
 
 ## Gateway revision3 corrections
 See docs/RED_GATEWAY_REVISION3_20261102.md for all twelve owner-requested corrections, banner report provenance and tests. Active Windows release: dist/Gateway-red-r3-20261102. Sidebar hover/focus expansion is restored; blue full-name banner, red metric card, compact node headers and right-column System events/Problems are applied. No device or broker/sensor settings changed.
+
+## Latest compact Gateway layout
+See docs/COMPACT_GATEWAY_LAYOUT_20261102.md. Active Windows release is dist/Gateway-compact-ui-20261102; banner #2A52BE, header #B80F0A, single-line branding, merged desktop node headers, white metric cards, widgets before telemetry and the reference-style read-only communication path. Saved configuration and ESP32 files unchanged.

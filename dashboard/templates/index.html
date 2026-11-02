@@ -74,6 +74,21 @@
         <option value="alarm">Nodes with problems</option>
       </select>
     </section>
+        <section class="dashboard-section" id="widget-custom-sensors">
+          <header class="dashboard-section-head">
+            <div>
+              <h2>My widgets</h2>
+
+            </div>
+            <div class="dashboard-section-tools">
+              <button class="dashboard-mini-tool" id="dashboard-customize-btn" type="button">Layout</button><button class="dashboard-action primary" id="add-sensor-widget-inline" type="button">+ Add widget</button>
+            </div>
+          </header>
+          <div id="custom-sensor-widgets" class="dashboard-custom-grid">
+            <div class="dashboard-empty">No custom widgets configured.</div>
+          </div>
+        </section>
+
         <section class="dashboard-section" id="widget-sensors">
           <header class="dashboard-section-head">
             <div>
@@ -91,20 +106,7 @@
         </section>
 
 
-        <section class="dashboard-section" id="widget-custom-sensors">
-          <header class="dashboard-section-head">
-            <div>
-              <h2>My widgets</h2>
 
-            </div>
-            <div class="dashboard-section-tools">
-              <button class="dashboard-mini-tool" id="dashboard-customize-btn" type="button">Layout</button><button class="dashboard-action primary" id="add-sensor-widget-inline" type="button">+ Add widget</button>
-            </div>
-          </header>
-          <div id="custom-sensor-widgets" class="dashboard-custom-grid">
-            <div class="dashboard-empty">No custom widgets configured.</div>
-          </div>
-        </section>
       </main>
 
       <aside class="dashboard-right-stack">
@@ -149,5 +151,5 @@
 {% block extra_js %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sensor-widgets.css') }}?v=20261019-status">
 <script src="{{ url_for('static', filename='js/sensor-widgets.js') }}?v=20261025-cadence"></script>
-<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=20261102-revision3"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=20261102-compact"></script>
 {% endblock %}
