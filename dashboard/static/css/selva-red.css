@@ -214,3 +214,35 @@
 @media(max-width:1023px){.gateway-red .gateway-banner{padding:14px 16px;gap:13px}.gateway-red .gateway-banner-logo{width:62px;height:42px;flex-basis:62px}.gateway-red .gateway-banner-copy{padding-left:14px}.gateway-red .gateway-banner-facts{flex-basis:100%;padding-top:9px;border-top:1px solid #ffffff40}.gateway-red .gateway-banner-wordmark{font-size:clamp(8px,1.3vw,14px)}.gateway-red .dashboard-main-grid{display:flex;flex-direction:column}.gateway-red .dashboard-main-grid>main,.gateway-red .dashboard-right-stack{width:100%}}
 @media(max-width:767px){.gateway-red .dashboard-node-head{display:flex;flex-wrap:wrap;gap:7px 10px;padding:10px 12px}.gateway-red .dashboard-node-head>div:first-child{flex:1 1 110px}.gateway-red .dashboard-node-head .dashboard-node-basics{order:4;flex:0 0 100%;width:100%;padding-top:5px;border-top:1px solid #46505e}.gateway-red .dashboard-node-head .dashboard-node-state-pill{display:grid;flex:0 0 auto;gap:2px!important}.gateway-red .dashboard-metric{padding:16px;min-height:125px}.gateway-red .dashboard-metric-value{font-size:27px}.gateway-red .kpi-online .dashboard-time{font-size:17px}.gateway-red .communication-path{padding:15px}.gateway-red .communication-route{grid-template-columns:1fr 20px 1fr 20px 1fr;padding:13px 6px}.gateway-red .communication-path-meta{gap:8px}.gateway-red .communication-path-meta dd{font-size:9px}.gateway-red .path-observation{max-width:125px;font-size:8px}.gateway-red .gateway-banner-wordmark{font-size:clamp(8px,2vw,12px)}.gateway-red .gateway-banner h2{font-size:12px}.gateway-red .gateway-banner p{font-size:6px}}
 @media(prefers-reduced-motion:reduce){.gateway-red .communication-route-line::after{animation:none!important}}
+
+/* Owner colour/size restoration; keep compact device rows and live-data hooks. */
+.gateway-red .geometric-header{background:#e7222e}
+.gateway-red .gateway-banner{background:linear-gradient(100deg,#0b3b66,#14538a);border-color:#245d8e;padding:26px 30px;gap:22px;min-height:138px}
+.gateway-red .gateway-banner-logo{width:106px;height:67px;flex-basis:106px}
+.gateway-red .gateway-banner-copy{padding-left:24px}
+.gateway-red .gateway-banner-wordmark{font-size:clamp(10px,1.6vw,22px)}
+.gateway-red .gateway-banner h2{font-size:15px}.gateway-red .gateway-banner p{font-size:8px}
+.gateway-red .communication-path{padding:11px 16px}
+.gateway-red .communication-path>header{align-items:center;margin-bottom:8px}
+.gateway-red .communication-path h2{font-size:12px;margin-bottom:2px}
+.gateway-red .communication-path header p{font-size:9px}
+.gateway-red .communication-route{padding:8px 10px;margin-bottom:8px}
+.gateway-red .route-icon{width:26px;height:26px;border-radius:8px;margin-bottom:5px}
+.gateway-red .route-icon svg{width:16px;height:16px}
+.gateway-red .communication-route-node strong{font-size:10px}.gateway-red .communication-route-node small{font-size:8px;margin-top:2px}
+.gateway-red .communication-path-meta dt{font-size:8px}.gateway-red .communication-path-meta dd{font-size:9px;margin-top:2px}
+.gateway-red .dashboard-node-head{background:#e7222e;border-color:#e7222e;color:#fff}
+.gateway-red .dashboard-node-head :is(.dashboard-node-name,.dashboard-node-id,.dashboard-node-basics small,.dashboard-node-basics strong){color:#fff}
+.gateway-red .dashboard-node-head .dashboard-node-basics{border-color:#ffffff55}
+.gateway-red .dashboard-node-head .esp32-detail-button{background:#ffffff14;border-color:#ffffff80;color:#fff}
+.gateway-red .dashboard-node-head .esp32-detail-button:hover{background:#ffffff2b}
+.gateway-red .dashboard-node-head .dashboard-node-state-pill{padding:3px 5px;border-radius:5px;background:#fff}
+.gateway-red .dashboard-node-head .dashboard-node-state-pill.online{color:#087443}
+.gateway-red .dashboard-node-head .dashboard-node-state-pill.offline{color:#b42318}
+.gateway-red .dashboard-node-status{box-shadow:0 0 0 2px #ffffffb3}
+.gateway-red .kpi-nodes,.gateway-red .kpi-problems{background:#e7222e;border-color:#e7222e}
+.gateway-red :is(.kpi-nodes,.kpi-problems) :is(.dashboard-metric-label,.dashboard-metric-value,.dashboard-metric-value small,.red-metric-detail){color:#fff}
+.gateway-red :is(.kpi-nodes,.kpi-problems) .red-metric-icon{background:#ffffff20;color:#fff;border-color:#ffffff22}
+.gateway-red .kpi-problems{order:2}.gateway-red .kpi-online{order:3}
+@media(max-width:1200px){.gateway-red .gateway-banner{flex-wrap:wrap}.gateway-red .gateway-banner-facts{flex:0 0 100%;border-top:1px solid #ffffff40;padding-top:15px}.gateway-red .gateway-banner-evidence{display:none}}
+@media(max-width:767px){.gateway-red .gateway-banner{padding:20px 18px;gap:16px;min-height:0}.gateway-red .gateway-banner-logo{width:70px;height:48px;flex-basis:70px}.gateway-red .gateway-banner-copy{padding-left:17px}.gateway-red .gateway-banner-wordmark{font-size:clamp(8px,2vw,12px)}.gateway-red .gateway-banner h2{font-size:13px}.gateway-red .gateway-banner p{font-size:6px}.gateway-red .communication-path{padding:10px 12px}.gateway-red .communication-route{padding:8px 5px}}

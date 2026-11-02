@@ -78,3 +78,6 @@ See docs/RED_GATEWAY_REVISION3_20261102.md for all twelve owner-requested correc
 
 ## Latest compact Gateway layout
 See docs/COMPACT_GATEWAY_LAYOUT_20261102.md. Active Windows release is dist/Gateway-compact-ui-20261102; banner #2A52BE, header #B80F0A, single-line branding, merged desktop node headers, white metric cards, widgets before telemetry and the reference-style read-only communication path. Saved configuration and ESP32 files unchanged.
+
+## Latest colour restoration
+Active release: dist/Gateway-restored-ui-20261102. See docs/GATEWAY_COLOUR_RESTORATION_20261102.md: restored red/blue theme and larger banner, smaller workflow, red node headers, red Nodes/Problems metrics, and reordered summary cards. Saved settings unchanged.

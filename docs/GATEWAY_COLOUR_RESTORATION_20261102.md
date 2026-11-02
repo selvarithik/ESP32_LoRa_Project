@@ -1,0 +1,7 @@
+# Gateway colour restoration — 2 November 2026
+
+Applied the latest nine dashboard annotations: restored Figma red #e7222e header, previous #0b3b66 → #14538a blue-gradient banner and larger banner footprint; reduced communication-path padding/icons/text; applied the same red header treatment to every node with distinct readable status badges; restored red Nodes online and Problems cards; swapped Problems/Last update visually and in document order. Resulting summary order is Nodes, Sensors, Problems, Last update. Single-line full company branding, widgets-before-telemetry order, hover navigation, mobile access, right-column events/problems and all live-data handlers remain.
+
+60 Flask fixture page/viewport checks passed at1366/1071/768/375px, covering restored colours and size, compact workflow, node styling, reordered cards, live telemetry refresh, navigation and reduced motion. Screenshots under tests/artifacts/selva-red contain software-fixture values, not physical readings. No firmware or physical sensor/RF/command tests were run for this styling change.
+
+Production release: dist/Gateway-restored-ui-20261102. Live CSS byte-matches source; login responds200. MQTT/local-IP documents, secret-store files and sensor/parameter/graph settings fingerprints compared unchanged across restart. Previous releases retained. No ESP32, Wi-Fi, MQTT profile, sensor setting or backend handler changed.

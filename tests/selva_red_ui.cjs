@@ -22,9 +22,13 @@ const routes=['/','/nodes','/sensors','/communication','/mqtt','/network','/comm
      assert(await p.locator('#activity-list .dashboard-event-row').count()>0,'Actual fixture logs should populate events');
      await p.waitForFunction(()=>document.querySelector('#banner-gateway').textContent.includes('SIM-COMMAND-MASTER'));
      assert((await p.locator('.gateway-banner').innerText()).includes('AEROSPACE & DEFENCE'));
-     assert.equal(await p.locator('.kpi-nodes').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(255, 255, 255)');
-     assert.equal(await p.locator('.geometric-header').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(184, 15, 10)');
-     assert.equal(await p.locator('.gateway-banner').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(42, 82, 190)');
+     assert.equal(await p.locator('.kpi-nodes').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(231, 34, 46)');
+     assert.equal(await p.locator('.geometric-header').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(231, 34, 46)');
+     assert((await p.locator('.gateway-banner').evaluate(e=>getComputedStyle(e).backgroundImage)).includes('rgb(11, 59, 102)'));
+     assert.equal(await p.locator('.kpi-problems').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(231, 34, 46)');
+     assert.equal(await p.locator('.dashboard-node-head').first().evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(231, 34, 46)');
+     assert(await p.locator('.kpi-problems').evaluate(e=>e.getBoundingClientRect().left<document.querySelector('.kpi-online').getBoundingClientRect().left||e.getBoundingClientRect().top<document.querySelector('.kpi-online').getBoundingClientRect().top));
+     assert((await p.locator('.communication-path').evaluate(e=>e.getBoundingClientRect().height))<210,'Communication panel should be compact');
      assert(await p.locator('#widget-custom-sensors').evaluate(e=>e.compareDocumentPosition(document.getElementById('widget-sensors')) & Node.DOCUMENT_POSITION_FOLLOWING));
      assert(await p.locator('.communication-path').evaluate(e=>e.compareDocumentPosition(document.querySelector('.gateway-banner')) & Node.DOCUMENT_POSITION_FOLLOWING));
      const icon=await p.locator('#global-nav-search-button').evaluate(e=>{const a=e.getBoundingClientRect(),b=e.querySelector('svg').getBoundingClientRect();return Math.abs((a.left+a.right-b.left-b.right)/2)+Math.abs((a.top+a.bottom-b.top-b.bottom)/2)});assert(icon<2,'Search icon must be centred');
@@ -38,7 +42,7 @@ const routes=['/','/nodes','/sensors','/communication','/mqtt','/network','/comm
       assert.equal(await p.locator('.modern-sidebar').evaluate(e=>e.getBoundingClientRect().width),initial,'Pointer leaving collapses navigation');
       assert.equal(await p.locator('#mobile-menu-btn').isVisible(),false,'Desktop menu button removed');
       const head=await p.locator('.dashboard-node-head').first().evaluate(e=>({height:e.getBoundingClientRect().height,grid:getComputedStyle(e).gridTemplateRows}));assert(head.height<100,'Device header must stay compact');
-      const bannerHeight=await p.locator('.gateway-banner').evaluate(e=>e.getBoundingClientRect().height);assert(bannerHeight<140,'Desktop banner must be short');
+      const bannerHeight=await p.locator('.gateway-banner').evaluate(e=>e.getBoundingClientRect().height);assert(bannerHeight>=138&&bannerHeight<270,'Previous banner footprint restored');
       const layout=await p.evaluate(()=>{const events=document.querySelector('.dashboard-system-events').getBoundingClientRect(),main=document.querySelector('.dashboard-main-grid>main').getBoundingClientRect();return {eventsLeft:events.left,mainRight:main.right,eventsTop:events.top,mainTop:main.top,eventsRight:events.right};});assert(layout.eventsLeft>=layout.mainRight,'Events must sit on the right');assert(Math.abs(layout.eventsTop-layout.mainTop)<2,'Events must align with the top of the main column');assert(layout.eventsRight<=width,'Events cannot be clipped beyond the viewport');
       assert.equal(await p.locator('.profile-avatar').evaluate(e=>getComputedStyle(e).borderRadius),'50%');
       assert.equal(await p.locator('.modern-nav').evaluate(e=>getComputedStyle(e).scrollbarWidth),'none');

@@ -20,14 +20,6 @@
 
         <p class="red-metric-detail" id="fleet-availability">Waiting for node status</p>
       </div>
-      <div class="dashboard-metric kpi-online" data-tip="Nodes reachable right now">
-        <span class="red-metric-icon" aria-hidden="true">{{ page_icon("/logs") }}</span>
-
-        <div class="dashboard-metric-label">Last update</div>
-        <div class="dashboard-metric-value dashboard-time" id="dashboard-last-refresh">Waiting</div>
-
-        <p class="red-metric-detail">Latest dashboard refresh</p>
-      </div>
       <div class="dashboard-metric kpi-params" data-tip="Enabled sensor parameters">
         <span class="red-metric-icon" aria-hidden="true">{{ page_icon("/sensors") }}</span>
 
@@ -43,6 +35,14 @@
         <div class="dashboard-metric-value" id="alarm-count">—</div>
 
         <p class="red-metric-detail">Sensor alarms and stale readings</p>
+      </div>
+      <div class="dashboard-metric kpi-online" data-tip="Nodes reachable right now">
+        <span class="red-metric-icon" aria-hidden="true">{{ page_icon("/logs") }}</span>
+
+        <div class="dashboard-metric-label">Last update</div>
+        <div class="dashboard-metric-value dashboard-time" id="dashboard-last-refresh">Waiting</div>
+
+        <p class="red-metric-detail">Latest dashboard refresh</p>
       </div>
     </section>
 
