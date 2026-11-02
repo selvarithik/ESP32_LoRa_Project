@@ -6,46 +6,56 @@
 {% block page_subtitle %}Real-time status of all gateway subsystems{% endblock %}
 
 {% block content %}
+{% from "partials/page-icons.html" import page_icon %}
 <div class="dashboard-console" id="dashboard-console">
   <div class="dashboard-v4-wrap">
 
 
   <section class="dashboard-status-board" id="widget-stats" aria-label="Gateway and fleet summary">
       <div class="dashboard-metric kpi-nodes" data-tip="Nodes configured on the gateway">
+        <span class="red-metric-icon" aria-hidden="true">{{ page_icon("/nodes") }}</span>
 
         <div class="dashboard-metric-label">Nodes online</div>
         <div class="dashboard-metric-value"><span id="online-nodes">0</span><small> / <span id="total-nodes">0</span></small></div>
 
+        <p class="red-metric-detail" id="fleet-availability">Waiting for node status</p>
       </div>
       <div class="dashboard-metric kpi-online" data-tip="Nodes reachable right now">
+        <span class="red-metric-icon" aria-hidden="true">{{ page_icon("/logs") }}</span>
 
         <div class="dashboard-metric-label">Last update</div>
         <div class="dashboard-metric-value dashboard-time" id="dashboard-last-refresh">Waiting</div>
 
+        <p class="red-metric-detail">Latest dashboard refresh</p>
       </div>
       <div class="dashboard-metric kpi-params" data-tip="Enabled sensor parameters">
+        <span class="red-metric-icon" aria-hidden="true">{{ page_icon("/sensors") }}</span>
 
         <div class="dashboard-metric-label">Active sensors</div>
         <div class="dashboard-metric-value" id="sensor-count">—</div>
 
+        <p class="red-metric-detail">Enabled sensor parameters</p>
       </div>
       <div class="dashboard-metric kpi-problems" data-tip="Alarm or sensor-error parameters">
+        <span class="red-metric-icon" aria-hidden="true">{{ page_icon("/diagnostics") }}</span>
 
         <div class="dashboard-metric-label">Problems</div>
         <div class="dashboard-metric-value" id="alarm-count">—</div>
 
+        <p class="red-metric-detail">Sensor alarms and stale readings</p>
       </div>
     </section>
 
-    <section class="dashboard-system-events" aria-labelledby="system-events-title">
-      <header><div><span class="red-eyebrow">GATEWAY ACTIVITY</span><h2 id="system-events-title">System events</h2></div><a href="/logs">View event log <span aria-hidden="true">↗</span></a></header>
-      <div id="activity-list" class="red-event-list" aria-live="polite"><p class="dashboard-empty">Waiting for Gateway log records…</p></div>
-    </section>
+
+
+
+
+
+     <div class="dashboard-main-grid">
+      <main>
     <details class="red-network-details"><summary>Network &amp; connection details</summary>
       {% set operations_view = "dashboard" %}{% include "partials/operations-overview.html" %}
     </details>
-
-
     <section class="dashboard-command" aria-label="Dashboard filters">
       <label class="dashboard-search-wrap" data-tip="Filter nodes and parameters">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg>
@@ -64,9 +74,6 @@
         <option value="alarm">Nodes with problems</option>
       </select>
     </section>
-
-     <div class="dashboard-main-grid">
-      <main>
         <section class="dashboard-section" id="widget-sensors">
           <header class="dashboard-section-head">
             <div>
@@ -101,6 +108,11 @@
       </main>
 
       <aside class="dashboard-right-stack">
+    <section class="dashboard-system-events" aria-labelledby="system-events-title">
+      <header><div><span class="red-eyebrow">GATEWAY ACTIVITY</span><h2 id="system-events-title">System events</h2></div><a href="/logs">View event log <span aria-hidden="true">↗</span></a></header>
+      <div id="activity-list" class="red-event-list" aria-live="polite"><p class="dashboard-empty">Waiting for Gateway log records…</p></div>
+    </section>
+
 
         <section class="dashboard-section" id="widget-alerts">
           <header class="dashboard-section-head">
@@ -137,5 +149,5 @@
 {% block extra_js %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sensor-widgets.css') }}?v=20261019-status">
 <script src="{{ url_for('static', filename='js/sensor-widgets.js') }}?v=20261025-cadence"></script>
-<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=20261025-basicdetails"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=20261102-revision3"></script>
 {% endblock %}

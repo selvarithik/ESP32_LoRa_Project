@@ -8,7 +8,7 @@ const routes=['/','/nodes','/sensors','/communication','/mqtt','/network','/comm
  const browser=await chromium.launch({channel:'msedge',headless:true});
  const results=[];fs.mkdirSync('tests/artifacts/selva-red',{recursive:true});
  try{
-  for(const width of [1366,768,375]){
+  for(const width of [1366,1071,768,375]){
    const context=await browser.newContext({viewport:{width,height:900}}),p=await context.newPage(),errors=[];
    p.on('pageerror',e=>errors.push(e.message));
    await p.goto(base+'/login');await p.locator('[name=username]').fill('admin');await p.locator('#password').fill('fixture-only-admin-123');await p.locator('#signin').click();await p.waitForURL(base+'/');
@@ -20,11 +20,25 @@ const routes=['/','/nodes','/sensors','/communication','/mqtt','/network','/comm
     assert(data.links.includes('/chat'),'Existing navigation must remain available');assert(data.links.includes('/mqtt'));assert(data.links.includes('/logs'));assert(data.links.includes('/local-ip'));assert(data.header);results.push({width,route,...data});
     if(route==='/'){
      assert(await p.locator('#activity-list .dashboard-event-row').count()>0,'Actual fixture logs should populate events');
-     if(width===1366){
+     await p.waitForFunction(()=>document.querySelector('#banner-gateway').textContent.includes('SIM-COMMAND-MASTER'));
+     assert((await p.locator('.gateway-banner').innerText()).includes('AEROSPACE & DEFENCE'));
+     assert.equal(await p.locator('.kpi-nodes').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(231, 34, 46)');
+     const icon=await p.locator('#global-nav-search-button').evaluate(e=>{const a=e.getBoundingClientRect(),b=e.querySelector('svg').getBoundingClientRect();return Math.abs((a.left+a.right-b.left-b.right)/2)+Math.abs((a.top+a.bottom-b.top-b.bottom)/2)});assert(icon<2,'Search icon must be centred');
+     if(width>=1024){
+      await p.mouse.move(1000,100);await p.waitForTimeout(350);
       const initial=await p.locator('.modern-sidebar').evaluate(e=>e.getBoundingClientRect().width);
-      await p.locator('#mobile-menu-btn').click();await p.waitForFunction(()=>document.querySelector('#app-shell').classList.contains('nav-collapsed'));await p.waitForTimeout(300);
-      const collapsed=await p.locator('.modern-sidebar').evaluate(e=>e.getBoundingClientRect().width);assert(collapsed<initial);
-      await p.locator('#mobile-menu-btn').click();await p.waitForTimeout(300);
+      await p.locator('.modern-sidebar').hover();await p.waitForTimeout(350);
+      const expanded=await p.locator('.modern-sidebar').evaluate(e=>e.getBoundingClientRect().width);assert(expanded>initial,'Hover must expand navigation');
+      await p.screenshot({path:`tests/artifacts/selva-red/navigation-${width}.png`});
+      await p.mouse.move(1000,100);await p.waitForTimeout(350);
+      assert.equal(await p.locator('.modern-sidebar').evaluate(e=>e.getBoundingClientRect().width),initial,'Pointer leaving collapses navigation');
+      await p.locator('#mobile-menu-btn').click();await p.waitForFunction(()=>document.querySelector('#app-shell').classList.contains('nav-pinned'));await p.waitForTimeout(350);
+      assert((await p.locator('.modern-sidebar').evaluate(e=>e.getBoundingClientRect().width))>initial);
+      await p.locator('#mobile-menu-btn').click();await p.waitForTimeout(350);
+      const layout=await p.evaluate(()=>{const events=document.querySelector('.dashboard-system-events').getBoundingClientRect(),main=document.querySelector('.dashboard-main-grid>main').getBoundingClientRect();return {eventsLeft:events.left,mainRight:main.right,eventsTop:events.top,mainTop:main.top,eventsRight:events.right};});assert(layout.eventsLeft>=layout.mainRight,'Events must sit on the right');assert(Math.abs(layout.eventsTop-layout.mainTop)<2,'Events must align with the top of the main column');assert(layout.eventsRight<=width,'Events cannot be clipped beyond the viewport');
+      assert.equal(await p.locator('.profile-avatar').evaluate(e=>getComputedStyle(e).borderRadius),'50%');
+      assert.equal(await p.locator('.modern-nav').evaluate(e=>getComputedStyle(e).scrollbarWidth),'none');
+
      }else{
       await p.locator('#mobile-menu-btn').click();await p.locator('#mobileNavDrawer.open').waitFor();
       await p.waitForTimeout(300);
@@ -40,7 +54,7 @@ const routes=['/','/nodes','/sensors','/communication','/mqtt','/network','/comm
      await p.locator('#widget-sensors').scrollIntoViewIfNeeded();
      await p.screenshot({path:`tests/artifacts/selva-red/telemetry-${width}.png`});
      await p.evaluate(()=>window.scrollTo(0,0));await p.waitForFunction(()=>!document.querySelector('.geometric-header').classList.contains('is-compact'));
-     if(width===1366){
+     if(width>=1024){
       const csrf=await p.locator('meta[name="sensor-csrf"]').getAttribute('content');
       const reply=await context.request.post(base+'/api/telemetry',{headers:{'X-CSRF-Token':csrf},data:{node_id:'TEST_001',parameters:{temperature:31.75,humidity:61.25}}});
       assert(reply.ok(),'Fixture telemetry ingestion');
@@ -55,6 +69,6 @@ const routes=['/','/nodes','/sensors','/communication','/mqtt','/network','/comm
   await p.goto(base+'/login');await p.locator('[name=username]').fill('admin');await p.locator('#password').fill('fixture-only-admin-123');await p.locator('#signin').click();await p.waitForURL(base+'/');
   assert.equal(await p.locator('.nav-item').first().evaluate(e=>getComputedStyle(e).transitionDuration),'0s');await c.close();
   fs.writeFileSync('tests/artifacts/selva-red/results.json',JSON.stringify(results,null,2));
-  console.log('PASS 45 real Flask page/viewport checks; black/red navigation, NASA assets, animated desktop collapse/mobile drawer, live fixture telemetry refresh, events, filters, reduced motion and no page errors. No hardware settings changed.');
+  console.log('PASS '+results.length+' real Flask page/viewport checks; black/red navigation, NASA assets, animated desktop collapse/mobile drawer, live fixture telemetry refresh, events, filters, reduced motion and no page errors. No hardware settings changed.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

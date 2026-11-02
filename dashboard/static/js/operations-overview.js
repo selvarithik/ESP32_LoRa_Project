@@ -27,6 +27,7 @@
    const response=await fetch('/api/operations/overview',{cache:'no-store',signal:AbortSignal.timeout(9000)});
    if(!response.ok)throw Error(response.status===401?'Sign in required':'Overview unavailable');
    const data=await response.json();
+   document.dispatchEvent(new CustomEvent('gateway:operations',{detail:data}));
    root.querySelector('.operations-feedback').textContent='Updated '+new Date(data.observed_at).toLocaleTimeString()+'. Parent assignment is configured; it does not prove an RF link.';
    root.querySelector('.operations-health').innerHTML=card('Fleet',data.online+' online',data.master_count+' Master · '+data.registered_nodes+' registered Node')+card('Local IP',data.local_ip.state,data.local_ip.accepted+' persisted exchanges')+card('MQTT',data.mqtt.state,data.mqtt.last_error||data.mqtt.acl_status)+card('Ethernet',data.ethernet,'LoRa RF delivery not verified');
    const devices=root.querySelector('.operations-devices');

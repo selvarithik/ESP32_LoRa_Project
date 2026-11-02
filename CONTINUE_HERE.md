@@ -72,3 +72,6 @@ Gateway unittest discovery: 195 passed, including 3 portable-transfer tests. Rea
 
 ## Gateway design update, 2 November 2026
 The approved updated red/black design is now implemented on the Gateway only. See docs/RED_GATEWAY_DESIGN_20261102.md. The active Windows release is dist/Gateway-red-ui-20261102. All navigation routes and live-data handlers are retained. ESP32 source and saved Wi-Fi/MQTT/sensor settings were not changed. The original encrypted private transfer archive remains a snapshot from 1 November; the newer UI is in source and the refreshed Windows bundle.
+
+## Gateway revision3 corrections
+See docs/RED_GATEWAY_REVISION3_20261102.md for all twelve owner-requested corrections, banner report provenance and tests. Active Windows release: dist/Gateway-red-r3-20261102. Sidebar hover/focus expansion is restored; blue full-name banner, red metric card, compact node headers and right-column System events/Problems are applied. No device or broker/sensor settings changed.

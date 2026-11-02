@@ -566,7 +566,18 @@ document.addEventListener("DOMContentLoaded", function () {
             var severity = String(log.severity || log.level || "INFO").toUpperCase();
             var source = String(log.source || log.node_id || "SYSTEM");
             var message = String(log.message || log.text || "—");
-            return '<div class="dashboard-event-row">' +
+            // Summarize structured diagnostics; the full record remains on Logs.
+            if (message.trim().startsWith('{')) {
+                try {
+                    var detail = JSON.parse(message.slice(0, 16384));
+                    var parts = ['device_name', 'device_id', 'role', 'transport', 'state'].map(function (key) {
+                        return typeof detail[key] === 'string' ? detail[key].slice(0, 96) : '';
+                    }).filter(Boolean);
+                    message = parts.length ? parts.join(' · ') : 'Structured diagnostic report. Open Logs for details.';
+                } catch (_) { message = 'Diagnostic report. Open Logs for details.'; }
+            }
+            var level = /^(WARN|WARNING)$/.test(severity) ? 'warning' : /^(ERROR|CRITICAL|FATAL)$/.test(severity) ? 'error' : 'info';
+            return '<div class="dashboard-event-row" data-severity="' + level + '">' +
                 '<span class="dashboard-event-dot"></span>' +
                 '<div class="dashboard-row-main"><strong>' + esc(source) + ' · ' + esc(severity) + '</strong><span>' + esc(message) + '</span></div>' +
                 '<div class="dashboard-row-value">' + esc(formatClock(log.timestamp || log.created_at)) + '</div>' +
@@ -592,6 +603,7 @@ document.addEventListener("DOMContentLoaded", function () {
         text("online-nodes", onlineCount);
         text("sensor-count", paramCount);
         text("alarm-count", problemCount);
+        text("fleet-availability", state.nodes.length ? Math.round(100 * onlineCount / state.nodes.length) + "% fleet available" : "No registered nodes");
 
     }
 
