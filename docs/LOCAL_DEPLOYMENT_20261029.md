@@ -22,11 +22,25 @@ The previous `.\.venv\Scripts\python.exe backend\server.py` command also starts 
 
 Current-user startup is installed and runs after Windows sign-in under the same Windows identity. Remove it using `deployment/Remove-Startup.ps1`. This is not a system service and does not run before sign-in. Reboot/sign-in operation remains untested.
 
-## Windows executable
+## Windows single-file executable
 
-`dist/Gateway/Gateway.exe` is built and tested. Keep `_internal` beside it. The bundle is approximately 38.8 MiB and contains no user databases or credentials. The Start script uses the existing project data directory. Direct EXE launch without `--data-dir` uses `%LOCALAPPDATA%/SelvarithikGateway/data`, requiring an existing commissioned account and configuration; no default password is created.
+The Windows EXE includes the Python backend, dependencies, dashboard templates and static assets. Copy the EXE to another Windows laptop and commission or migrate the data directory separately. The SQLite databases, credentials and settings remain in that external directory. Windows DPAPI-protected secrets must be provisioned again under the new Windows identity.
 
-Dependencies are in `requirements-deployment.txt` and `requirements-build.txt`. Stop the Gateway before rebuilding with the project virtual environment: `python -m PyInstaller --noconfirm deployment/Gateway.spec`. Build and dist are generated, ignored directories.
+Build from the Gateway project directory with the existing virtual environment and the dependencies in `requirements-deployment.txt` and `requirements-build.txt`.
+
+```powershell
+.\.venv\Scripts\python.exe -m PyInstaller --noconfirm --distpath dist/single-exe --workpath build/single-exe deployment/Gateway.spec
+```
+
+Stop the current Gateway before starting the EXE on the same port with the existing data directory.
+
+```powershell
+.\deployment\Stop-Gateway.ps1
+.\dist\single-exe\Gateway.exe check --data-dir .\data
+.\dist\single-exe\Gateway.exe serve --data-dir .\data
+```
+
+From a second PowerShell window, use `.\dist\single-exe\Gateway.exe stop --data-dir .\data` to stop it cleanly. A direct launch without `--data-dir` uses `%LOCALAPPDATA%\SelvarithikGateway\data` and requires a commissioned database and account. The existing startup scripts continue to follow the configured active release.
 
 ## Encrypted backups
 

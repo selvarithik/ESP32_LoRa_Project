@@ -5,6 +5,14 @@ import database,device_api,command_manager
 import workspace_views
 
 class WorkspaceViewsTests(unittest.TestCase):
+ def test_logs_and_diagnostics_have_distinct_content(self):
+  self.client=seed()
+  logs=self.client.get('/logs').get_data(as_text=True)
+  diagnostics=self.client.get('/diagnostics').get_data(as_text=True)
+  self.assertIn('id="logs-table"',logs)
+  self.assertNotIn('data-operations-view="diagnostics"',logs)
+  self.assertIn('data-operations-view="diagnostics"',diagnostics)
+  self.assertNotIn('id="logs-table"',diagnostics)
  def setUp(self):
   self.client=seed();self.master='ESP32-010203040506';self.node='ESP32-060504030201'
   device_api.enroll(self.master,'Actual Master','MASTER');device_api.enroll(self.node,'Saved Node','NODE',self.master,'4')

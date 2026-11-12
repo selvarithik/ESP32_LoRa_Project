@@ -420,13 +420,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 '<header class="dashboard-node-head">' +
                     '<div>' +
                         '<div class="dashboard-node-title-row">' +
-                            '<span class="dashboard-node-status ' + (nodeOnline ? "online" : "offline") + '"></span>' +
+                            '<span class="dashboard-device-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3m6-3v3M9 19v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></span>' +
                             '<div class="dashboard-node-name" title="' + esc(node.name || node.node_id) + '">' + esc(node.name || node.node_id) + '</div>' +
                         '</div>' +
                         (node.name && node.name !== node.node_id ? '<div class="dashboard-node-id">' + esc(node.node_id) + (node.simulated ? ' · SIMULATED' : '') + '</div>' : (node.simulated ? '<div class="dashboard-node-id">SIMULATED</div>' : '')) +
                     '</div>' +
                     '<button type="button" class="btn btn-secondary esp32-detail-button" data-esp32-details="' + esc(node.node_id) + '">ESP32 details</button>' +
-                    '<div class="dashboard-node-state-pill ' + (nodeOnline ? "online" : "offline") + '"><span>' + esc(nodeOnline ? "ONLINE" : "OFFLINE") + '</span><strong>' + esc(nodeOnline ? (problemCount ? problemCount + " alerts" : "Connected") : "Connection unavailable") + '</strong></div>' +
+                    '<div class="dashboard-node-state-pill ' + (nodeOnline ? "online" : "offline") + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + (nodeOnline ? 'M5 12l4 4L19 6' : 'M4 4l16 16M3 8a16 16 0 0 1 3-2m4-2a16 16 0 0 1 11 4M7 12a9 9 0 0 1 4-2m5 2 1 1M10 16l2-1 2 1M12 20h.01') + '"/></svg><span>' + esc(nodeOnline ? "ONLINE" : "OFFLINE") + '</span><strong>' + esc(nodeOnline ? (problemCount ? problemCount + " alerts" : "Connected") : "Connection unavailable") + '</strong></div>' +
                     '<div class="dashboard-node-basics" aria-label="Basic ESP32 details">' +
                         '<span><small>Role</small><strong>' + esc(node.device_role || reported.role || 'Unknown') + '</strong></span>' +
                         '<span><small>MCU</small><strong>' + esc(node.mcu_model || node.mcu_family || 'Not reported') + '</strong></span>' +
@@ -610,6 +610,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function loadLayout() {
         try {
             var data = JSON.parse(localStorage.getItem("gateway_dashboard_v4_layout") || "{}");
+            var density = data.density === "compact" ? "compact" : "comfortable";
+            document.getElementById("layout-density").value = density;
+            document.getElementById("dashboard-console").dataset.density = density;
             document.querySelectorAll("#widgetToggleList input[data-target-widget]").forEach(function (input) {
                 var target = document.getElementById(input.getAttribute("data-target-widget"));
                 if (typeof data[input.getAttribute("data-target-widget")] === "boolean") {
@@ -638,7 +641,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function saveLayout() {
-        var result = {};
+        var result = { density: document.getElementById("layout-density").value };
+        document.getElementById("dashboard-console").dataset.density = result.density;
         document.querySelectorAll("#widgetToggleList input[data-target-widget]").forEach(function (input) {
             var targetId = input.getAttribute("data-target-widget");
             result[targetId] = Boolean(input.checked);
@@ -651,6 +655,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function resetLayout() {
         localStorage.removeItem("gateway_dashboard_v4_layout");
+        document.getElementById("layout-density").value = "comfortable";
+        document.getElementById("dashboard-console").dataset.density = "comfortable";
         document.querySelectorAll("#widgetToggleList input[data-target-widget]").forEach(function (input) {
             input.checked = true;
             var target = document.getElementById(input.getAttribute("data-target-widget"));

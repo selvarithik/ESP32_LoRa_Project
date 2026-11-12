@@ -5,11 +5,14 @@
 {% block page_title %}{{ "Logs" if request.path == "/logs" else "Diagnostics" }}{% endblock %}
 
 {% block page_subtitle %}
-System events, warnings and diagnostic records
+{{ "System events, warnings and audit history" if request.path == "/logs" else "Device connectivity, transport health and reported diagnostics" }}
 {% endblock %}
 
 {% block content %}
+{% if request.path == "/diagnostics" %}
 {% set operations_view = "diagnostics" %}{% include "partials/operations-overview.html" %}
+<p><a class="btn btn-secondary" href="/logs">Open event logs</a></p>
+{% else %}
 
 <div class="page-view page-view-logs">
 
@@ -80,8 +83,9 @@ System events, warnings and diagnostic records
 
 </div>
 
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/logs.js') }}?v=20261019-refresh"></script>
+{% if request.path == "/logs" %}<script src="{{ url_for('static', filename='js/logs.js') }}?v=20261019-refresh"></script>{% endif %}
 {% endblock %}

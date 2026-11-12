@@ -57,6 +57,23 @@ class LocalIpTests(unittest.TestCase):
                 self.service.connections['IP-MASTER']['last_seen']=int(time.time())+5
                 self.assertFalse(local_ip.ip_return_fresh('IP-MASTER'))
 
+    def test_fresh_direct_node_owns_command_dispatch(self):
+        import command_manager
+        node = 'IP-DIRECT-NODE'
+        device_api.enroll(node, 'Direct node', 'NODE', 'IP-MASTER')
+        command = command_manager.create_command(node, 'GET_CONFIG', {})
+        with patch.object(local_ip, 'service', self.service), patch.object(self.service, 'server', object()):
+            self.service.connections[node] = {'role': 'NODE', 'last_seen': int(time.time())}
+            self.assertEqual(device_api.pending_commands('IP-MASTER', transport='mqtt'), [])
+            self.assertEqual(device_api.pending_commands('IP-MASTER'), [])
+            self.assertEqual(command_manager.get_command(command['command_id'])['state'], 'QUEUED')
+            direct = device_api.pending_commands('IP-MASTER', device_id=node)
+            self.assertEqual(direct[0]['message_id'], command['command_id'])
+            next_command = command_manager.create_command(node, 'GET_CONFIG', {})
+            self.service.connections[node]['last_seen'] -= 16
+            relayed = device_api.pending_commands('IP-MASTER', transport='mqtt')
+            self.assertEqual(relayed[0]['message_id'], next_command['command_id'])
+
     def frame(self,kind='TELEMETRY',source='IP-MASTER',body=None):
         if body is None:body={'valid':True,'parameters':{'temperature':25.5,'humidity':55.0}}
         return device_api.packet(kind,source,'GATEWAY',body)

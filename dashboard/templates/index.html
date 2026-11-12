@@ -66,6 +66,7 @@
       <select id="dashboard-node-filter" aria-label="Filter by node">
         <option value="">All nodes</option>
       </select>
+      <button class="dashboard-mini-tool" id="dashboard-customize-btn" type="button" aria-controls="widget-drawer">Layout</button>
       <button class="dashboard-action" id="dashboard-refresh" type="button" aria-label="Refresh telemetry">Refresh</button>
       <select id="dashboard-status-filter" aria-label="Filter by node status">
         <option value="">All states</option>
@@ -81,7 +82,7 @@
 
             </div>
             <div class="dashboard-section-tools">
-              <button class="dashboard-mini-tool" id="dashboard-customize-btn" type="button">Layout</button><button class="dashboard-action primary" id="add-sensor-widget-inline" type="button">+ Add widget</button>
+              <button class="dashboard-action primary" id="add-sensor-widget-inline" type="button">+ Add widget</button>
             </div>
           </header>
           <div id="custom-sensor-widgets" class="dashboard-custom-grid">
@@ -110,7 +111,7 @@
       </main>
 
       <aside class="dashboard-right-stack">
-    <section class="dashboard-system-events" aria-labelledby="system-events-title">
+    <section id="widget-events" class="dashboard-system-events" aria-labelledby="system-events-title">
       <header><div><span class="red-eyebrow">GATEWAY ACTIVITY</span><h2 id="system-events-title">System events</h2></div><a href="/logs">View event log <span aria-hidden="true">↗</span></a></header>
       <div id="activity-list" class="red-event-list" aria-live="polite"><p class="dashboard-empty">Waiting for Gateway log records…</p></div>
     </section>
@@ -136,9 +137,13 @@
       <button class="dashboard-drawer-close" id="close-widget-drawer" type="button" aria-label="Close">×</button>
     </div>
     <div class="dashboard-drawer-body" id="widgetToggleList">
+      <div class="dashboard-drawer-row"><label for="layout-density">Density</label><select id="layout-density" class="input"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></div>
+      <div class="dashboard-drawer-row"><span>Communication path</span><label class="dashboard-switch"><input type="checkbox" aria-label="Communication path" data-target-widget="widget-communication" checked><span></span></label></div>
+      <div class="dashboard-drawer-row"><span>Gateway banner</span><label class="dashboard-switch"><input type="checkbox" aria-label="Gateway banner" data-target-widget="widget-gateway" checked><span></span></label></div>
+      <div class="dashboard-drawer-row"><span>Recent events</span><label class="dashboard-switch"><input type="checkbox" aria-label="Recent events" data-target-widget="widget-events" checked><span></span></label></div>
 
-      <div class="dashboard-drawer-row"><span>Problems</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-alerts" checked><span></span></label></div>
-      <div class="dashboard-drawer-row"><span>My widgets</span><label class="dashboard-switch"><input type="checkbox" data-target-widget="widget-custom-sensors" checked><span></span></label></div>
+      <div class="dashboard-drawer-row"><span>Problems</span><label class="dashboard-switch"><input type="checkbox" aria-label="Problems" data-target-widget="widget-alerts" checked><span></span></label></div>
+      <div class="dashboard-drawer-row"><span>My widgets</span><label class="dashboard-switch"><input type="checkbox" aria-label="My widgets" data-target-widget="widget-custom-sensors" checked><span></span></label></div>
     </div>
     <div class="dashboard-drawer-footer">
       <button class="dashboard-action" id="reset-widgets-btn" type="button">Reset</button>

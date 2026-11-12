@@ -328,8 +328,8 @@ def ingest(master_id, frame, transport='wifi'):
     return {"accepted": True, "duplicate": False}
 
 def pending_commands(master_id, device_id=None, transport=None):
+    import local_ip
     if transport=='mqtt':
-        import local_ip
         if local_ip.ip_return_fresh(master_id):return []
 
     db = connect()
@@ -339,6 +339,8 @@ def pending_commands(master_id, device_id=None, transport=None):
         db.close()
     for row in rows:
         if device_id is not None and row['node_id'] != device_id:
+            continue
+        if device_id is None and local_ip.ip_return_fresh(row["node_id"], role="NODE"):
             continue
         cmd = command_manager.get_command(row["command_id"])
         if not command_manager.claim_device_dispatch(cmd["command_id"]):

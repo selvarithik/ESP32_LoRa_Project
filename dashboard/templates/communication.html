@@ -1,4 +1,19 @@
 {% extends "base.html" %}{% block title %}LoRa Mesh Monitor · SELVARITHIK A&amp;D{% endblock %}{% block page_title %}LoRa Mesh Monitor{% endblock %}{% block page_subtitle %}LoRa mesh topology, packet health, routing and settings{% endblock %}{% block content %}{% set operations_view = "mesh" %}{% include "partials/operations-overview.html" %}<p class="param-hint">The topology and controls below are saved Gateway mesh records. They are not proof of RF delivery. Packet-manager statistics are separate from physical radio counters. RSSI/SNR, packet loss and routes remain unknown unless queried and reported by firmware.</p><div class="page-view page-view-communication communication-page v3-page">
+<section class="v3-panel" aria-labelledby="radio-setup-title">
+  <h2 id="radio-setup-title">E220 setup and diagnostics</h2>
+  <p>Read saved settings and inspect the module separately. Gateway saves stage settings on the device while its radio is disabled. Use the ESP32 LoRa page for wiring, activation and register write controls.</p>
+  <label>Device <select id="lora-device" class="input"></select></label>
+  <button type="button" class="btn btn-secondary" data-lora-command="GET_CONFIG">Read saved setup</button>
+  <button type="button" class="btn btn-secondary" data-lora-command="RADIO_INSPECT">Inspect E220</button>
+  <button type="button" class="btn btn-secondary" data-lora-command="GET_RADIO_STATUS">Read radio status</button>
+  <button type="button" class="btn btn-secondary" data-lora-command="GET_ROUTE_INFO">Read routes</button>
+  <form id="lora-setup" hidden>
+    <div id="lora-fields" class="v3-packet-grid"></div>
+    <button class="btn btn-primary">Save radio setup on device</button>
+  </form>
+  <p id="lora-feedback" role="status"></p>
+  <details id="lora-result-panel"><summary>Device response</summary><div id="lora-result" aria-live="polite"></div></details>
+</section>
 <div class="page-toolbar">
 <div class="v3-hero-actions">
 <span class="v3-live-badge">
@@ -161,4 +176,4 @@
 </form>
 </section>
 </div>{% endblock %}{% block extra_js %}<script src="{{ url_for('static', filename='js/communication.js') }}?v=20261019-refresh">
-</script>{% endblock %}
+</script><script src="{{ url_for('static', filename='js/lora-setup.js') }}?v=2"></script>{% endblock %}
