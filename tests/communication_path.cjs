@@ -1,11 +1,6 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const {reportedFacts,connectionPath}=require('../dashboard/static/js/gateway-banner.js');
-assert.equal(reportedFacts({devices:[]}).frequency,'Unverified');
-const master={node_id:'DEMO-MASTER',device_role:'MASTER',health:'OFFLINE',reported:{uptime_s:90061},diagnostics:{GET_RADIO_STATUS:{received_at:'fixture-time',data:{public_settings_read:true,observed:{channel:18}}}}};
-const facts=reportedFacts({devices:[master]});assert.equal(facts.frequency,'868.125 MHz');assert.equal(facts.uptime,'1d 1h 1m');assert.equal(facts.evidence,'Historical Master report');
-master.diagnostics.GET_RADIO_STATUS.data.public_settings_read=false;assert.equal(reportedFacts({devices:[master]}).frequency,'Unverified');
-master.diagnostics.GET_RADIO_STATUS.data.public_settings_read=true;master.diagnostics.GET_RADIO_STATUS.data.observed.channel=84;assert.equal(reportedFacts({devices:[master]}).frequency,'Unverified');
-assert.equal(reportedFacts({devices:[master,master]}).uptime,'Not reported');
+const {connectionPath}=require('../dashboard/static/js/communication-path.js');
+const master={node_id:'DEMO-MASTER',device_role:'MASTER'};
 const profile={provider:'EMQX',tls:true,qos_default:1};
 assert.equal(connectionPath({},profile).connected,false);
 assert.equal(connectionPath({mqtt:{state:'connected',tls_state:'UNKNOWN'}},profile).connected,false);
@@ -18,4 +13,4 @@ const renderer=source.slice(source.indexOf('function renderActivity('),source.in
 const box={innerHTML:''};const context={document:{getElementById:()=>box},esc:v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),formatClock:()=> 'fixture-time'};
 vm.createContext(context);vm.runInContext(renderer+';renderActivity([{severity:"WARNING",message:JSON.stringify({device_id:"DEMO",role:"MASTER",password:"fixture-secret",transport:"MQTT",extra:"<img>"})}]);',context);
 assert(box.innerHTML.includes('DEMO'));assert(box.innerHTML.includes('data-severity="warning"'));assert(!box.innerHTML.includes('fixture-secret'));assert(!box.innerHTML.includes('<img>'));
-console.log('PASS banner report provenance, E220 channel bounds, historical uptime, unknown/multiple Masters and non-secret readable diagnostic events');
+console.log('PASS communication path evidence and non-secret readable diagnostic events');

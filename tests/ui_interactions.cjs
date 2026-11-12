@@ -50,7 +50,7 @@ const localTime = (offset = 0) => new Date(Date.now() + offset - new Date().getT
         await page.locator(selector).waitFor();
         await page.keyboard.press('Escape');
         assert.equal(await page.locator('#page-title').innerText(), 'Dashboard');
-        assert.equal(await page.locator('.gateway-banner').count(), 1);
+        assert.equal(await page.locator('.gateway-banner').count(), 0);
         // Charts now live in the sensor detail dialog, exercised above.
         await page.reload();
         await page.locator(selector).waitFor(); // Widget visibility survives page reload.

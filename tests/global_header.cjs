@@ -24,7 +24,7 @@ const base = process.env.GATEWAY_TEST_URL || 'http://127.0.0.1:5057';
                     assert.equal(response.status(), 200);
                     assert.equal(await page.locator('.modern-topbar').count(), 1);
                     assert.equal(await page.locator('.global-page-heading').count(), 1);
-                    assert.equal(await page.locator('.gateway-banner').count(), route === '/' ? 1 : 0);
+                    assert.equal(await page.locator('.gateway-banner').count(), 0);
                     assert.equal(await page.locator('#gateway-theme-toggle').count(), 0);
                     assert(await page.locator('.header-company-logo img').evaluate(img => img.complete && img.naturalWidth > 0));
                     assert(await page.locator('.brand-orb').getAttribute('src').then(src => src.endsWith('selvarithiks-ad-red-on-white.svg')));
@@ -33,18 +33,15 @@ const base = process.env.GATEWAY_TEST_URL || 'http://127.0.0.1:5057';
                     const bounds = await page.evaluate(() => {
                         const header = document.querySelector('.modern-topbar').getBoundingClientRect();
                         const heading = document.querySelector('.global-page-heading').getBoundingClientRect();
-                        const banner = document.querySelector('.gateway-banner')?.getBoundingClientRect();
-                        const logo = document.querySelector('.gateway-banner-logo');
                         const items = [...document.querySelector('.topbar-right').children].filter(el => el.getBoundingClientRect().width);
                         return { height: header.height, left: header.left, headingBelow: heading.top >= header.bottom,
-                            bannerBelow: !banner || banner.top >= heading.bottom, overflow: document.body.scrollWidth > innerWidth,
-                            logoLoaded: !logo || (logo.complete && logo.naturalWidth > 0),
+                            overflow: document.body.scrollWidth > innerWidth,
                             controlsFit: items.every(el => el.getBoundingClientRect().right <= innerWidth),
                             titleFits: document.getElementById('page-title').getBoundingClientRect().right <= document.querySelector('.topbar-right').getBoundingClientRect().left };
                     });
                     assert.equal(bounds.height, 60);
                     assert.equal(bounds.left, width >= 768 ? 72 : 0);
-                    assert(bounds.headingBelow && bounds.bannerBelow && bounds.logoLoaded && bounds.controlsFit && bounds.titleFits && !bounds.overflow, JSON.stringify({route,width,theme,bounds}));
+                    assert(bounds.headingBelow && bounds.controlsFit && bounds.titleFits && !bounds.overflow, JSON.stringify({route,width,theme,bounds}));
                     if (route === '/') {
                         assert.equal(await page.locator('.global-page-heading h1').innerText(), 'System Overview');
                         await page.screenshot({ path: 'tests/artifacts/global-header-' + theme + '-' + width + '.png' });
