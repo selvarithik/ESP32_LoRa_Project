@@ -1,7 +1,7 @@
 {% extends "base.html" %}{% block title %}LoRa Mesh Monitor · SELVARITHIK A&amp;D{% endblock %}{% block page_title %}LoRa Mesh Monitor{% endblock %}{% block page_subtitle %}LoRa mesh topology, packet health, routing and settings{% endblock %}{% block content %}{% set operations_view = "mesh" %}{% include "partials/operations-overview.html" %}<p class="param-hint">The topology and controls below are saved Gateway mesh records. They are not proof of RF delivery. Packet-manager statistics are separate from physical radio counters. RSSI/SNR, packet loss and routes remain unknown unless queried and reported by firmware.</p><div class="page-view page-view-communication communication-page v3-page">
 <section class="v3-panel" aria-labelledby="radio-setup-title">
   <h2 id="radio-setup-title">E220 setup and diagnostics</h2>
-  <p>Read saved settings and inspect the module separately. Gateway saves stage settings on the device while its radio is disabled. Use the ESP32 LoRa page for wiring, activation and register write controls.</p>
+  <p>Read saved settings and inspect the module separately. The Gateway and ESP32 web pages show radio settings read-only.</p>
   <label>Device <select id="lora-device" class="input"></select></label>
   <button type="button" class="btn btn-secondary" data-lora-command="GET_CONFIG">Read saved setup</button>
   <button type="button" class="btn btn-secondary" data-lora-command="RADIO_INSPECT">Inspect E220</button>
@@ -14,8 +14,10 @@
   <p id="lora-link-evidence" class="param-hint">Select a device and choose Read radio status to check its last authenticated reception.</p>
   <form id="lora-setup" hidden>
     <div id="lora-fields" class="v3-packet-grid"></div>
-    <button class="btn btn-primary" hidden>Save radio setup on device</button>
   </form>
+  <h3>Live radio reports</h3>
+  <p class="param-hint">Frequency and power checks are advisory, not a legal approval.</p>
+  <div id="lora-live-reports" class="v3-packet-grid"></div>
   <p id="lora-feedback" role="status"></p>
   <details id="lora-result-panel"><summary>Device response</summary><div id="lora-result" aria-live="polite"></div></details>
 </section>
@@ -181,4 +183,4 @@
 </form>
 </section>
 </div>{% endblock %}{% block extra_js %}<script src="{{ url_for('static', filename='js/communication.js') }}?v=20261019-refresh">
-</script><script src="{{ url_for('static', filename='js/lora-setup.js') }}?v=3"></script>{% endblock %}
+</script><script src="{{ url_for('static', filename='js/lora-setup.js') }}?v=4"></script>{% endblock %}

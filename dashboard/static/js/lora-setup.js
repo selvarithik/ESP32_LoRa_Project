@@ -80,7 +80,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const linkState = document.getElementById("lora-link-state");
     const linkRssi = document.getElementById("lora-link-rssi");
     const linkEvidence = document.getElementById("lora-link-evidence");
-    const saveButton = form.querySelector("button");
 
     function showLink(report, receivedAt) {
         const reception = report?.rf_receive_state;
@@ -99,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const reports = new Map();
-    const buttons = [...document.querySelectorAll("[data-lora-command]"), form.querySelector("button")];
+    const buttons = [...document.querySelectorAll("[data-lora-command]")];
     const fields = [
         ["lora_address_high", "Address high byte", 0, 255],
         ["lora_address_low", "Address low byte", 0, 255],
@@ -114,19 +113,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         ["lora_rssi", "Report received signal strength (RSSI)"],
         ["lora_lbt", "Listen before talk"]
     ];
-    let saved = null;
     let busy = false;
 
     function showSetup(config) {
-        saved = null;
         form.hidden = true;
         if (!Number.isInteger(config?.configuration_revision) || fields.some(([key]) => config[key] == null)) {
             feedback.textContent = "This firmware did not report all saved radio fields. Use the ESP32 LoRa page.";
             return;
         }
-        const editable = config.lora_enabled === false && config.lora_apply_settings === false;
-        saveButton.hidden = !editable;
-        if (!editable) feedback.textContent = "Saved setup is read-only while the radio or register writes are enabled. Use the ESP32 LoRa page to change activation.";
         const container = document.getElementById("lora-fields");
         container.replaceChildren();
         for (const [key, title, options, max] of fields) {
@@ -135,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const input = document.createElement(Array.isArray(options) ? "select" : "input");
             input.name = key;
             input.className = "input";
-            input.disabled = !editable;
+            input.disabled = true;
             if (Array.isArray(options)) {
                 for (const value of options) input.add(new Option(String(value), String(value)));
             } else if (options === undefined) {
@@ -151,7 +145,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             label.append(input);
             container.append(label);
         }
-        if (editable) saved = config;
         form.hidden = false;
     }
 
@@ -183,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     } else if (current.state !== "COMPLETED") {
                         output.textContent = radioFault(current.error || result.error) || "The device did not complete this request.";
                     } else {
-                        output.textContent = kind === "CONFIG_UPDATE" ? "Settings saved on the device for local activation." : "Saved setup read from the device.";
+                        output.textContent = "Saved setup read from the device.";
                     }
                     if (result.gateway_verified_transport) {
                         const path = document.createElement("p");
@@ -192,7 +185,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                     document.getElementById("lora-result-panel").open = true;
                     if (current.state === "COMPLETED" && kind === "GET_CONFIG") showSetup(current.result);
-                    if (current.state === "COMPLETED" && kind === "CONFIG_UPDATE") feedback.textContent += " · Saved for local commissioning";
                     return;
                 }
                 await new Promise(resolve => setTimeout(resolve, 2000));
@@ -208,7 +200,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     device.onchange = () => {
-        saved = null;
         form.hidden = true;
         output.textContent = "";
         feedback.textContent = "";
@@ -218,21 +209,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     for (const button of document.querySelectorAll("[data-lora-command]")) {
         button.onclick = () => command(button.dataset.loraCommand);
     }
-    form.onsubmit = event => {
-        event.preventDefault();
-        if (!saved || busy) return;
-        const changes = {};
-        for (const [key] of fields) {
-            const input = form.elements[key];
-            const value = input.type === "checkbox" ? input.checked : typeof saved[key] === "number" ? Number(input.value) : input.value;
-            if (value !== saved[key]) changes[key] = value;
+    async function refreshRadioReports() {
+        const target = document.getElementById("lora-live-reports");
+        try {
+            const overview = await gateway.get("/api/operations/overview");
+            const cards = (overview.devices || []).map(node => {
+                const card = document.createElement("article");
+                const title = document.createElement("h4");
+                title.textContent = node.name || node.node_id;
+                card.append(title);
+                const config = node.radio_config;
+                const signal = node.radio_signal;
+                const items = [
+                    ["Last seen", node.last_seen],
+                    ["Packet RSSI", signal?.rssi_valid ? signal.rssi_dbm + " dBm" : "n/a"],
+                    ["Raw RSSI", Number.isInteger(signal?.rssi_raw) ? "0x" + signal.rssi_raw.toString(16).toUpperCase().padStart(2, "0") : "n/a"],
+                    ["Radio configuration", config ? "Received" : "Waiting for a report"]
+                ];
+                if (config) items.push(
+                    ["Frequency", (config.frequency_khz / 1000).toFixed(3) + " MHz · " + config.frequency_flag],
+                    ["Transmit power", config.power_dbm + " dBm · " + config.power_flag],
+                    ["Air rate", config.air_rate_bps + " bps"],
+                    ["Address", config.address],
+                    ["Peer settings", config.peer_match == null ? "Waiting for both reports" : config.peer_match ? "Match" : "Mismatch"],
+                    ["Noise RSSI", config.noise_rssi_enabled ? "Enabled; no measurement" : "Not enabled"]
+                );
+                for (const [label, value] of items) {
+                    const line = document.createElement("p");
+                    line.textContent = label + " · " + (value ?? "n/a");
+                    card.append(line);
+                }
+                return card;
+            });
+            target.replaceChildren(...cards);
+        } catch {
+            target.textContent = "Radio reports are unavailable.";
+        } finally {
+            window.setTimeout(refreshRadioReports, 5000);
         }
-        if (!Object.keys(changes).length) { feedback.textContent = "Radio settings already match."; return; }
-        const revision = saved.configuration_revision;
-        saved = null;
-        form.hidden = true;
-        command("CONFIG_UPDATE", {...changes, expected_revision: revision});
-    };
+    }
+    refreshRadioReports();
     try {
         const {nodes} = await gateway.get("/api/device-controls");
         for (const node of nodes) device.add(new Option(`${node.name || node.node_id} · ${node.device_role}`, node.node_id));

@@ -244,7 +244,14 @@ def ingest(master_id, frame, transport='wifi'):
                 revision = body.get("configuration_revision", 0)
                 if type(hb) is not int or not 5 <= hb <= 3600 or type(revision) is not int or revision < 0:
                     raise ValueError("Invalid status intervals/revision")
-                db.execute("UPDATE nodes SET latest_status=?,heartbeat_seconds=?,configuration_revision=?,firmware_version=? WHERE node_id=?", (json.dumps(redact(body)), hb, revision, str(body.get("firmware_version", ""))[:64], source))
+                previous_status = json.loads(row['latest_status'] or '{}')
+                # A compact radio report has independent cadence. Keep it through ordinary heartbeats.
+                for field in ('radio_config', 'radio_signal', 'radio_metrics'):
+                    if field not in body and field in previous_status:
+                        body[field] = previous_status[field]
+                if 'configuration_revision' not in body:
+                    revision = row['configuration_revision']
+                db.execute("UPDATE nodes SET latest_status=?,heartbeat_seconds=?,configuration_revision=?,firmware_version=? WHERE node_id=?", (json.dumps(redact(body)), hb, revision, str(body.get("firmware_version", row["firmware_version"] or ""))[:64], source))
             elif kind == "TELEMETRY":
                 sensor_kind, values = sensor_telemetry.validate(body)
                 for pid in values:

@@ -81,9 +81,7 @@ def validate_command(kind,payload):
  elif kind in ('CONFIG_UPDATE','SET_SLEEP_SCHEDULE'):
   if 'local_ip_enabled' in payload:raise ValueError('TRANSPORT_TRANSACTION_REQUIRED')
   fields={k:v for k,v in payload.items() if k!='expected_revision'};validate_config(fields)
-  if set(fields)&set(RADIO_FIELDS):
-   if set(fields)-set(RADIO_FIELDS):raise ValueError('RADIO_FIELDS_ONLY')
-   if 'expected_revision' not in payload:raise ValueError('REVISION_REQUIRED')
+  if set(fields)&set(RADIO_FIELDS):raise ValueError('RADIO_CONFIG_USB_ONLY')
   if set(fields)&{'role','master_id','wifi_ssid','local_ip_enabled','routing_policy'} and 'expected_revision' not in payload:raise ValueError('REVISION_REQUIRED')
   if kind=='SET_SLEEP_SCHEDULE' and set(fields)-SLEEP_FIELDS:raise ValueError('SCHEDULE_FIELDS_ONLY')
   if 'expected_revision' in payload and (type(payload['expected_revision']) is not int or not 0<=payload['expected_revision']<0xffffffff):raise ValueError('INVALID_REVISION')

@@ -40,7 +40,7 @@ class OperationalCommandTests(unittest.TestCase):
  def test_radio_staging_validation_is_exclusive_and_revisioned(self):
   for args in ({'lora_channel':4},{'lora_channel':4,'expected_revision':1,'wifi_ssid':'forbidden-mix'},{'lora_tx_power':30,'expected_revision':1},{'lora_enabled':True,'expected_revision':1}):
    self.assertEqual(self.c.post('/api/v1/commands',json={'node_id':self.device,'command_type':'CONFIG_UPDATE','payload':args}).status_code,400)
-  self.assertEqual(self.c.post('/api/v1/commands',json={'node_id':self.device,'command_type':'CONFIG_UPDATE','payload':{'lora_channel':4,'expected_revision':1}}).status_code,201)
+  self.assertEqual(self.c.post('/api/v1/commands',json={'node_id':self.device,'command_type':'CONFIG_UPDATE','payload':{'lora_channel':4,'expected_revision':1}}).status_code,400)
  def test_mqtt_test_receipt_is_actual_ingress_persistence(self):
   store=mqtt_api.service().store;store.commission(profile());service=Service(store,commands_only=True);service.profile=profile();service.state='connected'
   status={'device_id':self.device,'device_name':'Fixture','role':'MASTER','master_id':self.device,'heartbeat_seconds':30,'configuration_revision':0}

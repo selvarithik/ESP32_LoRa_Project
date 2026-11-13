@@ -19,7 +19,31 @@ def public_radio_signal(value):
     raw = raw if type(raw) is int and 0 <= raw <= 255 else None
     dbm = raw - 256 if raw is not None else value.get('rssi_dbm')
     valid = type(dbm) is int and -141 <= dbm <= -11 and value.get('rssi_valid') is not False
-    return {'rssi_raw': raw, 'rssi_valid': valid, 'rssi_dbm': dbm if valid else None}
+    result = {'rssi_raw': raw, 'rssi_valid': valid, 'rssi_dbm': dbm if valid else None}
+    for name in ('age_ms', 'valid_age_ms', 'valid_count', 'min_dbm', 'max_dbm', 'avg_dbm'):
+        if type(value.get(name)) in (int, float):
+            result[name] = value[name]
+    return result
+
+RADIO_CONFIG_FIELDS = {
+    'address': int, 'baud': int, 'uart_parity': str, 'channel': int,
+    'air_rate_code': int, 'air_rate_bps': int, 'power_dbm': int,
+    'subpacket_bytes': int, 'wor_cycle_ms': int, 'fixed_mode': bool,
+    'rssi_enabled': bool, 'noise_rssi_enabled': bool, 'lbt': bool,
+}
+
+def radio_config_view(value):
+    if not isinstance(value, dict):
+        return None
+    config = {k: value[k] for k, kind in RADIO_CONFIG_FIELDS.items() if type(value.get(k)) is kind}
+    channel, power = config.get('channel'), config.get('power_dbm')
+    if channel is None or not 0 <= channel <= 80 or power not in (10, 13, 17, 22):
+        return None
+    frequency = 850125 + 1000 * channel
+    config.update(frequency_khz=frequency, key='not readable',
+                  frequency_flag='OK' if 865000 <= frequency - 62.5 and frequency + 62.5 <= 868000 else 'RED',
+                  power_flag='RED' if power > 13 else 'AMBER' if power > 10 else 'OK')
+    return config
 
 def overview():
     db=database.get_connection()
@@ -36,6 +60,7 @@ def overview():
             fields=('device_name','hardware_mac','firmware_version','wifi_connected','wifi_rssi','gateway_reachable','transport','internet_status','uptime_s','telemetry_seconds','sensor_status')
             device['reported']={key:reported.get(key) if type(reported.get(key)) in (str,int,float,bool,type(None)) else None for key in fields}
             device['radio_signal']=public_radio_signal(reported.get('radio_signal'))
+            device['radio_config']=radio_config_view(reported.get('radio_config'))
             device['diagnostics']={}
             for kind in ('GET_NETWORK','GET_RADIO_STATUS','GET_MESH_STATUS','GET_ROUTE_INFO'):
                 command=db.execute("SELECT result,response_at FROM commands WHERE node_id=? AND command_type=? AND state='COMPLETED' ORDER BY response_at DESC LIMIT 1",(row['node_id'],kind)).fetchone()
@@ -55,6 +80,13 @@ def overview():
             devices.append(device)
     finally:db.close()
     masters=[d for d in devices if d['device_role']=='MASTER'];nodes=[d for d in devices if d['device_role']=='NODE']
+    for device in devices:
+        peer = next((m for m in masters if m['node_id']==device['master_id']), None)
+        config = device['radio_config']
+        if peer and peer is not device and config and peer['radio_config']:
+            master = peer['radio_config']
+            config['peer_match'] = all(key in config and key in master and config[key]==master[key]
+                                       for key in ('channel','air_rate_code','address'))
     mqtt=mqtt_api.service().status();listener=local_ip.service.status()
     return {'observed_at':datetime.now().isoformat(),'devices':devices,'master_count':len(masters),'registered_nodes':len(nodes),'online':sum(d['health']=='ONLINE' for d in devices),
       'local_ip':{key:listener.get(key) for key in ('state','listener_active','last_packet_error','last_database_persisted_at','accepted','rejected')},
