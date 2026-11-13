@@ -234,6 +234,25 @@ document.addEventListener("DOMContentLoaded", async () => {
                     ["Peer settings", config.peer_match == null ? "Waiting for both reports" : config.peer_match ? "Match" : "Mismatch"],
                     ["Noise RSSI", config.noise_rssi_enabled ? "Enabled; no measurement" : "Not enabled"]
                 );
+                if (signal?.valid_count) {
+                    items.push(["Last valid samples (min / avg / max)",
+                        `${signal.min_dbm} / ${Number(signal.avg_dbm).toFixed(1)} / ${signal.max_dbm} dBm`]);
+                }
+                const metrics = node.radio_metrics;
+                if (metrics) {
+                    const seconds = value => Number.isFinite(value) ? (value / 1000000).toFixed(3) + " s" : "n/a";
+                    items.push(
+                        ["Sample age at report", Number.isFinite(signal.age_ms) ? Math.floor(signal.age_ms / 1000) + " s" : "n/a"],
+                        ["TX / RX fragments", `${metrics.tx_fragments ?? "n/a"} / ${metrics.rx_fragments ?? "n/a"}`],
+                        ["Delivered / rejects / auth failures", `${metrics.delivered ?? "n/a"} / ${metrics.rejects ?? "n/a"} / ${metrics.auth_failures ?? "n/a"}`],
+                        ["Protocol mismatches", metrics.protocol_mismatches],
+                        ["Budget refusals", metrics.budget_refusals],
+                        ["Airtime used / remaining (modeled, unverified)", seconds(metrics.used_us) + " / " + seconds(metrics.remaining_us)],
+                        ["Last fragment (modeled, unverified)", seconds(metrics.last_fragment_us)],
+                        ["Poll interval", Number.isFinite(metrics.poll_interval_ms) ? metrics.poll_interval_ms / 1000 + " s" : "n/a"],
+                        ["Alarms", metrics.alarms?.length ? metrics.alarms.join(", ").toLowerCase().replaceAll("_", " ") : "None reported"]
+                    );
+                }
                 for (const [label, value] of items) {
                     const line = document.createElement("p");
                     line.textContent = label + " · " + (value ?? "n/a");

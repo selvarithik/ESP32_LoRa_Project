@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'backend'))
-from workspace_views import public_radio_signal, radio_config_view
+from workspace_views import public_radio_signal, radio_config_view, radio_metrics_view
 
 
 class RadioMonitorTests(unittest.TestCase):
@@ -25,3 +25,11 @@ class RadioMonitorTests(unittest.TestCase):
         self.assertEqual(invalid['frequency_flag'], 'RED')
         self.assertEqual(invalid['power_flag'], 'RED')
         self.assertEqual(radio_config_view({'channel': 17, 'power_dbm': 13})['power_flag'], 'AMBER')
+
+    def test_alarm_thresholds(self):
+        report = {'used_us': 81, 'limit_us': 100, 'auth_failures': 3,
+                  'protocol_mismatches': 1, 'poll_interval_ms': 60000}
+        metrics = radio_metrics_view(report, {'valid_age_ms': 590000}, 180001)
+        self.assertEqual(set(metrics['alarms']), {'NO_RECENT_VALID_RSSI', 'AUTH_FAILURES',
+                        'PROTOCOL_MISMATCH', 'AIRTIME_OVER_80_PERCENT', 'STALE_RADIO_REPORT'})
+        self.assertEqual(radio_metrics_view({'used_us': 80, 'limit_us': 100}, {}, 0)['alarms'], [])

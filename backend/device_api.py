@@ -244,9 +244,16 @@ def ingest(master_id, frame, transport='wifi'):
                 revision = body.get("configuration_revision", 0)
                 if type(hb) is not int or not 5 <= hb <= 3600 or type(revision) is not int or revision < 0:
                     raise ValueError("Invalid status intervals/revision")
-                previous_status = json.loads(row['latest_status'] or '{}')
+                try:
+                    previous_status = json.loads(row['latest_status'] or '{}')
+                except (ValueError, TypeError):
+                    previous_status = {}
+                if not isinstance(previous_status, dict):
+                    previous_status = {}
                 # A compact radio report has independent cadence. Keep it through ordinary heartbeats.
-                for field in ('radio_config', 'radio_signal', 'radio_metrics'):
+                if 'radio_metrics' in body or 'radio_config' in body:
+                    body['radio_report_received_at'] = now
+                for field in ('radio_config', 'radio_signal', 'radio_metrics', 'radio_report_received_at'):
                     if field not in body and field in previous_status:
                         body[field] = previous_status[field]
                 if 'configuration_revision' not in body:

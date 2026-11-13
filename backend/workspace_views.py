@@ -45,6 +45,39 @@ def radio_config_view(value):
                   power_flag='RED' if power > 13 else 'AMBER' if power > 10 else 'OK')
     return config
 
+RADIO_METRIC_FIELDS = ('tx_fragments', 'rx_fragments', 'delivered', 'rejects',
+                       'auth_failures', 'protocol_mismatches', 'timeouts',
+                       'budget_refusals', 'used_us', 'limit_us', 'remaining_us',
+                       'last_fragment_us', 'poll_interval_ms', 'next_tx_gap_ms')
+
+def radio_metrics_view(value, signal, elapsed_ms=None):
+    if not isinstance(value, dict):
+        return None
+    result = {key: value[key] for key in RADIO_METRIC_FIELDS
+              if type(value.get(key)) is int and value[key] >= 0}
+    used, limit = result.get('used_us'), result.get('limit_us')
+    valid_age = signal.get('valid_age_ms')
+    alarms = []
+    if elapsed_ms is not None and (valid_age or 0) + elapsed_ms >= 600000:
+        alarms.append('NO_RECENT_VALID_RSSI')
+    if result.get('auth_failures', 0) >= 3:
+        alarms.append('AUTH_FAILURES')
+    if result.get('protocol_mismatches', 0):
+        alarms.append('PROTOCOL_MISMATCH')
+    if used is not None and limit and used * 5 > limit * 4:
+        alarms.append('AIRTIME_OVER_80_PERCENT')
+    if elapsed_ms is not None and result.get('poll_interval_ms') and elapsed_ms >= result['poll_interval_ms'] * 3:
+        alarms.append('STALE_RADIO_REPORT')
+    result.update(model_verified=False, alarms=alarms)
+    return result
+
+def report_age_ms(stamp):
+    try:
+        report_time = datetime.fromisoformat(stamp)
+        return max(0, int((datetime.now(report_time.tzinfo)-report_time).total_seconds()*1000))
+    except (ValueError, TypeError):
+        return None
+
 def overview():
     db=database.get_connection()
     try:
@@ -61,6 +94,8 @@ def overview():
             device['reported']={key:reported.get(key) if type(reported.get(key)) in (str,int,float,bool,type(None)) else None for key in fields}
             device['radio_signal']=public_radio_signal(reported.get('radio_signal'))
             device['radio_config']=radio_config_view(reported.get('radio_config'))
+            device['radio_metrics']=radio_metrics_view(reported.get('radio_metrics'), device['radio_signal'],
+                                                        report_age_ms(reported.get('radio_report_received_at')))
             device['diagnostics']={}
             for kind in ('GET_NETWORK','GET_RADIO_STATUS','GET_MESH_STATUS','GET_ROUTE_INFO'):
                 command=db.execute("SELECT result,response_at FROM commands WHERE node_id=? AND command_type=? AND state='COMPLETED' ORDER BY response_at DESC LIMIT 1",(row['node_id'],kind)).fetchone()
