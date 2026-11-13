@@ -13,6 +13,14 @@ NAVIGATION=[{'label':'Dashboard','path':'/'},{'label':'Device Management','path'
  {'label':'System','children':[{'label':'Health','path':'/system-overview'},{'label':'Master / Node Controls','path':'/device-controls'},{'label':'Local IP Communication','path':'/local-ip'},{'label':'Logs','path':'/logs'}]},
  {'label':'Settings','path':'/system'},{'label':'Existing tools','children':[{'label':'Firmware','path':'/firmware'},{'label':'Private Chat','path':'/chat'}]}]
 
+def public_radio_signal(value):
+    value = value if isinstance(value, dict) else {}
+    raw = value.get('rssi_raw')
+    raw = raw if type(raw) is int and 0 <= raw <= 255 else None
+    dbm = raw - 256 if raw is not None else value.get('rssi_dbm')
+    valid = type(dbm) is int and -141 <= dbm <= -11 and value.get('rssi_valid') is not False
+    return {'rssi_raw': raw, 'rssi_valid': valid, 'rssi_dbm': dbm if valid else None}
+
 def overview():
     db=database.get_connection()
     try:
@@ -27,15 +35,18 @@ def overview():
             device={key:public.get(key) for key in ('node_id','name','device_role','master_id','hardware_mac','firmware_version','last_seen','health','enabled','node_address')}
             fields=('device_name','hardware_mac','firmware_version','wifi_connected','wifi_rssi','gateway_reachable','transport','internet_status','uptime_s','telemetry_seconds','sensor_status')
             device['reported']={key:reported.get(key) if type(reported.get(key)) in (str,int,float,bool,type(None)) else None for key in fields}
+            device['radio_signal']=public_radio_signal(reported.get('radio_signal'))
             device['diagnostics']={}
             for kind in ('GET_NETWORK','GET_RADIO_STATUS','GET_MESH_STATUS','GET_ROUTE_INFO'):
                 command=db.execute("SELECT result,response_at FROM commands WHERE node_id=? AND command_type=? AND state='COMPLETED' ORDER BY response_at DESC LIMIT 1",(row['node_id'],kind)).fetchone()
                 if not command:continue
                 try:value=json.loads(command['result'] or '{}')
                 except (ValueError,TypeError):continue
-                allowed={'GET_NETWORK':('connected','station_ip','ip','rssi','dhcp','subnet','gateway','dns','disconnect_reason','reconnect_attempts'),'GET_RADIO_STATUS':('state','error','public_settings_read','register_writes','rx_messages','tx_uart_fragments','rejected','auth_failures','timeouts','observed','hardware_link_verified','rf_receive_state','last_rf_peer','last_rf_age_ms','rssi_dbm'),'GET_MESH_STATUS':('radio_state','hardware_verified','node_count','route_count','pending','delivery_failures','duplicates'),'GET_ROUTE_INFO':('radio_state','hardware_verified','routes')}[kind]
+                allowed={'GET_NETWORK':('connected','station_ip','ip','rssi','dhcp','subnet','gateway','dns','disconnect_reason','reconnect_attempts'),'GET_RADIO_STATUS':('state','error','public_settings_read','register_writes','rx_messages','tx_uart_fragments','rejected','auth_failures','timeouts','observed','hardware_link_verified','rf_receive_state','last_rf_peer','last_rf_age_ms','rssi_dbm','rssi_raw','rssi_valid'),'GET_MESH_STATUS':('radio_state','hardware_verified','node_count','route_count','pending','delivery_failures','duplicates'),'GET_ROUTE_INFO':('radio_state','hardware_verified','routes')}[kind]
                 if isinstance(value,dict):
                     projected={key:value.get(key) for key in allowed if key in value and (key in ('observed','routes') or type(value.get(key)) in (str,int,float,bool,type(None)))}
+                    if kind=='GET_RADIO_STATUS':
+                        projected.update(public_radio_signal(projected))
                     if 'observed' in projected:
                         observed=projected['observed'];projected['observed']={key:observed[key] for key in ('address','baud','channel','air_rate_code','power_dbm','subpacket_bytes','fixed_mode','rssi_enabled','lbt') if isinstance(observed,dict) and key in observed and type(observed[key]) in (str,int,float,bool,type(None))}
                     if 'routes' in projected:

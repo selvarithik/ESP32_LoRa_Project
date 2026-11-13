@@ -34,11 +34,11 @@ function renderRadioReport(target, radio, routes) {
             : radio.state === "DISABLED" ? "Radio disabled"
             : radio.state === "ERROR" ? "Radio fault" : "Radio status unavailable";
         const o = radio.observed;
-        const rssi = radio.rx_messages > 0 && Number.isFinite(radio.rssi_dbm) ? `${radio.rssi_dbm} dBm${radio.rf_receive_state === "RECEIVING" ? "" : " (last sample)"}`
-            : o?.rssi_enabled === false ? "RSSI is disabled in the module" : "Waiting for a valid packet with RSSI";
+        const rssi = radio.rssi_valid === true && Number.isFinite(radio.rssi_dbm) ? `${radio.rssi_dbm} dBm${radio.rf_receive_state === "RECEIVING" ? "" : " (last sample)"}`
+            : "n/a";
         const details = [
             ["Connection", status], ["Module readback", radio.public_settings_read ? "Registers read successfully" : "No valid register readback"],
-            ["Received signal (RSSI)", rssi], ["Last radio peer", radio.last_rf_peer],
+            ["Received signal (RSSI)", rssi], ["Raw RSSI byte", Number.isInteger(radio.rssi_raw) ? "0x" + radio.rssi_raw.toString(16).toUpperCase().padStart(2, "0") : null], ["Last radio peer", radio.last_rf_peer],
             ["Last received", Number.isFinite(radio.last_rf_age_ms) ? `${Math.floor(radio.last_rf_age_ms / 1000)} s before this report` : null],
             ["AUX pin", radio.pin_levels?.aux_high == null ? null : radio.pin_levels.aux_high ? "High" : "Low"],
             ["Channel", o && Number.isInteger(o.channel) ? `${o.channel} · ${(850.125 + o.channel).toFixed(3)} MHz` : null],
@@ -84,14 +84,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function showLink(report, receivedAt) {
         const reception = report?.rf_receive_state;
-        const hasSample = report?.rx_messages > 0 && Number.isFinite(report.rssi_dbm);
+        const hasSample = report?.rssi_valid === true && Number.isFinite(report.rssi_dbm);
         linkState.textContent = reception === "RECEIVING" && report.hardware_link_verified === true ? "Received from peer (last report)"
             : reception === "STALE" ? "Reception stale"
             : report?.state === "SLEEPING" ? "Sleeping"
             : report?.state === "DISABLED" ? "Disabled"
             : report?.state === "ERROR" ? "Radio fault"
             : report?.state === "READY_LINK_UNVERIFIED" ? "Waiting for peer" : "Unverified";
-        linkRssi.textContent = hasSample ? `${report.rssi_dbm} dBm` : "Unavailable";
+        linkRssi.textContent = hasSample ? `${report.rssi_dbm} dBm` : "n/a";
         const when = receivedAt ? new Date(receivedAt).toLocaleString() : null;
         linkEvidence.textContent = report && when
             ? `Device report received ${when}${report.last_rf_peer ? " · Peer " + report.last_rf_peer : ""}. Use Read radio status to refresh.`
