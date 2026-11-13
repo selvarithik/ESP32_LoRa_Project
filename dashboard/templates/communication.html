@@ -7,9 +7,14 @@
   <button type="button" class="btn btn-secondary" data-lora-command="RADIO_INSPECT">Inspect E220</button>
   <button type="button" class="btn btn-secondary" data-lora-command="GET_RADIO_STATUS">Read radio status</button>
   <button type="button" class="btn btn-secondary" data-lora-command="GET_ROUTE_INFO">Read routes</button>
+  <div class="v3-packet-grid">
+    <article><span>LoRa reception</span><strong id="lora-link-state">Unverified</strong></article>
+    <article><span>Packet RSSI</span><strong id="lora-link-rssi">Unavailable</strong></article>
+  </div>
+  <p id="lora-link-evidence" class="param-hint">Select a device and choose Read radio status to check its last authenticated reception.</p>
   <form id="lora-setup" hidden>
     <div id="lora-fields" class="v3-packet-grid"></div>
-    <button class="btn btn-primary">Save radio setup on device</button>
+    <button class="btn btn-primary" hidden>Save radio setup on device</button>
   </form>
   <p id="lora-feedback" role="status"></p>
   <details id="lora-result-panel"><summary>Device response</summary><div id="lora-result" aria-live="polite"></div></details>
@@ -176,4 +181,4 @@
 </form>
 </section>
 </div>{% endblock %}{% block extra_js %}<script src="{{ url_for('static', filename='js/communication.js') }}?v=20261019-refresh">
-</script><script src="{{ url_for('static', filename='js/lora-setup.js') }}?v=2"></script>{% endblock %}
+</script><script src="{{ url_for('static', filename='js/lora-setup.js') }}?v=3"></script>{% endblock %}

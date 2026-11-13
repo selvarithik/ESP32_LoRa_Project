@@ -34,7 +34,7 @@ function renderRadioReport(target, radio, routes) {
             : radio.state === "DISABLED" ? "Radio disabled"
             : radio.state === "ERROR" ? "Radio fault" : "Radio status unavailable";
         const o = radio.observed;
-        const rssi = Number.isFinite(radio.rssi_dbm) ? `${radio.rssi_dbm} dBm${radio.rf_receive_state === "RECEIVING" ? "" : " (last sample)"}`
+        const rssi = radio.rx_messages > 0 && Number.isFinite(radio.rssi_dbm) ? `${radio.rssi_dbm} dBm${radio.rf_receive_state === "RECEIVING" ? "" : " (last sample)"}`
             : o?.rssi_enabled === false ? "RSSI is disabled in the module" : "Waiting for a valid packet with RSSI";
         const details = [
             ["Connection", status], ["Module readback", radio.public_settings_read ? "Registers read successfully" : "No valid register readback"],
@@ -77,6 +77,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     const form = document.getElementById("lora-setup");
     const feedback = document.getElementById("lora-feedback");
     const output = document.getElementById("lora-result");
+    const linkState = document.getElementById("lora-link-state");
+    const linkRssi = document.getElementById("lora-link-rssi");
+    const linkEvidence = document.getElementById("lora-link-evidence");
+    const saveButton = form.querySelector("button");
+
+    function showLink(report, receivedAt) {
+        const reception = report?.rf_receive_state;
+        const hasSample = report?.rx_messages > 0 && Number.isFinite(report.rssi_dbm);
+        linkState.textContent = reception === "RECEIVING" && report.hardware_link_verified === true ? "Received from peer (last report)"
+            : reception === "STALE" ? "Reception stale"
+            : report?.state === "SLEEPING" ? "Sleeping"
+            : report?.state === "DISABLED" ? "Disabled"
+            : report?.state === "ERROR" ? "Radio fault"
+            : report?.state === "READY_LINK_UNVERIFIED" ? "Waiting for peer" : "Unverified";
+        linkRssi.textContent = hasSample ? `${report.rssi_dbm} dBm` : "Unavailable";
+        const when = receivedAt ? new Date(receivedAt).toLocaleString() : null;
+        linkEvidence.textContent = report && when
+            ? `Device report received ${when}${report.last_rf_peer ? " · Peer " + report.last_rf_peer : ""}. Use Read radio status to refresh.`
+            : "Choose Read radio status to check the selected device’s last authenticated reception.";
+    }
+
+    const reports = new Map();
     const buttons = [...document.querySelectorAll("[data-lora-command]"), form.querySelector("button")];
     const fields = [
         ["lora_address_high", "Address high byte", 0, 255],
@@ -102,10 +124,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             feedback.textContent = "This firmware did not report all saved radio fields. Use the ESP32 LoRa page.";
             return;
         }
-        if (config.lora_enabled !== false || config.lora_apply_settings !== false) {
-            feedback.textContent = "Disable the radio and register writes on the ESP32 before staging setup from Gateway.";
-            return;
-        }
+        const editable = config.lora_enabled === false && config.lora_apply_settings === false;
+        saveButton.hidden = !editable;
+        if (!editable) feedback.textContent = "Saved setup is read-only while the radio or register writes are enabled. Use the ESP32 LoRa page to change activation.";
         const container = document.getElementById("lora-fields");
         container.replaceChildren();
         for (const [key, title, options, max] of fields) {
@@ -114,6 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const input = document.createElement(Array.isArray(options) ? "select" : "input");
             input.name = key;
             input.className = "input";
+            input.disabled = !editable;
             if (Array.isArray(options)) {
                 for (const value of options) input.add(new Option(String(value), String(value)));
             } else if (options === undefined) {
@@ -129,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             label.append(input);
             container.append(label);
         }
-        saved = config;
+        if (editable) saved = config;
         form.hidden = false;
     }
 
@@ -149,6 +171,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (["COMPLETED", "FAILED", "TIMEOUT", "CANCELLED"].includes(current.state)) {
                     const result = current.result || {};
                     if (kind === "RADIO_INSPECT" || kind === "GET_RADIO_STATUS") {
+                        if (current.state === "COMPLETED" && result.state) {
+                            const sample = {data: result, received_at: current.response_at};
+                            reports.set(device.value, sample);
+                            showLink(sample.data, sample.received_at);
+                        }
                         renderRadioReport(output, result);
                         if (!result.state) output.textContent = radioFault(current.error || result.error) || "No radio report was returned.";
                     } else if (kind === "GET_ROUTE_INFO" && current.state === "COMPLETED") {
@@ -180,7 +207,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    device.onchange = () => { saved = null; form.hidden = true; output.textContent = ""; feedback.textContent = ""; };
+    device.onchange = () => {
+        saved = null;
+        form.hidden = true;
+        output.textContent = "";
+        feedback.textContent = "";
+        const report = reports.get(device.value);
+        showLink(report?.data, report?.received_at);
+    };
     for (const button of document.querySelectorAll("[data-lora-command]")) {
         button.onclick = () => command(button.dataset.loraCommand);
     }
@@ -203,6 +237,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         const {nodes} = await gateway.get("/api/device-controls");
         for (const node of nodes) device.add(new Option(`${node.name || node.node_id} · ${node.device_role}`, node.node_id));
         if (!device.options.length) feedback.textContent = "No enrolled devices available.";
+        else {
+            const overview = await gateway.get("/api/operations/overview");
+            for (const node of overview.devices || []) {
+                const report = node.diagnostics?.GET_RADIO_STATUS;
+                if (report && !reports.has(node.node_id)) reports.set(node.node_id, report);
+            }
+            if (!busy) {
+                const report = reports.get(device.value);
+                showLink(report?.data, report?.received_at);
+            }
+        }
     } catch (error) {
         feedback.textContent = error.message;
     }
