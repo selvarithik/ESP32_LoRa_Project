@@ -139,10 +139,12 @@ def envelope(raw, received_topic, profile, now=None, retained=False):
     require(integer(d['timestamp'],0,0x7fffffffffffffff),'timestamp')
     if 'correlation_id' in d:require(safe_id(d['correlation_id']),'correlation_id')
     if 'configuration_revision' in d:require(integer(d['configuration_revision']),'configuration_revision')
-    if d['message_type'] not in ('status','telemetry'):
-        require(integer(d.get('expires_at'),1,0x7fffffffffffffff) and 0<d['timestamp']<=now+30 and d['timestamp']<d['expires_at']<=d['timestamp']+300 and now<=d['expires_at'],'expires_at')
     data=d['data'];require(type(data) is dict,'data')
     kind=d['message_type']
+    radio=kind=='command' and data.get('radio_async') is True and isinstance(data.get('packet'),dict) and data['packet'].get('destination')!=d['master_id']
+    if kind not in ('status','telemetry'):
+        window=10800 if radio else 300
+        require(integer(d.get('expires_at'),1,0x7fffffffffffffff) and 0<d['timestamp']<=now+30 and d['timestamp']<d['expires_at']<=d['timestamp']+window and now<=d['expires_at'],'expires_at')
     if kind=='config':
         op=data.get('op');keys={'op'}
         if op=='COMPARE':
@@ -164,7 +166,7 @@ def envelope(raw, received_topic, profile, now=None, retained=False):
     elif kind=='chat/status':require(set(data)=={'recipient_id','state'} and safe_id(data['recipient_id']) and data['state'] in ('ONLINE','OFFLINE','UNKNOWN'),'chat_status')
     elif kind=='chat/command':require(set(data)=={'conversation_id','received_message_id','action'} and text(data['conversation_id'],1,128) and safe_id(data['received_message_id']) and data['action'] in ('STATUS','RETRY'),'chat_action')
     elif kind=='status' and set(data)=={'connection_state'}:require(data['connection_state']=='OFFLINE','connection_state')
-    else:require(set(data)=={'packet'} and type(data['packet']) is dict and len(canonical(data['packet']).encode())<=4096,'packet')
+    else:require(set(data)==({'packet','radio_async'} if radio else {'packet'}) and type(data['packet']) is dict and len(canonical(data['packet']).encode())<=4096,'packet')
     return d
 
 def tls_context(profile):

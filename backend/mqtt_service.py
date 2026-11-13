@@ -11,6 +11,7 @@ import uuid
 import paho.mqtt.client as mqtt
 import mqtt_contract as contract
 import device_api
+import command_manager
 
 @contextmanager
 def device_connection():
@@ -29,7 +30,11 @@ def message(profile,master_id,kind,data,message_id=None,correlation_id=None):
 def command_message(profile,master_id,packet):
     """Retries keep one immutable wire envelope for the same command ID."""
     result=message(profile,master_id,"command",{"packet":packet},message_id=packet["message_id"])
-    result["timestamp"]=packet["timestamp"];result["expires_at"]=packet["timestamp"]+300
+    result["timestamp"]=packet["timestamp"]
+    policy=command_manager.delivery_policy(packet["message_id"])
+    radio=policy and policy['response_timeout_s']==command_manager.RADIO_ASYNC_SECONDS
+    if radio:result['data']['radio_async']=True
+    result["expires_at"]=packet["timestamp"]+(command_manager.RADIO_ASYNC_SECONDS if radio else 300)
     return result
 
 def client_for(profile, client_id=None):
