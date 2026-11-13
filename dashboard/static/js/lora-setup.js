@@ -253,6 +253,26 @@ document.addEventListener("DOMContentLoaded", async () => {
                         ["Alarms", metrics.alarms?.length ? metrics.alarms.join(", ").toLowerCase().replaceAll("_", " ") : "None reported"]
                     );
                 }
+                const reading = node.ina219;
+                if (reading) {
+                    items.push(["INA219", `${reading.values.bus_voltage ?? "n/a"} V · ${reading.values.shunt_voltage ?? "n/a"} mV · ${new Date(reading.timestamp).toLocaleString()}`]);
+                }
+                for (const command of node.last_commands || []) {
+                    items.push([command.command_type, command.state + " · " + command.command_id]);
+                }
+                if (metrics?.limit_us) {
+                    const budget = document.createElement("meter");
+                    budget.min = 0; budget.max = metrics.limit_us; budget.value = metrics.used_us;
+                    budget.setAttribute("aria-label", "Modeled airtime used");
+                    card.append(budget);
+                }
+                if (signal?.rssi_valid) {
+                    const link = document.createElement("meter");
+                    const dbm = signal.rssi_dbm;
+                    link.min = 0; link.max = 4; link.value = dbm >= -70 ? 4 : dbm >= -90 ? 3 : dbm >= -110 ? 2 : 1;
+                    link.setAttribute("aria-label", "Received signal level");
+                    card.append(link);
+                }
                 for (const [label, value] of items) {
                     const line = document.createElement("p");
                     line.textContent = label + " · " + (value ?? "n/a");

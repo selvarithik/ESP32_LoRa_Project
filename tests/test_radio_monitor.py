@@ -33,3 +33,25 @@ class RadioMonitorTests(unittest.TestCase):
         self.assertEqual(set(metrics['alarms']), {'NO_RECENT_VALID_RSSI', 'AUTH_FAILURES',
                         'PROTOCOL_MISMATCH', 'AIRTIME_OVER_80_PERCENT', 'STALE_RADIO_REPORT'})
         self.assertEqual(radio_metrics_view({'used_us': 80, 'limit_us': 100}, {}, 0)['alarms'], [])
+
+
+    def test_retained_topic_schema_and_availability(self):
+        import json
+        from datetime import datetime
+        from lora_retained import retained_topics, will
+        profile = {'topic_prefix':'example','gateway_id':'LAB'}
+        node = {'node_id':'NODE','device_role':'NODE','firmware_version':'example',
+                'last_seen':'2026-11-14T00:00:00','latest_status':json.dumps({
+                    'radio_signal':{'rssi_raw':223},'bench_build':True})}
+        prefix = 'example/LAB/lora'
+        topics = retained_topics(profile,node,datetime(2026,11,14,0,1))
+        self.assertEqual(set(topics), {f'{prefix}/NODE/{kind}' for kind in
+                         ('status','link','config','airtime','counters','alarms','telemetry/ina219')})
+        self.assertTrue(all(payload['schema_version']==1 for payload in topics.values()))
+        self.assertTrue(topics[f'{prefix}/NODE/status']['online'])
+        self.assertEqual(topics[f'{prefix}/NODE/link']['rssi_dbm'],-33)
+        stale = retained_topics(profile,node,datetime(2026,11,14,0,10))
+        self.assertFalse(stale[f'{prefix}/NODE/status']['online'])
+        self.assertIn('NODE_OFFLINE',stale[f'{prefix}/NODE/alarms']['active'])
+        self.assertEqual(will(profile),(f'{prefix}/availability',
+                         {'schema_version':1,'online':False,'source':'gateway'}))

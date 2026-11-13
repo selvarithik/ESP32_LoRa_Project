@@ -12,6 +12,7 @@ import paho.mqtt.client as mqtt
 import mqtt_contract as contract
 import device_api
 import command_manager
+from datetime import datetime
 
 @contextmanager
 def device_connection():
@@ -57,6 +58,7 @@ class Service:
         self.telemetry_only=telemetry_only
         self.commands_only=commands_only
         self.command_check=0
+        self.lora_publication_at=0
         if telemetry_only:self.SUBSCRIPTIONS=("telemetry","status","config")
         elif commands_only:self.SUBSCRIPTIONS=("telemetry","status","config","command_ack")
         self.incoming=queue.Queue(32);self.outgoing=queue.Queue(24);self.stop_event=threading.Event()
@@ -94,6 +96,10 @@ class Service:
             if self.acl_guard:self.trust_acl=bool(self.acl_guard())
             if not self.trust_acl:self.last_error='ACL_CONFIRMATION_REQUIRED';return
             self.client=self.client_factory(self.profile);self.stop_event.clear()
+            if hasattr(self.client,'will_set'):
+                import lora_retained
+                topic, body=lora_retained.will(self.profile)
+                self.client.will_set(topic,contract.canonical(body),qos=1,retain=True)
             self.client.on_connect=self.on_connect;self.client.on_disconnect=self.on_disconnect
             self.client.on_message=self.on_message;self.client.on_publish=self.on_publish
             self.client.on_subscribe=self.on_subscribe
@@ -108,7 +114,13 @@ class Service:
             self._stop()
     def _stop(self):
         self.stop_event.set()
-        if self.client:self.client.disconnect();self.client.loop_stop()
+        if self.client:
+            if self.state=='connected' and hasattr(self.client,'will_set'):
+                import lora_retained
+                topic,body=lora_retained.will(self.profile)
+                self.client.publish(topic,contract.canonical(body),qos=1,retain=True)
+            self.client.disconnect()
+            self.client.loop_stop()
         if self.thread and self.thread is not threading.current_thread():self.thread.join(timeout=5)
         self.state='disconnected'
     def on_connect(self,client,userdata,flags,reason,properties):
@@ -242,6 +254,24 @@ class Service:
             contract.require(count<24,code='QUEUE_FULL')
             db.execute('INSERT INTO mqtt_chat_outbox(message_id,envelope,expires_at,next_attempt,state) VALUES (?,?,?,?,?)',(row['message_id'],contract.canonical(d),d['expires_at'],0,'QUEUED'))
         return 'QUEUED'
+    def publish_lora_monitor(self):
+        if not hasattr(self.client,'will_set'):
+            return
+        import lora_retained
+        topic, body=lora_retained.will(self.profile)
+        self.client.publish(topic,contract.canonical({**body,'online':True}),qos=1,retain=True)
+        with device_connection() as db:
+            nodes=db.execute("SELECT * FROM nodes WHERE device_enrolled=1 AND enabled=1 LIMIT 32").fetchall()
+            for node in nodes:
+                command=db.execute("SELECT command_id,command_type,state,created_at FROM commands WHERE node_id=? ORDER BY created_at DESC LIMIT 1",(node['node_id'],)).fetchone()
+                rows=db.execute("""SELECT parameter_id,timestamp,value FROM telemetry_values WHERE node_id=?
+                    AND parameter_id IN ('bus_voltage','shunt_voltage','current','power')
+                    AND timestamp=(SELECT max(timestamp) FROM telemetry_values WHERE node_id=? AND parameter_id='bus_voltage')""",
+                    (node['node_id'],node['node_id'])).fetchall()
+                reading={'timestamp':rows[0]['timestamp'],'values':{row['parameter_id']:row['value'] for row in rows}} if rows else None
+                for path,payload in lora_retained.retained_topics(self.profile,node,datetime.now(),reading,dict(command) if command else None).items():
+                    self.client.publish(path,contract.canonical(payload),qos=1,retain=True)
+
     def dispatch_commands(self):
         if self.telemetry_only or self.state!="connected" or set(self.SUBSCRIPTIONS)-self.subscriptions_ready:return
         with device_connection() as db:
@@ -277,6 +307,9 @@ class Service:
                     self.store.recover()
                     if self.candidate_client:self.candidate_client.disconnect();self.candidate_client.loop_stop();self.candidate_client=None
                 if self.state!='connected':continue
+                if time.monotonic()-self.lora_publication_at>=30:
+                    self.lora_publication_at=time.monotonic()
+                    self.publish_lora_monitor()
                 try:d=self.outgoing.get_nowait()
                 except queue.Empty:d=None
                 if d:

@@ -96,6 +96,15 @@ def overview():
             device['radio_config']=radio_config_view(reported.get('radio_config'))
             device['radio_metrics']=radio_metrics_view(reported.get('radio_metrics'), device['radio_signal'],
                                                         report_age_ms(reported.get('radio_report_received_at')))
+            device['last_commands']=[dict(cmd) for cmd in db.execute(
+                'SELECT command_id, command_type, state, created_at FROM commands WHERE node_id=? ORDER BY created_at DESC LIMIT 4',
+                (row['node_id'],))]
+            ina=db.execute("""SELECT parameter_id,timestamp,value FROM telemetry_values WHERE node_id=?
+                AND parameter_id IN ('bus_voltage','shunt_voltage','current','power')
+                AND timestamp=(SELECT max(timestamp) FROM telemetry_values WHERE node_id=? AND parameter_id='bus_voltage')""",
+                (row['node_id'],row['node_id'])).fetchall()
+            device['ina219']={'timestamp':ina[0]['timestamp'],
+                              'values':{field['parameter_id']:field['value'] for field in ina}} if ina else None
             device['diagnostics']={}
             for kind in ('GET_NETWORK','GET_RADIO_STATUS','GET_MESH_STATUS','GET_ROUTE_INFO'):
                 command=db.execute("SELECT result,response_at FROM commands WHERE node_id=? AND command_type=? AND state='COMPLETED' ORDER BY response_at DESC LIMIT 1",(row['node_id'],kind)).fetchone()
