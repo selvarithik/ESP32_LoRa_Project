@@ -34,10 +34,14 @@ class WorkspaceViewsTests(unittest.TestCase):
   command=command_manager.create_command(self.master,'GET_RADIO_STATUS',{})
   db=database.get_connection()
   try:
-   db.execute("UPDATE commands SET state='COMPLETED',result=?,response_at='2026-10-25T12:00:00' WHERE command_id=?",(json.dumps({'state':'DISABLED','observed':{'channel':17,'password':'fixture-private-value'},'token':'fixture-private-value'}),command['command_id']));db.commit()
+   db.execute("UPDATE commands SET state='COMPLETED',result=?,response_at='2026-10-25T12:00:00' WHERE command_id=?",(json.dumps({'state':'READY_LINK_UNVERIFIED','rf_receive_state':'RECEIVING','last_rf_peer':self.node,'last_rf_age_ms':1200,'rssi_dbm':-67,'hardware_link_verified':True,'observed':{'channel':17,'password':'fixture-private-value'},'token':'fixture-private-value'}),command['command_id']));db.commit()
   finally:db.close()
   raw=self.client.get('/api/operations/overview').get_data(as_text=True)
   self.assertNotIn('fixture-private-value',raw);self.assertNotIn('password',raw);self.assertIn('channel',raw)
+  devices=json.loads(raw)['devices']
+  radio=next(device for device in devices if device['node_id']==self.master)['diagnostics']['GET_RADIO_STATUS']['data']
+  self.assertEqual((radio['rf_receive_state'],radio['last_rf_peer'],radio['last_rf_age_ms'],radio['rssi_dbm']),('RECEIVING',self.node,1200,-67))
+  self.assertIs(radio['hardware_link_verified'],True)
  def test_malformed_historical_status_is_unknown(self):
   db=database.get_connection()
   try:db.execute("UPDATE nodes SET latest_status='invalid-json' WHERE node_id=?",(self.master,));db.commit()

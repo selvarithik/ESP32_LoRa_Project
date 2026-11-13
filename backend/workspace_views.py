@@ -33,7 +33,7 @@ def overview():
                 if not command:continue
                 try:value=json.loads(command['result'] or '{}')
                 except (ValueError,TypeError):continue
-                allowed={'GET_NETWORK':('connected','station_ip','ip','rssi','dhcp','subnet','gateway','dns','disconnect_reason','reconnect_attempts'),'GET_RADIO_STATUS':('state','error','public_settings_read','register_writes','rx_messages','tx_uart_fragments','rejected','auth_failures','timeouts','observed','hardware_link_verified'),'GET_MESH_STATUS':('radio_state','hardware_verified','node_count','route_count','pending','delivery_failures','duplicates'),'GET_ROUTE_INFO':('radio_state','hardware_verified','routes')}[kind]
+                allowed={'GET_NETWORK':('connected','station_ip','ip','rssi','dhcp','subnet','gateway','dns','disconnect_reason','reconnect_attempts'),'GET_RADIO_STATUS':('state','error','public_settings_read','register_writes','rx_messages','tx_uart_fragments','rejected','auth_failures','timeouts','observed','hardware_link_verified','rf_receive_state','last_rf_peer','last_rf_age_ms','rssi_dbm'),'GET_MESH_STATUS':('radio_state','hardware_verified','node_count','route_count','pending','delivery_failures','duplicates'),'GET_ROUTE_INFO':('radio_state','hardware_verified','routes')}[kind]
                 if isinstance(value,dict):
                     projected={key:value.get(key) for key in allowed if key in value and (key in ('observed','routes') or type(value.get(key)) in (str,int,float,bool,type(None)))}
                     if 'observed' in projected:
