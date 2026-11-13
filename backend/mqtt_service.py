@@ -32,9 +32,10 @@ def command_message(profile,master_id,packet):
     result=message(profile,master_id,"command",{"packet":packet},message_id=packet["message_id"])
     result["timestamp"]=packet["timestamp"]
     policy=command_manager.delivery_policy(packet["message_id"])
-    radio=policy and policy['response_timeout_s']==command_manager.RADIO_ASYNC_SECONDS
+    window=policy['response_timeout_s'] if policy else 0
+    radio=window in (command_manager.RADIO_ASYNC_SECONDS,command_manager.BENCH_RADIO_ASYNC_SECONDS)
     if radio:result['data']['radio_async']=True
-    result["expires_at"]=packet["timestamp"]+(command_manager.RADIO_ASYNC_SECONDS if radio else 300)
+    result["expires_at"]=packet["timestamp"]+(window if radio else 300)
     return result
 
 def client_for(profile, client_id=None):

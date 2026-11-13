@@ -57,6 +57,7 @@ VALID_TRANSITIONS: Dict[str, tuple[str, ...]] = {
 }
 
 RADIO_ASYNC_SECONDS = 10800
+BENCH_RADIO_ASYNC_SECONDS = 900
 DEFAULT_TIMEOUT_SECONDS = 30
 MIN_TIMEOUT_SECONDS = 1
 MAX_TIMEOUT_SECONDS = 3600
@@ -374,12 +375,12 @@ def create_command(
     with command_db() as db:
         target=db.execute('SELECT device_enrolled FROM nodes WHERE node_id=?',(node_id,)).fetchone()
         enrolled=bool(target and target['device_enrolled'])
-        radio_async=enrolled and radio_async_target(db,node_id)
+        radio_async=radio_async_target(db,node_id) if enrolled else 0
         if enrolled:
             control.validate_command(command_type,payload_dict)
             if db.execute("SELECT count(*) FROM commands WHERE state NOT IN ('COMPLETED','FAILED','CANCELLED','TIMEOUT')").fetchone()[0]>=64:raise ValueError('COMMAND_QUEUE_FULL')
     now = datetime.now().isoformat()
-    timeout_at = _calculate_timeout_at(now, RADIO_ASYNC_SECONDS if radio_async else expiry_seconds if enrolled else timeout_seconds)
+    timeout_at = _calculate_timeout_at(now, radio_async or (expiry_seconds if enrolled else timeout_seconds))
     payload_json = json.dumps(payload_dict)
 
     connection = get_connection()
@@ -438,7 +439,7 @@ def create_command(
         ))
         if enrolled:
             ensure_delivery_schema(connection)
-            connection.execute('INSERT INTO command_delivery(command_id,ack_timeout_s,response_timeout_s,expires_at) VALUES(?,?,?,?)',(command_id,ack_timeout_seconds,RADIO_ASYNC_SECONDS if radio_async else response_timeout_seconds if response_timeout_seconds is not None else timeout_seconds,timeout_at))
+            connection.execute('INSERT INTO command_delivery(command_id,ack_timeout_s,response_timeout_s,expires_at) VALUES(?,?,?,?)',(command_id,ack_timeout_seconds,radio_async or (response_timeout_seconds if response_timeout_seconds is not None else timeout_seconds),timeout_at))
         connection.commit()
     except Exception:
         connection.rollback()
@@ -1154,7 +1155,11 @@ def radio_async_target(db, node_id):
         status=json.loads(row[0]) if row and row[0] else {}
     except (TypeError, ValueError):
         return False
-    return isinstance(status,dict) and node_id in (status.get('radio_poll_children') or []) and type(status.get('radio_poll_interval_ms')) is int
+    if not isinstance(status,dict) or not isinstance(status.get('radio_poll_children'),list) or node_id not in status['radio_poll_children'] or type(status.get('radio_poll_interval_ms')) is not int:
+        return 0
+    if status.get('bench_build') is True and status['radio_poll_interval_ms']==60000:
+        return BENCH_RADIO_ASYNC_SECONDS
+    return RADIO_ASYNC_SECONDS
 
 
 def claim_device_dispatch(command_id):
@@ -1174,7 +1179,7 @@ def claim_device_dispatch(command_id):
             elif command.get('timeout_at') and stamp>=command['timeout_at']:reason='COMMAND_EXPIRED; execution outcome unknown'
             elif policy['last_attempt_at'] and (now-datetime.fromisoformat(policy['last_attempt_at'])).total_seconds()<policy['ack_timeout_s']:return False
             elif policy['attempts']>=1+command['max_retries']:
-                if policy['response_timeout_s']==RADIO_ASYNC_SECONDS:return False
+                if policy['response_timeout_s'] in (RADIO_ASYNC_SECONDS,BENCH_RADIO_ASYNC_SECONDS):return False
                 reason='ACK_TIMEOUT; device acceptance unknown'
             if not reason:
                 db.execute('UPDATE command_delivery SET attempts=attempts+1,last_attempt_at=? WHERE command_id=?',(stamp,command_id))
