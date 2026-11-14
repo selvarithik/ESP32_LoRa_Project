@@ -1,0 +1,759 @@
+[
+  {
+    "name": "gateway-login",
+    "marks": [
+      [
+        ".login-wordmark",
+        "Company identity"
+      ],
+      [
+        "#username",
+        "Existing Gateway username"
+      ],
+      [
+        "#password",
+        "Existing Gateway password"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".login-wordmark",
+        "Company identity"
+      ],
+      [
+        "#username",
+        "Existing Gateway username"
+      ],
+      [
+        "#password",
+        "Existing Gateway password"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-dashboard",
+    "marks": [
+      [
+        ".modern-nav",
+        "Navigation"
+      ],
+      [
+        ".gateway-banner",
+        "Gateway identity"
+      ],
+      [
+        "#dashboard-node-list",
+        "Live telemetry by device"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".modern-nav",
+        "Navigation"
+      ],
+      [
+        ".gateway-banner",
+        "Gateway identity"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-nodes",
+    "marks": [
+      [
+        ".page-heading",
+        "Page title"
+      ],
+      [
+        "main table",
+        "Device registry"
+      ],
+      [
+        "main button",
+        "Device actions"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "main table",
+        "Device registry"
+      ],
+      [
+        "main button",
+        "Device actions"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-sensors",
+    "marks": [
+      [
+        "#sensor-add",
+        "Add a mapping"
+      ],
+      [
+        "#sensor-management-search",
+        "Search mappings"
+      ],
+      [
+        "#sensor-management-rows",
+        "Configured readings"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#sensor-add",
+        "Add a mapping"
+      ],
+      [
+        "#sensor-management-search",
+        "Search mappings"
+      ],
+      [
+        "#sensor-management-rows",
+        "Configured readings"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-command",
+    "marks": [
+      [
+        "#node-list-container",
+        "Select a device"
+      ],
+      [
+        "#command-conversation",
+        "Commands and responses"
+      ],
+      [
+        ".command-composer",
+        "Command composer"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#node-list-container",
+        "Select a device"
+      ],
+      [
+        "#command-conversation",
+        "Commands and responses"
+      ],
+      [
+        ".command-composer",
+        "Command composer"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-controls",
+    "marks": [
+      [
+        "#control-device",
+        "Target device"
+      ],
+      [
+        "#control-config",
+        "Name and telemetry interval"
+      ],
+      [
+        "#control-network",
+        "Public IP configuration"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#control-device",
+        "Target device"
+      ],
+      [
+        "#control-config",
+        "Name and telemetry interval"
+      ],
+      [
+        "#control-network",
+        "Public IP configuration"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-mqtt",
+    "marks": [
+      [
+        ".mqtt-tabs",
+        "Profiles topics and diagnostics"
+      ],
+      [
+        "#mqtt-form",
+        "Canonical profile candidate"
+      ],
+      [
+        ".mqtt-switch",
+        "Candidate test and confirmation"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#mqtt-form",
+        "Canonical profile candidate"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-local-ip",
+    "marks": [
+      [
+        "#local-ip-enabled",
+        "Device listener enable"
+      ],
+      [
+        "#local-ip-bind",
+        "Laptop adapter address"
+      ],
+      [
+        "#local-ip-port",
+        "Separate listener port"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#local-ip-enabled",
+        "Device listener enable"
+      ],
+      [
+        "#local-ip-bind",
+        "Laptop adapter address"
+      ],
+      [
+        "#local-ip-port",
+        "Separate listener port"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-network",
+    "marks": [
+      [
+        ".page-content-v6 h1",
+        "Network overview"
+      ],
+      [
+        ".operations-overview",
+        "Reported connection evidence"
+      ],
+      [
+        "main button",
+        "Refresh reported state"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".page-content-v6 h1",
+        "Network overview"
+      ],
+      [
+        ".operations-overview",
+        "Reported connection evidence"
+      ],
+      [
+        "main button",
+        "Refresh reported state"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-mesh",
+    "marks": [
+      [
+        ".page-content-v6 h1",
+        "LoRa monitor"
+      ],
+      [
+        "main",
+        "Reported nodes and links"
+      ],
+      [
+        "main button",
+        "Refresh evidence"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".page-content-v6 h1",
+        "LoRa monitor"
+      ],
+      [
+        "main",
+        "Reported nodes and links"
+      ],
+      [
+        "main button",
+        "Refresh evidence"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-health",
+    "marks": [
+      [
+        ".health-grid",
+        "Health summary"
+      ],
+      [
+        "#overview-node-status",
+        "Node online and offline counts"
+      ],
+      [
+        "main",
+        "Recent events and connections"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".health-grid",
+        "Health summary"
+      ],
+      [
+        "#overview-node-status",
+        "Node online and offline counts"
+      ],
+      [
+        "main",
+        "Recent events and connections"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-logs",
+    "marks": [
+      [
+        ".page-content-v6 h1",
+        "Diagnostics"
+      ],
+      [
+        "main table",
+        "Recorded events"
+      ],
+      [
+        "main select",
+        "Filter entries"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".page-content-v6 h1",
+        "Diagnostics"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-settings",
+    "marks": [
+      [
+        ".system-tabs",
+        "System pages"
+      ],
+      [
+        "main",
+        "Gateway settings"
+      ],
+      [
+        "main button",
+        "Explicit save or action"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".system-tabs",
+        "System pages"
+      ],
+      [
+        "main",
+        "Gateway settings"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-accounts",
+    "marks": [
+      [
+        "main",
+        "Existing account and access settings"
+      ],
+      [
+        "main input",
+        "Account fields"
+      ],
+      [
+        "main button",
+        "Authorized account actions"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "main",
+        "Existing account and access settings"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-mqtt-diagnostics",
+    "marks": [
+      [
+        "#mqtt-feed-topic",
+        "Filter observed messages"
+      ],
+      [
+        "#mqtt-feed-rows",
+        "Validated worker traffic"
+      ],
+      [
+        ".mqtt-probe-section",
+        "Bounded connection tests"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#mqtt-feed-topic",
+        "Filter observed messages"
+      ],
+      [
+        "#mqtt-feed-rows",
+        "Validated worker traffic"
+      ],
+      [
+        ".mqtt-probe-section",
+        "Bounded connection tests"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-sensor-editor",
+    "marks": [
+      [
+        "[role=\"dialog\"]",
+        "Sensor mapping editor"
+      ],
+      [
+        "#sensor-management",
+        "Sensor management beneath editor"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "[role=\"dialog\"]",
+        "Sensor mapping editor"
+      ],
+      [
+        "#sensor-management",
+        "Sensor management beneath editor"
+      ]
+    ]
+  },
+  {
+    "name": "gateway-mobile",
+    "marks": [
+      [
+        ".modern-topbar",
+        "Mobile header"
+      ],
+      [
+        "#dashboard-node-list",
+        "Sensor cards"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".modern-topbar",
+        "Mobile header"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-dashboard",
+    "marks": [
+      [
+        ".esp-menu",
+        "Communication pages"
+      ],
+      [
+        ".esp-links",
+        "Separate connection indicators"
+      ],
+      [
+        "#checkConnection",
+        "Refresh connection evidence"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".esp-menu",
+        "Communication pages"
+      ],
+      [
+        ".esp-links",
+        "Separate connection indicators"
+      ],
+      [
+        "#checkConnection",
+        "Refresh connection evidence"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-network",
+    "marks": [
+      [
+        "#field_wifi_ssid",
+        "Station network"
+      ],
+      [
+        "#field_wifi_dhcp",
+        "DHCP selection"
+      ],
+      [
+        "#field_server_host",
+        "Laptop device listener host"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#field_wifi_ssid",
+        "Station network"
+      ],
+      [
+        "#field_wifi_dhcp",
+        "DHCP selection"
+      ],
+      [
+        "#field_server_host",
+        "Laptop device listener host"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-device",
+    "marks": [
+      [
+        "#field_device_name",
+        "Display name"
+      ],
+      [
+        "#field_role",
+        "Persisted role"
+      ],
+      [
+        "#field_telemetry_seconds",
+        "Reporting interval"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#field_device_name",
+        "Display name"
+      ],
+      [
+        "#field_role",
+        "Persisted role"
+      ],
+      [
+        "#field_telemetry_seconds",
+        "Reporting interval"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-radio",
+    "marks": [
+      [
+        "#field_lora_enabled",
+        "Radio enable"
+      ],
+      [
+        "#field_lora_apply_settings",
+        "Explicit register-write permission"
+      ],
+      [
+        "#field_lora_work_mode",
+        "Module mode"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#field_lora_enabled",
+        "Radio enable"
+      ],
+      [
+        "#field_lora_apply_settings",
+        "Explicit register-write permission"
+      ],
+      [
+        "#field_lora_work_mode",
+        "Module mode"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-nodes",
+    "marks": [
+      [
+        "#nodesState",
+        "Reported node and routing state"
+      ],
+      [
+        "#destination",
+        "Addressed command target"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#nodesState",
+        "Reported node and routing state"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-system",
+    "marks": [
+      [
+        "#restart",
+        "Controlled restart"
+      ],
+      [
+        "#resetId",
+        "Identity gate for destructive reset"
+      ],
+      [
+        "#reset",
+        "Factory reset is destructive"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#restart",
+        "Controlled restart"
+      ],
+      [
+        "#resetId",
+        "Identity gate for destructive reset"
+      ],
+      [
+        "#reset",
+        "Factory reset is destructive"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-mqtt",
+    "marks": [
+      [
+        "#profile",
+        "Candidate profile"
+      ],
+      [
+        "#feedback",
+        "Operation feedback"
+      ],
+      [
+        "form",
+        "Canonical profile form"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#profile",
+        "Candidate profile"
+      ],
+      [
+        "form",
+        "Canonical profile form"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-sleep",
+    "marks": [
+      [
+        "#field_sleep_mode",
+        "ESP32 sleep mode"
+      ],
+      [
+        "#field_lora_sleep_mode",
+        "Radio sleep behavior"
+      ],
+      [
+        "#field_sleep_duration_seconds",
+        "Timer duration"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#field_sleep_mode",
+        "ESP32 sleep mode"
+      ],
+      [
+        "#field_lora_sleep_mode",
+        "Radio sleep behavior"
+      ],
+      [
+        "#field_sleep_duration_seconds",
+        "Timer duration"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-login",
+    "marks": [
+      [
+        "#username",
+        "Local ESP32 username"
+      ],
+      [
+        "#password",
+        "Saved local password"
+      ],
+      [
+        "#submit",
+        "Sign in"
+      ]
+    ],
+    "visible_marks": [
+      [
+        "#username",
+        "Local ESP32 username"
+      ],
+      [
+        "#password",
+        "Saved local password"
+      ],
+      [
+        "#submit",
+        "Sign in"
+      ]
+    ]
+  },
+  {
+    "name": "esp32-mobile",
+    "marks": [
+      [
+        ".esp-menu",
+        "Horizontal mobile navigation"
+      ],
+      [
+        ".esp-links",
+        "Connection indicators"
+      ]
+    ],
+    "visible_marks": [
+      [
+        ".esp-menu",
+        "Horizontal mobile navigation"
+      ],
+      [
+        ".esp-links",
+        "Connection indicators"
+      ]
+    ]
+  }
+]
