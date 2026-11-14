@@ -1,0 +1,24 @@
+{
+  "server": {
+    "port": 5000
+  },
+  "admin_pin": "",
+  "mqtt_acl_confirmed": false,
+  "mqtt": {
+    "profile_name": "Gateway TLS",
+    "provider": "CUSTOM",
+    "host": "",
+    "port": 8883,
+    "mqtt_version": "3.1.1",
+    "tls": true,
+    "ca_cert_file": "broker-ca.pem",
+    "username": "",
+    "password": "",
+    "client_id": "example-gateway",
+    "keepalive_s": 60,
+    "timeout_s": 10,
+    "qos_default": 1,
+    "topic_prefix": "example/gateway",
+    "gateway_id": "LAB"
+  }
+}

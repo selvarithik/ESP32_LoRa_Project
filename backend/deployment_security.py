@@ -14,6 +14,8 @@ class TrustedProxy:
 
 def install(app,settings,status):
  app.config.update(DEBUG=False,TESTING=False,LOCAL_TEST_SESSION=False,TRUSTED_HOSTS=settings['allowed_hosts'],SESSION_COOKIE_SECURE=settings['mode']=='proxy',SESSION_COOKIE_HTTPONLY=True,SESSION_COOKIE_SAMESITE='Lax')
+ @app.context_processor
+ def deployment_transport():return {'gateway_polling_only':True}
  app.wsgi_app=TrustedProxy(app.wsgi_app,settings['trusted_proxies'])
  def enforce_https():
   if settings['mode']=='proxy' and not request.is_secure:return jsonify(error='HTTPS_REQUIRED'),400

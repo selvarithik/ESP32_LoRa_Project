@@ -1,7 +1,7 @@
 /* One reconnecting Socket.IO connection shared by page controllers. */
 "use strict";
 gateway.socket = typeof io === "function" ? io({
-    transports: ["websocket", "polling"],
+    transports: document.documentElement.dataset.gatewayPollingOnly ? ["polling"] : ["websocket", "polling"],
     reconnection: true,
     reconnectionAttempts: Infinity,
     reconnectionDelay: 1000,

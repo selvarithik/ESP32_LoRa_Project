@@ -1,7 +1,7 @@
 """Single-process Windows/local deployment entry point. No device provisioning."""
 import argparse,importlib.util,json,logging,logging.handlers,os,signal,socket,sqlite3,sys,threading,time,uuid,webbrowser
 from pathlib import Path
-from deployment_config import load,DeploymentError
+from deployment_config import load,load_portable,DeploymentError
 from runtime_paths import data_dir
 from runtime_lock import InstanceLock,AlreadyRunning
 from backup_manager import Backups,BackupError,atomic_json
@@ -30,6 +30,48 @@ def preflight(root,settings):
  except sqlite3.Error:raise RuntimeErrorCode('ACCOUNT_STORE_UNAVAILABLE') from None
  if importlib.util.find_spec('waitress') is None:raise RuntimeErrorCode('INSTALL_REQUIREMENTS_DEPLOYMENT')
  return {'configuration_valid':True,'mode':settings['mode'],'host':settings['host'],'port':settings['port'],'local_testing_disabled':True,'realtime_transport':'SOCKET_IO_HTTP_POLLING','existing_data_found':True}
+
+def bootstrap_portable(root, config, config_path):
+ """Create a fresh local account and optionally provision a TLS broker profile."""
+ from mqtt_contract import ContractError,validate_profile
+ mqtt=config.get('mqtt')
+ if mqtt is not None and not isinstance(mqtt,dict):raise DeploymentError('mqtt must be an object or null.')
+ profile=None
+ if mqtt and mqtt.get('host'):
+  profile=dict(mqtt)
+  try:
+   ca=profile.pop('ca_cert_file')
+   profile['ca_cert']=(config_path.parent/ca).read_text(encoding='utf-8')
+   profile=validate_profile(profile,True)
+  except (OSError,TypeError,KeyError,ContractError) as error:
+   field=getattr(error,'field','') or 'ca_cert_file'
+   raise DeploymentError('Invalid MQTT configuration field: '+field) from None
+ pin=config.get('admin_pin')
+ account=root/'accounts.sqlite3'
+ database_path=root/'gateway.db'
+ if account.is_file()!=database_path.is_file():
+  raise DeploymentError('Incomplete local data directory. Restore the matching Gateway and account databases.')
+ if not account.is_file() and (not isinstance(pin,str) or not 12<=len(pin)<=128):
+  raise DeploymentError('Set admin_pin to a private password of 12 to 128 characters for first startup.')
+ if account.is_file() and not profile:return
+ with InstanceLock(root):
+  os.environ['GATEWAY_DATA_DIR']=str(root)
+  import database
+  if not account.is_file():
+   from account_settings import connect
+   database.initialize_database()
+   previous=os.environ.get('GATEWAY_ADMIN_PASSWORD')
+   os.environ['GATEWAY_ADMIN_PASSWORD']=pin
+   try:connect().close()
+   finally:
+    if previous is None:os.environ.pop('GATEWAY_ADMIN_PASSWORD',None)
+    else:os.environ['GATEWAY_ADMIN_PASSWORD']=previous
+  if profile:
+   from mqtt_store import Store
+   store=Store(database_path,root/'mqtt-secrets.bin')
+   state=store.read()
+   if not state.get('active') and not state.get('pending'):
+    store.commission(profile,state['revision'])
 
 class Runtime:
  def __init__(self,root,settings,open_browser=False):
@@ -63,9 +105,11 @@ class Runtime:
     server.account_settings.connect().close()
     server.local_ip.start_saved()
     import mqtt_adapter
-    self.worker=mqtt_adapter.start_from_environment()
+    self.worker=mqtt_adapter.start_from_environment(self.settings.get('portable_mqtt_acl_confirmed',False)) if self.settings.get('portable_mqtt_acl_confirmed') else mqtt_adapter.start_from_environment()
     self.heartbeat=server.socketio.start_background_task(server.server_time_heartbeat,self.stop_event)
     self.http_thread=threading.Thread(target=self.http.run,name='gateway-http',daemon=True);self.http_thread.start();self.started=True;atomic_json(self.root/'runtime/status.json',self.status());self.backups.start(self.settings['backup_hours']);self.log('GATEWAY_STARTED')
+    if getattr(sys,'frozen',False):
+     print("SELVARITHIK'S A&D Gateway - http://"+self.settings['host']+':'+str(self.settings['port']),flush=True)
     if self.open_browser:webbrowser.open(self.settings['public_url'] or 'http://'+self.settings['host']+':'+str(self.settings['port']))
     stop_file=self.root/'runtime'/('stop-'+self.run_id+'.request')
     while not self.stop_event.wait(.5):
@@ -94,7 +138,14 @@ def cli(argv=None):
  parser.add_argument('--data-dir',type=Path);parser.add_argument('--config',type=Path);parser.add_argument('--archive',type=Path);parser.add_argument('--apply',action='store_true');parser.add_argument('--retention-days',type=int,default=90);parser.add_argument('--no-browser',action='store_true')
  args=parser.parse_args(argv);root=(args.data_dir or data_dir()).resolve()
  try:
-  settings=load(args.config)
+  if getattr(sys,'frozen',False):
+   config_path=(args.config or Path(sys.executable).parent/'config.json').resolve()
+   settings,config=load_portable(config_path)
+   if args.command=='serve':
+    bootstrap_portable(root,config,config_path)
+    settings['portable_mqtt_acl_confirmed']=bool(config.get('mqtt_acl_confirmed'))
+  else:
+   settings=load(args.config)
   if args.command=='serve':
    runtime=Runtime(root,settings,not args.no_browser)
    for event in (signal.SIGINT,signal.SIGTERM):signal.signal(event,lambda *_:runtime.stop())

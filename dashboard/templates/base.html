@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html{% if gateway_polling_only %} data-gateway-polling-only="true"{% endif %} lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="sensor-csrf" content="{{ sensor_csrf }}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#FF0000">
-<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
-<link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" sizes="32x32">
-<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-192.png') }}" sizes="192x192">
+<link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" sizes="any">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-180.png') }}" sizes="180x180">
 <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fonts/fonts.css') }}">
 <script>try { document.documentElement.dataset.theme = localStorage.getItem("gateway_theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (_) {}</script>

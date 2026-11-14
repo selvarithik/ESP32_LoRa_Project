@@ -3817,3 +3817,7 @@ END OF README
 Current sensor/BLE scope and physical acceptance: [BLE_SENSOR_REPORT.md](docs/BLE_SENSOR_REPORT.md). DHT11/INA219 and MQ135 raw telemetry are verified; MQ135 uses the owner-confirmed 10k/10k AO divider and remains uncalibrated.
 
 Latest Master LED/TM1637 and enabled MQ135 raw telemetry: [connection indicators](docs/CONNECTION_INDICATORS.md).
+
+## Windows executable
+
+Build with `python -m PyInstaller deployment/Gateway.spec` on Windows. Download the unsigned ZIP from the [private conducted pre-release](https://github.com/selvarithik/lora-e220-gateway/releases/tag/v1.0.0-rc-conducted). See the [quick user manual](docs/USER_MANUAL_QUICK.md) and [pending-work report](docs/PENDING_WORK.md).

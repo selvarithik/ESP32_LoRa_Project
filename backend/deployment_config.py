@@ -13,6 +13,9 @@ def load(path=None):
    if not isinstance(raw,dict) or set(raw)-set(d):raise ValueError()
    d.update(raw)
   except (OSError,ValueError,TypeError):raise DeploymentError('INVALID_DEPLOYMENT_CONFIG') from None
+ return validate(d)
+
+def validate(d):
  try:
   if d['mode'] not in ('local','proxy') or not ipaddress.ip_address(d['host']).is_loopback:raise ValueError()
   for key,lo,hi in [('port',1024,65535),('threads',8,64),('backup_hours',1,168),('backup_keep',2,60)]:
@@ -25,3 +28,20 @@ def load(path=None):
   if d['mode']=='local' and (d['trusted_proxies'] or d['public_url']):raise ValueError()
  except (ValueError,TypeError,KeyError):raise DeploymentError('UNSAFE_DEPLOYMENT_CONFIG') from None
  return d
+
+
+def load_portable(path):
+ path=Path(path)
+ if not path.is_file():
+  raise DeploymentError('Missing config.json beside the executable. Copy config.example.json to config.json and fill in the settings.')
+ try:
+  raw=json.loads(path.read_text(encoding='utf-8-sig'))
+  if not isinstance(raw,dict) or set(raw)-{'server','admin_pin','mqtt','mqtt_acl_confirmed'}:raise ValueError()
+  if type(raw.get('mqtt_acl_confirmed',False)) is not bool:raise ValueError()
+  server=raw.get('server',{})
+  if not isinstance(server,dict) or set(server)-set(DEFAULTS):raise ValueError()
+ except (OSError,ValueError,TypeError):
+  raise DeploymentError('Invalid config.json. Compare it with config.example.json.') from None
+ settings=validate({**DEFAULTS,**server})
+ if settings['mode']!='local':raise DeploymentError('The packaged Gateway requires local mode.')
+ return settings,raw

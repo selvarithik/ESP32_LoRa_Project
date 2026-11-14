@@ -29,3 +29,6 @@ tests/*-before.png
 node_modules/
 *.sgwportable
 *transfer.key
+
+/config.json
+/deployment/config.json

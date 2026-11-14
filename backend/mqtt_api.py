@@ -27,9 +27,14 @@ def service():
             _service=Service(store,explicit or scoped,telemetry_only=(scoped and not commands) or os.environ.get('GATEWAY_MQTT_TELEMETRY_ONLY')=='1',acl_guard=((lambda:command_authorized(store)) if commands else (lambda:authorized(store))) if scoped and not explicit else None,commands_only=commands)
         return _service
 
-def start():
+def start(portable_acl_confirmed=False):
     from mqtt_migration import migrate
-    current=service();migrate(current.store,os.environ);current.store.recover();current.start();atexit.register(current.stop);return current
+    current=service();migrate(current.store,os.environ);current.store.recover()
+    if portable_acl_confirmed and not current.trust_acl:
+        current.trust_acl=True
+        current.commands_only=True
+        current.SUBSCRIPTIONS=("telemetry","status","config","command_ack")
+    current.start();atexit.register(current.stop);return current
 
 def install(app):
     import mqtt_explorer
@@ -40,7 +45,8 @@ def install(app):
 
     @app.get('/api/mqtt')
     def mqtt_state():
-        current=service();result=current.store.public();result['runtime']=current.status();result['comparison']=result['runtime']['comparison'];result['defaults']=json.loads((resource_root()/'deployment/profile.example.json').read_text(encoding='utf-8'));result['defaults'].pop('password',None);return jsonify(result)
+        from mqtt_migration import example_profile
+        current=service();result=current.store.public();result['runtime']=current.status();result['comparison']=result['runtime']['comparison'];result['defaults']=example_profile();result['defaults'].pop('password',None);return jsonify(result)
 
     @app.post('/api/mqtt/<operation>')
     def mqtt_action(operation):

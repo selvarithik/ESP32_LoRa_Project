@@ -1,0 +1,17 @@
+SELVARITHIK'S A&D Gateway — conducted release candidate
+
+1. Extract every file to a writable folder.
+2. Copy config.example.json to config.json beside Selvarithik_AD_Gateway.exe.
+3. Set admin_pin to a private password of at least 12 characters.
+4. To use MQTT, fill the broker settings and CA PEM path. Confirm the
+   broker account has restricted Gateway topic ACLs before setting
+   mqtt_acl_confirmed to true. Leave the broker host blank for offline use.
+5. Run Selvarithik_AD_Gateway.exe and sign in as admin at http://127.0.0.1:5000/.
+   Use the configured port if you changed it.
+
+Keep config.json private. This executable is unsigned; SmartScreen may warn.
+Conducted bench use only. Keep RF ports terminated, antennas removed, and
+at least 30 dB attenuation in the SMA cable path. No over-the-air use.
+
+Quick manual:
+https://github.com/selvarithik/lora-e220-docs/blob/main/USER_MANUAL_QUICK.md
